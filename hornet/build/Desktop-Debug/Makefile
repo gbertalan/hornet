@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/tre/FirstSteps
+CMAKE_SOURCE_DIR = /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/tre/FirstSteps/build/Desktop-Debug
+CMAKE_BINARY_DIR = /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -132,9 +132,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tre/FirstSteps/build/Desktop-Debug/CMakeFiles /home/tre/FirstSteps/build/Desktop-Debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tre/FirstSteps/build/Desktop-Debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -162,74 +162,74 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named FirstSteps
+# Target rules for targets named hornet
 
 # Build rule for target.
-FirstSteps: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FirstSteps
-.PHONY : FirstSteps
+hornet: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hornet
+.PHONY : hornet
 
 # fast build rule for target.
-FirstSteps/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/build
-.PHONY : FirstSteps/fast
+hornet/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/build
+.PHONY : hornet/fast
 
 #=============================================================================
-# Target rules for targets named FirstSteps_autogen_timestamp_deps
+# Target rules for targets named hornet_autogen_timestamp_deps
 
 # Build rule for target.
-FirstSteps_autogen_timestamp_deps: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FirstSteps_autogen_timestamp_deps
-.PHONY : FirstSteps_autogen_timestamp_deps
+hornet_autogen_timestamp_deps: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hornet_autogen_timestamp_deps
+.PHONY : hornet_autogen_timestamp_deps
 
 # fast build rule for target.
-FirstSteps_autogen_timestamp_deps/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps_autogen_timestamp_deps.dir/build.make CMakeFiles/FirstSteps_autogen_timestamp_deps.dir/build
-.PHONY : FirstSteps_autogen_timestamp_deps/fast
+hornet_autogen_timestamp_deps/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet_autogen_timestamp_deps.dir/build.make CMakeFiles/hornet_autogen_timestamp_deps.dir/build
+.PHONY : hornet_autogen_timestamp_deps/fast
 
 #=============================================================================
-# Target rules for targets named FirstSteps_autogen
+# Target rules for targets named hornet_autogen
 
 # Build rule for target.
-FirstSteps_autogen: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 FirstSteps_autogen
-.PHONY : FirstSteps_autogen
+hornet_autogen: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 hornet_autogen
+.PHONY : hornet_autogen
 
 # fast build rule for target.
-FirstSteps_autogen/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps_autogen.dir/build.make CMakeFiles/FirstSteps_autogen.dir/build
-.PHONY : FirstSteps_autogen/fast
+hornet_autogen/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet_autogen.dir/build.make CMakeFiles/hornet_autogen.dir/build
+.PHONY : hornet_autogen/fast
 
-FirstSteps_autogen/mocs_compilation.o: FirstSteps_autogen/mocs_compilation.cpp.o
-.PHONY : FirstSteps_autogen/mocs_compilation.o
+hornet_autogen/mocs_compilation.o: hornet_autogen/mocs_compilation.cpp.o
+.PHONY : hornet_autogen/mocs_compilation.o
 
 # target to build an object file
-FirstSteps_autogen/mocs_compilation.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/FirstSteps_autogen/mocs_compilation.cpp.o
-.PHONY : FirstSteps_autogen/mocs_compilation.cpp.o
+hornet_autogen/mocs_compilation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.o
+.PHONY : hornet_autogen/mocs_compilation.cpp.o
 
-FirstSteps_autogen/mocs_compilation.i: FirstSteps_autogen/mocs_compilation.cpp.i
-.PHONY : FirstSteps_autogen/mocs_compilation.i
+hornet_autogen/mocs_compilation.i: hornet_autogen/mocs_compilation.cpp.i
+.PHONY : hornet_autogen/mocs_compilation.i
 
 # target to preprocess a source file
-FirstSteps_autogen/mocs_compilation.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/FirstSteps_autogen/mocs_compilation.cpp.i
-.PHONY : FirstSteps_autogen/mocs_compilation.cpp.i
+hornet_autogen/mocs_compilation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.i
+.PHONY : hornet_autogen/mocs_compilation.cpp.i
 
-FirstSteps_autogen/mocs_compilation.s: FirstSteps_autogen/mocs_compilation.cpp.s
-.PHONY : FirstSteps_autogen/mocs_compilation.s
+hornet_autogen/mocs_compilation.s: hornet_autogen/mocs_compilation.cpp.s
+.PHONY : hornet_autogen/mocs_compilation.s
 
 # target to generate assembly for a file
-FirstSteps_autogen/mocs_compilation.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/FirstSteps_autogen/mocs_compilation.cpp.s
-.PHONY : FirstSteps_autogen/mocs_compilation.cpp.s
+hornet_autogen/mocs_compilation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.s
+.PHONY : hornet_autogen/mocs_compilation.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/main.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -237,7 +237,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/main.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -245,80 +245,32 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/main.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-registerdisplay.o: registerdisplay.cpp.o
-.PHONY : registerdisplay.o
+mainwindow.o: mainwindow.cpp.o
+.PHONY : mainwindow.o
 
 # target to build an object file
-registerdisplay.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/registerdisplay.cpp.o
-.PHONY : registerdisplay.cpp.o
+mainwindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.o
+.PHONY : mainwindow.cpp.o
 
-registerdisplay.i: registerdisplay.cpp.i
-.PHONY : registerdisplay.i
-
-# target to preprocess a source file
-registerdisplay.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/registerdisplay.cpp.i
-.PHONY : registerdisplay.cpp.i
-
-registerdisplay.s: registerdisplay.cpp.s
-.PHONY : registerdisplay.s
-
-# target to generate assembly for a file
-registerdisplay.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/registerdisplay.cpp.s
-.PHONY : registerdisplay.cpp.s
-
-theme.o: theme.cpp.o
-.PHONY : theme.o
-
-# target to build an object file
-theme.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/theme.cpp.o
-.PHONY : theme.cpp.o
-
-theme.i: theme.cpp.i
-.PHONY : theme.i
+mainwindow.i: mainwindow.cpp.i
+.PHONY : mainwindow.i
 
 # target to preprocess a source file
-theme.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/theme.cpp.i
-.PHONY : theme.cpp.i
+mainwindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.i
+.PHONY : mainwindow.cpp.i
 
-theme.s: theme.cpp.s
-.PHONY : theme.s
-
-# target to generate assembly for a file
-theme.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/theme.cpp.s
-.PHONY : theme.cpp.s
-
-widget.o: widget.cpp.o
-.PHONY : widget.o
-
-# target to build an object file
-widget.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/widget.cpp.o
-.PHONY : widget.cpp.o
-
-widget.i: widget.cpp.i
-.PHONY : widget.i
-
-# target to preprocess a source file
-widget.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/widget.cpp.i
-.PHONY : widget.cpp.i
-
-widget.s: widget.cpp.s
-.PHONY : widget.s
+mainwindow.s: mainwindow.cpp.s
+.PHONY : mainwindow.s
 
 # target to generate assembly for a file
-widget.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/FirstSteps.dir/build.make CMakeFiles/FirstSteps.dir/widget.cpp.s
-.PHONY : widget.cpp.s
+mainwindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.s
+.PHONY : mainwindow.cpp.s
 
 # Help Target
 help:
@@ -332,24 +284,18 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... FirstSteps_autogen"
-	@echo "... FirstSteps_autogen_timestamp_deps"
-	@echo "... FirstSteps"
-	@echo "... FirstSteps_autogen/mocs_compilation.o"
-	@echo "... FirstSteps_autogen/mocs_compilation.i"
-	@echo "... FirstSteps_autogen/mocs_compilation.s"
+	@echo "... hornet_autogen"
+	@echo "... hornet_autogen_timestamp_deps"
+	@echo "... hornet"
+	@echo "... hornet_autogen/mocs_compilation.o"
+	@echo "... hornet_autogen/mocs_compilation.i"
+	@echo "... hornet_autogen/mocs_compilation.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... registerdisplay.o"
-	@echo "... registerdisplay.i"
-	@echo "... registerdisplay.s"
-	@echo "... theme.o"
-	@echo "... theme.i"
-	@echo "... theme.s"
-	@echo "... widget.o"
-	@echo "... widget.i"
-	@echo "... widget.s"
+	@echo "... mainwindow.o"
+	@echo "... mainwindow.i"
+	@echo "... mainwindow.s"
 .PHONY : help
 
 
