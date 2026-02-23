@@ -16,6 +16,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/hornet.dir/modelaccess.cpp.o.d"
   "CMakeFiles/hornet.dir/projectservice.cpp.o"
   "CMakeFiles/hornet.dir/projectservice.cpp.o.d"
+  "CMakeFiles/hornet.dir/theme.cpp.o"
+  "CMakeFiles/hornet.dir/theme.cpp.o.d"
   "CMakeFiles/hornet.dir/validator.cpp.o"
   "CMakeFiles/hornet.dir/validator.cpp.o.d"
   "CMakeFiles/hornet.dir/view.cpp.o"

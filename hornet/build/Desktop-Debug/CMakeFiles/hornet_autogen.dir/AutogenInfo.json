@@ -111,6 +111,12 @@
 			null
 		],
 		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.h",
+			"MU",
+			"EWIEGA46WW/moc_theme.cpp",
+			null
+		],
+		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/validator.h",
 			"MU",
 			"EWIEGA46WW/moc_validator.cpp",
@@ -201,6 +207,11 @@
 		],
 		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/projectservice.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp",
 			"MU",
 			null
 		],

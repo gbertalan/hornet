@@ -15,6 +15,8 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/modelaccess.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/projectservice.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/projectservice.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/validator.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/validator.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view.cpp \

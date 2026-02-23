@@ -49,6 +49,8 @@ else()
             modelaccess.cpp
             view.cpp
             control.cpp
+            theme.h
+            theme.cpp
         )
     endif()
 endif()

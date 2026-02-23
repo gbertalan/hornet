@@ -368,6 +368,30 @@ projectservice.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.s
 .PHONY : projectservice.cpp.s
 
+theme.o: theme.cpp.o
+.PHONY : theme.o
+
+# target to build an object file
+theme.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.o
+.PHONY : theme.cpp.o
+
+theme.i: theme.cpp.i
+.PHONY : theme.i
+
+# target to preprocess a source file
+theme.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.i
+.PHONY : theme.cpp.i
+
+theme.s: theme.cpp.s
+.PHONY : theme.s
+
+# target to generate assembly for a file
+theme.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.s
+.PHONY : theme.cpp.s
+
 validator.o: validator.cpp.o
 .PHONY : validator.o
 
@@ -452,6 +476,9 @@ help:
 	@echo "... projectservice.o"
 	@echo "... projectservice.i"
 	@echo "... projectservice.s"
+	@echo "... theme.o"
+	@echo "... theme.i"
+	@echo "... theme.s"
 	@echo "... validator.o"
 	@echo "... validator.i"
 	@echo "... validator.s"
