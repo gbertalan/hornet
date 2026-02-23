@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-64d18d937af88917da7c.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.5"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "hornet",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "hornet::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-hornet-Debug-8be54cf4c976a5f6f1a6.json",
+					"name" : "hornet",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "hornet_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-hornet_autogen-Debug-f72b83d9fb6a5c9ce254.json",
+					"name" : "hornet_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "hornet_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-hornet_autogen_timestamp_deps-Debug-329101ffeaa3f537513b.json",
+					"name" : "hornet_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug",
+		"source" : "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

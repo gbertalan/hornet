@@ -200,6 +200,30 @@ hornet_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet_autogen.dir/build.make CMakeFiles/hornet_autogen.dir/build
 .PHONY : hornet_autogen/fast
 
+control.o: control.cpp.o
+.PHONY : control.o
+
+# target to build an object file
+control.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control.cpp.o
+.PHONY : control.cpp.o
+
+control.i: control.cpp.i
+.PHONY : control.i
+
+# target to preprocess a source file
+control.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control.cpp.i
+.PHONY : control.cpp.i
+
+control.s: control.cpp.s
+.PHONY : control.s
+
+# target to generate assembly for a file
+control.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control.cpp.s
+.PHONY : control.cpp.s
+
 hornet_autogen/mocs_compilation.o: hornet_autogen/mocs_compilation.cpp.o
 .PHONY : hornet_autogen/mocs_compilation.o
 
@@ -272,6 +296,126 @@ mainwindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.s
 .PHONY : mainwindow.cpp.s
 
+model.o: model.cpp.o
+.PHONY : model.o
+
+# target to build an object file
+model.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model.cpp.o
+.PHONY : model.cpp.o
+
+model.i: model.cpp.i
+.PHONY : model.i
+
+# target to preprocess a source file
+model.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model.cpp.i
+.PHONY : model.cpp.i
+
+model.s: model.cpp.s
+.PHONY : model.s
+
+# target to generate assembly for a file
+model.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model.cpp.s
+.PHONY : model.cpp.s
+
+modelaccess.o: modelaccess.cpp.o
+.PHONY : modelaccess.o
+
+# target to build an object file
+modelaccess.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/modelaccess.cpp.o
+.PHONY : modelaccess.cpp.o
+
+modelaccess.i: modelaccess.cpp.i
+.PHONY : modelaccess.i
+
+# target to preprocess a source file
+modelaccess.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/modelaccess.cpp.i
+.PHONY : modelaccess.cpp.i
+
+modelaccess.s: modelaccess.cpp.s
+.PHONY : modelaccess.s
+
+# target to generate assembly for a file
+modelaccess.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/modelaccess.cpp.s
+.PHONY : modelaccess.cpp.s
+
+projectservice.o: projectservice.cpp.o
+.PHONY : projectservice.o
+
+# target to build an object file
+projectservice.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.o
+.PHONY : projectservice.cpp.o
+
+projectservice.i: projectservice.cpp.i
+.PHONY : projectservice.i
+
+# target to preprocess a source file
+projectservice.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.i
+.PHONY : projectservice.cpp.i
+
+projectservice.s: projectservice.cpp.s
+.PHONY : projectservice.s
+
+# target to generate assembly for a file
+projectservice.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.s
+.PHONY : projectservice.cpp.s
+
+validator.o: validator.cpp.o
+.PHONY : validator.o
+
+# target to build an object file
+validator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/validator.cpp.o
+.PHONY : validator.cpp.o
+
+validator.i: validator.cpp.i
+.PHONY : validator.i
+
+# target to preprocess a source file
+validator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/validator.cpp.i
+.PHONY : validator.cpp.i
+
+validator.s: validator.cpp.s
+.PHONY : validator.s
+
+# target to generate assembly for a file
+validator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/validator.cpp.s
+.PHONY : validator.cpp.s
+
+view.o: view.cpp.o
+.PHONY : view.o
+
+# target to build an object file
+view.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view.cpp.o
+.PHONY : view.cpp.o
+
+view.i: view.cpp.i
+.PHONY : view.i
+
+# target to preprocess a source file
+view.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view.cpp.i
+.PHONY : view.cpp.i
+
+view.s: view.cpp.s
+.PHONY : view.s
+
+# target to generate assembly for a file
+view.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view.cpp.s
+.PHONY : view.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -287,6 +431,9 @@ help:
 	@echo "... hornet_autogen"
 	@echo "... hornet_autogen_timestamp_deps"
 	@echo "... hornet"
+	@echo "... control.o"
+	@echo "... control.i"
+	@echo "... control.s"
 	@echo "... hornet_autogen/mocs_compilation.o"
 	@echo "... hornet_autogen/mocs_compilation.i"
 	@echo "... hornet_autogen/mocs_compilation.s"
@@ -296,6 +443,21 @@ help:
 	@echo "... mainwindow.o"
 	@echo "... mainwindow.i"
 	@echo "... mainwindow.s"
+	@echo "... model.o"
+	@echo "... model.i"
+	@echo "... model.s"
+	@echo "... modelaccess.o"
+	@echo "... modelaccess.i"
+	@echo "... modelaccess.s"
+	@echo "... projectservice.o"
+	@echo "... projectservice.i"
+	@echo "... projectservice.s"
+	@echo "... validator.o"
+	@echo "... validator.i"
+	@echo "... validator.s"
+	@echo "... view.o"
+	@echo "... view.i"
+	@echo "... view.s"
 .PHONY : help
 
 

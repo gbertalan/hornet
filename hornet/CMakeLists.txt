@@ -37,6 +37,18 @@ else()
     else()
         add_executable(hornet
             ${PROJECT_SOURCES}
+            model.h
+            validator.h
+            projectservice.h
+            modelaccess.h
+            view.h
+            control.h
+            model.cpp
+            validator.cpp
+            projectservice.cpp
+            modelaccess.cpp
+            view.cpp
+            control.cpp
         )
     endif()
 endif()
