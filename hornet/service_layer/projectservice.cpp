@@ -1,7 +1,7 @@
-#include "projectservice.h"
+#include "service_layer/projectservice.h"
 #include <stdexcept>
 
-ProjectService::ProjectService() {}
+ProjectService::ProjectService(ModelAccess& modelAccess) {}
 
 int ProjectService::doubleValue(int value) const {
     int result = value * 2;

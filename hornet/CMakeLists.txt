@@ -14,8 +14,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
+
+
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -38,13 +38,13 @@ else()
         add_executable(hornet
             ${PROJECT_SOURCES}
 
-            model_layer/numbermodel.h
+            model_layer/modelaccess.h
             view_layer/view.h
             control.h
             service_layer/projectservice.h
             service_layer/validator.h
 
-            model_layer/numbermodel.cpp
+            model_layer/modelaccess.cpp
             view_layer/view.cpp
             control.cpp
             theme.h
@@ -56,6 +56,10 @@ else()
 endif()
 
 target_link_libraries(hornet PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+target_include_directories(hornet PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

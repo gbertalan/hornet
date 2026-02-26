@@ -272,53 +272,29 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/main.cpp.s
 .PHONY : main.cpp.s
 
-mainwindow.o: mainwindow.cpp.o
-.PHONY : mainwindow.o
+model_layer/modelaccess.o: model_layer/modelaccess.cpp.o
+.PHONY : model_layer/modelaccess.o
 
 # target to build an object file
-mainwindow.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.o
-.PHONY : mainwindow.cpp.o
+model_layer/modelaccess.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/modelaccess.cpp.o
+.PHONY : model_layer/modelaccess.cpp.o
 
-mainwindow.i: mainwindow.cpp.i
-.PHONY : mainwindow.i
-
-# target to preprocess a source file
-mainwindow.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.i
-.PHONY : mainwindow.cpp.i
-
-mainwindow.s: mainwindow.cpp.s
-.PHONY : mainwindow.s
-
-# target to generate assembly for a file
-mainwindow.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.s
-.PHONY : mainwindow.cpp.s
-
-model_layer/numbermodel.o: model_layer/numbermodel.cpp.o
-.PHONY : model_layer/numbermodel.o
-
-# target to build an object file
-model_layer/numbermodel.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o
-.PHONY : model_layer/numbermodel.cpp.o
-
-model_layer/numbermodel.i: model_layer/numbermodel.cpp.i
-.PHONY : model_layer/numbermodel.i
+model_layer/modelaccess.i: model_layer/modelaccess.cpp.i
+.PHONY : model_layer/modelaccess.i
 
 # target to preprocess a source file
-model_layer/numbermodel.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.i
-.PHONY : model_layer/numbermodel.cpp.i
+model_layer/modelaccess.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/modelaccess.cpp.i
+.PHONY : model_layer/modelaccess.cpp.i
 
-model_layer/numbermodel.s: model_layer/numbermodel.cpp.s
-.PHONY : model_layer/numbermodel.s
+model_layer/modelaccess.s: model_layer/modelaccess.cpp.s
+.PHONY : model_layer/modelaccess.s
 
 # target to generate assembly for a file
-model_layer/numbermodel.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.s
-.PHONY : model_layer/numbermodel.cpp.s
+model_layer/modelaccess.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/modelaccess.cpp.s
+.PHONY : model_layer/modelaccess.cpp.s
 
 service_layer/projectservice.o: service_layer/projectservice.cpp.o
 .PHONY : service_layer/projectservice.o
@@ -440,12 +416,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... mainwindow.o"
-	@echo "... mainwindow.i"
-	@echo "... mainwindow.s"
-	@echo "... model_layer/numbermodel.o"
-	@echo "... model_layer/numbermodel.i"
-	@echo "... model_layer/numbermodel.s"
+	@echo "... model_layer/modelaccess.o"
+	@echo "... model_layer/modelaccess.i"
+	@echo "... model_layer/modelaccess.s"
 	@echo "... service_layer/projectservice.o"
 	@echo "... service_layer/projectservice.i"
 	@echo "... service_layer/projectservice.s"

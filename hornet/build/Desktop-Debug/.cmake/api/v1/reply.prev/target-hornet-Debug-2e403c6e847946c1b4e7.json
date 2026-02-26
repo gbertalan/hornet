@@ -15,7 +15,8 @@
 			"target_link_libraries",
 			"set_property",
 			"_populate_Widgets_target_properties",
-			"find_package"
+			"find_package",
+			"target_include_directories"
 		],
 		"files" : 
 		[
@@ -37,7 +38,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 75,
+				"line" : 79,
 				"parent" : 0
 			},
 			{
@@ -77,6 +78,12 @@
 				"file" : 1,
 				"line" : 57,
 				"parent" : 8
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 60,
+				"parent" : 0
 			}
 		]
 	},
@@ -113,6 +120,10 @@
 				{
 					"backtrace" : 0,
 					"path" : "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/hornet_autogen/include"
+				},
+				{
+					"backtrace" : 10,
+					"path" : "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet"
 				},
 				{
 					"backtrace" : 3,
@@ -153,13 +164,12 @@
 			[
 				0,
 				1,
-				2,
+				7,
+				8,
 				9,
-				10,
 				11,
-				13,
-				14,
-				15
+				12,
+				13
 			]
 		}
 	],
@@ -233,40 +243,38 @@
 			[
 				0,
 				1,
-				2,
+				7,
+				8,
 				9,
-				10,
 				11,
-				13,
-				14,
-				15
+				12,
+				13
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
+				2,
 				3,
 				4,
 				5,
 				6,
-				7,
-				8,
-				12
+				10
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				16
+				14
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				17
+				15
 			]
 		}
 	],
@@ -287,18 +295,7 @@
 		},
 		{
 			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "mainwindow.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "mainwindow.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
-			"path" : "model_layer/numbermodel.h",
+			"path" : "model_layer/modelaccess.h",
 			"sourceGroupIndex" : 1
 		},
 		{
@@ -324,7 +321,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "model_layer/numbermodel.cpp",
+			"path" : "model_layer/modelaccess.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

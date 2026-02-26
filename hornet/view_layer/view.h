@@ -8,6 +8,7 @@ class View : public QWidget {
 public:
     explicit View(QWidget *parent = nullptr);
     void displayValue(int value);
+    void showError(const QString& message);
 
 signals:
     void buttonClicked();

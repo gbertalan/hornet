@@ -1,5 +1,6 @@
 #include "view.h"
 #include <QVBoxLayout>
+#include <QMessageBox>
 
 View::View(QWidget *parent) : QWidget(parent) {
     m_lineEdit = new QLineEdit(this);
@@ -16,4 +17,8 @@ View::View(QWidget *parent) : QWidget(parent) {
 
 void View::displayValue(int value) {
     m_lineEdit->setText(QString::number(value));
+}
+
+void View::showError(const QString& message) {
+    QMessageBox::warning(this, "Error", message, QMessageBox::Ok);
 }

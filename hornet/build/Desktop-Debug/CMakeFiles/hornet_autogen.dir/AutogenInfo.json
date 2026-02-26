@@ -87,15 +87,9 @@
 			null
 		],
 		[
-			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/mainwindow.h",
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.h",
 			"MU",
-			"EWIEGA46WW/moc_mainwindow.cpp",
-			null
-		],
-		[
-			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.h",
-			"MU",
-			"NNKMXFWOGJ/moc_numbermodel.cpp",
+			"NNKMXFWOGJ/moc_modelaccess.cpp",
 			null
 		],
 		[
@@ -136,6 +130,7 @@
 	],
 	"MOC_INCLUDES" : 
 	[
+		"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet",
 		"/usr/include/x86_64-linux-gnu/qt5",
 		"/usr/include/x86_64-linux-gnu/qt5/QtWidgets",
 		"/usr/include/x86_64-linux-gnu/qt5/QtGui",
@@ -185,12 +180,7 @@
 			null
 		],
 		[
-			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/mainwindow.cpp",
-			"MU",
-			null
-		],
-		[
-			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.cpp",
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.cpp",
 			"MU",
 			null
 		],

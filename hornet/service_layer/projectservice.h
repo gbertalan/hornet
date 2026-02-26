@@ -1,9 +1,10 @@
 #pragma once
-#include "validator.h"
+#include "service_layer/validator.h"
+#include "model_layer/modelaccess.h"
 
 class ProjectService {
 public:
-    ProjectService();
+    ProjectService(ModelAccess& modelAccess);
     int doubleValue(int value) const;
 private:
     Validator m_validator;
