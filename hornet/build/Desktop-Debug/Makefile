@@ -296,77 +296,77 @@ mainwindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/mainwindow.cpp.s
 .PHONY : mainwindow.cpp.s
 
-model.o: model.cpp.o
-.PHONY : model.o
+model_layer/numbermodel.o: model_layer/numbermodel.cpp.o
+.PHONY : model_layer/numbermodel.o
 
 # target to build an object file
-model.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model.cpp.o
-.PHONY : model.cpp.o
+model_layer/numbermodel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o
+.PHONY : model_layer/numbermodel.cpp.o
 
-model.i: model.cpp.i
-.PHONY : model.i
+model_layer/numbermodel.i: model_layer/numbermodel.cpp.i
+.PHONY : model_layer/numbermodel.i
 
 # target to preprocess a source file
-model.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model.cpp.i
-.PHONY : model.cpp.i
+model_layer/numbermodel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.i
+.PHONY : model_layer/numbermodel.cpp.i
 
-model.s: model.cpp.s
-.PHONY : model.s
+model_layer/numbermodel.s: model_layer/numbermodel.cpp.s
+.PHONY : model_layer/numbermodel.s
 
 # target to generate assembly for a file
-model.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model.cpp.s
-.PHONY : model.cpp.s
+model_layer/numbermodel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.s
+.PHONY : model_layer/numbermodel.cpp.s
 
-modelaccess.o: modelaccess.cpp.o
-.PHONY : modelaccess.o
+service_layer/projectservice.o: service_layer/projectservice.cpp.o
+.PHONY : service_layer/projectservice.o
 
 # target to build an object file
-modelaccess.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/modelaccess.cpp.o
-.PHONY : modelaccess.cpp.o
+service_layer/projectservice.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o
+.PHONY : service_layer/projectservice.cpp.o
 
-modelaccess.i: modelaccess.cpp.i
-.PHONY : modelaccess.i
+service_layer/projectservice.i: service_layer/projectservice.cpp.i
+.PHONY : service_layer/projectservice.i
 
 # target to preprocess a source file
-modelaccess.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/modelaccess.cpp.i
-.PHONY : modelaccess.cpp.i
+service_layer/projectservice.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/projectservice.cpp.i
+.PHONY : service_layer/projectservice.cpp.i
 
-modelaccess.s: modelaccess.cpp.s
-.PHONY : modelaccess.s
+service_layer/projectservice.s: service_layer/projectservice.cpp.s
+.PHONY : service_layer/projectservice.s
 
 # target to generate assembly for a file
-modelaccess.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/modelaccess.cpp.s
-.PHONY : modelaccess.cpp.s
+service_layer/projectservice.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/projectservice.cpp.s
+.PHONY : service_layer/projectservice.cpp.s
 
-projectservice.o: projectservice.cpp.o
-.PHONY : projectservice.o
+service_layer/validator.o: service_layer/validator.cpp.o
+.PHONY : service_layer/validator.o
 
 # target to build an object file
-projectservice.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.o
-.PHONY : projectservice.cpp.o
+service_layer/validator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.o
+.PHONY : service_layer/validator.cpp.o
 
-projectservice.i: projectservice.cpp.i
-.PHONY : projectservice.i
+service_layer/validator.i: service_layer/validator.cpp.i
+.PHONY : service_layer/validator.i
 
 # target to preprocess a source file
-projectservice.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.i
-.PHONY : projectservice.cpp.i
+service_layer/validator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.i
+.PHONY : service_layer/validator.cpp.i
 
-projectservice.s: projectservice.cpp.s
-.PHONY : projectservice.s
+service_layer/validator.s: service_layer/validator.cpp.s
+.PHONY : service_layer/validator.s
 
 # target to generate assembly for a file
-projectservice.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/projectservice.cpp.s
-.PHONY : projectservice.cpp.s
+service_layer/validator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.s
+.PHONY : service_layer/validator.cpp.s
 
 theme.o: theme.cpp.o
 .PHONY : theme.o
@@ -392,53 +392,29 @@ theme.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.s
 .PHONY : theme.cpp.s
 
-validator.o: validator.cpp.o
-.PHONY : validator.o
+view_layer/view.o: view_layer/view.cpp.o
+.PHONY : view_layer/view.o
 
 # target to build an object file
-validator.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/validator.cpp.o
-.PHONY : validator.cpp.o
+view_layer/view.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/view.cpp.o
+.PHONY : view_layer/view.cpp.o
 
-validator.i: validator.cpp.i
-.PHONY : validator.i
-
-# target to preprocess a source file
-validator.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/validator.cpp.i
-.PHONY : validator.cpp.i
-
-validator.s: validator.cpp.s
-.PHONY : validator.s
-
-# target to generate assembly for a file
-validator.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/validator.cpp.s
-.PHONY : validator.cpp.s
-
-view.o: view.cpp.o
-.PHONY : view.o
-
-# target to build an object file
-view.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view.cpp.o
-.PHONY : view.cpp.o
-
-view.i: view.cpp.i
-.PHONY : view.i
+view_layer/view.i: view_layer/view.cpp.i
+.PHONY : view_layer/view.i
 
 # target to preprocess a source file
-view.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view.cpp.i
-.PHONY : view.cpp.i
+view_layer/view.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/view.cpp.i
+.PHONY : view_layer/view.cpp.i
 
-view.s: view.cpp.s
-.PHONY : view.s
+view_layer/view.s: view_layer/view.cpp.s
+.PHONY : view_layer/view.s
 
 # target to generate assembly for a file
-view.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view.cpp.s
-.PHONY : view.cpp.s
+view_layer/view.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/view.cpp.s
+.PHONY : view_layer/view.cpp.s
 
 # Help Target
 help:
@@ -467,24 +443,21 @@ help:
 	@echo "... mainwindow.o"
 	@echo "... mainwindow.i"
 	@echo "... mainwindow.s"
-	@echo "... model.o"
-	@echo "... model.i"
-	@echo "... model.s"
-	@echo "... modelaccess.o"
-	@echo "... modelaccess.i"
-	@echo "... modelaccess.s"
-	@echo "... projectservice.o"
-	@echo "... projectservice.i"
-	@echo "... projectservice.s"
+	@echo "... model_layer/numbermodel.o"
+	@echo "... model_layer/numbermodel.i"
+	@echo "... model_layer/numbermodel.s"
+	@echo "... service_layer/projectservice.o"
+	@echo "... service_layer/projectservice.i"
+	@echo "... service_layer/projectservice.s"
+	@echo "... service_layer/validator.o"
+	@echo "... service_layer/validator.i"
+	@echo "... service_layer/validator.s"
 	@echo "... theme.o"
 	@echo "... theme.i"
 	@echo "... theme.s"
-	@echo "... validator.o"
-	@echo "... validator.i"
-	@echo "... validator.s"
-	@echo "... view.o"
-	@echo "... view.i"
-	@echo "... view.s"
+	@echo "... view_layer/view.o"
+	@echo "... view_layer/view.i"
+	@echo "... view_layer/view.s"
 .PHONY : help
 
 

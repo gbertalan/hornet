@@ -1,15 +1,13 @@
 #include <QApplication>
-#include "model.h"
-#include "view.h"
-#include "modelaccess.h"
-#include "projectservice.h"
+#include "view_layer/view.h"
+#include "model_layer/numbermodel.h"
+#include "service_layer/projectservice.h"
 #include "control.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    Model model;
-    ModelAccess modelAccess(&model);
+    ModelAccess modelAccess;
     ProjectService service;
     View view;
     Control control(&view, &modelAccess, &service);

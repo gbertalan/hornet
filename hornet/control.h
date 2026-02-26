@@ -1,8 +1,8 @@
 #pragma once
 #include <QObject>
-#include "view.h"
-#include "modelaccess.h"
-#include "projectservice.h"
+#include "view_layer/view.h"
+#include "model_layer/numbermodel.h"
+#include "service_layer/projectservice.h"
 
 class Control : public QObject {
     Q_OBJECT

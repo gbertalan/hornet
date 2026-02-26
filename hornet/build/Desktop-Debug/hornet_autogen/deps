@@ -9,18 +9,16 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/main.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/mainwindow.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/mainwindow.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/modelaccess.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/modelaccess.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/projectservice.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/projectservice.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/validator.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/validator.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.h \
 	/usr/include/asm-generic/errno-base.h \
 	/usr/include/asm-generic/errno.h \
 	/usr/include/assert.h \

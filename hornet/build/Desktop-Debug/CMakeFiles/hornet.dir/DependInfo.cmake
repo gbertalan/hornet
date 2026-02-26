@@ -13,12 +13,11 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/hornet_autogen/mocs_compilation.cpp" "CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/main.cpp" "CMakeFiles/hornet.dir/main.cpp.o" "gcc" "CMakeFiles/hornet.dir/main.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/mainwindow.cpp" "CMakeFiles/hornet.dir/mainwindow.cpp.o" "gcc" "CMakeFiles/hornet.dir/mainwindow.cpp.o.d"
-  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model.cpp" "CMakeFiles/hornet.dir/model.cpp.o" "gcc" "CMakeFiles/hornet.dir/model.cpp.o.d"
-  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/modelaccess.cpp" "CMakeFiles/hornet.dir/modelaccess.cpp.o" "gcc" "CMakeFiles/hornet.dir/modelaccess.cpp.o.d"
-  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/projectservice.cpp" "CMakeFiles/hornet.dir/projectservice.cpp.o" "gcc" "CMakeFiles/hornet.dir/projectservice.cpp.o.d"
+  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.cpp" "CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o" "gcc" "CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o.d"
+  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.cpp" "CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o" "gcc" "CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o.d"
+  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp" "CMakeFiles/hornet.dir/service_layer/validator.cpp.o" "gcc" "CMakeFiles/hornet.dir/service_layer/validator.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp" "CMakeFiles/hornet.dir/theme.cpp.o" "gcc" "CMakeFiles/hornet.dir/theme.cpp.o.d"
-  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/validator.cpp" "CMakeFiles/hornet.dir/validator.cpp.o" "gcc" "CMakeFiles/hornet.dir/validator.cpp.o.d"
-  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view.cpp" "CMakeFiles/hornet.dir/view.cpp.o" "gcc" "CMakeFiles/hornet.dir/view.cpp.o.d"
+  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp" "CMakeFiles/hornet.dir/view_layer/view.cpp.o" "gcc" "CMakeFiles/hornet.dir/view_layer/view.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
