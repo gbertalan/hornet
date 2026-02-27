@@ -4,8 +4,8 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles/3.28.3/CMakeCXXCompiler.cmake \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles/3.28.3/CMakeSystem.cmake \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/hornet_autogen/moc_predefs.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/main.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.h \
@@ -13,8 +13,8 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.h \
 	/usr/include/asm-generic/errno-base.h \

@@ -2,7 +2,7 @@
 #include "view_layer/view.h"
 #include "model_layer/modelaccess.h"
 #include "service_layer/projectservice.h"
-#include "control.h"
+#include "control_layer/control.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

@@ -132,33 +132,33 @@ CMakeFiles/hornet.dir/view_layer/view.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/view_layer/view.cpp.s"
 	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp -o CMakeFiles/hornet.dir/view_layer/view.cpp.s
 
-CMakeFiles/hornet.dir/control.cpp.o: CMakeFiles/hornet.dir/flags.make
-CMakeFiles/hornet.dir/control.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control.cpp
-CMakeFiles/hornet.dir/control.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/hornet.dir/control.cpp.o"
-	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/control.cpp.o -MF CMakeFiles/hornet.dir/control.cpp.o.d -o CMakeFiles/hornet.dir/control.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control.cpp
+CMakeFiles/hornet.dir/control_layer/control.cpp.o: CMakeFiles/hornet.dir/flags.make
+CMakeFiles/hornet.dir/control_layer/control.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.cpp
+CMakeFiles/hornet.dir/control_layer/control.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/hornet.dir/control_layer/control.cpp.o"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/control_layer/control.cpp.o -MF CMakeFiles/hornet.dir/control_layer/control.cpp.o.d -o CMakeFiles/hornet.dir/control_layer/control.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.cpp
 
-CMakeFiles/hornet.dir/control.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/control.cpp.i"
-	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control.cpp > CMakeFiles/hornet.dir/control.cpp.i
+CMakeFiles/hornet.dir/control_layer/control.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/control_layer/control.cpp.i"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.cpp > CMakeFiles/hornet.dir/control_layer/control.cpp.i
 
-CMakeFiles/hornet.dir/control.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/control.cpp.s"
-	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control.cpp -o CMakeFiles/hornet.dir/control.cpp.s
+CMakeFiles/hornet.dir/control_layer/control.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/control_layer/control.cpp.s"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.cpp -o CMakeFiles/hornet.dir/control_layer/control.cpp.s
 
-CMakeFiles/hornet.dir/theme.cpp.o: CMakeFiles/hornet.dir/flags.make
-CMakeFiles/hornet.dir/theme.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp
-CMakeFiles/hornet.dir/theme.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/hornet.dir/theme.cpp.o"
-	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/theme.cpp.o -MF CMakeFiles/hornet.dir/theme.cpp.o.d -o CMakeFiles/hornet.dir/theme.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp
+CMakeFiles/hornet.dir/view_layer/theme.cpp.o: CMakeFiles/hornet.dir/flags.make
+CMakeFiles/hornet.dir/view_layer/theme.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp
+CMakeFiles/hornet.dir/view_layer/theme.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/hornet.dir/view_layer/theme.cpp.o"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/view_layer/theme.cpp.o -MF CMakeFiles/hornet.dir/view_layer/theme.cpp.o.d -o CMakeFiles/hornet.dir/view_layer/theme.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp
 
-CMakeFiles/hornet.dir/theme.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/theme.cpp.i"
-	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp > CMakeFiles/hornet.dir/theme.cpp.i
+CMakeFiles/hornet.dir/view_layer/theme.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/view_layer/theme.cpp.i"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp > CMakeFiles/hornet.dir/view_layer/theme.cpp.i
 
-CMakeFiles/hornet.dir/theme.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/theme.cpp.s"
-	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/theme.cpp -o CMakeFiles/hornet.dir/theme.cpp.s
+CMakeFiles/hornet.dir/view_layer/theme.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/view_layer/theme.cpp.s"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp -o CMakeFiles/hornet.dir/view_layer/theme.cpp.s
 
 CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o: CMakeFiles/hornet.dir/flags.make
 CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.cpp
@@ -194,8 +194,8 @@ hornet_OBJECTS = \
 "CMakeFiles/hornet.dir/main.cpp.o" \
 "CMakeFiles/hornet.dir/model_layer/modelaccess.cpp.o" \
 "CMakeFiles/hornet.dir/view_layer/view.cpp.o" \
-"CMakeFiles/hornet.dir/control.cpp.o" \
-"CMakeFiles/hornet.dir/theme.cpp.o" \
+"CMakeFiles/hornet.dir/control_layer/control.cpp.o" \
+"CMakeFiles/hornet.dir/view_layer/theme.cpp.o" \
 "CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o" \
 "CMakeFiles/hornet.dir/service_layer/validator.cpp.o"
 
@@ -206,8 +206,8 @@ hornet: CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.o
 hornet: CMakeFiles/hornet.dir/main.cpp.o
 hornet: CMakeFiles/hornet.dir/model_layer/modelaccess.cpp.o
 hornet: CMakeFiles/hornet.dir/view_layer/view.cpp.o
-hornet: CMakeFiles/hornet.dir/control.cpp.o
-hornet: CMakeFiles/hornet.dir/theme.cpp.o
+hornet: CMakeFiles/hornet.dir/control_layer/control.cpp.o
+hornet: CMakeFiles/hornet.dir/view_layer/theme.cpp.o
 hornet: CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o
 hornet: CMakeFiles/hornet.dir/service_layer/validator.cpp.o
 hornet: CMakeFiles/hornet.dir/build.make

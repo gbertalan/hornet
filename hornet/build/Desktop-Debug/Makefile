@@ -200,29 +200,29 @@ hornet_autogen/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet_autogen.dir/build.make CMakeFiles/hornet_autogen.dir/build
 .PHONY : hornet_autogen/fast
 
-control.o: control.cpp.o
-.PHONY : control.o
+control_layer/control.o: control_layer/control.cpp.o
+.PHONY : control_layer/control.o
 
 # target to build an object file
-control.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control.cpp.o
-.PHONY : control.cpp.o
+control_layer/control.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control_layer/control.cpp.o
+.PHONY : control_layer/control.cpp.o
 
-control.i: control.cpp.i
-.PHONY : control.i
+control_layer/control.i: control_layer/control.cpp.i
+.PHONY : control_layer/control.i
 
 # target to preprocess a source file
-control.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control.cpp.i
-.PHONY : control.cpp.i
+control_layer/control.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control_layer/control.cpp.i
+.PHONY : control_layer/control.cpp.i
 
-control.s: control.cpp.s
-.PHONY : control.s
+control_layer/control.s: control_layer/control.cpp.s
+.PHONY : control_layer/control.s
 
 # target to generate assembly for a file
-control.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control.cpp.s
-.PHONY : control.cpp.s
+control_layer/control.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/control_layer/control.cpp.s
+.PHONY : control_layer/control.cpp.s
 
 hornet_autogen/mocs_compilation.o: hornet_autogen/mocs_compilation.cpp.o
 .PHONY : hornet_autogen/mocs_compilation.o
@@ -344,29 +344,29 @@ service_layer/validator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.s
 .PHONY : service_layer/validator.cpp.s
 
-theme.o: theme.cpp.o
-.PHONY : theme.o
+view_layer/theme.o: view_layer/theme.cpp.o
+.PHONY : view_layer/theme.o
 
 # target to build an object file
-theme.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.o
-.PHONY : theme.cpp.o
+view_layer/theme.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/theme.cpp.o
+.PHONY : view_layer/theme.cpp.o
 
-theme.i: theme.cpp.i
-.PHONY : theme.i
+view_layer/theme.i: view_layer/theme.cpp.i
+.PHONY : view_layer/theme.i
 
 # target to preprocess a source file
-theme.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.i
-.PHONY : theme.cpp.i
+view_layer/theme.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/theme.cpp.i
+.PHONY : view_layer/theme.cpp.i
 
-theme.s: theme.cpp.s
-.PHONY : theme.s
+view_layer/theme.s: view_layer/theme.cpp.s
+.PHONY : view_layer/theme.s
 
 # target to generate assembly for a file
-theme.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/theme.cpp.s
-.PHONY : theme.cpp.s
+view_layer/theme.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/theme.cpp.s
+.PHONY : view_layer/theme.cpp.s
 
 view_layer/view.o: view_layer/view.cpp.o
 .PHONY : view_layer/view.o
@@ -407,9 +407,9 @@ help:
 	@echo "... hornet_autogen"
 	@echo "... hornet_autogen_timestamp_deps"
 	@echo "... hornet"
-	@echo "... control.o"
-	@echo "... control.i"
-	@echo "... control.s"
+	@echo "... control_layer/control.o"
+	@echo "... control_layer/control.i"
+	@echo "... control_layer/control.s"
 	@echo "... hornet_autogen/mocs_compilation.o"
 	@echo "... hornet_autogen/mocs_compilation.i"
 	@echo "... hornet_autogen/mocs_compilation.s"
@@ -425,9 +425,9 @@ help:
 	@echo "... service_layer/validator.o"
 	@echo "... service_layer/validator.i"
 	@echo "... service_layer/validator.s"
-	@echo "... theme.o"
-	@echo "... theme.i"
-	@echo "... theme.s"
+	@echo "... view_layer/theme.o"
+	@echo "... view_layer/theme.i"
+	@echo "... view_layer/theme.s"
 	@echo "... view_layer/view.o"
 	@echo "... view_layer/view.i"
 	@echo "... view_layer/view.s"

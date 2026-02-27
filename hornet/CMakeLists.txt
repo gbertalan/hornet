@@ -40,18 +40,19 @@ else()
 
             model_layer/modelaccess.h
             view_layer/view.h
-            control.h
+            control_layer/control.h
             service_layer/projectservice.h
             service_layer/validator.h
 
             model_layer/modelaccess.cpp
             view_layer/view.cpp
-            control.cpp
-            theme.h
-            theme.cpp
+            control_layer/control.cpp
+            view_layer/theme.h
+            view_layer/theme.cpp
             service_layer/projectservice.cpp
             service_layer/validator.cpp
 )
+
     endif()
 endif()
 
