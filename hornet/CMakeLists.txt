@@ -51,6 +51,16 @@ else()
             view_layer/theme.cpp
             service_layer/projectservice.cpp
             service_layer/validator.cpp
+            model_layer/numbermodel.h
+            model_layer/numbermodel.cpp
+            model_layer/imodelaccess_read.h
+            model_layer/imodelaccess_write.h
+
+            service_layer/dto/numberdto.h
+            service_layer/numberservice.h
+            service_layer/numberservice.cpp
+            service_layer/diskreaderservice.h service_layer/diskreaderservice.cpp
+            service_layer/diskwriterservice.h service_layer/diskwriterservice.cpp
 )
 
     endif()

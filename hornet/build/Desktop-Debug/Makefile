@@ -296,6 +296,102 @@ model_layer/modelaccess.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/modelaccess.cpp.s
 .PHONY : model_layer/modelaccess.cpp.s
 
+model_layer/numbermodel.o: model_layer/numbermodel.cpp.o
+.PHONY : model_layer/numbermodel.o
+
+# target to build an object file
+model_layer/numbermodel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o
+.PHONY : model_layer/numbermodel.cpp.o
+
+model_layer/numbermodel.i: model_layer/numbermodel.cpp.i
+.PHONY : model_layer/numbermodel.i
+
+# target to preprocess a source file
+model_layer/numbermodel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.i
+.PHONY : model_layer/numbermodel.cpp.i
+
+model_layer/numbermodel.s: model_layer/numbermodel.cpp.s
+.PHONY : model_layer/numbermodel.s
+
+# target to generate assembly for a file
+model_layer/numbermodel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.s
+.PHONY : model_layer/numbermodel.cpp.s
+
+service_layer/diskreaderservice.o: service_layer/diskreaderservice.cpp.o
+.PHONY : service_layer/diskreaderservice.o
+
+# target to build an object file
+service_layer/diskreaderservice.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/diskreaderservice.cpp.o
+.PHONY : service_layer/diskreaderservice.cpp.o
+
+service_layer/diskreaderservice.i: service_layer/diskreaderservice.cpp.i
+.PHONY : service_layer/diskreaderservice.i
+
+# target to preprocess a source file
+service_layer/diskreaderservice.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/diskreaderservice.cpp.i
+.PHONY : service_layer/diskreaderservice.cpp.i
+
+service_layer/diskreaderservice.s: service_layer/diskreaderservice.cpp.s
+.PHONY : service_layer/diskreaderservice.s
+
+# target to generate assembly for a file
+service_layer/diskreaderservice.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/diskreaderservice.cpp.s
+.PHONY : service_layer/diskreaderservice.cpp.s
+
+service_layer/diskwriterservice.o: service_layer/diskwriterservice.cpp.o
+.PHONY : service_layer/diskwriterservice.o
+
+# target to build an object file
+service_layer/diskwriterservice.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.o
+.PHONY : service_layer/diskwriterservice.cpp.o
+
+service_layer/diskwriterservice.i: service_layer/diskwriterservice.cpp.i
+.PHONY : service_layer/diskwriterservice.i
+
+# target to preprocess a source file
+service_layer/diskwriterservice.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.i
+.PHONY : service_layer/diskwriterservice.cpp.i
+
+service_layer/diskwriterservice.s: service_layer/diskwriterservice.cpp.s
+.PHONY : service_layer/diskwriterservice.s
+
+# target to generate assembly for a file
+service_layer/diskwriterservice.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.s
+.PHONY : service_layer/diskwriterservice.cpp.s
+
+service_layer/numberservice.o: service_layer/numberservice.cpp.o
+.PHONY : service_layer/numberservice.o
+
+# target to build an object file
+service_layer/numberservice.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/numberservice.cpp.o
+.PHONY : service_layer/numberservice.cpp.o
+
+service_layer/numberservice.i: service_layer/numberservice.cpp.i
+.PHONY : service_layer/numberservice.i
+
+# target to preprocess a source file
+service_layer/numberservice.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/numberservice.cpp.i
+.PHONY : service_layer/numberservice.cpp.i
+
+service_layer/numberservice.s: service_layer/numberservice.cpp.s
+.PHONY : service_layer/numberservice.s
+
+# target to generate assembly for a file
+service_layer/numberservice.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/numberservice.cpp.s
+.PHONY : service_layer/numberservice.cpp.s
+
 service_layer/projectservice.o: service_layer/projectservice.cpp.o
 .PHONY : service_layer/projectservice.o
 
@@ -419,6 +515,18 @@ help:
 	@echo "... model_layer/modelaccess.o"
 	@echo "... model_layer/modelaccess.i"
 	@echo "... model_layer/modelaccess.s"
+	@echo "... model_layer/numbermodel.o"
+	@echo "... model_layer/numbermodel.i"
+	@echo "... model_layer/numbermodel.s"
+	@echo "... service_layer/diskreaderservice.o"
+	@echo "... service_layer/diskreaderservice.i"
+	@echo "... service_layer/diskreaderservice.s"
+	@echo "... service_layer/diskwriterservice.o"
+	@echo "... service_layer/diskwriterservice.i"
+	@echo "... service_layer/diskwriterservice.s"
+	@echo "... service_layer/numberservice.o"
+	@echo "... service_layer/numberservice.i"
+	@echo "... service_layer/numberservice.s"
 	@echo "... service_layer/projectservice.o"
 	@echo "... service_layer/projectservice.i"
 	@echo "... service_layer/projectservice.s"

@@ -1,11 +1,11 @@
-#include "model_layer/modelaccess.h"
+#include "modelaccess.h"
 
 ModelAccess::ModelAccess() {}
 
-int ModelAccess::getValue() const {
-    return m_value;
+const NumberModel& ModelAccess::numberModel() const {
+    return m_numberModel;
 }
 
-void ModelAccess::setValue(int value) {
-    m_value = value;
+NumberModel& ModelAccess::numberModel() {
+    return m_numberModel;
 }

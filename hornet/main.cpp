@@ -1,16 +1,17 @@
 #include <QApplication>
-#include "view_layer/view.h"
 #include "model_layer/modelaccess.h"
-#include "service_layer/projectservice.h"
+#include "service_layer/numberservice.h"
+#include "view_layer/view.h"
 #include "control_layer/control.h"
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     ModelAccess modelAccess;
-    ProjectService projectService(modelAccess);
+    NumberService numberService(modelAccess);
     View view;
-    Control control(view, modelAccess, projectService);
+    // add services to Control here only what is needed for the main control, as for different parts of the app we can have different Control layer classes.
+    Control control(modelAccess, numberService, view);
 
     QObject::connect(&view, &View::buttonClicked, &control, &Control::onButtonClicked);
 

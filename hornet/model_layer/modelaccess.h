@@ -1,10 +1,14 @@
 #pragma once
 
-class ModelAccess {
+#include "imodelaccess_write.h"
+#include "numbermodel.h"
+
+class ModelAccess : public IModelAccessWrite {
 public:
-    explicit ModelAccess();
-    int getValue() const;
-    void setValue(int value);
+    ModelAccess();
+    const NumberModel& numberModel() const override;
+    NumberModel& numberModel() override;
+
 private:
-    int m_value = 1;
+    NumberModel m_numberModel;
 };

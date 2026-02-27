@@ -87,9 +87,51 @@
 			null
 		],
 		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/imodelaccess_read.h",
+			"MU",
+			"NNKMXFWOGJ/moc_imodelaccess_read.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/imodelaccess_write.h",
+			"MU",
+			"NNKMXFWOGJ/moc_imodelaccess_write.cpp",
+			null
+		],
+		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.h",
 			"MU",
 			"NNKMXFWOGJ/moc_modelaccess.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.h",
+			"MU",
+			"NNKMXFWOGJ/moc_numbermodel.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskreaderservice.h",
+			"MU",
+			"P6GOFSH2QX/moc_diskreaderservice.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskwriterservice.h",
+			"MU",
+			"P6GOFSH2QX/moc_diskwriterservice.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/dto/numberdto.h",
+			"MU",
+			"B54U2U4G3Z/moc_numberdto.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/numberservice.h",
+			"MU",
+			"P6GOFSH2QX/moc_numberservice.cpp",
 			null
 		],
 		[
@@ -181,6 +223,26 @@
 		],
 		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskreaderservice.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskwriterservice.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/numberservice.cpp",
 			"MU",
 			null
 		],

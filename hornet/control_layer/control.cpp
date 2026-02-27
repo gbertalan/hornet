@@ -1,21 +1,24 @@
 #include "control.h"
+#include "../model_layer/imodelaccess_read.h"
+#include "../model_layer/numbermodel.h"
+#include "../service_layer/numberservice.h"
+#include "../service_layer/dto/numberdto.h"
+#include "../view_layer/view.h"
 #include <stdexcept>
 
-Control::Control(View &view, ModelAccess &modelAccess, ProjectService &projectService)
-    : m_view(view), m_modelAccess(modelAccess), m_service(projectService) {
-}
+Control::Control(IModelAccessRead& modelAccess, NumberService& service, View& view)
+    : m_modelAccess(modelAccess), m_service(service), m_view(view) {}
 
 void Control::init() {
-    m_view.displayValue(m_modelAccess.getValue());
+    NumberDTO dto{m_modelAccess.numberModel().getValue()};
+    m_view.displayNumber(dto);
 }
 
 void Control::onButtonClicked() {
     try {
-        int current = m_modelAccess.getValue();
-        int doubled = m_service.doubleValue(current);
-        m_modelAccess.setValue(doubled);
-        m_view.displayValue(doubled);
-    } catch (const std::out_of_range &e) {
-        m_view.showError("Workspace invalid");
+        NumberDTO dto = m_service.doubleNumber();
+        m_view.displayNumber(dto);
+    } catch (const std::out_of_range&) {
+        m_view.showError("Value out of range");
     }
 }

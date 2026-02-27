@@ -1,21 +1,24 @@
 #pragma once
+
 #include <QObject>
-#include "view_layer/view.h"
-#include "model_layer/modelaccess.h"
-#include "service_layer/projectservice.h"
+
+class IModelAccessRead;
+class NumberService;
+class View;
+struct NumberDTO;
 
 class Control : public QObject {
     Q_OBJECT
+
 public:
-    Control(View &view, ModelAccess &modelAccess, ProjectService &service);
+    explicit Control(IModelAccessRead& modelAccess, NumberService& service, View& view);
     void init();
 
 public slots:
     void onButtonClicked();
 
 private:
-    View &m_view;
-    ModelAccess &m_modelAccess;
-    ProjectService &m_service;
+    IModelAccessRead& m_modelAccess;
+    NumberService& m_service;
+    View& m_view;
 };
-
