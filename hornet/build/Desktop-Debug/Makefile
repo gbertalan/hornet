@@ -440,6 +440,30 @@ service_layer/validator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.s
 .PHONY : service_layer/validator.cpp.s
 
+view_layer/resizehandle.o: view_layer/resizehandle.cpp.o
+.PHONY : view_layer/resizehandle.o
+
+# target to build an object file
+view_layer/resizehandle.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o
+.PHONY : view_layer/resizehandle.cpp.o
+
+view_layer/resizehandle.i: view_layer/resizehandle.cpp.i
+.PHONY : view_layer/resizehandle.i
+
+# target to preprocess a source file
+view_layer/resizehandle.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.i
+.PHONY : view_layer/resizehandle.cpp.i
+
+view_layer/resizehandle.s: view_layer/resizehandle.cpp.s
+.PHONY : view_layer/resizehandle.s
+
+# target to generate assembly for a file
+view_layer/resizehandle.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.s
+.PHONY : view_layer/resizehandle.cpp.s
+
 view_layer/theme.o: view_layer/theme.cpp.o
 .PHONY : view_layer/theme.o
 
@@ -463,6 +487,30 @@ view_layer/theme.s: view_layer/theme.cpp.s
 view_layer/theme.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/theme.cpp.s
 .PHONY : view_layer/theme.cpp.s
+
+view_layer/titlebar.o: view_layer/titlebar.cpp.o
+.PHONY : view_layer/titlebar.o
+
+# target to build an object file
+view_layer/titlebar.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o
+.PHONY : view_layer/titlebar.cpp.o
+
+view_layer/titlebar.i: view_layer/titlebar.cpp.i
+.PHONY : view_layer/titlebar.i
+
+# target to preprocess a source file
+view_layer/titlebar.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/titlebar.cpp.i
+.PHONY : view_layer/titlebar.cpp.i
+
+view_layer/titlebar.s: view_layer/titlebar.cpp.s
+.PHONY : view_layer/titlebar.s
+
+# target to generate assembly for a file
+view_layer/titlebar.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/titlebar.cpp.s
+.PHONY : view_layer/titlebar.cpp.s
 
 view_layer/view.o: view_layer/view.cpp.o
 .PHONY : view_layer/view.o
@@ -533,9 +581,15 @@ help:
 	@echo "... service_layer/validator.o"
 	@echo "... service_layer/validator.i"
 	@echo "... service_layer/validator.s"
+	@echo "... view_layer/resizehandle.o"
+	@echo "... view_layer/resizehandle.i"
+	@echo "... view_layer/resizehandle.s"
 	@echo "... view_layer/theme.o"
 	@echo "... view_layer/theme.i"
 	@echo "... view_layer/theme.s"
+	@echo "... view_layer/titlebar.o"
+	@echo "... view_layer/titlebar.i"
+	@echo "... view_layer/titlebar.s"
 	@echo "... view_layer/view.o"
 	@echo "... view_layer/view.i"
 	@echo "... view_layer/view.s"

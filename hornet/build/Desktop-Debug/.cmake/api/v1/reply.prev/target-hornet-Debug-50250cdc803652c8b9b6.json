@@ -38,13 +38,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 90,
+				"line" : 91,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 69,
+				"line" : 70,
 				"parent" : 0
 			},
 			{
@@ -82,7 +82,7 @@
 			{
 				"command" : 6,
 				"file" : 0,
-				"line" : 71,
+				"line" : 72,
 				"parent" : 0
 			}
 		]
@@ -173,7 +173,8 @@
 				15,
 				20,
 				22,
-				24
+				24,
+				26
 			]
 		}
 	],
@@ -256,7 +257,8 @@
 				15,
 				20,
 				22,
-				24
+				24,
+				26
 			]
 		},
 		{
@@ -275,21 +277,22 @@
 				18,
 				19,
 				21,
-				23
+				23,
+				25
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				25
+				27
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				26
+				28
 			]
 		}
 	],
@@ -431,6 +434,17 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "service_layer/diskwriterservice.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "view_layer/titlebar.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "view_layer/titlebar.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

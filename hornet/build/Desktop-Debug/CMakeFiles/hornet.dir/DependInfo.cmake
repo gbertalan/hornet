@@ -19,7 +19,9 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/numberservice.cpp" "CMakeFiles/hornet.dir/service_layer/numberservice.cpp.o" "gcc" "CMakeFiles/hornet.dir/service_layer/numberservice.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.cpp" "CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o" "gcc" "CMakeFiles/hornet.dir/service_layer/projectservice.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp" "CMakeFiles/hornet.dir/service_layer/validator.cpp.o" "gcc" "CMakeFiles/hornet.dir/service_layer/validator.cpp.o.d"
+  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp" "CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o" "gcc" "CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp" "CMakeFiles/hornet.dir/view_layer/theme.cpp.o" "gcc" "CMakeFiles/hornet.dir/view_layer/theme.cpp.o.d"
+  "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.cpp" "CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o" "gcc" "CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o.d"
   "/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp" "CMakeFiles/hornet.dir/view_layer/view.cpp.o" "gcc" "CMakeFiles/hornet.dir/view_layer/view.cpp.o.d"
   )
 

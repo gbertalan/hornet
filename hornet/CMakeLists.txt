@@ -61,6 +61,8 @@ else()
             service_layer/numberservice.cpp
             service_layer/diskreaderservice.h service_layer/diskreaderservice.cpp
             service_layer/diskwriterservice.h service_layer/diskwriterservice.cpp
+            view_layer/titlebar.h view_layer/titlebar.cpp
+            view_layer/resizehandle.h view_layer/resizehandle.cpp
 )
 
     endif()

@@ -244,6 +244,34 @@ CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.s"
 	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskwriterservice.cpp -o CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.s
 
+CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o: CMakeFiles/hornet.dir/flags.make
+CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.cpp
+CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o -MF CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o.d -o CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.cpp
+
+CMakeFiles/hornet.dir/view_layer/titlebar.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/view_layer/titlebar.cpp.i"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.cpp > CMakeFiles/hornet.dir/view_layer/titlebar.cpp.i
+
+CMakeFiles/hornet.dir/view_layer/titlebar.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/view_layer/titlebar.cpp.s"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.cpp -o CMakeFiles/hornet.dir/view_layer/titlebar.cpp.s
+
+CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o: CMakeFiles/hornet.dir/flags.make
+CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp
+CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o -MF CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o.d -o CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp
+
+CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.i"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp > CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.i
+
+CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.s"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp -o CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.s
+
 # Object files for target hornet
 hornet_OBJECTS = \
 "CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.o" \
@@ -257,7 +285,9 @@ hornet_OBJECTS = \
 "CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o" \
 "CMakeFiles/hornet.dir/service_layer/numberservice.cpp.o" \
 "CMakeFiles/hornet.dir/service_layer/diskreaderservice.cpp.o" \
-"CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.o"
+"CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.o" \
+"CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o" \
+"CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o"
 
 # External object files for target hornet
 hornet_EXTERNAL_OBJECTS =
@@ -274,12 +304,14 @@ hornet: CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.o
 hornet: CMakeFiles/hornet.dir/service_layer/numberservice.cpp.o
 hornet: CMakeFiles/hornet.dir/service_layer/diskreaderservice.cpp.o
 hornet: CMakeFiles/hornet.dir/service_layer/diskwriterservice.cpp.o
+hornet: CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o
+hornet: CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o
 hornet: CMakeFiles/hornet.dir/build.make
 hornet: /usr/lib/x86_64-linux-gnu/libQt5Widgets.so.5.15.13
 hornet: /usr/lib/x86_64-linux-gnu/libQt5Gui.so.5.15.13
 hornet: /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.15.13
 hornet: CMakeFiles/hornet.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Linking CXX executable hornet"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX executable hornet"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hornet.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

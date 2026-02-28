@@ -24,8 +24,12 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/shared/dto/numberdto.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/titlebar.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.h \
 	/usr/include/asm-generic/errno-base.h \
@@ -267,6 +271,7 @@ hornet_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/QObject \
+	/usr/include/x86_64-linux-gnu/qt5/QtCore/QPoint \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qalgorithms.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qarraydata.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qatomic.h \
@@ -289,7 +294,6 @@ hornet_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qline.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qlist.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qlogging.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtCore/qmap.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qmargins.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qmetatype.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qnamespace.h \
@@ -319,7 +323,6 @@ hornet_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qsystemdetection.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qtcore-config.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qtypeinfo.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtCore/qvariant.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qvarlengtharray.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qvector.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtCore/qversiontagging.h \
@@ -329,33 +332,22 @@ hornet_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qfont.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qfontinfo.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qfontmetrics.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtGui/qicon.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qimage.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qkeysequence.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qmatrix.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qpaintdevice.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qpalette.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtGui/qpen.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qpixelformat.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qpixmap.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qpolygon.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qregion.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qrgb.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qrgba64.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtextcursor.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtextformat.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtextoption.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtgui-config.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtguiglobal.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qtransform.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtGui/qwindowdefs.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QLineEdit \
-	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QPushButton \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/QWidget \
-	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qabstractbutton.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qframe.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qlineedit.h \
-	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qpushbutton.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qsizepolicy.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgets-config.h \
 	/usr/include/x86_64-linux-gnu/qt5/QtWidgets/qtwidgetsglobal.h \
