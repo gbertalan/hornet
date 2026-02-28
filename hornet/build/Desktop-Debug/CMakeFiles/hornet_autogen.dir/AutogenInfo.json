@@ -147,6 +147,18 @@
 			null
 		],
 		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/lowerwidget.h",
+			"MU",
+			"JEVJBHGPXI/moc_lowerwidget.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/overlaywidget.h",
+			"MU",
+			"JEVJBHGPXI/moc_overlaywidget.cpp",
+			null
+		],
+		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.h",
 			"MU",
 			"JEVJBHGPXI/moc_resizehandle.cpp",
@@ -265,6 +277,16 @@
 		],
 		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/lowerwidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/overlaywidget.cpp",
 			"MU",
 			null
 		],

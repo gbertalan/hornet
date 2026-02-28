@@ -2,9 +2,12 @@
 
 #include <QWidget>
 
+
 struct NumberDTO;
 class TitleBar;
 class ResizeHandle;
+class LowerWidget;
+class OverlayWidget;
 
 class View : public QWidget {
     Q_OBJECT
@@ -19,6 +22,8 @@ signals:
 
 private:
     TitleBar* m_titleBar;
+    LowerWidget* m_lowerWidget;
+    OverlayWidget* m_overlayWidget;
     ResizeHandle* m_handleLeft;
     ResizeHandle* m_handleRight;
     ResizeHandle* m_handleTop;

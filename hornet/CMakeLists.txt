@@ -59,10 +59,19 @@ else()
             shared/dto/numberdto.h
             service_layer/numberservice.h
             service_layer/numberservice.cpp
-            service_layer/diskreaderservice.h service_layer/diskreaderservice.cpp
-            service_layer/diskwriterservice.h service_layer/diskwriterservice.cpp
-            view_layer/titlebar.h view_layer/titlebar.cpp
-            view_layer/resizehandle.h view_layer/resizehandle.cpp
+            service_layer/diskreaderservice.h
+            service_layer/diskreaderservice.cpp
+            service_layer/diskwriterservice.h
+            service_layer/diskwriterservice.cpp
+            view_layer/titlebar.h
+            view_layer/titlebar.cpp
+
+            view_layer/resizehandle.h
+            view_layer/resizehandle.cpp
+            view_layer/lowerwidget.h
+            view_layer/lowerwidget.cpp
+            view_layer/overlaywidget.h
+            view_layer/overlaywidget.cpp
 )
 
     endif()

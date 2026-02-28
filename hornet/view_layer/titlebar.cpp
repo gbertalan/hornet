@@ -1,16 +1,21 @@
 #include "view_layer/titlebar.h"
 #include "theme.h"
 #include <QMouseEvent>
+#include <QPainter>
 #include <QPalette>
 #include <QScreen>
 #include <QTimer>
 
-TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false) {
+TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doubleclicked(false) {
     setFixedHeight(40);
-    QPalette palette;
-    palette.setColor(QPalette::Window, Theme::warmGray());
-    setPalette(palette);
-    setAutoFillBackground(true);
+    setAttribute(Qt::WA_TranslucentBackground);
+}
+
+void TitleBar::paintEvent(QPaintEvent* event) {
+    QPainter painter(this);
+    QColor color = Theme::warmGray();
+    color.setAlpha(150);
+    painter.fillRect(rect(), color);
 }
 
 void TitleBar::mousePressEvent(QMouseEvent* event) {

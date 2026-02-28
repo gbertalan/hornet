@@ -24,6 +24,10 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/shared/dto/numberdto.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/lowerwidget.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/lowerwidget.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/overlaywidget.cpp \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/overlaywidget.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/resizehandle.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp \

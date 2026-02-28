@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QVBoxLayout>
+#include "view_layer/lowerwidget.h"
+#include "view_layer/overlaywidget.h"
 
 static constexpr int HANDLE_THICKNESS = 6;
 static constexpr int CORNER_SIZE = 12;
@@ -20,7 +22,11 @@ View::View(QWidget* parent) : QWidget(parent) {
     setPalette(palette);
     setAutoFillBackground(true);
 
+    m_lowerWidget = new LowerWidget(this);
+    m_lowerWidget->setGeometry(0, 0, width(), height());
+
     m_titleBar = new TitleBar(this);
+    m_titleBar->raise();
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -28,6 +34,10 @@ View::View(QWidget* parent) : QWidget(parent) {
     layout->addWidget(m_titleBar);
     layout->addStretch();
     setLayout(layout);
+
+    m_overlayWidget = new OverlayWidget(this);
+    m_overlayWidget->setGeometry(0, 0, width(), height());
+    m_overlayWidget->raise();
 
     setupResizeHandles();
     positionResizeHandles();
@@ -63,6 +73,8 @@ void View::positionResizeHandles() {
 
 void View::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
+    m_lowerWidget->setGeometry(0, 0, width(), height());
+    m_overlayWidget->setGeometry(0, 0, width(), height());
     positionResizeHandles();
 }
 

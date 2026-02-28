@@ -440,6 +440,54 @@ service_layer/validator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.s
 .PHONY : service_layer/validator.cpp.s
 
+view_layer/lowerwidget.o: view_layer/lowerwidget.cpp.o
+.PHONY : view_layer/lowerwidget.o
+
+# target to build an object file
+view_layer/lowerwidget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/lowerwidget.cpp.o
+.PHONY : view_layer/lowerwidget.cpp.o
+
+view_layer/lowerwidget.i: view_layer/lowerwidget.cpp.i
+.PHONY : view_layer/lowerwidget.i
+
+# target to preprocess a source file
+view_layer/lowerwidget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/lowerwidget.cpp.i
+.PHONY : view_layer/lowerwidget.cpp.i
+
+view_layer/lowerwidget.s: view_layer/lowerwidget.cpp.s
+.PHONY : view_layer/lowerwidget.s
+
+# target to generate assembly for a file
+view_layer/lowerwidget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/lowerwidget.cpp.s
+.PHONY : view_layer/lowerwidget.cpp.s
+
+view_layer/overlaywidget.o: view_layer/overlaywidget.cpp.o
+.PHONY : view_layer/overlaywidget.o
+
+# target to build an object file
+view_layer/overlaywidget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/overlaywidget.cpp.o
+.PHONY : view_layer/overlaywidget.cpp.o
+
+view_layer/overlaywidget.i: view_layer/overlaywidget.cpp.i
+.PHONY : view_layer/overlaywidget.i
+
+# target to preprocess a source file
+view_layer/overlaywidget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/overlaywidget.cpp.i
+.PHONY : view_layer/overlaywidget.cpp.i
+
+view_layer/overlaywidget.s: view_layer/overlaywidget.cpp.s
+.PHONY : view_layer/overlaywidget.s
+
+# target to generate assembly for a file
+view_layer/overlaywidget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/overlaywidget.cpp.s
+.PHONY : view_layer/overlaywidget.cpp.s
+
 view_layer/resizehandle.o: view_layer/resizehandle.cpp.o
 .PHONY : view_layer/resizehandle.o
 
@@ -581,6 +629,12 @@ help:
 	@echo "... service_layer/validator.o"
 	@echo "... service_layer/validator.i"
 	@echo "... service_layer/validator.s"
+	@echo "... view_layer/lowerwidget.o"
+	@echo "... view_layer/lowerwidget.i"
+	@echo "... view_layer/lowerwidget.s"
+	@echo "... view_layer/overlaywidget.o"
+	@echo "... view_layer/overlaywidget.i"
+	@echo "... view_layer/overlaywidget.s"
 	@echo "... view_layer/resizehandle.o"
 	@echo "... view_layer/resizehandle.i"
 	@echo "... view_layer/resizehandle.s"

@@ -38,13 +38,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 91,
+				"line" : 101,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 70,
+				"line" : 80,
 				"parent" : 0
 			},
 			{
@@ -82,7 +82,7 @@
 			{
 				"command" : 6,
 				"file" : 0,
-				"line" : 72,
+				"line" : 82,
 				"parent" : 0
 			}
 		]
@@ -174,7 +174,10 @@
 				20,
 				22,
 				24,
-				26
+				26,
+				28,
+				30,
+				32
 			]
 		}
 	],
@@ -258,7 +261,10 @@
 				20,
 				22,
 				24,
-				26
+				26,
+				28,
+				30,
+				32
 			]
 		},
 		{
@@ -278,21 +284,24 @@
 				19,
 				21,
 				23,
-				25
+				25,
+				27,
+				29,
+				31
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				27
+				33
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				28
+				34
 			]
 		}
 	],
@@ -445,6 +454,39 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "view_layer/titlebar.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "view_layer/resizehandle.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "view_layer/resizehandle.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "view_layer/lowerwidget.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "view_layer/lowerwidget.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "view_layer/overlaywidget.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "view_layer/overlaywidget.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
