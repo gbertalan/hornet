@@ -1,9 +1,9 @@
 #include "control.h"
-#include "../model_layer/imodelaccess_read.h"
-#include "../model_layer/numbermodel.h"
-#include "../service_layer/numberservice.h"
-#include "../service_layer/dto/numberdto.h"
-#include "../view_layer/view.h"
+#include "model_layer/imodelaccess_read.h"
+#include "model_layer/numbermodel.h"
+#include "service_layer/numberservice.h"
+#include "shared/dto/numberdto.h"
+#include "view_layer/view.h"
 #include <stdexcept>
 
 Control::Control(IModelAccessRead& modelAccess, NumberService& service, View& view)

@@ -1,9 +1,9 @@
 #include "numberservice.h"
-#include "../model_layer/imodelaccess_write.h"
-#include "../model_layer/numbermodel.h"
+#include "model_layer/imodelaccess_readwrite.h"
+#include "model_layer/numbermodel.h"
 #include <stdexcept>
 
-NumberService::NumberService(IModelAccessWrite& modelAccess)
+NumberService::NumberService(IModelAccessReadWrite& modelAccess)
     : m_modelAccess(modelAccess) {}
 
 NumberDTO NumberService::doubleNumber() {

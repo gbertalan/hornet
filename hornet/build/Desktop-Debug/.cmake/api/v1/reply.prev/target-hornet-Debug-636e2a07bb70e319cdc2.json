@@ -392,12 +392,12 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "model_layer/imodelaccess_write.h",
+			"path" : "model_layer/imodelaccess_readwrite.h",
 			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
-			"path" : "service_layer/dto/numberdto.h",
+			"path" : "shared/dto/numberdto.h",
 			"sourceGroupIndex" : 1
 		},
 		{

@@ -1,16 +1,16 @@
 #pragma once
 
 #include "validator.h"
-#include "dto/numberdto.h"
+#include "shared/dto/numberdto.h"
 
-class IModelAccessWrite;
+class IModelAccessReadWrite;
 
 class NumberService {
 public:
-    explicit NumberService(IModelAccessWrite& modelAccess);
+    explicit NumberService(IModelAccessReadWrite& modelAccess);
     NumberDTO doubleNumber();
 
 private:
-    IModelAccessWrite& m_modelAccess;
+    IModelAccessReadWrite& m_modelAccess;
     Validator m_validator;
 };

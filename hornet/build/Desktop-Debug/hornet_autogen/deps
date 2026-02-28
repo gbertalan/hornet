@@ -8,7 +8,7 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/control_layer/control.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/main.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/imodelaccess_read.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/imodelaccess_write.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/imodelaccess_readwrite.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/modelaccess.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/numbermodel.cpp \
@@ -17,13 +17,13 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskreaderservice.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskwriterservice.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskwriterservice.h \
-	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/dto/numberdto.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/numberservice.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/numberservice.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/projectservice.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/shared/dto/numberdto.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/theme.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp \

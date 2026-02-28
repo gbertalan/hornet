@@ -4,8 +4,8 @@
 
 class NumberModel;
 
-class IModelAccessWrite : public IModelAccessRead {
+class IModelAccessReadWrite : public IModelAccessRead {
 public:
-    virtual ~IModelAccessWrite() = default;
+    virtual ~IModelAccessReadWrite() = default;
     virtual NumberModel& numberModel() = 0;
 };

@@ -54,9 +54,9 @@ else()
             model_layer/numbermodel.h
             model_layer/numbermodel.cpp
             model_layer/imodelaccess_read.h
-            model_layer/imodelaccess_write.h
+            model_layer/imodelaccess_readwrite.h
 
-            service_layer/dto/numberdto.h
+            shared/dto/numberdto.h
             service_layer/numberservice.h
             service_layer/numberservice.cpp
             service_layer/diskreaderservice.h service_layer/diskreaderservice.cpp

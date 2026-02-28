@@ -1,5 +1,5 @@
 #include "view.h"
-#include "../service_layer/dto/numberdto.h"
+#include "shared/dto/numberdto.h"
 #include <QVBoxLayout>
 #include <QMessageBox>
 

@@ -10,7 +10,8 @@ int main(int argc, char* argv[]) {
     ModelAccess modelAccess;
     NumberService numberService(modelAccess);
     View view;
-    // add services to Control here only what is needed for the main control, as for different parts of the app we can have different Control layer classes.
+    // add services to Control here - only what is needed for the main control,
+    // as for different parts of the app we can have different Control layer classes.
     Control control(modelAccess, numberService, view);
 
     QObject::connect(&view, &View::buttonClicked, &control, &Control::onButtonClicked);
