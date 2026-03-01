@@ -39,13 +39,13 @@ else()
             ${PROJECT_SOURCES}
 
             model_layer/modelaccess.h
-            view_layer/view.h
+            view_layer/window.h
             control_layer/control.h
             service_layer/projectservice.h
             service_layer/validator.h
 
             model_layer/modelaccess.cpp
-            view_layer/view.cpp
+            view_layer/window.cpp
             control_layer/control.cpp
             view_layer/theme.h
             view_layer/theme.cpp
@@ -72,6 +72,7 @@ else()
             view_layer/lowerwidget.cpp
             view_layer/overlaywidget.h
             view_layer/overlaywidget.cpp
+            view_layer/view.h view_layer/view.cpp
 )
 
     endif()

@@ -5,3 +5,4 @@
 #include "JEVJBHGPXI/moc_resizehandle.cpp"
 #include "JEVJBHGPXI/moc_titlebar.cpp"
 #include "JEVJBHGPXI/moc_view.cpp"
+#include "JEVJBHGPXI/moc_window.cpp"

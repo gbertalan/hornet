@@ -584,6 +584,30 @@ view_layer/view.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/view.cpp.s
 .PHONY : view_layer/view.cpp.s
 
+view_layer/window.o: view_layer/window.cpp.o
+.PHONY : view_layer/window.o
+
+# target to build an object file
+view_layer/window.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/window.cpp.o
+.PHONY : view_layer/window.cpp.o
+
+view_layer/window.i: view_layer/window.cpp.i
+.PHONY : view_layer/window.i
+
+# target to preprocess a source file
+view_layer/window.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/window.cpp.i
+.PHONY : view_layer/window.cpp.i
+
+view_layer/window.s: view_layer/window.cpp.s
+.PHONY : view_layer/window.s
+
+# target to generate assembly for a file
+view_layer/window.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/view_layer/window.cpp.s
+.PHONY : view_layer/window.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -647,6 +671,9 @@ help:
 	@echo "... view_layer/view.o"
 	@echo "... view_layer/view.i"
 	@echo "... view_layer/view.s"
+	@echo "... view_layer/window.o"
+	@echo "... view_layer/window.i"
+	@echo "... view_layer/window.s"
 .PHONY : help
 
 

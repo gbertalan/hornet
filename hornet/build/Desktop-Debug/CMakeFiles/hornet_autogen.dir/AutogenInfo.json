@@ -181,6 +181,12 @@
 			"MU",
 			"JEVJBHGPXI/moc_view.cpp",
 			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/window.h",
+			"MU",
+			"JEVJBHGPXI/moc_window.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -307,6 +313,11 @@
 		],
 		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/window.cpp",
 			"MU",
 			null
 		]

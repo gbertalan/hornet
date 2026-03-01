@@ -34,6 +34,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/hornet.dir/view_layer/titlebar.cpp.o.d"
   "CMakeFiles/hornet.dir/view_layer/view.cpp.o"
   "CMakeFiles/hornet.dir/view_layer/view.cpp.o.d"
+  "CMakeFiles/hornet.dir/view_layer/window.cpp.o"
+  "CMakeFiles/hornet.dir/view_layer/window.cpp.o.d"
   "hornet"
   "hornet.pdb"
   "hornet_autogen/mocs_compilation.cpp"

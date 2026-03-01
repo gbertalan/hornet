@@ -21,5 +21,5 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
 
 void OverlayWidget::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
-    raise();
+    raise(); // on top by z-order
 }
