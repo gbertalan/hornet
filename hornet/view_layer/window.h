@@ -32,7 +32,9 @@ private:
     ResizeHandle* m_handleBottomLeft;
     ResizeHandle* m_handleBottomRight;
 
+    // Creates the resize handles, small, transparent panels to handle the edge/corner dragging
     void setupResizeHandles();
+    // Places the resize handlers to the edges and corners
     void positionResizeHandles();
 
 protected:

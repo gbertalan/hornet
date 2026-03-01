@@ -7,6 +7,7 @@ enum class ResizeEdge {
     TopLeft, TopRight, BottomLeft, BottomRight
 };
 
+    // Small, transparent panels to handle the edge/corner dragging
 class ResizeHandle : public QWidget {
     Q_OBJECT
 
