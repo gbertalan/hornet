@@ -27,4 +27,5 @@ private:
     WindowService& m_windowService;
     View& m_view;
     void printModel() const;
+    mutable int debugPrintCounter = 0; // mutable, to use in const function
 };

@@ -37,9 +37,10 @@ void Control::onDebugRequested() {
 
 void Control::printModel() const {
     const WindowModel& windowModel = m_modelAccess.windowModel();
-    qDebug() << "=== MODEL STATE ===";
-    qDebug() << "----- WindowModel";
-    qDebug() << "x:" << windowModel.getX() << "y:" << windowModel.getY() << "width:" << windowModel.getWidth() << "height:" << windowModel.getHeight() << "fullscreen:" << windowModel.isFullscreen();
-    qDebug() << "-----------------";
-    qDebug() << "===================";
+    qDebug() << "===" << " MODEL STATE"<< debugPrintCounter << "===";
+    qDebug() << "WindowModel:";
+    qDebug() << "    " << "x:" << windowModel.getX() << "y:" << windowModel.getY() << "width:" << windowModel.getWidth() << "height:" << windowModel.getHeight() << "fullscreen:" << windowModel.isFullscreen();
+    qDebug() << "=== MODEL STATE END ===";
+    qDebug() << "";
+    debugPrintCounter++;
 }
