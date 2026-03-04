@@ -2,6 +2,7 @@
 
 #include "imodelaccess_readwrite.h"
 #include "numbermodel.h"
+#include "windowmodel.h"
 
 class ModelAccess : public IModelAccessReadWrite {
 public:
@@ -14,6 +15,10 @@ public:
     // overloaded numberModel(), allows writing access too.
     NumberModel& numberModel() override; // read-write
 
+    const WindowModel& windowModel() const override;
+    WindowModel& windowModel() override;
+
 private:
     NumberModel m_numberModel;
+    WindowModel m_windowModel;
 };

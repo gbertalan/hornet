@@ -16,6 +16,7 @@ public:
 
 signals:
     void buttonClicked();
+    void windowStateChanged(int x, int y, int width, int height, bool isFullscreen);
 
 private:
     Window* m_window;

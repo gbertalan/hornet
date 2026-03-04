@@ -111,6 +111,12 @@
 			null
 		],
 		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/windowmodel.h",
+			"MU",
+			"NNKMXFWOGJ/moc_windowmodel.cpp",
+			null
+		],
+		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskreaderservice.h",
 			"MU",
 			"P6GOFSH2QX/moc_diskreaderservice.cpp",
@@ -138,6 +144,12 @@
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.h",
 			"MU",
 			"P6GOFSH2QX/moc_validator.cpp",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.h",
+			"MU",
+			"P6GOFSH2QX/moc_windowservice.cpp",
 			null
 		],
 		[
@@ -262,6 +274,11 @@
 			null
 		],
 		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/windowmodel.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/diskreaderservice.cpp",
 			"MU",
 			null
@@ -283,6 +300,11 @@
 		],
 		[
 			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/validator.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.cpp",
 			"MU",
 			null
 		],

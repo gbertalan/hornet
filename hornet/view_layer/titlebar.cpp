@@ -7,6 +7,7 @@
 #include <QTimer>
 
 TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doubleclicked(false) {
+    m_window = qobject_cast<Window*>(parent);
     setFixedHeight(40);
     setAttribute(Qt::WA_TranslucentBackground);
 }
@@ -33,7 +34,7 @@ void TitleBar::mouseMoveEvent(QMouseEvent* event) {
     } else if (!m_doubleclicked) {
         m_dragging = false;
         window()->showNormal();
-        window()->resize(800, 600);
+        m_window->restoreWindowedSize();
         window()->move(event->globalPos().x() - static_cast<int>(m_grabRatio * window()->width()),
                        event->globalPos().y() - height() / 2);
         m_dragStartPosition = event->globalPos() - window()->frameGeometry().topLeft();

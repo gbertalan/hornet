@@ -80,6 +80,16 @@ void Window::resizeEvent(QResizeEvent* event) {
     m_lowerWidget->setGeometry(0, 0, width(), height());
     m_overlayWidget->setGeometry(0, 0, width(), height());
     positionResizeHandles();
+    if(!isFullScreen()){
+        m_windowedWidth = width();
+        m_windowedHeight = height();
+        emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
+    }
+}
+
+void Window::moveEvent(QMoveEvent* event) {
+    QWidget::moveEvent(event);
+    emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
 }
 
 void Window::changeEvent(QEvent* event) {
@@ -94,7 +104,13 @@ void Window::changeEvent(QEvent* event) {
         m_handleTopRight->setVisible(!fullscreen);
         m_handleBottomLeft->setVisible(!fullscreen);
         m_handleBottomRight->setVisible(!fullscreen);
+
+        emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
     }
+}
+
+void Window::restoreWindowedSize() {
+    resize(m_windowedWidth, m_windowedHeight);
 }
 
 

@@ -3,6 +3,8 @@
 #include <QWidget>
 #include <QPoint>
 
+#include "view_layer/window.h"
+
 class TitleBar : public QWidget {
     Q_OBJECT
 
@@ -21,4 +23,5 @@ private:
     bool m_doubleclicked;
     double m_grabRatio;
     QPoint m_dragStartPosition;
+    Window* m_window;
 };

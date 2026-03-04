@@ -38,13 +38,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 89,
+				"line" : 91,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 73,
+				"line" : 75,
 				"parent" : 0
 			},
 			{
@@ -82,7 +82,7 @@
 			{
 				"command" : 6,
 				"file" : 0,
-				"line" : 74,
+				"line" : 76,
 				"parent" : 0
 			}
 		]
@@ -178,7 +178,9 @@
 				13,
 				14,
 				15,
-				16
+				16,
+				36,
+				38
 			]
 		}
 	],
@@ -266,7 +268,9 @@
 				13,
 				14,
 				15,
-				16
+				16,
+				36,
+				38
 			]
 		},
 		{
@@ -290,21 +294,23 @@
 				31,
 				32,
 				33,
-				34
+				34,
+				35,
+				37
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				35
+				39
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				36
+				40
 			]
 		}
 	],
@@ -502,6 +508,28 @@
 			"backtrace" : 1,
 			"path" : "view_layer/view.h",
 			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "model_layer/windowmodel.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "model_layer/windowmodel.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "service_layer/windowservice.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "service_layer/windowservice.cpp",
+			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,

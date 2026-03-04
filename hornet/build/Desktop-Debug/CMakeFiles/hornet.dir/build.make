@@ -314,6 +314,34 @@ CMakeFiles/hornet.dir/view_layer/view.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/view_layer/view.cpp.s"
 	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/view.cpp -o CMakeFiles/hornet.dir/view_layer/view.cpp.s
 
+CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o: CMakeFiles/hornet.dir/flags.make
+CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/windowmodel.cpp
+CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o -MF CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o.d -o CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/windowmodel.cpp
+
+CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.i"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/windowmodel.cpp > CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.i
+
+CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.s"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/model_layer/windowmodel.cpp -o CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.s
+
+CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o: CMakeFiles/hornet.dir/flags.make
+CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o: /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.cpp
+CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o: CMakeFiles/hornet.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o -MF CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o.d -o CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o -c /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.cpp
+
+CMakeFiles/hornet.dir/service_layer/windowservice.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/hornet.dir/service_layer/windowservice.cpp.i"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.cpp > CMakeFiles/hornet.dir/service_layer/windowservice.cpp.i
+
+CMakeFiles/hornet.dir/service_layer/windowservice.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/hornet.dir/service_layer/windowservice.cpp.s"
+	/usr/bin/clang++-18 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.cpp -o CMakeFiles/hornet.dir/service_layer/windowservice.cpp.s
+
 # Object files for target hornet
 hornet_OBJECTS = \
 "CMakeFiles/hornet.dir/hornet_autogen/mocs_compilation.cpp.o" \
@@ -332,7 +360,9 @@ hornet_OBJECTS = \
 "CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o" \
 "CMakeFiles/hornet.dir/view_layer/lowerwidget.cpp.o" \
 "CMakeFiles/hornet.dir/view_layer/overlaywidget.cpp.o" \
-"CMakeFiles/hornet.dir/view_layer/view.cpp.o"
+"CMakeFiles/hornet.dir/view_layer/view.cpp.o" \
+"CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o" \
+"CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o"
 
 # External object files for target hornet
 hornet_EXTERNAL_OBJECTS =
@@ -354,12 +384,14 @@ hornet: CMakeFiles/hornet.dir/view_layer/resizehandle.cpp.o
 hornet: CMakeFiles/hornet.dir/view_layer/lowerwidget.cpp.o
 hornet: CMakeFiles/hornet.dir/view_layer/overlaywidget.cpp.o
 hornet: CMakeFiles/hornet.dir/view_layer/view.cpp.o
+hornet: CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o
+hornet: CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o
 hornet: CMakeFiles/hornet.dir/build.make
 hornet: /usr/lib/x86_64-linux-gnu/libQt5Widgets.so.5.15.13
 hornet: /usr/lib/x86_64-linux-gnu/libQt5Gui.so.5.15.13
 hornet: /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.15.13
 hornet: CMakeFiles/hornet.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Linking CXX executable hornet"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/build/Desktop-Debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Linking CXX executable hornet"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hornet.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

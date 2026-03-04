@@ -14,6 +14,9 @@ class ResizeHandle : public QWidget {
 public:
     explicit ResizeHandle(ResizeEdge edge, QWidget* parent = nullptr);
 
+signals:
+    void windowResized();
+
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseMoveEvent(QMouseEvent* event) override;

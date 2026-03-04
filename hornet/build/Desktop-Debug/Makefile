@@ -320,6 +320,30 @@ model_layer/numbermodel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/numbermodel.cpp.s
 .PHONY : model_layer/numbermodel.cpp.s
 
+model_layer/windowmodel.o: model_layer/windowmodel.cpp.o
+.PHONY : model_layer/windowmodel.o
+
+# target to build an object file
+model_layer/windowmodel.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.o
+.PHONY : model_layer/windowmodel.cpp.o
+
+model_layer/windowmodel.i: model_layer/windowmodel.cpp.i
+.PHONY : model_layer/windowmodel.i
+
+# target to preprocess a source file
+model_layer/windowmodel.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.i
+.PHONY : model_layer/windowmodel.cpp.i
+
+model_layer/windowmodel.s: model_layer/windowmodel.cpp.s
+.PHONY : model_layer/windowmodel.s
+
+# target to generate assembly for a file
+model_layer/windowmodel.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/model_layer/windowmodel.cpp.s
+.PHONY : model_layer/windowmodel.cpp.s
+
 service_layer/diskreaderservice.o: service_layer/diskreaderservice.cpp.o
 .PHONY : service_layer/diskreaderservice.o
 
@@ -439,6 +463,30 @@ service_layer/validator.s: service_layer/validator.cpp.s
 service_layer/validator.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/validator.cpp.s
 .PHONY : service_layer/validator.cpp.s
+
+service_layer/windowservice.o: service_layer/windowservice.cpp.o
+.PHONY : service_layer/windowservice.o
+
+# target to build an object file
+service_layer/windowservice.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/windowservice.cpp.o
+.PHONY : service_layer/windowservice.cpp.o
+
+service_layer/windowservice.i: service_layer/windowservice.cpp.i
+.PHONY : service_layer/windowservice.i
+
+# target to preprocess a source file
+service_layer/windowservice.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/windowservice.cpp.i
+.PHONY : service_layer/windowservice.cpp.i
+
+service_layer/windowservice.s: service_layer/windowservice.cpp.s
+.PHONY : service_layer/windowservice.s
+
+# target to generate assembly for a file
+service_layer/windowservice.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hornet.dir/build.make CMakeFiles/hornet.dir/service_layer/windowservice.cpp.s
+.PHONY : service_layer/windowservice.cpp.s
 
 view_layer/lowerwidget.o: view_layer/lowerwidget.cpp.o
 .PHONY : view_layer/lowerwidget.o
@@ -638,6 +686,9 @@ help:
 	@echo "... model_layer/numbermodel.o"
 	@echo "... model_layer/numbermodel.i"
 	@echo "... model_layer/numbermodel.s"
+	@echo "... model_layer/windowmodel.o"
+	@echo "... model_layer/windowmodel.i"
+	@echo "... model_layer/windowmodel.s"
 	@echo "... service_layer/diskreaderservice.o"
 	@echo "... service_layer/diskreaderservice.i"
 	@echo "... service_layer/diskreaderservice.s"
@@ -653,6 +704,9 @@ help:
 	@echo "... service_layer/validator.o"
 	@echo "... service_layer/validator.i"
 	@echo "... service_layer/validator.s"
+	@echo "... service_layer/windowservice.o"
+	@echo "... service_layer/windowservice.i"
+	@echo "... service_layer/windowservice.s"
 	@echo "... view_layer/lowerwidget.o"
 	@echo "... view_layer/lowerwidget.i"
 	@echo "... view_layer/lowerwidget.s"
