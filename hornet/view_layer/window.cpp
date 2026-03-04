@@ -93,7 +93,8 @@ void Window::resizeEvent(QResizeEvent* event) {
 
 void Window::moveEvent(QMoveEvent* event) {
     QWidget::moveEvent(event);
-    emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
+    if (!isFullScreen())
+        emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
 }
 
 void Window::changeEvent(QEvent* event) {
@@ -109,7 +110,7 @@ void Window::changeEvent(QEvent* event) {
         m_handleBottomLeft->setVisible(!fullscreen);
         m_handleBottomRight->setVisible(!fullscreen);
 
-        emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
+        emit windowStateChanged(x(), y(), m_windowedWidth, m_windowedHeight, isFullScreen());
     }
 }
 
