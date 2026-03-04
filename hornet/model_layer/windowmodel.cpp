@@ -1,6 +1,12 @@
 #include "windowmodel.h"
 
-WindowModel::WindowModel() {}
+WindowModel::WindowModel()
+    : m_x(0),
+    m_y(0),
+    m_width(800),
+    m_height(600),
+    m_isFullscreen(false)
+{}
 
 int WindowModel::getX() const{
     return m_x;
