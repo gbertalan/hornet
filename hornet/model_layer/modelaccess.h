@@ -10,13 +10,13 @@ public:
 
     // first const: the caller will only get read-only access to what this numberModel() returns.
     // last const: this numberModel() will not modify ModelAccess while running.
-    const NumberModel& numberModel() const override; // read-only
+    const NumberModel& getNumberModel() const override; // read-only
 
     // overloaded numberModel(), allows writing access too.
-    NumberModel& numberModel() override; // read-write
+    NumberModel& getNumberModel() override; // read-write
 
-    const WindowModel& windowModel() const override;
-    WindowModel& windowModel() override;
+    const WindowModel& getWindowModel() const override;
+    WindowModel& getWindowModel() override;
 
 private:
     NumberModel m_numberModel;

@@ -12,7 +12,7 @@ Control::Control(IModelAccessRead& modelAccess, NumberService& service, WindowSe
     : m_modelAccess(modelAccess), m_service(service), m_windowService(windowService), m_view(view) {}
 
 void Control::init() {
-    NumberDTO dto{m_modelAccess.numberModel().getValue()};
+    NumberDTO dto{m_modelAccess.getNumberModel().getValue()};
     m_view.displayNumber(dto);
 }
 
@@ -36,7 +36,7 @@ void Control::onDebugRequested() {
 }
 
 void Control::printModel() const {
-    const WindowModel& windowModel = m_modelAccess.windowModel();
+    const WindowModel& windowModel = m_modelAccess.getWindowModel();
     qDebug() << "===" << " MODEL STATE"<< debugPrintCounter << "===";
     qDebug() << "WindowModel:";
     qDebug() << "    " << "x:" << windowModel.getX() << "y:" << windowModel.getY() << "width:" << windowModel.getWidth() << "height:" << windowModel.getHeight() << "fullscreen:" << windowModel.isFullscreen();

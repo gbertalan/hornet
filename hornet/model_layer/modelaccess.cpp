@@ -2,18 +2,18 @@
 
 ModelAccess::ModelAccess() {}
 
-const NumberModel& ModelAccess::numberModel() const {
+const NumberModel& ModelAccess::getNumberModel() const {
     return m_numberModel;
 }
 
-NumberModel& ModelAccess::numberModel() {
+NumberModel& ModelAccess::getNumberModel() {
     return m_numberModel;
 }
 
-const WindowModel& ModelAccess::windowModel() const {
+const WindowModel& ModelAccess::getWindowModel() const {
     return m_windowModel;
 }
 
-WindowModel& ModelAccess::windowModel() {
+WindowModel& ModelAccess::getWindowModel() {
     return m_windowModel;
 }
