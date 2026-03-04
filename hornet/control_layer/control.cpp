@@ -1,6 +1,7 @@
 #include "control.h"
 #include "model_layer/imodelaccess_read.h"
 #include "model_layer/numbermodel.h"
+#include "model_layer/windowmodel.h"
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto/numberdto.h"
@@ -26,4 +27,19 @@ void Control::onButtonClicked() {
 
 void Control::onWindowStateChanged(int x, int y, int width, int height, bool isFullscreen) {
     m_windowService.saveWindowState(x, y, width, height, isFullscreen);
+}
+
+void Control::onDebugRequested() {
+#ifdef QT_DEBUG
+    printModel();
+#endif
+}
+
+void Control::printModel() const {
+    const WindowModel& windowModel = m_modelAccess.windowModel();
+    qDebug() << "=== MODEL STATE ===";
+    qDebug() << "----- WindowModel";
+    qDebug() << "x:" << windowModel.getX() << "y:" << windowModel.getY() << "width:" << windowModel.getWidth() << "height:" << windowModel.getHeight() << "fullscreen:" << windowModel.isFullscreen();
+    qDebug() << "-----------------";
+    qDebug() << "===================";
 }

@@ -14,6 +14,7 @@ int main(int argc, char* argv[]) {
     View view;
     Control control(modelAccess, numberService, windowService, view);
 
+    QObject::connect(&view, &View::debugRequested, &control, &Control::onDebugRequested);
     QObject::connect(&view, &View::buttonClicked, &control, &Control::onButtonClicked);
     QObject::connect(&view, &View::windowStateChanged, &control, &Control::onWindowStateChanged);
 

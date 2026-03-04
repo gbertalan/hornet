@@ -8,5 +8,4 @@ public:
 
 private:
     IModelAccessReadWrite& m_modelAccess;
-    int counter = 0;
 };

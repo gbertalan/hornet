@@ -4,6 +4,10 @@
 #include "shared/dto/numberdto.h"
 #include "theme.h"
 #include <QEvent>
+#include <QResizeEvent>
+#include <QMoveEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
 #include <QMessageBox>
 #include <QPalette>
 #include <QVBoxLayout>
@@ -109,8 +113,17 @@ void Window::changeEvent(QEvent* event) {
     }
 }
 
+void Window::keyPressEvent(QKeyEvent* event) {
+    if (event->key() == Qt::Key_D && event->modifiers() == Qt::ControlModifier) {
+        emit debugRequested();
+    }
+    QWidget::keyPressEvent(event);
+}
+
 void Window::restoreWindowedSize() {
     resize(m_windowedWidth, m_windowedHeight);
 }
+
+
 
 

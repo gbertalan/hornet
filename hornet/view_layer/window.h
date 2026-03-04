@@ -19,6 +19,7 @@ public:
 
 signals:
     void buttonClicked();
+    void debugRequested();
     void windowStateChanged(int x, int y, int width, int height, bool isFullscreen);
 
 private:
@@ -47,4 +48,5 @@ protected:
     void moveEvent(QMoveEvent* event) override;
     // Disable resize when in fullscreen mode
     void changeEvent(QEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QDebug>
 
 class IModelAccessRead;
 class NumberService;
@@ -17,6 +18,7 @@ public:
 
 public slots:
     void onButtonClicked();
+    void onDebugRequested();
     void onWindowStateChanged(int x, int y, int width, int height, bool isFullscreen);
 
 private:
@@ -24,4 +26,5 @@ private:
     NumberService& m_service;
     WindowService& m_windowService;
     View& m_view;
+    void printModel() const;
 };

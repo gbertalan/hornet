@@ -7,6 +7,7 @@
 View::View(QObject* parent) : QObject(parent) {
     m_window = new Window();
     connect(m_window, &Window::buttonClicked, this, &View::buttonClicked);
+    connect(m_window, &Window::debugRequested, this, &View::debugRequested);
     connect(m_window, &Window::windowStateChanged, this, &View::windowStateChanged);
 }
 
