@@ -6,6 +6,7 @@ class Theme
 {
 private:
     static const QColor m_almostBlack;
+    static const QColor m_darkGrayTranslucent;
     static const QColor m_brightAmber;
     static const QColor m_brightYellow;
     static const QColor m_darkAmber;
@@ -17,6 +18,9 @@ private:
 public:
     // Background / foundation color
     static const QColor& almostBlack();
+
+    // Titlebar color
+    static const QColor& darkGrayTranslucent();
 
     // Base text color (primary amber)
     static const QColor& brightAmber();

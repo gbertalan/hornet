@@ -1,6 +1,7 @@
 #include "theme.h"
 
 const QColor Theme::m_almostBlack(18, 18, 18);
+const QColor Theme::m_darkGrayTranslucent(28, 28, 28, 200);
 const QColor Theme::m_brightAmber(255, 196, 0);
 const QColor Theme::m_brightYellow(255, 225, 0);
 const QColor Theme::m_darkAmber(229, 160, 0);
@@ -11,6 +12,7 @@ const QColor Theme::m_softAmber(255, 200, 102);
 const QColor Theme::m_warmGray(122, 111, 90);
 
 const QColor& Theme::almostBlack() { return m_almostBlack; }
+const QColor& Theme::darkGrayTranslucent() { return m_darkGrayTranslucent; }
 const QColor& Theme::brightAmber() { return m_brightAmber; }
 const QColor& Theme::brightYellow() { return m_brightYellow; }
 const QColor& Theme::darkAmber() { return m_darkAmber; }

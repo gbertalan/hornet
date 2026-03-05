@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QVBoxLayout>
+#include <QBitmap>
+#include <QPainter>
 #include "view_layer/lowerwidget.h"
 #include "view_layer/overlaywidget.h"
 
@@ -101,6 +103,17 @@ void Window::resizeEvent(QResizeEvent* event) {
         dto.height = height();
         dto.isFullscreen = false;
         emit windowStateChanged(dto);
+
+        QBitmap maskBitmap(size());
+        maskBitmap.fill(Qt::color0);
+        QPainter maskPainter(&maskBitmap);
+        maskPainter.setBrush(Qt::color1);
+        maskPainter.setPen(Qt::color1);
+        maskPainter.drawRoundedRect(rect(), 17, 17);
+
+        setMask(maskBitmap);
+    } else {
+        clearMask();
     }
 }
 
@@ -121,6 +134,8 @@ void Window::changeEvent(QEvent* event) {
     QWidget::changeEvent(event);
     if (event->type() == QEvent::WindowStateChange) {
         bool fullscreen = isFullScreen();
+        m_overlayWidget->setFullscreen(fullscreen);
+
         m_handleLeft->setVisible(!fullscreen);
         m_handleRight->setVisible(!fullscreen);
         m_handleTop->setVisible(!fullscreen);

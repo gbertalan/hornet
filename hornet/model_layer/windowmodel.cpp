@@ -1,7 +1,7 @@
 #include "windowmodel.h"
 
 WindowModel::WindowModel()
-    : m_x(100),
+    : m_x(200),
     m_y(100),
     m_width(800),
     m_height(600),

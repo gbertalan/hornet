@@ -7,8 +7,12 @@ class OverlayWidget : public QWidget {
 
 public:
     explicit OverlayWidget(QWidget* parent = nullptr);
+    void setFullscreen(bool fullscreen);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
     void resizeEvent(QResizeEvent* event) override;
+
+private:
+    bool m_fullscreen;
 };

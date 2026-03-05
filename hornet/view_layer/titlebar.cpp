@@ -14,9 +14,9 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doub
 
 void TitleBar::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
-    QColor color = Theme::warmGray();
-    color.setAlpha(150);
-    painter.fillRect(rect(), color);
+    painter.fillRect(rect(), Theme::darkGrayTranslucent());
+    painter.setPen(QPen(Qt::black, 2));
+    painter.drawLine(0, height() - 1, width(), height() - 1);
 }
 
 void TitleBar::mousePressEvent(QMouseEvent* event) {

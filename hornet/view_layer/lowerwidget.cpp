@@ -4,7 +4,7 @@
 
 LowerWidget::LowerWidget(QWidget* parent) : QWidget(parent) {
     QPalette palette;
-    palette.setColor(QPalette::Window, Theme::desaturatedTeal());
+    palette.setColor(QPalette::Window, Theme::almostBlack());
     setPalette(palette);
     setAutoFillBackground(true);
 }
