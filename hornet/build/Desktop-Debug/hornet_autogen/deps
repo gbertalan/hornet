@@ -28,6 +28,7 @@ hornet_autogen/timestamp: \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/service_layer/windowservice.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/shared/dto/numberdto.h \
+	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/shared/dto/windowdto.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/lowerwidget.cpp \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/lowerwidget.h \
 	/home/tre/Desktop/Git_Cloned_Repositories/hornet-main/hornet/view_layer/overlaywidget.cpp \

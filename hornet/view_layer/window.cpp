@@ -17,10 +17,13 @@
 static constexpr int HANDLE_THICKNESS = 6;
 static constexpr int CORNER_SIZE = 12;
 
-Window::Window(QWidget* parent) : QWidget(parent) {
+Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent) {
     setWindowFlags(Qt::FramelessWindowHint);
     setMinimumSize(300, 200);
-    resize(800, 600);
+    m_windowedWidth = initialState.width;
+    m_windowedHeight = initialState.height;
+    resize(initialState.width, initialState.height);
+    move(initialState.x, initialState.y);
 
     QPalette palette;
     palette.setColor(QPalette::Window, Theme::almostBlack());
@@ -46,6 +49,9 @@ Window::Window(QWidget* parent) : QWidget(parent) {
 
     setupResizeHandles();
     positionResizeHandles();
+
+    if (initialState.isFullscreen)
+        showFullScreen();
 }
 
 void Window::displayNumber(const NumberDTO& dto) {
@@ -87,14 +93,28 @@ void Window::resizeEvent(QResizeEvent* event) {
     if(!isFullScreen()){
         m_windowedWidth = width();
         m_windowedHeight = height();
-        emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
+
+        WindowDTO dto;
+        dto.x = x();
+        dto.y = y();
+        dto.width = width();
+        dto.height = height();
+        dto.isFullscreen = false;
+        emit windowStateChanged(dto);
     }
 }
 
 void Window::moveEvent(QMoveEvent* event) {
     QWidget::moveEvent(event);
-    if (!isFullScreen())
-        emit windowStateChanged(x(), y(), width(), height(), isFullScreen());
+    if (!isFullScreen()){
+        WindowDTO dto;
+        dto.x = x();
+        dto.y = y();
+        dto.width = width();
+        dto.height = height();
+        dto.isFullscreen = false;
+        emit windowStateChanged(dto);
+    }
 }
 
 void Window::changeEvent(QEvent* event) {
@@ -110,7 +130,13 @@ void Window::changeEvent(QEvent* event) {
         m_handleBottomLeft->setVisible(!fullscreen);
         m_handleBottomRight->setVisible(!fullscreen);
 
-        emit windowStateChanged(x(), y(), m_windowedWidth, m_windowedHeight, isFullScreen());
+        WindowDTO dto;
+        dto.x = x();
+        dto.y = y();
+        dto.width = m_windowedWidth;
+        dto.height = m_windowedHeight;
+        dto.isFullscreen = fullscreen;
+        emit windowStateChanged(dto);
     }
 }
 
@@ -121,6 +147,8 @@ void Window::keyPressEvent(QKeyEvent* event) {
     QWidget::keyPressEvent(event);
 }
 
+// When exiting fullscreen, the size gets reset to the previous size
+// when it was still windowed, not fullscreen.
 void Window::restoreWindowedSize() {
     resize(m_windowedWidth, m_windowedHeight);
 }

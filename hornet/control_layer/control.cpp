@@ -5,6 +5,7 @@
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto/numberdto.h"
+#include "shared/dto/windowdto.h"
 #include "view_layer/view.h"
 #include <stdexcept>
 
@@ -25,8 +26,8 @@ void Control::onButtonClicked() {
     }
 }
 
-void Control::onWindowStateChanged(int x, int y, int width, int height, bool isFullscreen) {
-    m_windowService.saveWindowState(x, y, width, height, isFullscreen);
+void Control::onWindowStateChanged(const WindowDTO& dto) {
+    m_windowService.saveWindowState(dto);
 }
 
 void Control::onDebugRequested() {

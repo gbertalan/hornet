@@ -1,10 +1,11 @@
 
 class IModelAccessReadWrite;
+struct WindowDTO;
 
 class WindowService {
 public:
     explicit WindowService(IModelAccessReadWrite& modelAccess);
-    void saveWindowState(int x, int y, int width, int height, bool isFullscreen);
+    void saveWindowState(const WindowDTO& dto);
 
 private:
     IModelAccessReadWrite& m_modelAccess;

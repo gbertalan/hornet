@@ -68,6 +68,7 @@ else()
             ${PROJECT_HEADERS}
             model_layer/windowmodel.h model_layer/windowmodel.cpp
             service_layer/windowservice.h service_layer/windowservice.cpp
+            shared/dto/windowdto.h
         )
     endif()
 endif()

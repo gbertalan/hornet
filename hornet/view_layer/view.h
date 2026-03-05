@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include "shared/dto/windowdto.h"
 
 struct NumberDTO;
 class Window;
@@ -9,14 +10,14 @@ class View : public QObject {
     Q_OBJECT
 
 public:
-    explicit View(QObject* parent = nullptr);
+    explicit View(const WindowDTO& initialState, QObject* parent = nullptr);
     void show();
     void displayNumber(const NumberDTO& dto);
     void showError(const QString& message);
 
 signals:
     void buttonClicked();
-    void windowStateChanged(int x, int y, int width, int height, bool isFullscreen);
+    void windowStateChanged(const WindowDTO& dto);
     void debugRequested();
 
 private:

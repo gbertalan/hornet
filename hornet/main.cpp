@@ -11,7 +11,15 @@ int main(int argc, char* argv[]) {
     ModelAccess modelAccess;
     NumberService numberService(modelAccess);
     WindowService windowService(modelAccess);
-    View view;
+
+    WindowDTO initialState;
+    initialState.x = modelAccess.getWindowModel().getX();
+    initialState.y = modelAccess.getWindowModel().getY();
+    initialState.width = modelAccess.getWindowModel().getWidth();
+    initialState.height = modelAccess.getWindowModel().getHeight();
+    initialState.isFullscreen = modelAccess.getWindowModel().isFullscreen();
+    View view(initialState);
+
     Control control(modelAccess, numberService, windowService, view);
 
     QObject::connect(&view, &View::debugRequested, &control, &Control::onDebugRequested);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-
+#include "shared/dto/windowdto.h"
 
 struct NumberDTO;
 class TitleBar;
@@ -13,14 +13,14 @@ class Window : public QWidget {
     Q_OBJECT
 
 public:
-    explicit Window(QWidget* parent = nullptr);
+    explicit Window(const WindowDTO& initialState, QWidget* parent = nullptr);
     void displayNumber(const NumberDTO& dto);
     void restoreWindowedSize();
 
 signals:
     void buttonClicked();
     void debugRequested();
-    void windowStateChanged(int x, int y, int width, int height, bool isFullscreen);
+    void windowStateChanged(const WindowDTO& dto);
 
 private:
     TitleBar* m_titleBar;

@@ -8,6 +8,7 @@ class NumberService;
 class WindowService;
 class View;
 struct NumberDTO;
+struct WindowDTO;
 
 class Control : public QObject {
     Q_OBJECT
@@ -19,7 +20,7 @@ public:
 public slots:
     void onButtonClicked();
     void onDebugRequested();
-    void onWindowStateChanged(int x, int y, int width, int height, bool isFullscreen);
+    void onWindowStateChanged(const WindowDTO& dto);
 
 private:
     IModelAccessRead& m_modelAccess;
