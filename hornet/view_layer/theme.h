@@ -10,6 +10,7 @@ private:
     static const QColor m_brightAmber;
     static const QColor m_brightYellow;
     static const QColor m_darkAmber;
+    static const QColor m_darkGray;
     static const QColor m_desaturatedTeal;
     static const QColor m_mutedGold;
     static const QColor m_softAmber;
@@ -25,11 +26,14 @@ public:
     // Base text color (primary amber)
     static const QColor& brightAmber();
 
-    // Base text color (primary amber)
+    // Active border
     static const QColor& brightYellow();
 
     // Keywords (bold weight only) - same as brightAmber but bold
     static const QColor& darkAmber();
+
+    // Inactive border
+    static const QColor& darkGray();
 
     // Numbers (muted gold) and accent color
     static const QColor& desaturatedTeal();

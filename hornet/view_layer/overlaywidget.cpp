@@ -4,7 +4,7 @@
 #include <QPainterPath>
 #include <QPen>
 
-OverlayWidget::OverlayWidget(QWidget* parent) : QWidget(parent), m_fullscreen(false) {
+OverlayWidget::OverlayWidget(QWidget* parent) : QWidget(parent), m_fullscreen(false), m_focused(true) {
     setAttribute(Qt::WA_TransparentForMouseEvents);
     setAttribute(Qt::WA_NoSystemBackground);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -19,7 +19,14 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QColor cornerColor = m_fullscreen ? Qt::black : Theme::darkAmber();
+    QColor cornerColor;
+    if (m_fullscreen) {
+        cornerColor = Qt::black;
+    } else if (m_focused) {
+        cornerColor = Theme::darkAmber();
+    } else {
+        cornerColor = Theme::darkGray();
+    }
     QBrush brush(cornerColor);
     painter.setPen(Qt::NoPen);
     painter.setBrush(brush);
@@ -59,7 +66,7 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
     painter.drawPath(bottomRight);
 
     // border
-    QPen pen(Theme::brightYellow());
+    QPen pen(m_focused ? Theme::brightYellow() : Theme::darkGray());
     pen.setWidth(2);
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
@@ -69,4 +76,9 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
 void OverlayWidget::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     raise();
+}
+
+void OverlayWidget::setFocused(bool focused) {
+    m_focused = focused;
+    update();
 }

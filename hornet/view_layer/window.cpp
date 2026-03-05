@@ -153,6 +153,9 @@ void Window::changeEvent(QEvent* event) {
         dto.isFullscreen = fullscreen;
         emit windowStateChanged(dto);
     }
+    if (event->type() == QEvent::ActivationChange) {
+        m_overlayWidget->setFocused(isActiveWindow());
+    }
 }
 
 void Window::keyPressEvent(QKeyEvent* event) {

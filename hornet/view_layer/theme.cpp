@@ -6,6 +6,7 @@ const QColor Theme::m_brightAmber(255, 196, 0);
 const QColor Theme::m_brightYellow(255, 225, 0);
 const QColor Theme::m_darkAmber(229, 160, 0);
 // const QColor Theme::m_darkAmber(229, 160, 0, 100);
+const QColor Theme::m_darkGray(48, 48, 48);
 const QColor Theme::m_desaturatedTeal(106, 158, 154);
 const QColor Theme::m_mutedGold(212, 162, 89);
 const QColor Theme::m_softAmber(255, 200, 102);
@@ -16,6 +17,7 @@ const QColor& Theme::darkGrayTranslucent() { return m_darkGrayTranslucent; }
 const QColor& Theme::brightAmber() { return m_brightAmber; }
 const QColor& Theme::brightYellow() { return m_brightYellow; }
 const QColor& Theme::darkAmber() { return m_darkAmber; }
+const QColor& Theme::darkGray() { return m_darkGray; }
 const QColor& Theme::desaturatedTeal() { return m_desaturatedTeal; }
 const QColor& Theme::mutedGold() { return m_mutedGold; }
 const QColor& Theme::softAmber() { return m_softAmber; }
