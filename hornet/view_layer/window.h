@@ -21,6 +21,7 @@ signals:
     void buttonClicked();
     void debugRequested();
     void windowStateChanged(const WindowDTO& dto);
+    void closeClicked();
 
 private:
     TitleBar* m_titleBar;

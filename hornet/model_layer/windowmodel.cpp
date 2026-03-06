@@ -1,8 +1,8 @@
 #include "windowmodel.h"
 
 WindowModel::WindowModel()
-    : m_x(200),
-    m_y(100),
+    : m_x(516),
+    m_y(73),
     m_width(800),
     m_height(600),
     m_isFullscreen(false)

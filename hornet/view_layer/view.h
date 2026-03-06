@@ -19,6 +19,7 @@ signals:
     void buttonClicked();
     void windowStateChanged(const WindowDTO& dto);
     void debugRequested();
+    void closeClicked();
 
 private:
     Window* m_window;

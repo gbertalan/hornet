@@ -54,6 +54,17 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
 
     if (initialState.isFullscreen)
         showFullScreen();
+
+    connect(m_titleBar, &TitleBar::closeClicked,    this, &Window::closeClicked);
+    connect(m_titleBar, &TitleBar::minimizeClicked, this, [this]() { showMinimized(); });
+    connect(m_titleBar, &TitleBar::maximizeClicked, this, [this]() {
+        if (isFullScreen()) {
+            showNormal();
+            restoreWindowedSize();
+        } else {
+            showFullScreen();
+        }
+    });
 }
 
 void Window::displayNumber(const NumberDTO& dto) {

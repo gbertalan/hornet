@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
     view_layer/lowerwidget.cpp
     view_layer/overlaywidget.cpp
     view_layer/view.cpp
+    resources/resources.qrc
 )
 
 set(PROJECT_HEADERS
@@ -69,6 +70,7 @@ else()
             model_layer/windowmodel.h model_layer/windowmodel.cpp
             service_layer/windowservice.h service_layer/windowservice.cpp
             shared/dto/windowdto.h
+            view_layer/titlebarbutton.h view_layer/titlebarbutton.cpp
         )
     endif()
 endif()
