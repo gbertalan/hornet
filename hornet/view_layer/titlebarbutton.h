@@ -15,6 +15,7 @@ class TitlebarButton : public QWidget {
 
 public:
     explicit TitlebarButton(TitlebarButtonType type, QWidget* parent = nullptr);
+    void setType(TitlebarButtonType type);
     void setHoverColor(const QColor& color);
     void setRightPadding(int padding);
 
@@ -23,6 +24,7 @@ signals:
 
 protected:
     void paintEvent(QPaintEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
     void enterEvent(QEvent* event) override;
     void leaveEvent(QEvent* event) override;
     void mousePressEvent(QMouseEvent* event) override;

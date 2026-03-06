@@ -21,6 +21,12 @@ QString TitlebarButton::iconPath() const {
     return "";
 }
 
+void TitlebarButton::setType(TitlebarButtonType type) {
+    m_type = type;
+    m_pixmap = QPixmap(iconPath());
+    update();
+}
+
 void TitlebarButton::setHoverColor(const QColor& color) {
     m_hoverColor = color;
 }
@@ -70,6 +76,14 @@ void TitlebarButton::paintEvent(QPaintEvent* event) {
     }
 }
 
+void TitlebarButton::mouseMoveEvent(QMouseEvent* event) {
+    bool inside = rect().contains(event->pos());
+    if (m_hovered != inside) {
+        m_hovered = inside;
+        update();
+    }
+}
+
 void TitlebarButton::enterEvent(QEvent* event) {
     m_hovered = true;
     update();
@@ -89,9 +103,10 @@ void TitlebarButton::mousePressEvent(QMouseEvent* event) {
 }
 
 void TitlebarButton::mouseReleaseEvent(QMouseEvent* event) {
-    if (event->button() == Qt::LeftButton && m_hovered) {
+    if (event->button() == Qt::LeftButton) {
         m_pressed = false;
         update();
-        emit clicked();
+        if (m_hovered)
+            emit clicked();
     }
 }

@@ -12,6 +12,7 @@ class TitleBar : public QWidget {
 
 public:
     explicit TitleBar(QWidget* parent = nullptr);
+    void setFullscreen(bool fullscreen);
 
 signals:
     void closeClicked();

@@ -38,6 +38,10 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doub
     connect(m_maximizeButton, &TitlebarButton::clicked, this, &TitleBar::maximizeClicked);
 }
 
+void TitleBar::setFullscreen(bool fullscreen) {
+    m_maximizeButton->setType(fullscreen ? TitlebarButtonType::Minimize : TitlebarButtonType::Maximize);
+}
+
 void TitleBar::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.fillRect(rect(), Theme::darkGrayTranslucent());

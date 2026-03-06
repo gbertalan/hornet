@@ -25,6 +25,8 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     m_windowedWidth = initialState.width;
     m_windowedHeight = initialState.height;
     resize(initialState.width, initialState.height);
+    m_windowedX = initialState.x;
+    m_windowedY = initialState.y;
     move(initialState.x, initialState.y);
 
     QPalette palette;
@@ -56,11 +58,14 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
         showFullScreen();
 
     connect(m_titleBar, &TitleBar::closeClicked,    this, &Window::closeClicked);
-    connect(m_titleBar, &TitleBar::minimizeClicked, this, [this]() { showMinimized(); });
+    connect(m_titleBar, &TitleBar::minimizeClicked, this, [this]() {
+        showMinimized();
+    });
     connect(m_titleBar, &TitleBar::maximizeClicked, this, [this]() {
         if (isFullScreen()) {
             showNormal();
             restoreWindowedSize();
+            restoreWindowedLocation();
         } else {
             showFullScreen();
         }
@@ -131,6 +136,9 @@ void Window::resizeEvent(QResizeEvent* event) {
 void Window::moveEvent(QMoveEvent* event) {
     QWidget::moveEvent(event);
     if (!isFullScreen()){
+        m_windowedX = x();
+        m_windowedY = y();
+
         WindowDTO dto;
         dto.x = x();
         dto.y = y();
@@ -146,6 +154,7 @@ void Window::changeEvent(QEvent* event) {
     if (event->type() == QEvent::WindowStateChange) {
         bool fullscreen = isFullScreen();
         m_overlayWidget->setFullscreen(fullscreen);
+        m_titleBar->setFullscreen(fullscreen);
 
         m_handleLeft->setVisible(!fullscreen);
         m_handleRight->setVisible(!fullscreen);
@@ -180,6 +189,10 @@ void Window::keyPressEvent(QKeyEvent* event) {
 // when it was still windowed, not fullscreen.
 void Window::restoreWindowedSize() {
     resize(m_windowedWidth, m_windowedHeight);
+}
+
+void Window::restoreWindowedLocation() {
+    move(m_windowedX, m_windowedY);
 }
 
 

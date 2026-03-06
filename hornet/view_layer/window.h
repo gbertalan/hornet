@@ -16,6 +16,7 @@ public:
     explicit Window(const WindowDTO& initialState, QWidget* parent = nullptr);
     void displayNumber(const NumberDTO& dto);
     void restoreWindowedSize();
+    void restoreWindowedLocation();
 
 signals:
     void buttonClicked();
@@ -38,6 +39,8 @@ private:
 
     int m_windowedWidth;
     int m_windowedHeight;
+    int m_windowedX;
+    int m_windowedY;
 
     // Creates the resize handles, small, transparent panels to handle the edge/corner dragging
     void setupResizeHandles();
