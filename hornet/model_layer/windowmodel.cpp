@@ -5,7 +5,7 @@ WindowModel::WindowModel()
     m_y(73),
     m_width(800),
     m_height(600),
-    m_isFullscreen(false)
+    m_isFullscreen(true)
 {}
 
 int WindowModel::getX() const{

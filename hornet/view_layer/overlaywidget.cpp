@@ -23,7 +23,7 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
     if (m_fullscreen) {
         cornerColor = QColor(Qt::black);
     } else if (m_focused) {
-        cornerColor = Theme::almostWhite();
+        cornerColor = Theme::darkGray();
     } else {
         cornerColor = Theme::almostBlack();
     }
@@ -66,8 +66,8 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
     painter.drawPath(bottomRight);
 
     // border
-    QPen pen(m_fullscreen ? (m_focused ? Theme::darkGray() : QColor(Qt::black)) : (m_focused ? Theme::almostWhite() : Theme::darkGray()));
-    pen.setWidth(2);
+    QPen pen(m_focused ? Theme::darkGray() : QColor(Qt::black));
+        pen.setWidth(2);
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
     painter.drawRoundedRect(1, 1, width() - 2, height() - 2, 15, 15);
