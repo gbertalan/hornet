@@ -105,8 +105,10 @@ void TitlebarButton::mousePressEvent(QMouseEvent* event) {
 void TitlebarButton::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         m_pressed = false;
-        update();
-        if (m_hovered)
+        if (m_hovered) {
+            m_hovered = false;
+            update();
             emit clicked();
+        }
     }
 }

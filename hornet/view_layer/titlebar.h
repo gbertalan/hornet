@@ -33,7 +33,6 @@ private:
     QPoint m_dragStartPosition;
     Window* m_window;
     TitlebarButton* m_closeButton;
-    TitlebarButton* m_minimizeButton;
-    TitlebarButton* m_maximizeButton;
+    TitlebarButton* m_maxMinButton;
     TitlebarButton* m_trayButton;
 };

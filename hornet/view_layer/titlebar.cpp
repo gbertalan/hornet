@@ -15,8 +15,7 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doub
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_trayButton     = new TitlebarButton(TitlebarButtonType::Tray, this);
-    m_minimizeButton = new TitlebarButton(TitlebarButtonType::Minimize, this);
-    m_maximizeButton = new TitlebarButton(TitlebarButtonType::Maximize, this);
+    m_maxMinButton = new TitlebarButton(TitlebarButtonType::Maximize, this);
     m_closeButton    = new TitlebarButton(TitlebarButtonType::Close, this);
     m_closeButton->setHoverColor(Theme::mediumRed());
     m_closeButton->setRightPadding(5);
@@ -27,19 +26,18 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doub
     layout->setAlignment(Qt::AlignTop);
     layout->addStretch();
     layout->addWidget(m_trayButton);
-    layout->addWidget(m_minimizeButton);
-    layout->addWidget(m_maximizeButton);
+    layout->addWidget(m_maxMinButton);
     layout->addWidget(m_closeButton);
     layout->setAlignment(m_closeButton, Qt::AlignTop);
     setLayout(layout);
 
-    connect(m_closeButton,    &TitlebarButton::clicked, this, &TitleBar::closeClicked);
-    connect(m_minimizeButton, &TitlebarButton::clicked, this, &TitleBar::minimizeClicked);
-    connect(m_maximizeButton, &TitlebarButton::clicked, this, &TitleBar::maximizeClicked);
+    connect(m_trayButton,   &TitlebarButton::clicked, this, &TitleBar::minimizeClicked);
+    connect(m_maxMinButton, &TitlebarButton::clicked, this, &TitleBar::maximizeClicked);
+    connect(m_closeButton,  &TitlebarButton::clicked, this, &TitleBar::closeClicked);
 }
 
 void TitleBar::setFullscreen(bool fullscreen) {
-    m_maximizeButton->setType(fullscreen ? TitlebarButtonType::Minimize : TitlebarButtonType::Maximize);
+    m_maxMinButton->setType(fullscreen ? TitlebarButtonType::Minimize : TitlebarButtonType::Maximize);
 }
 
 void TitleBar::paintEvent(QPaintEvent* event) {
