@@ -51,21 +51,21 @@ void TitleBar::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         m_dragging = true;
         m_grabRatio = static_cast<double>(event->pos().x()) / width();
-        m_dragStartPosition = event->globalPos() - window()->frameGeometry().topLeft();
+        m_dragStartPosition = event->globalPosition().toPoint() - window()->frameGeometry().topLeft();
     }
 }
 
 void TitleBar::mouseMoveEvent(QMouseEvent* event) {
     if (!window()->isFullScreen()) {
         if (!m_dragging) return;
-        window()->move(event->globalPos() - m_dragStartPosition);
+        window()->move(event->globalPosition().toPoint() - m_dragStartPosition);
     } else if (!m_doubleclicked) {
         m_dragging = false;
         window()->showNormal();
         m_window->restoreWindowedSize();
-        window()->move(event->globalPos().x() - static_cast<int>(m_grabRatio * window()->width()),
-                       event->globalPos().y() - height() / 2);
-        m_dragStartPosition = event->globalPos() - window()->frameGeometry().topLeft();
+        window()->move(event->globalPosition().toPoint().x() - static_cast<int>(m_grabRatio * window()->width()),
+                       event->globalPosition().toPoint().y() - height() / 2);
+        m_dragStartPosition = event->globalPosition().toPoint() - window()->frameGeometry().topLeft();
         m_dragging = true;
     }
 }

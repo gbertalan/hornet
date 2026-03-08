@@ -84,7 +84,7 @@ void TitlebarButton::mouseMoveEvent(QMouseEvent* event) {
     }
 }
 
-void TitlebarButton::enterEvent(QEvent* event) {
+void TitlebarButton::enterEvent(QEnterEvent* event) {
     m_hovered = true;
     update();
 }

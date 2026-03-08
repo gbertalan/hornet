@@ -10,6 +10,7 @@ const QColor Theme::m_darkAmber(229, 160, 0);
 const QColor Theme::m_darkGray(68, 68, 68);
 const QColor Theme::m_desaturatedTeal(106, 158, 154);
 const QColor Theme::m_mediumRed(130, 0, 0);
+// const QColor Theme::m_mediumRed(255, 0, 0, 100);
 const QColor Theme::m_mutedGold(212, 162, 89);
 const QColor Theme::m_softAmber(255, 200, 102);
 // const QColor Theme::m_warmGray(72, 65, 59);

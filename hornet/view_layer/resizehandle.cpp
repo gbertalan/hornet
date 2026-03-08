@@ -27,7 +27,7 @@ ResizeHandle::ResizeHandle(ResizeEdge edge, QWidget* parent)
 void ResizeHandle::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         m_resizing = true;
-        m_startPos = event->globalPos();
+        m_startPos = event->globalPosition().toPoint();
         m_startGeometry = window()->geometry();
     }
 }
@@ -35,7 +35,7 @@ void ResizeHandle::mousePressEvent(QMouseEvent* event) {
 void ResizeHandle::mouseMoveEvent(QMouseEvent* event) {
     if (!m_resizing) return;
 
-    QPoint delta = event->globalPos() - m_startPos;
+    QPoint delta = event->globalPosition().toPoint() - m_startPos;
     QRect geo = m_startGeometry;
 
     switch (m_edge) {
