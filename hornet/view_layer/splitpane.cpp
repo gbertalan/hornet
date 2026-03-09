@@ -4,16 +4,26 @@
 #include <QPen>
 
 SplitPaneHandle::SplitPaneHandle(int topPadding, Qt::Orientation orientation, QSplitter* parent)
-    : QSplitterHandle(orientation, parent), m_topPadding(topPadding) {
+    : QSplitterHandle(orientation, parent), m_topPadding(topPadding), m_hovered(false) {
     setCursor(Qt::SizeHorCursor);
 }
 
 void SplitPaneHandle::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.fillRect(rect(), Theme::almostBlack());
-    QPen pen(Theme::darkerGray(), 1);
+    QPen pen(m_hovered ? Theme::darkGray() : Theme::darkerGray(), 1);
     painter.setPen(pen);
-    painter.drawLine(width() - 2, m_topPadding, width() - 2, height());
+    painter.drawLine(width() - 1, m_topPadding, width() - 1, height());
+}
+
+void SplitPaneHandle::enterEvent(QEnterEvent* event) {
+    m_hovered = true;
+    update();
+}
+
+void SplitPaneHandle::leaveEvent(QEvent* event) {
+    m_hovered = false;
+    update();
 }
 
 SplitPane::SplitPane(int leftRatio, int rightRatio, int separatorTopPadding, QWidget* parent)
