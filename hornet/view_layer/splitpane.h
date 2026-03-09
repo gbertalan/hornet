@@ -24,7 +24,7 @@ class SplitPane : public QSplitter {
     Q_OBJECT
 
 public:
-    explicit SplitPane(int leftRatio, int rightRatio, int separatorTopPadding, QWidget* parent = nullptr);
+    explicit SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent = nullptr);
 
     QWidget* leftPane() const;
     QWidget* rightPane() const;

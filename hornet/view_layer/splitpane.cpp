@@ -26,7 +26,7 @@ void SplitPaneHandle::leaveEvent(QEvent* event) {
     update();
 }
 
-SplitPane::SplitPane(int leftRatio, int rightRatio, int separatorTopPadding, QWidget* parent)
+SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     : QSplitter(Qt::Horizontal, parent), m_separatorTopPadding(separatorTopPadding) {
     setHandleWidth(8);
     setChildrenCollapsible(false);
@@ -37,8 +37,10 @@ SplitPane::SplitPane(int leftRatio, int rightRatio, int separatorTopPadding, QWi
     addWidget(m_leftPane);
     addWidget(m_rightPane);
 
-    setStretchFactor(0, leftRatio);
-    setStretchFactor(1, rightRatio);
+    setStretchFactor(0, 0); // no stretch
+    setStretchFactor(1, 1); // takes all extra space
+
+    setSizes({leftWidth, 9999});
 }
 
 QSplitterHandle* SplitPane::createHandle() {
