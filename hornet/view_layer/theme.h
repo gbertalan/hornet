@@ -12,6 +12,7 @@ private:
     static const QColor m_brightYellow;
     static const QColor m_darkAmber;
     static const QColor m_darkGray;
+    static const QColor m_darkerGray;
     static const QColor m_desaturatedTeal;
     static const QColor m_mediumRed;
     static const QColor m_mutedGold;
@@ -38,6 +39,9 @@ public:
 
     // Main border
     static const QColor& darkGray();
+
+    // Inner border
+    static const QColor& darkerGray();
 
     // Numbers (muted gold) and accent color
     static const QColor& desaturatedTeal();

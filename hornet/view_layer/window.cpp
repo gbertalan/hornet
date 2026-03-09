@@ -13,7 +13,7 @@
 #include <QVBoxLayout>
 #include <QBitmap>
 #include <QPainter>
-#include "view_layer/lowerwidget.h"
+#include "view_layer/splitpane.h"
 #include "view_layer/overlaywidget.h"
 
 static constexpr int HANDLE_THICKNESS = 6;
@@ -34,8 +34,8 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     setPalette(palette);
     setAutoFillBackground(true);
 
-    m_lowerWidget = new LowerWidget(this);
-    m_lowerWidget->setGeometry(0, 0, width(), height());
+    m_splitPane = new SplitPane(1, 2, 0, this);
+    m_splitPane->setGeometry(0, 0, width(), height());
 
     m_titleBar = new TitleBar(this);
     m_titleBar->raise();
@@ -105,7 +105,7 @@ void Window::positionResizeHandles() {
 
 void Window::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
-    m_lowerWidget->setGeometry(0, 0, width(), height());
+    m_splitPane->setGeometry(0, 0, width(), height());
     m_overlayWidget->setGeometry(0, 0, width(), height());
     positionResizeHandles();
     if(!isFullScreen()){

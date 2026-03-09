@@ -6,7 +6,7 @@
 struct NumberDTO;
 class TitleBar;
 class ResizeHandle;
-class LowerWidget;
+class SplitPane;
 class OverlayWidget;
 
 class Window : public QWidget {
@@ -26,7 +26,7 @@ signals:
 
 private:
     TitleBar* m_titleBar;
-    LowerWidget* m_lowerWidget;
+    SplitPane* m_splitPane;
     OverlayWidget* m_overlayWidget;
     ResizeHandle* m_handleLeft;
     ResizeHandle* m_handleRight;
