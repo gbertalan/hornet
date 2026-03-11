@@ -61,6 +61,7 @@ qt_add_executable(hornet
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
+    view_layer/customscrollbar.h view_layer/customscrollbar.cpp
 )
 
 target_link_libraries(hornet PRIVATE Qt6::Widgets)

@@ -1,8 +1,12 @@
 #pragma once
 
+#include <QScrollArea>
 #include <QSplitter>
 #include <QSplitterHandle>
 #include <QWidget>
+#include <QScrollBar>
+
+class CustomScrollBar;
 
 class SplitPaneHandle : public QSplitterHandle {
     Q_OBJECT
@@ -31,9 +35,18 @@ public:
 
 protected:
     QSplitterHandle* createHandle() override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
 
 private:
     int m_separatorTopPadding;
     QWidget* m_leftPane;
     QWidget* m_rightPane;
+    QScrollArea* m_scrollArea;
+    QWidget* m_editorWidget;
+    CustomScrollBar* m_verticalScrollBar;
+    CustomScrollBar* m_horizontalScrollBar;
+    QTimer* m_scrollBarHideTimer;
+
+public:
+    QWidget* editorWidget() const;
 };

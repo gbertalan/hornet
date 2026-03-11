@@ -2,6 +2,12 @@
 #include "theme.h"
 #include <QPainter>
 #include <QPen>
+#include <QVBoxLayout>
+#include "view_layer/customscrollbar.h"
+#include <QEvent>
+#include <QTimer>
+
+// Handle inline class:
 
 SplitPaneHandle::SplitPaneHandle(int topPadding, Qt::Orientation orientation, QSplitter* parent)
     : QSplitterHandle(orientation, parent), m_topPadding(topPadding), m_hovered(false) {
@@ -11,8 +17,18 @@ SplitPaneHandle::SplitPaneHandle(int topPadding, Qt::Orientation orientation, QS
 void SplitPaneHandle::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.fillRect(rect(), Theme::almostBlack());
-    QPen pen(m_hovered ? Theme::darkGray() : Theme::darkerGray(), 1);
-    painter.setPen(pen);
+
+    // dotted line in the middle
+    QPen dottedPen(Theme::almostWhite(), 1, Qt::DotLine);
+    painter.setPen(dottedPen);
+    int lineX = 3;
+    if (m_hovered)
+    painter.drawLine(lineX, m_topPadding, lineX, height());
+
+
+    // solid line on the right edge
+    QPen solidPen(Theme::darkerGray(), 1);
+    painter.setPen(solidPen);
     painter.drawLine(width() - 1, m_topPadding, width() - 1, height());
 }
 
@@ -26,6 +42,8 @@ void SplitPaneHandle::leaveEvent(QEvent* event) {
     update();
 }
 
+// SplitPane class
+
 SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     : QSplitter(Qt::Horizontal, parent), m_separatorTopPadding(separatorTopPadding) {
     setHandleWidth(8);
@@ -33,6 +51,8 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
 
     m_leftPane  = new QWidget(this);
     m_rightPane = new QWidget(this);
+    m_leftPane->setMinimumWidth(100);
+    m_rightPane->setMinimumWidth(100);
 
     addWidget(m_leftPane);
     addWidget(m_rightPane);
@@ -41,6 +61,74 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     setStretchFactor(1, 1); // takes all extra space
 
     setSizes({leftWidth, 9999});
+
+    // scrollarea:
+
+    m_scrollArea = new QScrollArea(m_leftPane);
+    m_scrollArea->setWidgetResizable(true);
+    m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    m_scrollArea->setStyleSheet(m_scrollArea->styleSheet() +
+                                "QScrollArea { background: transparent; border: none; }"
+                                );
+    m_scrollArea->viewport()->setStyleSheet("background: transparent;");
+
+
+    m_editorWidget = new QWidget();
+    m_editorWidget->setMinimumHeight(2000);
+    m_editorWidget->setMinimumWidth(2000);
+    m_editorWidget->setStyleSheet("background: transparent;");
+    m_scrollArea->setWidget(m_editorWidget);
+
+    QVBoxLayout* leftLayout = new QVBoxLayout(m_leftPane);
+    leftLayout->setContentsMargins(0, 40, 0, 0);
+    leftLayout->setSpacing(0);
+    leftLayout->addWidget(m_scrollArea);
+    m_leftPane->setLayout(leftLayout);
+
+    // scrollbars:
+
+    m_verticalScrollBar = new CustomScrollBar(Qt::Vertical, m_scrollArea);
+    m_horizontalScrollBar = new CustomScrollBar(Qt::Horizontal, m_scrollArea);
+
+    m_scrollArea->setVerticalScrollBar(m_verticalScrollBar);
+    m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    m_scrollArea->setHorizontalScrollBar(m_horizontalScrollBar);
+    m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    m_verticalScrollBar->hide();
+    m_horizontalScrollBar->hide();
+
+    m_scrollArea->installEventFilter(this);
+    m_editorWidget->installEventFilter(this);
+    m_verticalScrollBar->installEventFilter(this);
+    m_horizontalScrollBar->installEventFilter(this);
+
+    QString scrollBarStyle =
+        "QScrollBar:vertical { background: transparent; width: 6px; }"
+        "QScrollBar::handle:vertical { background: transparent; }"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }"
+        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }"
+        "QScrollBar:horizontal { background: transparent; height: 9px; }"
+        "QScrollBar::handle:horizontal { background: transparent; }"
+        "QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }"
+        "QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal { background: transparent; }"
+        ;
+
+    m_verticalScrollBar->setStyleSheet(scrollBarStyle);
+    m_horizontalScrollBar->setStyleSheet(scrollBarStyle);
+
+    // timer to hide scrollbars reliably of not hovered:
+    m_scrollBarHideTimer = new QTimer(this);
+    m_scrollBarHideTimer->setSingleShot(true);
+    m_scrollBarHideTimer->setInterval(100);
+    connect(m_scrollBarHideTimer, &QTimer::timeout, this, [this]() {
+            m_verticalScrollBar->hide();
+            m_horizontalScrollBar->hide();
+    });
+
+    setAttribute(Qt::WA_StaticContents); // telling Qt that the content doesn't change during resize, this can help with redraw perf.
 }
 
 QSplitterHandle* SplitPane::createHandle() {
@@ -53,4 +141,19 @@ QWidget* SplitPane::leftPane() const {
 
 QWidget* SplitPane::rightPane() const {
     return m_rightPane;
+}
+
+QWidget* SplitPane::editorWidget() const {
+    return m_editorWidget;
+}
+
+bool SplitPane::eventFilter(QObject* obj, QEvent* event) {
+    if (event->type() == QEvent::Enter) {
+        m_scrollBarHideTimer->stop();
+        m_verticalScrollBar->show();
+        m_horizontalScrollBar->show();
+    } else if (event->type() == QEvent::Leave) {
+        m_scrollBarHideTimer->start();
+    }
+    return QSplitter::eventFilter(obj, event);
 }
