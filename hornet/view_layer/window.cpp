@@ -34,7 +34,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     setPalette(palette);
     setAutoFillBackground(true);
 
-    m_splitPane = new SplitPane(600, 0, this);
+    m_splitPane = new SplitPane(800, 0, this);
     m_splitPane->setGeometry(0, 0, width(), height());
 
     m_titleBar = new TitleBar(this);

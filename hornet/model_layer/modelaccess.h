@@ -4,6 +4,16 @@
 #include "numbermodel.h"
 #include "windowmodel.h"
 
+/**
+ * @brief The ModelAccess class
+ *
+ * Gives access to models.
+ *
+ * If the calling class has the interface IModelAccessRead included, it has reading access only.
+ * Otherwise the interface IModelAccessReadWrite is needed.
+ *
+ * In this design Control has reading right, Services have reading and writing rights.
+ */
 class ModelAccess : public IModelAccessReadWrite {
 public:
     ModelAccess();
@@ -12,10 +22,13 @@ public:
     // last const: this numberModel() will not modify ModelAccess while running.
     const NumberModel& getNumberModel() const override; // read-only
 
-    // overloaded numberModel(), allows writing access too.
+    // Overloaded numberModel(), allows writing access too.
     NumberModel& getNumberModel() override; // read-write
 
+    // Returns WindowModel, as read-only.
     const WindowModel& getWindowModel() const override;
+
+    // Returns WindowModel, as read-write.
     WindowModel& getWindowModel() override;
 
 private:

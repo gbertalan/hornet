@@ -5,10 +5,27 @@
 #include "view_layer/view.h"
 #include "control_layer/control.h"
 
+/**
+ * @brief main The main function
+ *
+ * Creates:
+ * - QApplication
+ * - ModelAccess
+ * - Services
+ * - View
+ * - Control
+ * Connects:
+ * - View -> Control
+ *
+ * @param argc No arguments expected
+ * @param argv No arguments expected
+ * @return app.exec(); This is the last line on purpose. Don't do cleanup after exec() is called.
+ */
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     ModelAccess modelAccess;
+
     NumberService numberService(modelAccess);
     WindowService windowService(modelAccess);
 
@@ -18,16 +35,19 @@ int main(int argc, char* argv[]) {
     initialState.width = modelAccess.getWindowModel().getWidth();
     initialState.height = modelAccess.getWindowModel().getHeight();
     initialState.isFullscreen = modelAccess.getWindowModel().isFullscreen();
+
     View view(initialState);
 
     Control control(modelAccess, numberService, windowService, view);
 
+    // connect(sender, signal, receiver, slot)
     QObject::connect(&view, &View::debugRequested, &control, &Control::onDebugRequested);
     QObject::connect(&view, &View::buttonClicked, &control, &Control::onButtonClicked);
     QObject::connect(&view, &View::windowStateChanged, &control, &Control::onWindowStateChanged);
     QObject::connect(&view, &View::closeClicked, &app, &QApplication::quit);
 
     control.init();
+
     view.show();
 
     return app.exec();

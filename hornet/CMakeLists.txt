@@ -1,13 +1,30 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.16)
 project(hornet VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+# ---- FreeType (auto-downloaded at configure time) -------------------------
+include(FetchContent)
+FetchContent_Declare(
+    freetype
+    GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
+    GIT_TAG        VER-2-13-2
+    GIT_SHALLOW    TRUE
+)
+set(FT_DISABLE_ZLIB     TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_BZIP2    TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_PNG      TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_HARFBUZZ TRUE CACHE BOOL "" FORCE)
+set(FT_DISABLE_BROTLI   TRUE CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(freetype)
+# --------------------------------------------------------------------------
+
+find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGL OpenGLWidgets)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -22,6 +39,11 @@ set(PROJECT_SOURCES
     view_layer/overlaywidget.cpp
     view_layer/resizehandle.cpp
     view_layer/view.cpp
+    view_layer/customscrollbar.cpp
+    view_layer/editor.cpp
+    view_layer/font_renderer/GlyphAtlas.cpp
+    view_layer/font_renderer/CpuGlyphRenderer.cpp
+
     control_layer/control.cpp
     service_layer/projectservice.cpp
     service_layer/validator.cpp
@@ -31,7 +53,6 @@ set(PROJECT_SOURCES
     service_layer/diskwriterservice.cpp
     resources/resources.qrc
 )
-
 set(PROJECT_HEADERS
     model_layer/modelaccess.h
     model_layer/windowmodel.h
@@ -46,6 +67,12 @@ set(PROJECT_HEADERS
     view_layer/overlaywidget.h
     view_layer/resizehandle.h
     view_layer/view.h
+    view_layer/customscrollbar.h
+    view_layer/editor.h
+    view_layer/font_renderer/GlyphAtlas.h
+
+    view_layer/font_renderer/CpuGlyphRenderer.h
+
     control_layer/control.h
     service_layer/projectservice.h
     service_layer/validator.h
@@ -56,16 +83,22 @@ set(PROJECT_HEADERS
     shared/dto/numberdto.h
     shared/dto/windowdto.h
 )
-
 qt_add_executable(hornet
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
-    view_layer/customscrollbar.h view_layer/customscrollbar.cpp
 )
 
-target_link_libraries(hornet PRIVATE Qt6::Widgets)
-target_include_directories(hornet PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(hornet PRIVATE
+    Qt6::Widgets
+    Qt6::OpenGL
+    Qt6::OpenGLWidgets
+    freetype
+)
+
+target_include_directories(hornet PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 set_target_properties(hornet PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -80,5 +113,4 @@ install(TARGETS hornet
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-
 qt_finalize_executable(hornet)

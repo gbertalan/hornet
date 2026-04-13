@@ -5,7 +5,7 @@ struct WindowDTO;
 class WindowService {
 public:
     explicit WindowService(IModelAccessReadWrite& modelAccess);
-    void saveWindowState(const WindowDTO& dto);
+    void storeWindowState(const WindowDTO& dto);
 
 private:
     IModelAccessReadWrite& m_modelAccess;

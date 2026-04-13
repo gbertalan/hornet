@@ -1,4 +1,5 @@
 #include "view_layer/splitpane.h"
+#include "editor.h"
 #include "theme.h"
 #include <QPainter>
 #include <QPen>
@@ -7,7 +8,7 @@
 #include <QEvent>
 #include <QTimer>
 
-// Handle inline class:
+// SplitPaneHandle inner class:
 
 SplitPaneHandle::SplitPaneHandle(int topPadding, Qt::Orientation orientation, QSplitter* parent)
     : QSplitterHandle(orientation, parent), m_topPadding(topPadding), m_hovered(false) {
@@ -18,18 +19,18 @@ void SplitPaneHandle::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
     painter.fillRect(rect(), Theme::almostBlack());
 
-    // dotted line in the middle
-    QPen dottedPen(Theme::almostWhite(), 1, Qt::DotLine);
-    painter.setPen(dottedPen);
-    int lineX = 3;
-    if (m_hovered)
-    painter.drawLine(lineX, m_topPadding, lineX, height());
-
-
     // solid line on the right edge
     QPen solidPen(Theme::darkerGray(), 1);
     painter.setPen(solidPen);
     painter.drawLine(width() - 1, m_topPadding, width() - 1, height());
+
+    // dotted line in the middle
+    QPen dottedPen(Theme::almostWhite(), 1, Qt::DashLine);
+    painter.setPen(dottedPen);
+    int lineX = 3;
+    if (m_hovered)
+    painter.drawLine(width() - 1, m_topPadding, width() - 1, height());
+
 }
 
 void SplitPaneHandle::enterEvent(QEnterEvent* event) {
@@ -46,7 +47,7 @@ void SplitPaneHandle::leaveEvent(QEvent* event) {
 
 SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     : QSplitter(Qt::Horizontal, parent), m_separatorTopPadding(separatorTopPadding) {
-    setHandleWidth(8);
+    setHandleWidth(7);
     setChildrenCollapsible(false);
 
     m_leftPane  = new QWidget(this);
@@ -75,7 +76,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_scrollArea->viewport()->setStyleSheet("background: transparent;");
 
 
-    m_editorWidget = new QWidget();
+    m_editorWidget = new Editor(this);
     m_editorWidget->setMinimumHeight(2000);
     m_editorWidget->setMinimumWidth(2000);
     m_editorWidget->setStyleSheet("background: transparent;");

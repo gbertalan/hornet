@@ -6,5 +6,11 @@
         <file>icons/tray.png</file>
         <file>icons/titlebar_button_background.png</file>
     </qresource>
-</RCC>
 
+    <qresource prefix="/">
+        <file>fonts/JetBrainsMono-Bold.ttf</file>
+        <file>fonts/NotoSansMono-Bold.ttf</file>
+        <file>fonts/NotoSansCJK-Regular.ttc</file>
+        <file>fonts/OFL.txt</file>
+    </qresource>
+</RCC>

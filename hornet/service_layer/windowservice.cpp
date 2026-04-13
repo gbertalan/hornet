@@ -8,7 +8,7 @@
 WindowService::WindowService(IModelAccessReadWrite& modelAccess)
     : m_modelAccess(modelAccess) {}
 
-void WindowService::saveWindowState(const WindowDTO& dto) {
+void WindowService::storeWindowState(const WindowDTO& dto) {
     m_modelAccess.getWindowModel().setX(dto.x);
     m_modelAccess.getWindowModel().setY(dto.y);
     m_modelAccess.getWindowModel().setWidth(dto.width);

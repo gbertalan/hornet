@@ -27,7 +27,7 @@ void Control::onButtonClicked() {
 }
 
 void Control::onWindowStateChanged(const WindowDTO& dto) {
-    m_windowService.saveWindowState(dto);
+    m_windowService.storeWindowState(dto);
 }
 
 void Control::onDebugRequested() {
