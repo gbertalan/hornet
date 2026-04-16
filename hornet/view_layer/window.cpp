@@ -70,6 +70,8 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
             showFullScreen();
         }
     });
+
+    connect(m_splitPane, &SplitPane::editorStateChanged, this, &Window::editorStateChanged);
 }
 
 void Window::displayNumber(const NumberDTO& dto) {

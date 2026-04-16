@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include "shared/dto/windowdto.h"
+#include <shared/dto/editorvisiblelinesdto.h>
 
 struct NumberDTO;
 class Window;
@@ -20,6 +21,7 @@ signals:
     void windowStateChanged(const WindowDTO& dto);
     void debugRequested();
     void closeClicked();
+    void editorStateChanged(const EditorVisibleLinesDto &dto);
 
 private:
     Window* m_window;

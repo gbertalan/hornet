@@ -78,7 +78,10 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
 
     // Editor:
     // m_editorWidget = new Editor(this);
-    Editor *editor = new Editor(this);
+    EditorSettingsDto editorSettingsDto;
+    editorSettingsDto.fontScale = 0.5;
+    editorSettingsDto.lineHeight = 20;
+    Editor *editor = new Editor(editorSettingsDto, this);
 
     m_scrollArea->setWidgetResizable(false); // must be false — this is the default, just be explicit
     m_scrollArea->setWidget(editor);
@@ -135,6 +138,8 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     });
 
     setAttribute(Qt::WA_StaticContents); // telling Qt that the content doesn't change during resize, this can help with redraw perf.
+
+    connect(editor, &Editor::editorStateChanged, this, &SplitPane::editorStateChanged);
 }
 
 QSplitterHandle* SplitPane::createHandle() {

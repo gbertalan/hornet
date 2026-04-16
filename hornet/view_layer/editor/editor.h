@@ -1,5 +1,8 @@
 #pragma once
 #include <QWidget>
+#include <memory>
+#include <shared/dto/editorsettingsdto.h>
+#include <shared/dto/editorvisiblelinesdto.h>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
@@ -7,10 +10,14 @@ class Editor : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Editor(QWidget *parent = nullptr);
+    explicit Editor(const EditorSettingsDto &settings, QWidget *parent = nullptr);
 
     void updateWidth(int width);
     void updateHeight(int height);
+    void setSettings(const EditorSettingsDto &settings);
+
+signals:
+    void editorStateChanged(const EditorVisibleLinesDto &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -19,10 +26,19 @@ protected:
 
 private:
     void updateSize();
+    int calculateNoOfVisibleLines() const;
+    void sendEditorState();
 
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
 
+    int m_lineHeight = 0;
+    float m_fontScale = 0.0f;
+
     int m_contentWidth = 0;
     int m_contentHeight = 0;
+
+    int m_noOfVisibleLines = 0;
+
+    int count = 0;
 };

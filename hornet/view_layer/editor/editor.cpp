@@ -2,13 +2,22 @@
 #include <QEvent>
 #include <QPainter>
 
-Editor::Editor(QWidget *parent)
+Editor::Editor(const EditorSettingsDto &settings, QWidget *parent)
     : QWidget(parent)
 {
     m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
     m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
     m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
+    m_lineHeight = settings.lineHeight;
+    m_fontScale = settings.fontScale;
+}
+
+void Editor::setSettings(const EditorSettingsDto &settings)
+{
+    m_lineHeight = settings.lineHeight;
+    m_fontScale = settings.fontScale;
+    update();
 }
 
 void Editor::updateWidth(int width)
@@ -31,18 +40,39 @@ void Editor::updateSize()
     resize(w, h);
 }
 
+int Editor::calculateNoOfVisibleLines() const
+{
+    int containerHeight = parentWidget()->height();
+    return (containerHeight / m_lineHeight) + 1;
+}
+
+void Editor::sendEditorState()
+{
+    int noOfVisLines = calculateNoOfVisibleLines();
+    if (noOfVisLines != m_noOfVisibleLines) {
+        EditorVisibleLinesDto dto;
+        dto.noOfVisibleLines = noOfVisLines;
+        m_noOfVisibleLines = noOfVisLines;
+        emit editorStateChanged(dto);
+    }
+}
+
 void Editor::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
     if (parentWidget())
         parentWidget()->installEventFilter(this);
     updateSize();
+    sendEditorState();
 }
 
 bool Editor::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == parentWidget() && event->type() == QEvent::Resize)
+    if (watched == parentWidget() && event->type() == QEvent::Resize) {
         updateSize();
+        sendEditorState();
+        ++count;
+    }
     return QWidget::eventFilter(watched, event);
 }
 
@@ -50,5 +80,5 @@ void Editor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.fillRect(rect(), Qt::red);
-    m_fontRenderer->drawText(painter, 20.f, 30.f, "Hello!", Qt::white, 1.0f);
+    m_fontRenderer->drawText(painter, 20.f, 30.f, "Hello!", Qt::white, m_fontScale);
 }

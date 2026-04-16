@@ -9,6 +9,8 @@
 #include "view_layer/view.h"
 #include <stdexcept>
 
+#include <iostream>
+
 Control::Control(IModelAccessRead& modelAccess, NumberService& service, WindowService& windowService, View& view)
     : m_modelAccess(modelAccess), m_service(service), m_windowService(windowService), m_view(view) {}
 
@@ -28,6 +30,12 @@ void Control::onButtonClicked() {
 
 void Control::onWindowStateChanged(const WindowDTO& dto) {
     m_windowService.storeWindowState(dto);
+}
+
+void Control::onEditorStateChanged(const EditorVisibleLinesDto &dto)
+{
+    // m_windowService.storeWindowState(dto);
+    qDebug() << "Control::onEditorStateChanged called, parent:" << dto.noOfVisibleLines;
 }
 
 void Control::onDebugRequested() {

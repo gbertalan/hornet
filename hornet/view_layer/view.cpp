@@ -10,6 +10,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::debugRequested, this, &View::debugRequested);
     connect(m_window, &Window::windowStateChanged, this, &View::windowStateChanged);
     connect(m_window, &Window::closeClicked, this, &View::closeClicked);
+    connect(m_window, &Window::editorStateChanged, this, &View::editorStateChanged);
 }
 
 void View::show() {

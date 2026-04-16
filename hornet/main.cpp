@@ -45,6 +45,7 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::buttonClicked, &control, &Control::onButtonClicked);
     QObject::connect(&view, &View::windowStateChanged, &control, &Control::onWindowStateChanged);
     QObject::connect(&view, &View::closeClicked, &app, &QApplication::quit);
+    QObject::connect(&view, &View::editorStateChanged, &control, &Control::onEditorStateChanged);
 
     control.init();
 

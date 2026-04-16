@@ -9,8 +9,10 @@ class WindowService;
 class View;
 struct NumberDTO;
 struct WindowDTO;
+struct EditorVisibleLinesDto;
 
-class Control : public QObject {
+class Control : public QObject
+{
     Q_OBJECT
 
 public:
@@ -21,9 +23,10 @@ public slots:
     void onButtonClicked();
     void onDebugRequested();
     void onWindowStateChanged(const WindowDTO& dto);
+    void onEditorStateChanged(const EditorVisibleLinesDto &dto);
 
 private:
-    IModelAccessRead& m_modelAccess;
+    IModelAccessRead &m_modelAccess;
     NumberService& m_service;
     WindowService& m_windowService;
     View& m_view;
