@@ -87,7 +87,7 @@ qt_add_executable(hornet
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
     view_layer/editor/editor.h view_layer/editor/editor.cpp
-    shared/dto_view_to_model/editorsettingsdto.h
+    shared/dto_bidirectional/editorsettingsdto.h
     shared/dto_model_to_view/editortextcontentsdto.h
     shared/dto_view_to_model/editorvisiblelinesdto.h
 
