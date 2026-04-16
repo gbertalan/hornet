@@ -1,8 +1,8 @@
 #pragma once
 #include <QWidget>
 #include <memory>
-#include <shared/dto/editorsettingsdto.h>
-#include <shared/dto/editorvisiblelinesdto.h>
+#include <shared/dto_view_to_model/editorsettingsdto.h>
+#include <shared/dto_view_to_model/editorvisiblelinesdto.h>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
@@ -27,6 +27,7 @@ protected:
 private:
     void updateSize();
     int calculateNoOfVisibleLines() const;
+    int calculateTopLineIndex() const;
     void sendEditorState();
 
     FontAtlas m_fontAtlas;
@@ -39,6 +40,7 @@ private:
     int m_contentHeight = 0;
 
     int m_noOfVisibleLines = 0;
+    int m_topLineIndex = 0;
 
     int count = 0;
 };

@@ -1,6 +1,6 @@
 #include "view_layer/view.h"
+#include "shared/dto_view_to_model/numberdto.h"
 #include "view_layer/window.h"
-#include "shared/dto/numberdto.h"
 
 #include <QMessageBox>
 

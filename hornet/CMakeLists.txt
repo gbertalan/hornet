@@ -79,17 +79,17 @@ set(PROJECT_HEADERS
     service_layer/windowservice.h
     service_layer/diskreaderservice.h
     service_layer/diskwriterservice.h
-    shared/dto/numberdto.h
-    shared/dto/windowdto.h
+    shared/dto_view_to_model/numberdto.h
+    shared/dto_view_to_model/windowdto.h
 )
 qt_add_executable(hornet
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
     view_layer/editor/editor.h view_layer/editor/editor.cpp
-    shared/dto/editorsettingsdto.h
-    shared/dto/editortextcontentsdto.h
-    shared/dto/editorvisiblelinesdto.h
+    shared/dto_view_to_model/editorsettingsdto.h
+    shared/dto_model_to_view/editortextcontentsdto.h
+    shared/dto_view_to_model/editorvisiblelinesdto.h
 
 
 

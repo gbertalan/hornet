@@ -1,6 +1,8 @@
 #include "editor.h"
 #include <QEvent>
 #include <QPainter>
+#include <QScrollArea>
+#include <qscrollbar.h>
 
 Editor::Editor(const EditorSettingsDto &settings, QWidget *parent)
     : QWidget(parent)
@@ -46,13 +48,26 @@ int Editor::calculateNoOfVisibleLines() const
     return (containerHeight / m_lineHeight) + 1;
 }
 
+int Editor::calculateTopLineIndex() const
+{
+    QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
+    if (!scrollArea || m_lineHeight == 0)
+        return 0;
+
+    int topLineIndex = scrollArea->verticalScrollBar()->value() / m_lineHeight;
+    return topLineIndex;
+}
+
 void Editor::sendEditorState()
 {
     int noOfVisLines = calculateNoOfVisibleLines();
-    if (noOfVisLines != m_noOfVisibleLines) {
+    int topLineIndex = calculateTopLineIndex();
+    if (noOfVisLines != m_noOfVisibleLines || topLineIndex != m_topLineIndex) {
         EditorVisibleLinesDto dto;
         dto.noOfVisibleLines = noOfVisLines;
         m_noOfVisibleLines = noOfVisLines;
+        dto.topLineIndex = topLineIndex;
+        m_topLineIndex = topLineIndex;
         emit editorStateChanged(dto);
     }
 }
@@ -60,8 +75,15 @@ void Editor::sendEditorState()
 void Editor::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
-    if (parentWidget())
+    if (parentWidget()) {
         parentWidget()->installEventFilter(this);
+        QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
+        if (scrollArea)
+            connect(scrollArea->verticalScrollBar(),
+                    &QScrollBar::valueChanged,
+                    this,
+                    &Editor::sendEditorState);
+    }
     updateSize();
     sendEditorState();
 }

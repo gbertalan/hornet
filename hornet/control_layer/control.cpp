@@ -4,12 +4,10 @@
 #include "model_layer/windowmodel.h"
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
-#include "shared/dto/numberdto.h"
-#include "shared/dto/windowdto.h"
+#include "shared/dto_view_to_model/numberdto.h"
+#include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
 #include <stdexcept>
-
-#include <iostream>
 
 Control::Control(IModelAccessRead& modelAccess, NumberService& service, WindowService& windowService, View& view)
     : m_modelAccess(modelAccess), m_service(service), m_windowService(windowService), m_view(view) {}
@@ -35,7 +33,8 @@ void Control::onWindowStateChanged(const WindowDTO& dto) {
 void Control::onEditorStateChanged(const EditorVisibleLinesDto &dto)
 {
     // m_windowService.storeWindowState(dto);
-    qDebug() << "Control::onEditorStateChanged called, parent:" << dto.noOfVisibleLines;
+    qDebug() << "Control::onEditorStateChanged called:" << dto.noOfVisibleLines;
+    qDebug() << "Control::onEditorStateChanged called:" << dto.topLineIndex;
 }
 
 void Control::onDebugRequested() {

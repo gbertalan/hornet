@@ -1,20 +1,20 @@
 #include "view_layer/window.h"
-#include "view_layer/titlebar.h"
-#include "view_layer/resizehandle.h"
-#include "shared/dto/numberdto.h"
-#include "theme.h"
+#include <QBitmap>
 #include <QEvent>
-#include <QResizeEvent>
-#include <QMoveEvent>
-#include <QMouseEvent>
 #include <QKeyEvent>
 #include <QMessageBox>
-#include <QPalette>
-#include <QVBoxLayout>
-#include <QBitmap>
+#include <QMouseEvent>
+#include <QMoveEvent>
 #include <QPainter>
-#include "view_layer/splitpane.h"
+#include <QPalette>
+#include <QResizeEvent>
+#include <QVBoxLayout>
+#include "shared/dto_view_to_model/numberdto.h"
+#include "theme.h"
 #include "view_layer/overlaywidget.h"
+#include "view_layer/resizehandle.h"
+#include "view_layer/splitpane.h"
+#include "view_layer/titlebar.h"
 
 static constexpr int HANDLE_THICKNESS = 6;
 static constexpr int CORNER_SIZE = 12;

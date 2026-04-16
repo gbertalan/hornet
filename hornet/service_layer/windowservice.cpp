@@ -1,7 +1,7 @@
 #include "windowservice.h"
 #include "model_layer/imodelaccess_readwrite.h"
 #include "model_layer/windowmodel.h"
-#include "shared/dto/windowdto.h"
+#include "shared/dto_view_to_model/windowdto.h"
 
 #include <qdebug.h>
 

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QObject>
-#include "shared/dto/windowdto.h"
-#include <shared/dto/editorvisiblelinesdto.h>
+#include "shared/dto_view_to_model/windowdto.h"
+#include <shared/dto_view_to_model/editorvisiblelinesdto.h>
 
 struct NumberDTO;
 class Window;

@@ -1,7 +1,7 @@
 #pragma once
 
+#include "shared/dto_view_to_model/numberdto.h"
 #include "validator.h"
-#include "shared/dto/numberdto.h"
 
 class IModelAccessReadWrite;
 

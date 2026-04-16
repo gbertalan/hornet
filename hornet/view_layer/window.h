@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "shared/dto/windowdto.h"
+#include "shared/dto_view_to_model/windowdto.h"
 
 struct NumberDTO;
 struct EditorVisibleLinesDto;
