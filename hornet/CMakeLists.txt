@@ -40,7 +40,7 @@ set(PROJECT_SOURCES
     view_layer/resizehandle.cpp
     view_layer/view.cpp
     view_layer/customscrollbar.cpp
-    view_layer/editor.cpp
+
     view_layer/font_renderer/GlyphAtlas.cpp
     view_layer/font_renderer/CpuGlyphRenderer.cpp
 
@@ -68,9 +68,8 @@ set(PROJECT_HEADERS
     view_layer/resizehandle.h
     view_layer/view.h
     view_layer/customscrollbar.h
-    view_layer/editor.h
-    view_layer/font_renderer/GlyphAtlas.h
 
+    view_layer/font_renderer/GlyphAtlas.h
     view_layer/font_renderer/CpuGlyphRenderer.h
 
     control_layer/control.h
@@ -87,6 +86,12 @@ qt_add_executable(hornet
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
+    view_layer/editor/editor.h view_layer/editor/editor.cpp
+
+
+
+
+
 )
 
 target_link_libraries(hornet PRIVATE

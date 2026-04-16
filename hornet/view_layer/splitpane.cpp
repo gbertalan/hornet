@@ -1,12 +1,13 @@
 #include "view_layer/splitpane.h"
-#include "editor.h"
-#include "theme.h"
+#include <QEvent>
 #include <QPainter>
 #include <QPen>
-#include <QVBoxLayout>
-#include "view_layer/customscrollbar.h"
-#include <QEvent>
 #include <QTimer>
+#include <QVBoxLayout>
+#include "theme.h"
+#include "view_layer/customscrollbar.h"
+#include <view_layer/editor/editor.h>
+#include <view_layer/editor/editorcontainer.h>
 
 // SplitPaneHandle inner class:
 
@@ -17,7 +18,7 @@ SplitPaneHandle::SplitPaneHandle(int topPadding, Qt::Orientation orientation, QS
 
 void SplitPaneHandle::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
-    painter.fillRect(rect(), Theme::almostBlack());
+    // painter.fillRect(rect(), Theme::almostBlack());
 
     // solid line on the right edge
     QPen solidPen(Theme::darkerGray(), 1);
@@ -75,12 +76,16 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
                                 );
     m_scrollArea->viewport()->setStyleSheet("background: transparent;");
 
+    // Editor:
+    // m_editorWidget = new Editor(this);
+    Editor *editor = new Editor(this);
 
-    m_editorWidget = new Editor(this);
-    m_editorWidget->setMinimumHeight(2000);
-    m_editorWidget->setMinimumWidth(2000);
-    m_editorWidget->setStyleSheet("background: transparent;");
-    m_scrollArea->setWidget(m_editorWidget);
+    m_scrollArea->setWidgetResizable(false); // must be false — this is the default, just be explicit
+    m_scrollArea->setWidget(editor);
+
+    editor->show();
+    editor->updateWidth(200);
+    editor->updateHeight(2000);
 
     QVBoxLayout* leftLayout = new QVBoxLayout(m_leftPane);
     leftLayout->setContentsMargins(0, 40, 0, 0);
@@ -102,7 +107,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_horizontalScrollBar->hide();
 
     m_scrollArea->installEventFilter(this);
-    m_editorWidget->installEventFilter(this);
+    editor->installEventFilter(this);
     m_verticalScrollBar->installEventFilter(this);
     m_horizontalScrollBar->installEventFilter(this);
 
@@ -111,7 +116,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
         "QScrollBar::handle:vertical { background: transparent; }"
         "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }"
         "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }"
-        "QScrollBar:horizontal { background: transparent; height: 9px; }"
+        "QScrollBar:horizontal { background: transparent; height: 11px; }"
         "QScrollBar::handle:horizontal { background: transparent; }"
         "QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0px; }"
         "QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal { background: transparent; }"
@@ -142,10 +147,6 @@ QWidget* SplitPane::leftPane() const {
 
 QWidget* SplitPane::rightPane() const {
     return m_rightPane;
-}
-
-QWidget* SplitPane::editorWidget() const {
-    return m_editorWidget;
 }
 
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {

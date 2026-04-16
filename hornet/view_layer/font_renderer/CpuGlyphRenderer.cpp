@@ -77,3 +77,8 @@ void CpuGlyphRenderer::drawText(QPainter&      painter,
         ++col;
     }
 }
+
+float CpuGlyphRenderer::charWidth(float scale) const
+{
+    return m_atlas.textWidth(1, scale);
+}

@@ -42,11 +42,9 @@ private:
     QWidget* m_leftPane;
     QWidget* m_rightPane;
     QScrollArea* m_scrollArea;
-    QWidget* m_editorWidget;
     CustomScrollBar* m_verticalScrollBar;
     CustomScrollBar* m_horizontalScrollBar;
     QTimer* m_scrollBarHideTimer;
 
 public:
-    QWidget* editorWidget() const;
 };
