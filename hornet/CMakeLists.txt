@@ -41,8 +41,8 @@ set(PROJECT_SOURCES
     view_layer/view.cpp
     view_layer/customscrollbar.cpp
 
-    view_layer/font_renderer/GlyphAtlas.cpp
-    view_layer/font_renderer/CpuGlyphRenderer.cpp
+    view_layer/font_renderer/FontAtlas.cpp
+    view_layer/font_renderer/FontRenderer.cpp
 
     control_layer/control.cpp
     service_layer/projectservice.cpp
@@ -69,8 +69,8 @@ set(PROJECT_HEADERS
     view_layer/view.h
     view_layer/customscrollbar.h
 
-    view_layer/font_renderer/GlyphAtlas.h
-    view_layer/font_renderer/CpuGlyphRenderer.h
+    view_layer/font_renderer/FontAtlas.h
+    view_layer/font_renderer/FontRenderer.h
 
     control_layer/control.h
     service_layer/projectservice.h

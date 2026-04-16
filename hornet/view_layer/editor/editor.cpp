@@ -4,7 +4,12 @@
 
 Editor::Editor(QWidget *parent)
     : QWidget(parent)
-{}
+{
+    m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
+    m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
+    m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
+    m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
+}
 
 void Editor::updateWidth(int width)
 {
@@ -45,4 +50,5 @@ void Editor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.fillRect(rect(), Qt::red);
+    m_fontRenderer->drawText(painter, 20.f, 30.f, "Hello!", Qt::white, 1.0f);
 }

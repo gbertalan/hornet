@@ -14,9 +14,9 @@
 #include <vector>
 
 /**
- * @brief The GlyphAtlas class The atlas is a large image that holds the images of characters we have encountered.
+ * @brief The FontAtlas class The atlas is a large image that holds the images of characters we have encountered.
  */
-class GlyphAtlas
+class FontAtlas
 {
 public:
     static constexpr int BakeSize  = 32;    // character render height in pixels
@@ -32,12 +32,12 @@ public:
         int   bearingY;   // distance from top edge
     };
 
-    GlyphAtlas();
-    ~GlyphAtlas();
+    FontAtlas();
+    ~FontAtlas();
 
-    // Preventing multiple instances of GLyphAtlas:
-    GlyphAtlas(const GlyphAtlas&) = delete;
-    GlyphAtlas& operator=(const GlyphAtlas&) = delete;
+    // Preventing multiple instances of FontAtlas:
+    FontAtlas(const FontAtlas &) = delete;
+    FontAtlas &operator=(const FontAtlas &) = delete;
 
     // Two ways to load a font:
 

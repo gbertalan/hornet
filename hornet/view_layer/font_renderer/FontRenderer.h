@@ -1,13 +1,13 @@
 #pragma once
 
-#include "GlyphAtlas.h"
+#include "FontAtlas.h"
 
 #include <QPainter>
 
-class CpuGlyphRenderer
+class FontRenderer
 {
 public:
-    explicit CpuGlyphRenderer(GlyphAtlas& atlas);
+    explicit FontRenderer(FontAtlas &atlas);
 
     void drawText(QPainter&      painter,
                   float          x,
@@ -18,6 +18,6 @@ public:
     float charWidth(float scale = 1.0f) const;
 
 private:
-    GlyphAtlas& m_atlas;
+    FontAtlas &m_atlas;
 };
 

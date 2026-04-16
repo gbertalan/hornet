@@ -1,20 +1,20 @@
-#include "GlyphAtlas.h"
+#include "FontAtlas.h"
 #include <QFile>
 #include <cstring>
 
-GlyphAtlas::GlyphAtlas()
+FontAtlas::FontAtlas()
 {
     FT_Init_FreeType(&m_ft); // creates FreeType instance, stores it in m_ft.
 }
 
-GlyphAtlas::~GlyphAtlas()
+FontAtlas::~FontAtlas()
 {
     for (FT_Face face : m_faces)
         FT_Done_Face(face);
     FT_Done_FreeType(m_ft);
 }
 
-bool GlyphAtlas::addFont(const QString& path, int faceIndex)
+bool FontAtlas::addFont(const QString &path, int faceIndex)
 {
     QFile f(path);
     if (!f.open(QIODevice::ReadOnly))
@@ -22,7 +22,7 @@ bool GlyphAtlas::addFont(const QString& path, int faceIndex)
     return addFontFromData(f.readAll(), faceIndex);
 }
 
-bool GlyphAtlas::addFontFromData(const QByteArray& data, int faceIndex)
+bool FontAtlas::addFontFromData(const QByteArray &data, int faceIndex)
 {
     m_fontData.push_back(data);
     const QByteArray& stored = m_fontData.back();
@@ -50,7 +50,7 @@ bool GlyphAtlas::addFontFromData(const QByteArray& data, int faceIndex)
     return true;
 }
 
-void GlyphAtlas::recomputeCellMetrics()
+void FontAtlas::recomputeCellMetrics()
 {
     if (m_faces.empty())
         return;
@@ -68,7 +68,7 @@ void GlyphAtlas::recomputeCellMetrics()
     m_ascenderPx = static_cast<int>(face->size->metrics.ascender >> 6);
 }
 
-std::pair<int, QRect> GlyphAtlas::allocRect(int w, int h)
+std::pair<int, QRect> FontAtlas::allocRect(int w, int h)
 {
     const int pw = w + GlyphPad;
     const int ph = h + GlyphPad;
@@ -111,7 +111,7 @@ std::pair<int, QRect> GlyphAtlas::allocRect(int w, int h)
     return { pi, QRect(0, 0, w, h) };
 }
 
-void GlyphAtlas::copyGlyphPixelDataToAtlas(int pageIdx, QRect rect, const FT_Bitmap& bmp)
+void FontAtlas::copyGlyphPixelDataToAtlas(int pageIdx, QRect rect, const FT_Bitmap &bmp)
 {
     QImage& pg = m_atlases[pageIdx];
     for (int row = 0; row < rect.height(); ++row)
@@ -122,7 +122,7 @@ void GlyphAtlas::copyGlyphPixelDataToAtlas(int pageIdx, QRect rect, const FT_Bit
     }
 }
 
-const GlyphAtlas::GlyphInfo* GlyphAtlas::ensureGlyph(uint32_t codepoint)
+const FontAtlas::GlyphInfo *FontAtlas::ensureGlyph(uint32_t codepoint)
 {
     auto it = m_cache.find(codepoint);
     if (it != m_cache.end())

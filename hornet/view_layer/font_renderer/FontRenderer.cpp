@@ -1,15 +1,11 @@
-#include "CpuGlyphRenderer.h"
+#include "FontRenderer.h"
 
-CpuGlyphRenderer::CpuGlyphRenderer(GlyphAtlas& atlas)
+FontRenderer::FontRenderer(FontAtlas &atlas)
     : m_atlas(atlas)
 {}
 
-void CpuGlyphRenderer::drawText(QPainter&      painter,
-                                float          x,
-                                float          y,
-                                const QString& text,
-                                const QColor&  color,
-                                float          scale)
+void FontRenderer::drawText(
+    QPainter &painter, float x, float y, const QString &text, const QColor &color, float scale)
 {
     if (m_atlas.cellWidth() == 0 || text.isEmpty())
         return;
@@ -29,8 +25,7 @@ void CpuGlyphRenderer::drawText(QPainter&      painter,
 
     for (uint cp : codepoints)
     {
-        const GlyphAtlas::GlyphInfo* g =
-            m_atlas.ensureGlyph(static_cast<uint32_t>(cp));
+        const FontAtlas::GlyphInfo *g = m_atlas.ensureGlyph(static_cast<uint32_t>(cp));
 
         const float cellOriginX = x + static_cast<float>(col) * cellW;
 
@@ -78,7 +73,7 @@ void CpuGlyphRenderer::drawText(QPainter&      painter,
     }
 }
 
-float CpuGlyphRenderer::charWidth(float scale) const
+float FontRenderer::charWidth(float scale) const
 {
     return m_atlas.textWidth(1, scale);
 }

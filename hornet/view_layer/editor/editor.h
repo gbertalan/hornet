@@ -1,5 +1,7 @@
 #pragma once
 #include <QWidget>
+#include <view_layer/font_renderer/FontAtlas.h>
+#include <view_layer/font_renderer/FontRenderer.h>
 
 class Editor : public QWidget
 {
@@ -17,6 +19,9 @@ protected:
 
 private:
     void updateSize();
+
+    FontAtlas m_fontAtlas;
+    std::unique_ptr<FontRenderer> m_fontRenderer;
 
     int m_contentWidth = 0;
     int m_contentHeight = 0;
