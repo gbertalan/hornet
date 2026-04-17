@@ -90,6 +90,8 @@ qt_add_executable(hornet
     shared/dto_bidirectional/editorsettingsdto.h
     shared/dto_model_to_view/editortextcontentsdto.h
     shared/dto_view_to_model/editorvisiblelinesdto.h
+    service_layer/editorservice.h service_layer/editorservice.cpp
+    model_layer/editormodel.h model_layer/editormodel.cpp
 
 
 

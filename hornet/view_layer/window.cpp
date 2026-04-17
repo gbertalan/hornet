@@ -114,12 +114,12 @@ void Window::resizeEvent(QResizeEvent* event) {
         m_windowedWidth = width();
         m_windowedHeight = height();
 
-        WindowDTO dto;
-        dto.x = x();
-        dto.y = y();
-        dto.width = width();
-        dto.height = height();
-        dto.isFullscreen = false;
+        int x = this->x();
+        int y = this->y();
+        int width = this->width();
+        int height = this->height();
+        bool isFullscreen = false;
+        WindowDTO dto{x, y, width, height, isFullscreen};
         emit windowStateChanged(dto);
 
         QBitmap maskBitmap(size());
@@ -141,12 +141,12 @@ void Window::moveEvent(QMoveEvent* event) {
         m_windowedX = x();
         m_windowedY = y();
 
-        WindowDTO dto;
-        dto.x = x();
-        dto.y = y();
-        dto.width = width();
-        dto.height = height();
-        dto.isFullscreen = false;
+        int x = this->x();
+        int y = this->y();
+        int width = this->width();
+        int height = this->height();
+        bool isFullscreen = false;
+        WindowDTO dto{x, y, width, height, isFullscreen};
         emit windowStateChanged(dto);
     }
 }
@@ -167,12 +167,13 @@ void Window::changeEvent(QEvent* event) {
         m_handleBottomLeft->setVisible(!fullscreen);
         m_handleBottomRight->setVisible(!fullscreen);
 
-        WindowDTO dto;
-        dto.x = x();
-        dto.y = y();
-        dto.width = m_windowedWidth;
-        dto.height = m_windowedHeight;
-        dto.isFullscreen = fullscreen;
+        int x = this->x();
+        int y = this->y();
+        int width = m_windowedWidth;
+        int height = m_windowedHeight;
+        bool isFullscreen = fullscreen;
+        WindowDTO dto{x, y, width, height, isFullscreen};
+
         emit windowStateChanged(dto);
     }
     if (event->type() == QEvent::ActivationChange) {

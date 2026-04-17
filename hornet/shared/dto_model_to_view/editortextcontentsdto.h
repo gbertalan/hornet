@@ -5,4 +5,8 @@
 struct EditorTextContentsDto
 {
     QVector<QString> textLines;
+
+    explicit EditorTextContentsDto(QVector<QString> textLines)
+        : textLines(textLines)
+    {}
 };

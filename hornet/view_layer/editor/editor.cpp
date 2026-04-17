@@ -63,11 +63,9 @@ void Editor::sendEditorState()
     int noOfVisLines = calculateNoOfVisibleLines();
     int topLineIndex = calculateTopLineIndex();
     if (noOfVisLines != m_noOfVisibleLines || topLineIndex != m_topLineIndex) {
-        EditorVisibleLinesDto dto;
-        dto.noOfVisibleLines = noOfVisLines;
         m_noOfVisibleLines = noOfVisLines;
-        dto.topLineIndex = topLineIndex;
         m_topLineIndex = topLineIndex;
+        EditorVisibleLinesDto dto{m_noOfVisibleLines, m_topLineIndex};
         emit editorStateChanged(dto);
     }
 }

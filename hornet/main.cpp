@@ -1,9 +1,10 @@
 #include <QApplication>
+#include "control_layer/control.h"
 #include "model_layer/modelaccess.h"
+#include "service_layer/editorservice.h"
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
 #include "view_layer/view.h"
-#include "control_layer/control.h"
 
 /**
  * @brief main The main function
@@ -28,17 +29,18 @@ int main(int argc, char* argv[]) {
 
     NumberService numberService(modelAccess);
     WindowService windowService(modelAccess);
+    EditorService editorService(modelAccess);
 
-    WindowDTO initialState;
-    initialState.x = modelAccess.getWindowModel().getX();
-    initialState.y = modelAccess.getWindowModel().getY();
-    initialState.width = modelAccess.getWindowModel().getWidth();
-    initialState.height = modelAccess.getWindowModel().getHeight();
-    initialState.isFullscreen = modelAccess.getWindowModel().isFullscreen();
+    int x = modelAccess.getWindowModel().getX();
+    int y = modelAccess.getWindowModel().getY();
+    int width = modelAccess.getWindowModel().getWidth();
+    int height = modelAccess.getWindowModel().getHeight();
+    bool isFullscreen = modelAccess.getWindowModel().isFullscreen();
+    WindowDTO initialState{x, y, width, height, isFullscreen};
 
     View view(initialState);
 
-    Control control(modelAccess, numberService, windowService, view);
+    Control control(modelAccess, numberService, windowService, editorService, view);
 
     // connect(sender, signal, receiver, slot)
     QObject::connect(&view, &View::debugRequested, &control, &Control::onDebugRequested);
