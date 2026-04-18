@@ -4,7 +4,7 @@
 #include "shared/dto_view_to_model/windowdto.h"
 
 struct NumberDTO;
-struct EditorVisibleLinesDto;
+struct EditorVisibleLinesDTO;
 class TitleBar;
 class ResizeHandle;
 class SplitPane;
@@ -24,7 +24,7 @@ signals:
     void debugRequested();
     void windowStateChanged(const WindowDTO& dto);
     void closeClicked();
-    void editorStateChanged(const EditorVisibleLinesDto &dto);
+    void editorStateChanged(const EditorVisibleLinesDTO &dto);
 
 private:
     TitleBar* m_titleBar;

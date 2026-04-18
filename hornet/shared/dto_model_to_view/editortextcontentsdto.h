@@ -2,11 +2,17 @@
 #include <QString>
 #include <QVector>
 
-struct EditorTextContentsDto
+struct EditorTextContentsDTO
 {
-    QVector<QString> textLines;
+    QVector<QString> textLinesToDisplay;
+    int noOfAllLines;
+    int noOfCharsOfLongestLine;
 
-    explicit EditorTextContentsDto(QVector<QString> textLines)
-        : textLines(textLines)
+    explicit EditorTextContentsDTO(QVector<QString> textLinesToDisplay,
+                                   int noOfAllLines,
+                                   int noOfCharsOfLongestLine)
+        : textLinesToDisplay(textLinesToDisplay)
+        , noOfAllLines(noOfAllLines)
+        , noOfCharsOfLongestLine(noOfCharsOfLongestLine)
     {}
 };

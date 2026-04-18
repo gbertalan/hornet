@@ -21,7 +21,7 @@ signals:
     void windowStateChanged(const WindowDTO& dto);
     void debugRequested();
     void closeClicked();
-    void editorStateChanged(const EditorVisibleLinesDto &dto);
+    void editorStateChanged(const EditorVisibleLinesDTO &dto);
 
 private:
     Window* m_window;

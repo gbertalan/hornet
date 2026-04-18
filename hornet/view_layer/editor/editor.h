@@ -10,14 +10,14 @@ class Editor : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Editor(const EditorSettingsDto &settings, QWidget *parent = nullptr);
+    explicit Editor(const EditorSettingsDTO &settings, QWidget *parent = nullptr);
 
     void updateWidth(int width);
     void updateHeight(int height);
-    void setSettings(const EditorSettingsDto &settings);
+    void setSettings(const EditorSettingsDTO &settings);
 
 signals:
-    void editorStateChanged(const EditorVisibleLinesDto &dto);
+    void editorStateChanged(const EditorVisibleLinesDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

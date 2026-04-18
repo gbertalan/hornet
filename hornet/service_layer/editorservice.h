@@ -1,11 +1,11 @@
 class IModelAccessReadWrite;
-struct EditorVisibleLinesDto;
+struct EditorVisibleLinesDTO;
 
 class EditorService
 {
 public:
     explicit EditorService(IModelAccessReadWrite &modelAccess);
-    void storeEditorState(const EditorVisibleLinesDto &dto);
+    void storeEditorState(const EditorVisibleLinesDTO &dto);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

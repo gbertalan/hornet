@@ -44,7 +44,7 @@ void Control::onWindowStateChanged(const WindowDTO &dto)
     m_windowService.storeWindowState(dto);
 }
 
-void Control::onEditorStateChanged(const EditorVisibleLinesDto &dto)
+void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
 {
     m_editorService.storeEditorState(dto);
 }

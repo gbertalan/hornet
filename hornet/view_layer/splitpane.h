@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QScrollBar>
 
-struct EditorVisibleLinesDto;
+struct EditorVisibleLinesDTO;
 class CustomScrollBar;
 
 class SplitPaneHandle : public QSplitterHandle {
@@ -35,7 +35,7 @@ public:
     QWidget* rightPane() const;
 
 signals:
-    void editorStateChanged(const EditorVisibleLinesDto &dto);
+    void editorStateChanged(const EditorVisibleLinesDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

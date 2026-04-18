@@ -80,9 +80,9 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     // m_editorWidget = new Editor(this);
     int lineHeight = 20;
     float fontScale = 0.5;
-    EditorSettingsDto editorSettingsDto{lineHeight, fontScale};
+    EditorSettingsDTO editorSettingsDTO{lineHeight, fontScale};
 
-    Editor *editor = new Editor(editorSettingsDto, this);
+    Editor *editor = new Editor(editorSettingsDTO, this);
 
     m_scrollArea->setWidgetResizable(false); // must be false — this is the default, just be explicit
     m_scrollArea->setWidget(editor);

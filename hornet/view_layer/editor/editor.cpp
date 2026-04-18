@@ -4,7 +4,7 @@
 #include <QScrollArea>
 #include <qscrollbar.h>
 
-Editor::Editor(const EditorSettingsDto &settings, QWidget *parent)
+Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     : QWidget(parent)
 {
     m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
@@ -15,7 +15,7 @@ Editor::Editor(const EditorSettingsDto &settings, QWidget *parent)
     m_fontScale = settings.fontScale;
 }
 
-void Editor::setSettings(const EditorSettingsDto &settings)
+void Editor::setSettings(const EditorSettingsDTO &settings)
 {
     m_lineHeight = settings.lineHeight;
     m_fontScale = settings.fontScale;
@@ -65,7 +65,7 @@ void Editor::sendEditorState()
     if (noOfVisLines != m_noOfVisibleLines || topLineIndex != m_topLineIndex) {
         m_noOfVisibleLines = noOfVisLines;
         m_topLineIndex = topLineIndex;
-        EditorVisibleLinesDto dto{m_noOfVisibleLines, m_topLineIndex};
+        EditorVisibleLinesDTO dto{m_noOfVisibleLines, m_topLineIndex};
         emit editorStateChanged(dto);
     }
 }
