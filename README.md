@@ -12,7 +12,7 @@ This project follows the **MVC (Model-View-Control)** pattern with an additional
 - **View** layer: the `View` (which creates its internal `Qt` components) and
 - **Control** layer: the `Control` class.
   
-Main also connects View's *signals* to Control's *slots*.
+Main connects View's *signals* to Control's *slots*.
 
 ![Design overview](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/layers.png)
 
@@ -32,3 +32,18 @@ Main also connects View's *signals* to Control's *slots*.
 
 ---
 ### Inter-Layer Communication
+**Path #1:** View -> Control
+
+A UI component emits a signal to its parent. The signal propagates through the component hierarchy upward to `Main`, which then delegates it to `Control`.
+
+**Path #2:** Control -> Model
+
+`Service` has a public API. `Control` calls a function of `Service`, `Service` has read/write access to `Model`.
+
+**Path #3:** Model -> Control
+
+`Control` has direct read-only access to `Model`.
+
+**Path #4:** Control -> View
+
+`View` has a public API. `Control` calls a function of `View`. The call propagates down the UI component hierarchy until it reaches its destination.
