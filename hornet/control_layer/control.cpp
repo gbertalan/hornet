@@ -49,6 +49,11 @@ void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
     m_editorService.storeEditorState(dto);
 }
 
+void Control::sendTextToEditor()
+{
+    // vector lines = m_modelAccess.getEditorModel(). lines
+}
+
 void Control::onDebugRequested()
 {
 #ifdef QT_DEBUG

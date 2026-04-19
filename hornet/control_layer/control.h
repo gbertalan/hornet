@@ -31,6 +31,8 @@ public slots:
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
 
 private:
+    void sendTextToEditor();
+
     IModelAccessRead &m_modelAccess;
     NumberService& m_service;
     WindowService& m_windowService;
