@@ -7,10 +7,10 @@ This project follows the **MVC (Model-View-Control)** pattern with an additional
 ---
 ### Layers
 `Main` instantiates the core class of each layer::
-- `ModelAccess` (which implicitly creats the `Model` classes),
-- all `Service` classes,
-- `View` (which creates its internal `Qt` components) and
-- `Control`.
+- **Model** layer: `ModelAccess` class (which implicitly creats the `Model` classes),
+- **Service** layer: all `Service` classes,
+- **View** layer: the `View` (which creates its internal `Qt` components) and
+- **Control** layer: the `Control` class.
   
 Main also connects View's *signals* to Control's *slots*.
 
@@ -18,16 +18,16 @@ Main also connects View's *signals* to Control's *slots*.
 
 
 #### Layer Responsibilities
-- **Model**  
+- **Model** layer<br>
   Data storage only.
 
-- **Service**  
+- **Service**  layer<br>
   Business logic only.
 
-- **View**  
+- **View**  layer<br>
   Qt GUI.
 
-- **Controller**  
+- **Control**  layer<br>
   Coordination only.
 
 ---
