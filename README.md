@@ -47,3 +47,13 @@ A UI component emits a signal to its parent. The signal propagates through the c
 **Path #4:** Control -> View
 
 `View` has a public API. `Control` calls a function of `View`. The call propagates down the UI component hierarchy until it reaches its destination.
+
+#### DTOs
+
+When data is forwarded between layers, it is always contained in a **DTO**. 
+
+The *sender* **creates** and **writes** the DTO, the *receiver* only **reads** it.
+
+DTOs contain **values**, not pointers or references.
+
+Consequence: functions that are used for inter-layer communication have either **no parameters**, or **one parameter** that is a **DTO**.
