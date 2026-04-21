@@ -78,8 +78,10 @@ public:
 
     float textWidth(int numChars, float scale) const
     {
-        return static_cast<float>(numChars) * static_cast<float>(m_cellWidth) * scale;
+        return static_cast<float>(numChars) * static_cast<float>(cellWidth()) * scale;
     }
+
+    float textHeight(float scale) const { return static_cast<float>(cellHeight()) * scale; }
 
     /**
      * @brief ensureGlyph It guarantees that the given character is rasterized and in the atlas.

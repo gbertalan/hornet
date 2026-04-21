@@ -14,3 +14,21 @@ void EditorService::storeEditorState(const EditorVisibleLinesDTO &dto)
     m_modelAccess.getEditorModel().setNoOfVisibleLines(dto.noOfVisibleLines);
     m_modelAccess.getEditorModel().setTopLineIndex(dto.topLineIndex);
 }
+
+std::vector<std::u32string> EditorService::retrieveActiveLines()
+{
+    std::vector<std::u32string> visibleLines;
+    int topLineIndex = m_modelAccess.getEditorModel().getTopLineIndex();
+    int noOfVisLines = m_modelAccess.getEditorModel().getNoOfVisibleLines();
+    std::vector<std::u32string> allLines = m_modelAccess.getEditorModel().getTextLines();
+    int lastLineIndex = std::min(topLineIndex + noOfVisLines, static_cast<int>(allLines.size()));
+    for (int i = topLineIndex; i < lastLineIndex; ++i) {
+        visibleLines.push_back(allLines.at(i));
+    }
+    return visibleLines;
+}
+
+void EditorService::setTextLines(std::vector<std::u32string> textLines)
+{
+    m_modelAccess.getEditorModel().setTextLines(std::move(textLines));
+}

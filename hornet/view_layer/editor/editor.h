@@ -6,6 +6,8 @@
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
+class EditorTextContentsDTO;
+
 class Editor : public QWidget
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     void updateWidth(int width);
     void updateHeight(int height);
     void setSettings(const EditorSettingsDTO &settings);
+    void updateLines(const EditorTextContentsDTO &dto);
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
@@ -33,8 +36,8 @@ private:
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
 
-    int m_lineHeight = 0;
-    float m_fontScale = 0.0f;
+    int m_lineHeight;
+    float m_fontScale;
 
     int m_contentWidth = 0;
     int m_contentHeight = 0;
@@ -42,5 +45,8 @@ private:
     int m_noOfVisibleLines = 0;
     int m_topLineIndex = 0;
 
-    int count = 0;
+    QString m_fileType;
+    QVector<QString> m_textLinesToDisplay;
+
+    // int count = 0;
 };

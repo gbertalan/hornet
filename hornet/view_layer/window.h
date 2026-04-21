@@ -5,6 +5,7 @@
 
 struct NumberDTO;
 struct EditorVisibleLinesDTO;
+struct EditorTextContentsDTO;
 class TitleBar;
 class ResizeHandle;
 class SplitPane;
@@ -18,6 +19,7 @@ public:
     void displayNumber(const NumberDTO& dto);
     void restoreWindowedSize();
     void restoreWindowedLocation();
+    void updateEditorLines(const EditorTextContentsDTO &dto);
 
 signals:
     void buttonClicked();

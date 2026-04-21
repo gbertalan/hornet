@@ -2,7 +2,9 @@
 #include <QEvent>
 #include <QPainter>
 #include <QScrollArea>
+#include "view_layer/theme.h"
 #include <qscrollbar.h>
+#include <shared/dto_model_to_view/editortextcontentsdto.h>
 
 Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     : QWidget(parent)
@@ -24,14 +26,18 @@ void Editor::setSettings(const EditorSettingsDTO &settings)
 
 void Editor::updateWidth(int width)
 {
-    m_contentWidth = width;
-    updateSize();
+    if (m_contentWidth != width) {
+        m_contentWidth = width;
+        updateSize();
+    }
 }
 
 void Editor::updateHeight(int height)
 {
-    m_contentHeight = height;
-    updateSize();
+    if (m_contentHeight != height) {
+        m_contentHeight = height;
+        updateSize();
+    }
 }
 
 void Editor::updateSize()
@@ -70,6 +76,15 @@ void Editor::sendEditorState()
     }
 }
 
+void Editor::updateLines(const EditorTextContentsDTO &dto)
+{
+    m_textLinesToDisplay = dto.textLinesToDisplay;
+    updateHeight(dto.noOfAllLines * m_lineHeight);
+    updateWidth((dto.noOfCharsOfLongestLine + 2) * m_fontAtlas.cellWidth() * m_fontScale);
+    m_fileType = dto.fileType;
+    update();
+}
+
 void Editor::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
@@ -91,7 +106,6 @@ bool Editor::eventFilter(QObject *watched, QEvent *event)
     if (watched == parentWidget() && event->type() == QEvent::Resize) {
         updateSize();
         sendEditorState();
-        ++count;
     }
     return QWidget::eventFilter(watched, event);
 }
@@ -99,6 +113,12 @@ bool Editor::eventFilter(QObject *watched, QEvent *event)
 void Editor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Qt::red);
-    m_fontRenderer->drawText(painter, 20.f, 30.f, "Hello!", Qt::white, m_fontScale);
+
+    for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
+        float x = 5.f;
+        float y = (m_topLineIndex + i) * m_lineHeight
+                  + (m_lineHeight - m_fontAtlas.cellHeight()) / 2.f;
+        m_fontRenderer
+            ->drawText(painter, x, y, m_textLinesToDisplay[i], Theme::darkAmber(), m_fontScale);
+    }
 }

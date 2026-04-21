@@ -24,3 +24,8 @@ void View::displayNumber(const NumberDTO& dto) {
 void View::showError(const QString& message) {
     QMessageBox::warning(m_window, "Error", message, QMessageBox::Ok);
 }
+
+void View::updateEditorLines(const EditorTextContentsDTO &dto)
+{
+    m_window->updateEditorLines(dto);
+}

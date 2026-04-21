@@ -82,14 +82,14 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     float fontScale = 0.5;
     EditorSettingsDTO editorSettingsDTO{lineHeight, fontScale};
 
-    Editor *editor = new Editor(editorSettingsDTO, this);
+    m_editor = new Editor(editorSettingsDTO, this);
 
     m_scrollArea->setWidgetResizable(false); // must be false — this is the default, just be explicit
-    m_scrollArea->setWidget(editor);
+    m_scrollArea->setWidget(m_editor);
 
-    editor->show();
-    editor->updateWidth(200);
-    editor->updateHeight(2000);
+    m_editor->show();
+    m_editor->updateWidth(200);
+    m_editor->updateHeight(2000);
 
     QVBoxLayout* leftLayout = new QVBoxLayout(m_leftPane);
     leftLayout->setContentsMargins(0, 40, 0, 0);
@@ -111,7 +111,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_horizontalScrollBar->hide();
 
     m_scrollArea->installEventFilter(this);
-    editor->installEventFilter(this);
+    m_editor->installEventFilter(this);
     m_verticalScrollBar->installEventFilter(this);
     m_horizontalScrollBar->installEventFilter(this);
 
@@ -140,7 +140,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
 
     setAttribute(Qt::WA_StaticContents); // telling Qt that the content doesn't change during resize, this can help with redraw perf.
 
-    connect(editor, &Editor::editorStateChanged, this, &SplitPane::editorStateChanged);
+    connect(m_editor, &Editor::editorStateChanged, this, &SplitPane::editorStateChanged);
 }
 
 QSplitterHandle* SplitPane::createHandle() {
@@ -153,6 +153,11 @@ QWidget* SplitPane::leftPane() const {
 
 QWidget* SplitPane::rightPane() const {
     return m_rightPane;
+}
+
+void SplitPane::updateEditorLines(const EditorTextContentsDTO &dto)
+{
+    m_editor->updateLines(dto);
 }
 
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {

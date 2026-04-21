@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QObject>
 #include <QDebug>
+#include <QObject>
 
 class IModelAccessRead;
 class NumberService;
@@ -27,17 +27,17 @@ public:
 public slots:
     void onButtonClicked();
     void onDebugRequested();
-    void onWindowStateChanged(const WindowDTO& dto);
+    void onWindowStateChanged(const WindowDTO &dto);
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
 
 private:
     void sendTextToEditor();
 
     IModelAccessRead &m_modelAccess;
-    NumberService& m_service;
-    WindowService& m_windowService;
+    NumberService &m_service;
+    WindowService &m_windowService;
     EditorService &m_editorService;
-    View& m_view;
+    View &m_view;
     void printModel() const;
     mutable int debugPrintCounter = 0; // mutable, to use in const function
 };

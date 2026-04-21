@@ -105,6 +105,11 @@ void Window::positionResizeHandles() {
     m_handleBottomRight->setGeometry(w - c, h - c, c, c);
 }
 
+void Window::updateEditorLines(const EditorTextContentsDTO &dto)
+{
+    m_splitPane->updateEditorLines(dto);
+}
+
 void Window::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     m_splitPane->setGeometry(0, 0, width(), height());
