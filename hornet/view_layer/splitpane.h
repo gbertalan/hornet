@@ -6,10 +6,10 @@
 #include <QWidget>
 #include <QScrollBar>
 
-class Editor;
 struct EditorVisibleLinesDTO;
 struct EditorTextContentsDTO;
 class CustomScrollBar;
+class Editor;
 
 class SplitPaneHandle : public QSplitterHandle {
     Q_OBJECT

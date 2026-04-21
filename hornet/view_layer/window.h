@@ -1,8 +1,8 @@
 #pragma once
 
 #include <QWidget>
-#include "shared/dto_view_to_model/windowdto.h"
 
+struct WindowDTO;
 struct NumberDTO;
 struct EditorVisibleLinesDTO;
 struct EditorTextContentsDTO;

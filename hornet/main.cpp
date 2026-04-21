@@ -4,6 +4,7 @@
 #include "service_layer/editorservice.h"
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
+#include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
 
 /**

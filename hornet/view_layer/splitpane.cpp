@@ -4,6 +4,7 @@
 #include <QPen>
 #include <QTimer>
 #include <QVBoxLayout>
+#include "shared/dto_bidirectional/editorsettingsdto.h"
 #include "theme.h"
 #include "view_layer/customscrollbar.h"
 #include <view_layer/editor/editor.h>

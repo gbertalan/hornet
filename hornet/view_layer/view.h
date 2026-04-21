@@ -1,9 +1,13 @@
 #pragma once
 
 #include <QObject>
-#include "shared/dto_view_to_model/windowdto.h"
-#include <shared/dto_model_to_view/editortextcontentsdto.h>
-#include <shared/dto_view_to_model/editorvisiblelinesdto.h>
+
+struct EditorVisibleLinesDTO;
+struct EditorTextContentsDTO;
+struct WindowDTO;
+// #include "shared/dto_view_to_model/windowdto.h"
+// #include <shared/dto_model_to_view/editortextcontentsdto.h>
+// #include <shared/dto_view_to_model/editorvisiblelinesdto.h>
 
 struct NumberDTO;
 class Window;

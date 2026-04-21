@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QVBoxLayout>
 #include "shared/dto_view_to_model/numberdto.h"
+#include "shared/dto_view_to_model/windowdto.h"
 #include "theme.h"
 #include "view_layer/overlaywidget.h"
 #include "view_layer/resizehandle.h"

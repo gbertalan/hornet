@@ -1,12 +1,13 @@
 #pragma once
 #include <QWidget>
 #include <memory>
-#include <shared/dto_bidirectional/editorsettingsdto.h>
-#include <shared/dto_view_to_model/editorvisiblelinesdto.h>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
-class EditorTextContentsDTO;
+class FontRenderer;
+struct EditorVisibleLinesDTO;
+struct EditorSettingsDTO;
+struct EditorTextContentsDTO;
 
 class Editor : public QWidget
 {

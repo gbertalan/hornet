@@ -2,6 +2,8 @@
 #include <QEvent>
 #include <QPainter>
 #include <QScrollArea>
+#include "shared/dto_bidirectional/editorsettingsdto.h"
+#include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/theme.h"
 #include <qscrollbar.h>
 #include <shared/dto_model_to_view/editortextcontentsdto.h>
