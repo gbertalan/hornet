@@ -57,3 +57,7 @@ The *sender* **creates** and **writes** the DTO, the *receiver* only **reads** i
 DTOs contain **values**, not pointers or references.
 
 Consequence: functions that are used for inter-layer communication have either **no parameters**, or **one parameter** that is a **DTO**.
+
+## Debug Print
+
+The `Ctrl + D` shortcut prints the full contents of Model."
