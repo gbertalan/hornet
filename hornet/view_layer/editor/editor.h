@@ -46,6 +46,8 @@ private:
     int m_noOfVisibleLines = 0;
     int m_topLineIndex = 0;
 
+    int m_noOfAllLines = 0;
+    int m_noOfCharsOfLongestLine = 0;
     QString m_fileType;
     QVector<QString> m_textLinesToDisplay;
 

@@ -81,9 +81,17 @@ void Editor::sendEditorState()
 void Editor::updateLines(const EditorTextContentsDTO &dto)
 {
     m_textLinesToDisplay = dto.textLinesToDisplay;
-    updateHeight(dto.noOfAllLines * m_lineHeight);
-    updateWidth((dto.noOfCharsOfLongestLine + 2) * m_fontAtlas.cellWidth() * m_fontScale);
+    m_noOfAllLines = dto.noOfAllLines;
+    m_noOfCharsOfLongestLine = dto.noOfCharsOfLongestLine;
     m_fileType = dto.fileType;
+
+    updateHeight(m_noOfAllLines * m_lineHeight);
+
+    int digits = QString::number(m_noOfAllLines).length();
+    float lineNumberSectionWidth = 5.f + m_fontAtlas.textWidth(digits + 2, m_fontScale);
+    updateWidth(lineNumberSectionWidth
+                + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
+
     update();
 }
 
@@ -116,10 +124,18 @@ void Editor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
+    int digits = QString::number(m_noOfAllLines).length();
+    float lineNumberWidth = m_fontAtlas.textWidth(digits + 2, m_fontScale);
+
     for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
-        float x = 5.f;
         float y = (m_topLineIndex + i) * m_lineHeight
                   + (m_lineHeight - m_fontAtlas.cellHeight()) / 2.f;
+
+        QString lineNumber = QString::number(m_topLineIndex + i + 1);
+        float numberX = 5.f + m_fontAtlas.textWidth(digits - lineNumber.length(), m_fontScale);
+        m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
+
+        float x = 5.f + lineNumberWidth;
         m_fontRenderer
             ->drawText(painter, x, y, m_textLinesToDisplay[i], Theme::darkAmber(), m_fontScale);
     }
