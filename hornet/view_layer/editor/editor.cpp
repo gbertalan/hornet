@@ -5,6 +5,7 @@
 #include "shared/dto_bidirectional/editorsettingsdto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/theme.h"
+#include <qevent.h>
 #include <qscrollbar.h>
 #include <shared/dto_model_to_view/editorviewstatedto.h>
 
@@ -17,15 +18,18 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
     m_lineHeight = settings.lineHeight;
     m_fontScale = settings.fontScale;
-
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
         float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
                                                       m_fontScale);
         float cursorPixelX = 5.f + lineNumberWidth + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
         float lineTop = (m_cursorY) *m_lineHeight;
+        float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+        float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+        float topMargin = verticalPadding / 2.f;
+        float y = lineTop + verticalPadding - topMargin;
         float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
-        update(QRectF(cursorPixelX, lineTop, charWidth, m_lineHeight).toRect());
+        update(QRectF(cursorPixelX, y + verticalPadding, charWidth, m_lineHeight).toRect());
     });
     m_cursorTimer.start(200);
 }
@@ -146,7 +150,7 @@ void Editor::paintEvent(QPaintEvent *event)
         float y = lineTop + verticalPadding - topMargin;
         drawLineNumber(painter, i, digits, leftMargin, y);
         drawLineText(painter, i, textX, y);
-        drawCursor(painter, i, textX, lineTop, fontHeight);
+        drawCursor(painter, i, textX, y, verticalPadding);
     }
 }
 
@@ -163,23 +167,37 @@ void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
         ->drawText(painter, textX, y, m_textLinesToDisplay[index], Theme::darkAmber(), m_fontScale);
 }
 
-void Editor::drawCursor(QPainter &painter, int index, float textX, float lineTop, float fontHeight)
+void Editor::drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding)
 {
     if (!m_cursorVisible)
         return;
     if (m_topLineIndex + index != m_cursorY)
         return;
-
     float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
     float cursorPixelX = textX + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
-    painter.fillRect(QRectF(cursorPixelX, lineTop, charWidth, m_lineHeight), Theme::brightAmber());
-
+    painter.fillRect(QRectF(cursorPixelX, y + 2, charWidth, m_lineHeight), Theme::brightAmber());
     if (m_cursorX < m_textLinesToDisplay[index].length()) {
-        float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-        float topMargin = verticalPadding / 2.f;
-        float y = lineTop + verticalPadding - topMargin;
         QString cursorChar = m_textLinesToDisplay[index][m_cursorX];
         m_fontRenderer
             ->drawText(painter, cursorPixelX, y, cursorChar, Theme::almostBlack(), m_fontScale);
     }
+}
+
+void Editor::mouseReleaseEvent(QMouseEvent *event)
+{
+    int digits = QString::number(m_noOfAllLines).length();
+    float lineNumberWidth = m_fontAtlas.textWidth(digits + 2, m_fontScale);
+    float textX = 5.f + lineNumberWidth;
+
+    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
+    m_cursorX = static_cast<int>((event->pos().x() - textX) / charWidth);
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float topMargin = verticalPadding / 2.f;
+    m_cursorY = static_cast<int>((event->pos().y() - verticalPadding - topMargin) / (m_lineHeight));
+
+    m_cursorX = std::max(0, m_cursorX);
+    m_cursorY = std::max(0, m_cursorY);
+
+    update();
 }

@@ -28,6 +28,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
     void showEvent(QShowEvent *event) override;
     bool eventFilter(QObject *watched, QEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     void updateSize();
@@ -36,7 +37,7 @@ private:
     void sendEditorState();
     void drawLineNumber(QPainter &painter, int index, int digits, float leftMargin, float y);
     void drawLineText(QPainter &painter, int index, float textX, float y);
-    void drawCursor(QPainter &painter, int index, float textX, float lineTop, float fontHeight);
+    void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
 
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
