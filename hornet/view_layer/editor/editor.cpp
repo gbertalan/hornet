@@ -198,6 +198,7 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
 
     m_cursorX = std::max(0, m_cursorX);
     m_cursorY = std::max(0, m_cursorY);
+    m_cursorY = std::min(m_cursorY, m_noOfAllLines - 1);
 
     update();
 }
