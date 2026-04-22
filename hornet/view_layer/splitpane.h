@@ -7,7 +7,7 @@
 #include <QScrollBar>
 
 struct EditorVisibleLinesDTO;
-struct EditorTextContentsDTO;
+struct EditorViewStateDTO;
 class CustomScrollBar;
 class Editor;
 
@@ -34,7 +34,7 @@ public:
     explicit SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent = nullptr);
     QWidget* leftPane() const;
     QWidget* rightPane() const;
-    void updateEditorLines(const EditorTextContentsDTO &dto);
+    void updateEditorLines(const EditorViewStateDTO &dto);
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);

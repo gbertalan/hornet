@@ -88,10 +88,13 @@ qt_add_executable(hornet
     ${PROJECT_HEADERS}
     view_layer/editor/editor.h view_layer/editor/editor.cpp
     shared/dto_bidirectional/editorsettingsdto.h
-    shared/dto_model_to_view/editortextcontentsdto.h
+    shared/dto_model_to_view/editorviewstatedto.h
     shared/dto_view_to_model/editorvisiblelinesdto.h
     service_layer/editorservice.h service_layer/editorservice.cpp
     model_layer/editormodel.h model_layer/editormodel.cpp
+    view_layer/editor/mode.h view_layer/editor/mode.cpp
+    view_layer/editor/modeplaintext.h view_layer/editor/modeplaintext.cpp
+    view_layer/editor/modeterminal.h view_layer/editor/modeterminal.cpp
 
 
 

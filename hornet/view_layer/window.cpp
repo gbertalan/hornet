@@ -106,7 +106,7 @@ void Window::positionResizeHandles() {
     m_handleBottomRight->setGeometry(w - c, h - c, c, c);
 }
 
-void Window::updateEditorLines(const EditorTextContentsDTO &dto)
+void Window::updateEditorLines(const EditorViewStateDTO &dto)
 {
     m_splitPane->updateEditorLines(dto);
 }

@@ -9,7 +9,7 @@
 #include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
-#include <shared/dto_model_to_view/editortextcontentsdto.h>
+#include <shared/dto_model_to_view/editorviewstatedto.h>
 #include <stdexcept>
 
 Control::Control(IModelAccessRead &modelAccess,
@@ -116,10 +116,12 @@ void Control::sendTextToEditor()
         qLines.push_back(QString::fromUcs4(reinterpret_cast<const char32_t *>(line.c_str()),
                                            static_cast<int>(line.size())));
 
-    EditorTextContentsDTO dto{qLines,
-                              noOfAllLines,
-                              noOfCharsOfLongestLine,
-                              QString::fromStdString(fileType)};
+    EditorViewStateDTO dto{qLines,
+                           noOfAllLines,
+                           noOfCharsOfLongestLine,
+                           QString::fromStdString(fileType),
+                           0,
+                           0};
 
     m_view.updateEditorLines(dto);
 }

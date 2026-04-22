@@ -3,11 +3,8 @@
 #include <QObject>
 
 struct EditorVisibleLinesDTO;
-struct EditorTextContentsDTO;
+struct EditorViewStateDTO;
 struct WindowDTO;
-// #include "shared/dto_view_to_model/windowdto.h"
-// #include <shared/dto_model_to_view/editortextcontentsdto.h>
-// #include <shared/dto_view_to_model/editorvisiblelinesdto.h>
 
 struct NumberDTO;
 class Window;
@@ -20,7 +17,7 @@ public:
     void show();
     void displayNumber(const NumberDTO& dto);
     void showError(const QString& message);
-    void updateEditorLines(const EditorTextContentsDTO &dto);
+    void updateEditorLines(const EditorViewStateDTO &dto);
 
 signals:
     void buttonClicked();

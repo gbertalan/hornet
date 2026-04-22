@@ -1,4 +1,5 @@
 #pragma once
+#include <QTimer>
 #include <QWidget>
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
@@ -7,7 +8,7 @@
 class FontRenderer;
 struct EditorVisibleLinesDTO;
 struct EditorSettingsDTO;
-struct EditorTextContentsDTO;
+struct EditorViewStateDTO;
 
 class Editor : public QWidget
 {
@@ -18,7 +19,7 @@ public:
     void updateWidth(int width);
     void updateHeight(int height);
     void setSettings(const EditorSettingsDTO &settings);
-    void updateLines(const EditorTextContentsDTO &dto);
+    void updateLines(const EditorViewStateDTO &dto);
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
@@ -33,6 +34,9 @@ private:
     int calculateNoOfVisibleLines() const;
     int calculateTopLineIndex() const;
     void sendEditorState();
+    void drawLineNumber(QPainter &painter, int index, int digits, float leftMargin, float y);
+    void drawLineText(QPainter &painter, int index, float textX, float y);
+    void drawCursor(QPainter &painter, int index, float textX, float lineTop, float fontHeight);
 
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
@@ -51,5 +55,8 @@ private:
     QString m_fileType;
     QVector<QString> m_textLinesToDisplay;
 
-    // int count = 0;
+    int m_cursorX = 10; // column
+    int m_cursorY = 15; // row
+    QTimer m_cursorTimer;
+    bool m_cursorVisible = true;
 };
