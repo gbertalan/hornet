@@ -4,6 +4,7 @@
 class IModelAccessReadWrite;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
+struct EditorKeyPressDTO;
 
 class EditorService
 {
@@ -14,6 +15,7 @@ public:
     void setTextLines(std::vector<std::u32string> textLines, std::string fileType);
     void storeCursorPos(const EditorCursorPosDTO &dto);
     void insertCharacter(char32_t character);
+    void moveCursor(const EditorKeyPressDTO &dto);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

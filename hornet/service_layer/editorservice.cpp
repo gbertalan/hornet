@@ -2,6 +2,7 @@
 #include "model_layer/editormodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
+#include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 
 #include <qdebug.h>
@@ -53,4 +54,47 @@ void EditorService::insertCharacter(char32_t character)
     lines.at(cursorY).insert(cursorX, 1, character);
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(cursorX + 1, cursorY);
+}
+
+void EditorService::moveCursor(const EditorKeyPressDTO &dto)
+{
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    int noOfLines = static_cast<int>(lines.size());
+
+    switch (dto.specialKey) {
+    case EditorKeyPressDTO::SpecialKey::Left:
+        if (cursorX > 0) {
+            cursorX--;
+        } else if (cursorY > 0) {
+            cursorY--;
+            cursorX = static_cast<int>(lines.at(cursorY).length());
+        }
+        break;
+    case EditorKeyPressDTO::SpecialKey::Right:
+        if (cursorX < static_cast<int>(lines.at(cursorY).length())) {
+            cursorX++;
+        } else if (cursorY < noOfLines - 1) {
+            cursorY++;
+            cursorX = 0;
+        }
+        break;
+    case EditorKeyPressDTO::SpecialKey::Up:
+        if (cursorY > 0) {
+            cursorY--;
+            cursorX = std::min(cursorX, static_cast<int>(lines.at(cursorY).length()));
+        }
+        break;
+    case EditorKeyPressDTO::SpecialKey::Down:
+        if (cursorY < noOfLines - 1) {
+            cursorY++;
+            cursorX = std::min(cursorX, static_cast<int>(lines.at(cursorY).length()));
+        }
+        break;
+    default:
+        break;
+    }
+
+    m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }

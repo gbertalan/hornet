@@ -245,17 +245,37 @@ void Editor::scrollToCursor()
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    bool ctrl = event->modifiers() & Qt::ControlModifier;
+    bool shift = event->modifiers() & Qt::ShiftModifier;
+    bool alt = event->modifiers() & Qt::AltModifier;
+
+    EditorKeyPressDTO::SpecialKey specialKey = EditorKeyPressDTO::SpecialKey::None;
+    switch (event->key()) {
+    case Qt::Key_Left:
+        specialKey = EditorKeyPressDTO::SpecialKey::Left;
+        break;
+    case Qt::Key_Right:
+        specialKey = EditorKeyPressDTO::SpecialKey::Right;
+        break;
+    case Qt::Key_Up:
+        specialKey = EditorKeyPressDTO::SpecialKey::Up;
+        break;
+    case Qt::Key_Down:
+        specialKey = EditorKeyPressDTO::SpecialKey::Down;
+        break;
+    }
+
+    if (specialKey != EditorKeyPressDTO::SpecialKey::None) {
+        emit editorKeyPressed(EditorKeyPressDTO(0, specialKey, ctrl, shift, alt));
+        return;
+    }
+
     QString text = event->text();
     if (text.isEmpty())
         return;
 
     char32_t key = text.toUcs4().first();
-    bool ctrl = event->modifiers() & Qt::ControlModifier;
-    bool shift = event->modifiers() & Qt::ShiftModifier;
-    bool alt = event->modifiers() & Qt::AltModifier;
-
-    EditorKeyPressDTO dto{key, ctrl, shift, alt};
-    emit editorKeyPressed(dto);
+    emit editorKeyPressed(EditorKeyPressDTO(key, specialKey, ctrl, shift, alt));
 }
 
 void Editor::mouseMoveEvent(QMouseEvent *event)
@@ -274,6 +294,7 @@ void Editor::mouseMoveEvent(QMouseEvent *event)
 
 void Editor::focusOutEvent(QFocusEvent *event)
 {
+    // Reclaim focus if lost to scrollbar clicks so keyboard input keeps working
     if (event->reason() == Qt::MouseFocusReason)
         setFocus();
 }

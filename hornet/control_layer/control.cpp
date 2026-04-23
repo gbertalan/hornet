@@ -145,7 +145,11 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
     if (dto.ctrl || dto.alt)
         return;
-    m_editorService.insertCharacter(dto.key);
+
+    if (dto.specialKey != EditorKeyPressDTO::SpecialKey::None)
+        m_editorService.moveCursor(dto);
+    else
+        m_editorService.insertCharacter(dto.key);
 
     sendStateToEditor();
     sendCursorPosToEditor();
