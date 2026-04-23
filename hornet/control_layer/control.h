@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QObject>
 
+struct EditorKeyPressDTO;
 class IModelAccessRead;
 class NumberService;
 class WindowService;
@@ -31,6 +32,7 @@ public slots:
     void onWindowStateChanged(const WindowDTO &dto);
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
+    void onEditorKeyPressed(const EditorKeyPressDTO &dto);
 
 private:
     void sendStateToEditor();

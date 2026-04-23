@@ -4,6 +4,7 @@
 #include <QScrollArea>
 #include "shared/dto_bidirectional/editorsettingsdto.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
+#include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/theme.h"
 #include <qevent.h>
@@ -27,6 +28,7 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     m_cursorTimer.start(200);
 
     setFocusPolicy(Qt::StrongFocus);
+    QTimer::singleShot(0, this, [this]() { setFocus(); }); // gets focus, after constructor is ready.
 }
 
 void Editor::setSettings(const EditorSettingsDTO &settings)
@@ -236,5 +238,6 @@ void Editor::keyPressEvent(QKeyEvent *event)
     bool shift = event->modifiers() & Qt::ShiftModifier;
     bool alt = event->modifiers() & Qt::AltModifier;
 
-    // emit editorKeyPressed(EditorKeyPressDTO(key, ctrl, shift, alt));
+    EditorKeyPressDTO dto{key, ctrl, shift, alt};
+    emit editorKeyPressed(dto);
 }

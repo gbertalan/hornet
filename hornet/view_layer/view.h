@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
@@ -28,6 +29,7 @@ signals:
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
+    void editorKeyPressed(const EditorKeyPressDTO &dto);
 
 private:
     Window* m_window;

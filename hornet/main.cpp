@@ -53,6 +53,7 @@ int main(int argc, char* argv[]) {
                      &View::editorCursorPosChanged,
                      &control,
                      &Control::onEditorCursorPosChanged);
+    QObject::connect(&view, &View::editorKeyPressed, &control, &Control::onEditorKeyPressed);
 
     control.init();
 

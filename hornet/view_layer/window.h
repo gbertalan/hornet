@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
 struct WindowDTO;
 struct NumberDTO;
@@ -30,6 +31,7 @@ signals:
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
+    void editorKeyPressed(const EditorKeyPressDTO &dto);
 
 private:
     TitleBar* m_titleBar;

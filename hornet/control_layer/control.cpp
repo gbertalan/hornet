@@ -141,6 +141,11 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
     m_view.updateEditorCursorPos(dtoToSendToView);
 }
 
+void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
+{
+    qDebug() << "Key pressed";
+}
+
 void Control::onDebugRequested()
 {
 #ifdef QT_DEBUG
