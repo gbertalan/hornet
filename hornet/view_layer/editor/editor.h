@@ -21,7 +21,7 @@ public:
     void updateWidth(int width);
     void updateHeight(int height);
     void setSettings(const EditorSettingsDTO &settings);
-    void updateLines(const EditorViewStateDTO &dto);
+    void updateEditorState(const EditorViewStateDTO &dto);
     void updateCursorPosition(const EditorCursorPosDTO &dto);
 
 signals:

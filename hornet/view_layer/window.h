@@ -21,7 +21,7 @@ public:
     void displayNumber(const NumberDTO& dto);
     void restoreWindowedSize();
     void restoreWindowedLocation();
-    void updateEditorLines(const EditorViewStateDTO &dto);
+    void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
 
 signals:

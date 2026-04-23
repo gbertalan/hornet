@@ -27,9 +27,9 @@ void View::showError(const QString& message) {
     QMessageBox::warning(m_window, "Error", message, QMessageBox::Ok);
 }
 
-void View::updateEditorLines(const EditorViewStateDTO &dto)
+void View::updateEditorState(const EditorViewStateDTO &dto)
 {
-    m_window->updateEditorLines(dto);
+    m_window->updateEditorState(dto);
 }
 
 void View::updateEditorCursorPos(const EditorCursorPosDTO &dto)

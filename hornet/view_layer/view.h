@@ -19,7 +19,7 @@ public:
     void show();
     void displayNumber(const NumberDTO& dto);
     void showError(const QString& message);
-    void updateEditorLines(const EditorViewStateDTO &dto);
+    void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
 
 signals:

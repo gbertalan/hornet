@@ -36,7 +36,7 @@ public:
     explicit SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent = nullptr);
     QWidget* leftPane() const;
     QWidget* rightPane() const;
-    void updateEditorLines(const EditorViewStateDTO &dto);
+    void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
 
 signals:

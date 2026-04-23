@@ -93,7 +93,7 @@ void Editor::sendEditorState()
     }
 }
 
-void Editor::updateLines(const EditorViewStateDTO &dto)
+void Editor::updateEditorState(const EditorViewStateDTO &dto)
 {
     m_textLinesToDisplay = dto.textLinesToDisplay;
     m_noOfAllLines = dto.noOfAllLines;
@@ -106,8 +106,6 @@ void Editor::updateLines(const EditorViewStateDTO &dto)
     float lineNumberSectionWidth = 5.f + m_fontAtlas.textWidth(digits + 2, m_fontScale);
     updateWidth(lineNumberSectionWidth
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
-    m_cursorX = dto.cursorX;
-    m_cursorY = dto.cursorY;
 
     update();
 }
@@ -233,21 +231,11 @@ void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
 
 void Editor::scrollToCursor()
 {
-    QScrollArea *scrollArea = nullptr;
-    QWidget *p = parentWidget();
-    while (p) {
-        scrollArea = qobject_cast<QScrollArea *>(p);
-        if (scrollArea)
-            break;
-        p = p->parentWidget();
-    }
+    QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
     if (!scrollArea)
         return;
     QRect rect = cursorRect(m_cursorX, m_cursorY);
     scrollArea->ensureVisible(rect.x(), rect.y(), 50, 50);
-
-    qDebug() << "scrollArea found:" << (scrollArea != nullptr);
-    qDebug() << "cursor rect:" << cursorRect(m_cursorX, m_cursorY);
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)

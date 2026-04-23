@@ -108,9 +108,9 @@ void Window::positionResizeHandles() {
     m_handleBottomRight->setGeometry(w - c, h - c, c, c);
 }
 
-void Window::updateEditorLines(const EditorViewStateDTO &dto)
+void Window::updateEditorState(const EditorViewStateDTO &dto)
 {
-    m_splitPane->updateEditorLines(dto);
+    m_splitPane->updateEditorState(dto);
 }
 
 void Window::updateEditorCursorPos(const EditorCursorPosDTO &dto)

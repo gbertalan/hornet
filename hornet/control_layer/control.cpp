@@ -118,17 +118,12 @@ void Control::sendStateToEditor()
         qLines.push_back(QString::fromUcs4(reinterpret_cast<const char32_t *>(line.c_str()),
                                            static_cast<int>(line.size())));
 
-    int cursorX = m_modelAccess.getEditorModel().getCursorX();
-    int cursorY = m_modelAccess.getEditorModel().getCursorY();
-
     EditorViewStateDTO dto{qLines,
                            noOfAllLines,
                            noOfCharsOfLongestLine,
-                           QString::fromStdString(fileType),
-                           cursorX,
-                           cursorY};
+                           QString::fromStdString(fileType)};
 
-    m_view.updateEditorLines(dto);
+    m_view.updateEditorState(dto);
 }
 
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)

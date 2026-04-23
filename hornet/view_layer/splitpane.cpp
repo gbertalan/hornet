@@ -158,9 +158,9 @@ QWidget* SplitPane::rightPane() const {
     return m_rightPane;
 }
 
-void SplitPane::updateEditorLines(const EditorViewStateDTO &dto)
+void SplitPane::updateEditorState(const EditorViewStateDTO &dto)
 {
-    m_editor->updateLines(dto);
+    m_editor->updateEditorState(dto);
 }
 
 void SplitPane::updateEditorCursorPos(const EditorCursorPosDTO &dto)
