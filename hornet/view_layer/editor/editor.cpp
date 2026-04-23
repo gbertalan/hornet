@@ -263,6 +263,12 @@ void Editor::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Down:
         specialKey = EditorKeyPressDTO::SpecialKey::Down;
         break;
+    case Qt::Key_Backspace:
+        specialKey = EditorKeyPressDTO::SpecialKey::Backspace;
+        break;
+    case Qt::Key_Delete:
+        specialKey = EditorKeyPressDTO::SpecialKey::Delete;
+        break;
     }
 
     if (specialKey != EditorKeyPressDTO::SpecialKey::None) {

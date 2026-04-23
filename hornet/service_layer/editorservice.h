@@ -16,6 +16,7 @@ public:
     void storeCursorPos(const EditorCursorPosDTO &dto);
     void insertCharacter(char32_t character);
     void moveCursor(const EditorKeyPressDTO &dto);
+    void deleteCharacter(const EditorKeyPressDTO &dto);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

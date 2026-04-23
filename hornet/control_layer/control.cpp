@@ -146,10 +146,13 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     if (dto.ctrl || dto.alt)
         return;
 
-    if (dto.specialKey != EditorKeyPressDTO::SpecialKey::None)
-        m_editorService.moveCursor(dto);
-    else
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::None)
         m_editorService.insertCharacter(dto.key);
+    else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace
+             || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete)
+        m_editorService.deleteCharacter(dto);
+    else
+        m_editorService.moveCursor(dto);
 
     sendStateToEditor();
     sendCursorPosToEditor();

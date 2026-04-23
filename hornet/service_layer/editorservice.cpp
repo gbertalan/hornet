@@ -98,3 +98,34 @@ void EditorService::moveCursor(const EditorKeyPressDTO &dto)
 
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }
+
+void EditorService::deleteCharacter(const EditorKeyPressDTO &dto)
+{
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    int noOfLines = static_cast<int>(lines.size());
+
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace) {
+        if (cursorX > 0) {
+            lines.at(cursorY).erase(cursorX - 1, 1);
+            cursorX--;
+        } else if (cursorY > 0) {
+            int prevLineLength = static_cast<int>(lines.at(cursorY - 1).length());
+            lines.at(cursorY - 1) += lines.at(cursorY);
+            lines.erase(lines.begin() + cursorY);
+            cursorY--;
+            cursorX = prevLineLength;
+        }
+    } else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete) {
+        if (cursorX < static_cast<int>(lines.at(cursorY).length())) {
+            lines.at(cursorY).erase(cursorX, 1);
+        } else if (cursorY < noOfLines - 1) {
+            lines.at(cursorY) += lines.at(cursorY + 1);
+            lines.erase(lines.begin() + cursorY + 1);
+        }
+    }
+
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
+}
