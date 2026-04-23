@@ -18,6 +18,7 @@ public:
     void moveCursor(const EditorKeyPressDTO &dto);
     void deleteCharacter(const EditorKeyPressDTO &dto);
     void insertNewLine();
+    void insertTab();
 
 private:
     IModelAccessReadWrite &m_modelAccess;

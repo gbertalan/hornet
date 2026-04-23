@@ -37,6 +37,10 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
+    bool focusNextPrevChild(bool next) override
+    {
+        return false;
+    } // prevent taking away focus when tab is pressed
 
 private:
     void updateSize();

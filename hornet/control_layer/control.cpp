@@ -153,6 +153,8 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         m_editorService.deleteCharacter(dto);
     else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter)
         m_editorService.insertNewLine();
+    else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Tab)
+        m_editorService.insertTab();
     else
         m_editorService.moveCursor(dto);
 

@@ -159,3 +159,13 @@ void EditorService::insertNewLine()
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(0, cursorY + 1);
 }
+
+void EditorService::insertTab()
+{
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    lines.at(cursorY).insert(cursorX, 4, U' ');
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    m_modelAccess.getEditorModel().setCursor(cursorX + 4, cursorY);
+}

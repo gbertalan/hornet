@@ -285,6 +285,9 @@ void Editor::keyPressEvent(QKeyEvent *event)
     case Qt::Key_PageDown:
         specialKey = EditorKeyPressDTO::SpecialKey::PageDown;
         break;
+    case Qt::Key_Tab:
+        specialKey = EditorKeyPressDTO::SpecialKey::Tab;
+        break;
     }
 
     if (specialKey != EditorKeyPressDTO::SpecialKey::None) {
