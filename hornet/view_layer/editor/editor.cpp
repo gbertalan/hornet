@@ -235,7 +235,12 @@ void Editor::scrollToCursor()
     if (!scrollArea)
         return;
     QRect rect = cursorRect(m_cursorX, m_cursorY);
-    scrollArea->ensureVisible(rect.x(), rect.y(), 50, 50);
+
+    int noOfCharsAsMargin = 5;
+    float horizontalScrollMargin = m_fontAtlas.textWidth(noOfCharsAsMargin, m_fontScale);
+    int noOfRowsAsMargin = 3;
+    float verticalScrollMargin = m_lineHeight * noOfRowsAsMargin;
+    scrollArea->ensureVisible(rect.x(), rect.y(), horizontalScrollMargin, verticalScrollMargin);
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)
