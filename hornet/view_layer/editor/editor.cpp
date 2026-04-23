@@ -273,6 +273,18 @@ void Editor::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Enter:
         specialKey = EditorKeyPressDTO::SpecialKey::Enter;
         break;
+    case Qt::Key_Home:
+        specialKey = EditorKeyPressDTO::SpecialKey::Home;
+        break;
+    case Qt::Key_End:
+        specialKey = EditorKeyPressDTO::SpecialKey::End;
+        break;
+    case Qt::Key_PageUp:
+        specialKey = EditorKeyPressDTO::SpecialKey::PageUp;
+        break;
+    case Qt::Key_PageDown:
+        specialKey = EditorKeyPressDTO::SpecialKey::PageDown;
+        break;
     }
 
     if (specialKey != EditorKeyPressDTO::SpecialKey::None) {

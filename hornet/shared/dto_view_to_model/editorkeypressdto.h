@@ -2,7 +2,20 @@
 
 struct EditorKeyPressDTO
 {
-    enum class SpecialKey { None, Left, Right, Up, Down, Backspace, Delete, Enter };
+    enum class SpecialKey {
+        None,
+        Left,
+        Right,
+        Up,
+        Down,
+        Backspace,
+        Delete,
+        Enter,
+        Home,
+        End,
+        PageUp,
+        PageDown
+    };
     char32_t key;
     SpecialKey specialKey;
     bool ctrl;

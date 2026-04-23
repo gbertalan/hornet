@@ -92,6 +92,21 @@ void EditorService::moveCursor(const EditorKeyPressDTO &dto)
             cursorX = std::min(cursorX, static_cast<int>(lines.at(cursorY).length()));
         }
         break;
+    case EditorKeyPressDTO::SpecialKey::Home:
+        cursorX = 0;
+        break;
+    case EditorKeyPressDTO::SpecialKey::End:
+        cursorX = static_cast<int>(lines.at(cursorY).length());
+        break;
+    case EditorKeyPressDTO::SpecialKey::PageUp:
+        cursorY = std::max(0, cursorY - m_modelAccess.getEditorModel().getNoOfVisibleLines());
+        cursorX = std::min(cursorX, static_cast<int>(lines.at(cursorY).length()));
+        break;
+    case EditorKeyPressDTO::SpecialKey::PageDown:
+        cursorY = std::min(noOfLines - 1,
+                           cursorY + m_modelAccess.getEditorModel().getNoOfVisibleLines());
+        cursorX = std::min(cursorX, static_cast<int>(lines.at(cursorY).length()));
+        break;
     default:
         break;
     }
