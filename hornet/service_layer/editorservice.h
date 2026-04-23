@@ -13,6 +13,7 @@ public:
     std::vector<std::u32string> retrieveActiveLines();
     void setTextLines(std::vector<std::u32string> textLines, std::string fileType);
     void storeCursorPos(const EditorCursorPosDTO &dto);
+    void insertCharacter(char32_t character);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

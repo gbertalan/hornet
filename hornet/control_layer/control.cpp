@@ -7,6 +7,7 @@
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
+#include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
@@ -133,7 +134,6 @@ void Control::sendStateToEditor()
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
-    // sendStateToEditor();
 
     int cursorX = m_modelAccess.getEditorModel().getCursorX();
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
@@ -143,7 +143,11 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
-    qDebug() << "Key pressed";
+    if (dto.ctrl || dto.alt)
+        return;
+    m_editorService.insertCharacter(dto.key);
+
+    sendStateToEditor();
 }
 
 void Control::onDebugRequested()
