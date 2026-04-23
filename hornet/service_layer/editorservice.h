@@ -22,4 +22,7 @@ public:
 
 private:
     IModelAccessReadWrite &m_modelAccess;
+
+    void moveCursorWordRight(std::vector<std::u32string> &lines, int &cursorX, int &cursorY);
+    void moveCursorWordLeft(std::vector<std::u32string> &lines, int &cursorX, int &cursorY);
 };

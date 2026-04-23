@@ -143,13 +143,15 @@ void Control::sendCursorPosToEditor()
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
-    if (dto.ctrl || dto.alt)
+    if (dto.alt)
         return;
 
-    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::None)
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::None) {
+        if (dto.ctrl)
+            return;
         m_editorService.insertCharacter(dto.key);
-    else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace
-             || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete)
+    } else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace
+               || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete)
         m_editorService.deleteCharacter(dto);
     else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter)
         m_editorService.insertNewLine();

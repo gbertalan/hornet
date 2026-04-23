@@ -64,20 +64,25 @@ void EditorService::moveCursor(const EditorKeyPressDTO &dto)
     int noOfLines = static_cast<int>(lines.size());
 
     switch (dto.specialKey) {
-    case EditorKeyPressDTO::SpecialKey::Left:
-        if (cursorX > 0) {
-            cursorX--;
-        } else if (cursorY > 0) {
-            cursorY--;
-            cursorX = static_cast<int>(lines.at(cursorY).length());
-        }
-        break;
     case EditorKeyPressDTO::SpecialKey::Right:
-        if (cursorX < static_cast<int>(lines.at(cursorY).length())) {
+        if (dto.ctrl)
+            moveCursorWordRight(lines, cursorX, cursorY);
+        else if (cursorX < static_cast<int>(lines.at(cursorY).length()))
             cursorX++;
-        } else if (cursorY < noOfLines - 1) {
+        else if (cursorY < noOfLines - 1) {
             cursorY++;
             cursorX = 0;
+        }
+        break;
+
+    case EditorKeyPressDTO::SpecialKey::Left:
+        if (dto.ctrl)
+            moveCursorWordLeft(lines, cursorX, cursorY);
+        else if (cursorX > 0)
+            cursorX--;
+        else if (cursorY > 0) {
+            cursorY--;
+            cursorX = static_cast<int>(lines.at(cursorY).length());
         }
         break;
     case EditorKeyPressDTO::SpecialKey::Up:
@@ -168,4 +173,124 @@ void EditorService::insertTab()
     lines.at(cursorY).insert(cursorX, 4, U' ');
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(cursorX + 4, cursorY);
+}
+
+enum class CharCategory {
+    Whitespace,
+    UppercaseLetter,
+    LowercaseLetter,
+    Digit,
+    Underscore,
+    Punctuation
+};
+
+static CharCategory categorize(char32_t ch)
+{
+    if (ch == U' ' || ch == U'\t')
+        return CharCategory::Whitespace;
+    if (ch == U'_')
+        return CharCategory::Underscore;
+    if (ch >= U'A' && ch <= U'Z')
+        return CharCategory::UppercaseLetter;
+    if (ch >= U'a' && ch <= U'z')
+        return CharCategory::LowercaseLetter;
+    if (ch >= U'0' && ch <= U'9')
+        return CharCategory::Digit;
+    return CharCategory::Punctuation;
+}
+
+void EditorService::moveCursorWordRight(std::vector<std::u32string> &lines,
+                                        int &cursorX,
+                                        int &cursorY)
+{
+    int noOfLines = static_cast<int>(lines.size());
+    if (cursorX == static_cast<int>(lines.at(cursorY).length())) {
+        if (cursorY < noOfLines - 1) {
+            cursorY++;
+            cursorX = 0;
+        }
+        return;
+    }
+    CharCategory startCategory = categorize(lines.at(cursorY).at(cursorX));
+    if (startCategory == CharCategory::Whitespace) {
+        while (cursorX < static_cast<int>(lines.at(cursorY).length())
+               && categorize(lines.at(cursorY).at(cursorX)) == CharCategory::Whitespace)
+            cursorX++;
+    } else if (startCategory == CharCategory::LowercaseLetter
+               || startCategory == CharCategory::Digit
+               || startCategory == CharCategory::Underscore) {
+        while (cursorX < static_cast<int>(lines.at(cursorY).length())) {
+            CharCategory cat = categorize(lines.at(cursorY).at(cursorX));
+            if (cat == CharCategory::UppercaseLetter || cat == CharCategory::Whitespace
+                || cat == CharCategory::Punctuation)
+                break;
+            cursorX++;
+        }
+    } else if (startCategory == CharCategory::UppercaseLetter) {
+        cursorX++;
+        while (cursorX < static_cast<int>(lines.at(cursorY).length())) {
+            CharCategory cat = categorize(lines.at(cursorY).at(cursorX));
+            if (cat != CharCategory::UppercaseLetter) {
+                if (cat == CharCategory::LowercaseLetter) {
+                    while (cursorX < static_cast<int>(lines.at(cursorY).length())
+                           && categorize(lines.at(cursorY).at(cursorX))
+                                  == CharCategory::LowercaseLetter)
+                        cursorX++;
+                }
+                break;
+            }
+            cursorX++;
+        }
+    } else {
+        while (cursorX < static_cast<int>(lines.at(cursorY).length())
+               && categorize(lines.at(cursorY).at(cursorX)) == CharCategory::Punctuation)
+            cursorX++;
+    }
+}
+
+void EditorService::moveCursorWordLeft(std::vector<std::u32string> &lines,
+                                       int &cursorX,
+                                       int &cursorY)
+{
+    if (cursorX == 0) {
+        if (cursorY > 0) {
+            cursorY--;
+            cursorX = static_cast<int>(lines.at(cursorY).length());
+        }
+        return;
+    }
+    cursorX--;
+    CharCategory startCategory = categorize(lines.at(cursorY).at(cursorX));
+    if (startCategory == CharCategory::Whitespace) {
+        while (cursorX > 0
+               && categorize(lines.at(cursorY).at(cursorX - 1)) == CharCategory::Whitespace)
+            cursorX--;
+    } else if (startCategory == CharCategory::LowercaseLetter) {
+        while (cursorX > 0) {
+            CharCategory cat = categorize(lines.at(cursorY).at(cursorX - 1));
+            if (cat == CharCategory::Whitespace || cat == CharCategory::Punctuation
+                || cat == CharCategory::UppercaseLetter)
+                break;
+            cursorX--;
+        }
+    } else if (startCategory == CharCategory::UppercaseLetter) {
+        while (cursorX > 0) {
+            CharCategory cat = categorize(lines.at(cursorY).at(cursorX - 1));
+            if (cat != CharCategory::UppercaseLetter)
+                break;
+            cursorX--;
+        }
+    } else if (startCategory == CharCategory::Digit || startCategory == CharCategory::Underscore) {
+        while (cursorX > 0) {
+            CharCategory cat = categorize(lines.at(cursorY).at(cursorX - 1));
+            if (cat == CharCategory::Whitespace || cat == CharCategory::Punctuation
+                || cat == CharCategory::UppercaseLetter)
+                break;
+            cursorX--;
+        }
+    } else {
+        while (cursorX > 0
+               && categorize(lines.at(cursorY).at(cursorX - 1)) == CharCategory::Punctuation)
+            cursorX--;
+    }
 }
