@@ -175,28 +175,9 @@ void EditorService::insertTab()
     m_modelAccess.getEditorModel().setCursor(cursorX + 4, cursorY);
 }
 
-enum class CharCategory {
-    Whitespace,
-    UppercaseLetter,
-    LowercaseLetter,
-    Digit,
-    Underscore,
-    Punctuation
-};
-
-static CharCategory categorize(char32_t ch)
+static bool isWordChar(char32_t ch)
 {
-    if (ch == U' ' || ch == U'\t')
-        return CharCategory::Whitespace;
-    if (ch == U'_')
-        return CharCategory::Underscore;
-    if (ch >= U'A' && ch <= U'Z')
-        return CharCategory::UppercaseLetter;
-    if (ch >= U'a' && ch <= U'z')
-        return CharCategory::LowercaseLetter;
-    if (ch >= U'0' && ch <= U'9')
-        return CharCategory::Digit;
-    return CharCategory::Punctuation;
+    return (ch >= U'a' && ch <= U'z') || (ch >= U'A' && ch <= U'Z') || (ch >= U'0' && ch <= U'9');
 }
 
 void EditorService::moveCursorWordRight(std::vector<std::u32string> &lines,
@@ -204,48 +185,30 @@ void EditorService::moveCursorWordRight(std::vector<std::u32string> &lines,
                                         int &cursorY)
 {
     int noOfLines = static_cast<int>(lines.size());
-    if (cursorX == static_cast<int>(lines.at(cursorY).length())) {
+    const std::u32string &line = lines.at(cursorY);
+    int lineLen = static_cast<int>(line.length());
+
+    if (cursorX == lineLen) {
         if (cursorY < noOfLines - 1) {
             cursorY++;
             cursorX = 0;
         }
         return;
     }
-    CharCategory startCategory = categorize(lines.at(cursorY).at(cursorX));
-    if (startCategory == CharCategory::Whitespace) {
-        while (cursorX < static_cast<int>(lines.at(cursorY).length())
-               && categorize(lines.at(cursorY).at(cursorX)) == CharCategory::Whitespace)
+
+    if (isWordChar(line.at(cursorX))) {
+        if (isupper(line.at(cursorX))) {
             cursorX++;
-    } else if (startCategory == CharCategory::LowercaseLetter
-               || startCategory == CharCategory::Digit
-               || startCategory == CharCategory::Underscore) {
-        while (cursorX < static_cast<int>(lines.at(cursorY).length())) {
-            CharCategory cat = categorize(lines.at(cursorY).at(cursorX));
-            if (cat == CharCategory::UppercaseLetter || cat == CharCategory::Whitespace
-                || cat == CharCategory::Punctuation)
-                break;
-            cursorX++;
+            while (cursorX < lineLen && islower(line.at(cursorX)))
+                cursorX++;
+        } else {
+            while (cursorX < lineLen && isWordChar(line.at(cursorX)) && !isupper(line.at(cursorX)))
+                cursorX++;
         }
-    } else if (startCategory == CharCategory::UppercaseLetter) {
-        cursorX++;
-        while (cursorX < static_cast<int>(lines.at(cursorY).length())) {
-            CharCategory cat = categorize(lines.at(cursorY).at(cursorX));
-            if (cat != CharCategory::UppercaseLetter) {
-                if (cat == CharCategory::LowercaseLetter) {
-                    while (cursorX < static_cast<int>(lines.at(cursorY).length())
-                           && categorize(lines.at(cursorY).at(cursorX))
-                                  == CharCategory::LowercaseLetter)
-                        cursorX++;
-                }
-                break;
-            }
-            cursorX++;
-        }
-    } else {
-        while (cursorX < static_cast<int>(lines.at(cursorY).length())
-               && categorize(lines.at(cursorY).at(cursorX)) == CharCategory::Punctuation)
-            cursorX++;
     }
+
+    while (cursorX < lineLen && !isWordChar(line.at(cursorX)))
+        cursorX++;
 }
 
 void EditorService::moveCursorWordLeft(std::vector<std::u32string> &lines,
@@ -259,38 +222,17 @@ void EditorService::moveCursorWordLeft(std::vector<std::u32string> &lines,
         }
         return;
     }
-    cursorX--;
-    CharCategory startCategory = categorize(lines.at(cursorY).at(cursorX));
-    if (startCategory == CharCategory::Whitespace) {
-        while (cursorX > 0
-               && categorize(lines.at(cursorY).at(cursorX - 1)) == CharCategory::Whitespace)
+
+    const std::u32string &line = lines.at(cursorY);
+
+    while (cursorX > 0 && !isWordChar(line.at(cursorX - 1)))
+        cursorX--;
+
+    if (cursorX > 0 && isupper(line.at(cursorX - 1))) {
+        while (cursorX > 0 && isupper(line.at(cursorX - 1)))
             cursorX--;
-    } else if (startCategory == CharCategory::LowercaseLetter) {
-        while (cursorX > 0) {
-            CharCategory cat = categorize(lines.at(cursorY).at(cursorX - 1));
-            if (cat == CharCategory::Whitespace || cat == CharCategory::Punctuation
-                || cat == CharCategory::UppercaseLetter)
-                break;
-            cursorX--;
-        }
-    } else if (startCategory == CharCategory::UppercaseLetter) {
-        while (cursorX > 0) {
-            CharCategory cat = categorize(lines.at(cursorY).at(cursorX - 1));
-            if (cat != CharCategory::UppercaseLetter)
-                break;
-            cursorX--;
-        }
-    } else if (startCategory == CharCategory::Digit || startCategory == CharCategory::Underscore) {
-        while (cursorX > 0) {
-            CharCategory cat = categorize(lines.at(cursorY).at(cursorX - 1));
-            if (cat == CharCategory::Whitespace || cat == CharCategory::Punctuation
-                || cat == CharCategory::UppercaseLetter)
-                break;
-            cursorX--;
-        }
     } else {
-        while (cursorX > 0
-               && categorize(lines.at(cursorY).at(cursorX - 1)) == CharCategory::Punctuation)
+        while (cursorX > 0 && isWordChar(line.at(cursorX - 1)) && !isupper(line.at(cursorX - 1)))
             cursorX--;
     }
 }
