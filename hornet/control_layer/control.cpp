@@ -133,7 +133,7 @@ void Control::sendStateToEditor()
 void Control::onEditorUserInputOccured(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
-    // m_modelAccess.getEditorModel().
+    sendStateToEditor();
 }
 
 void Control::onDebugRequested()

@@ -194,18 +194,16 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
     float textX = 5.f + lineNumberWidth;
 
     float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
-    m_cursorX = static_cast<int>((event->pos().x() - textX) / charWidth);
+    int cursorX = static_cast<int>((event->pos().x() - textX) / charWidth);
     float fontHeight = m_fontAtlas.textHeight(m_fontScale);
     float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
     float topMargin = verticalPadding / 2.f;
-    m_cursorY = static_cast<int>((event->pos().y() - verticalPadding - topMargin) / (m_lineHeight));
+    int cursorY = static_cast<int>((event->pos().y() - verticalPadding - topMargin)
+                                   / (m_lineHeight));
 
-    m_cursorX = std::max(0, m_cursorX);
-    m_cursorY = std::max(0, m_cursorY);
-    m_cursorY = std::min(m_cursorY, m_noOfAllLines - 1);
+    cursorX = std::max(0, cursorX);
+    cursorY = std::max(0, cursorY);
 
-    update();
-
-    EditorCursorPosDTO dto{m_cursorX, m_cursorY};
+    EditorCursorPosDTO dto{cursorX, cursorY};
     emit editorUserInputOccured(dto);
 }
