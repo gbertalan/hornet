@@ -151,6 +151,8 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace
              || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete)
         m_editorService.deleteCharacter(dto);
+    else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter)
+        m_editorService.insertNewLine();
     else
         m_editorService.moveCursor(dto);
 

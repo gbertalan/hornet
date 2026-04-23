@@ -129,3 +129,18 @@ void EditorService::deleteCharacter(const EditorKeyPressDTO &dto)
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }
+
+void EditorService::insertNewLine()
+{
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+
+    std::u32string &currentLine = lines.at(cursorY);
+    std::u32string newLine = currentLine.substr(cursorX);
+    currentLine = currentLine.substr(0, cursorX);
+    lines.insert(lines.begin() + cursorY + 1, newLine);
+
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    m_modelAccess.getEditorModel().setCursor(0, cursorY + 1);
+}

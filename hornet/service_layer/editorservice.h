@@ -17,6 +17,7 @@ public:
     void insertCharacter(char32_t character);
     void moveCursor(const EditorKeyPressDTO &dto);
     void deleteCharacter(const EditorKeyPressDTO &dto);
+    void insertNewLine();
 
 private:
     IModelAccessReadWrite &m_modelAccess;
