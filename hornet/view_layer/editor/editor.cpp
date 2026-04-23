@@ -271,3 +271,9 @@ void Editor::mouseMoveEvent(QMouseEvent *event)
     m_isTextCursor = overText;
     setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
 }
+
+void Editor::focusOutEvent(QFocusEvent *event)
+{
+    if (event->reason() == Qt::MouseFocusReason)
+        setFocus();
+}
