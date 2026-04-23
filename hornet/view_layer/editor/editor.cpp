@@ -158,7 +158,10 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
 {
     QString lineNumber = QString::number(m_topLineIndex + index + 1);
     float numberX = leftMargin + m_fontAtlas.textWidth(digits - lineNumber.length(), m_fontScale);
-    m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
+    if (m_topLineIndex + index == m_cursorY)
+        m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
+    else
+        m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
 }
 
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
@@ -220,12 +223,21 @@ QRect Editor::cursorRect(int cursorX, int cursorY) const
 
 void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
 {
+    float lineNumberWidth = 5.f
+                            + m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
+                                                    m_fontScale);
+
     update(cursorRect(m_cursorX, m_cursorY));
+    update(QRectF(0, m_cursorY * m_lineHeight, lineNumberWidth, m_lineHeight).toRect());
+
     m_cursorX = dto.cursorX;
     m_cursorY = dto.cursorY;
     m_cursorVisible = true;
     m_cursorTimer.start(200);
+
     update(cursorRect(m_cursorX, m_cursorY));
+    update(QRectF(0, m_cursorY * m_lineHeight, lineNumberWidth, m_lineHeight).toRect());
+
     scrollToCursor();
 }
 
