@@ -19,6 +19,8 @@ public:
     void deleteCharacter(const EditorKeyPressDTO &dto);
     void insertNewLine();
     void insertTab();
+    void deleteWordLeft();
+    void deleteWordRight();
 
 private:
     IModelAccessReadWrite &m_modelAccess;

@@ -151,12 +151,20 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
             return;
         m_editorService.insertCharacter(dto.key);
     } else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace
-               || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete)
-        m_editorService.deleteCharacter(dto);
-    else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter)
+               || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete) {
+        if (dto.ctrl) {
+            if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace)
+                m_editorService.deleteWordLeft();
+            else
+                m_editorService.deleteWordRight();
+        } else {
+            m_editorService.deleteCharacter(dto);
+        }
+    } else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter)
         m_editorService.insertNewLine();
     else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Tab)
         m_editorService.insertTab();
+
     else
         m_editorService.moveCursor(dto);
 

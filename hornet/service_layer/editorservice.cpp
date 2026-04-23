@@ -294,3 +294,27 @@ void EditorService::moveCursorWordLeft(std::vector<std::u32string> &lines,
             cursorX--;
     }
 }
+
+void EditorService::deleteWordLeft()
+{
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    int oldCursorX = cursorX;
+    moveCursorWordLeft(lines, cursorX, cursorY);
+    lines.at(cursorY).erase(cursorX, oldCursorX - cursorX);
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
+}
+
+void EditorService::deleteWordRight()
+{
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    int oldCursorX = cursorX;
+    moveCursorWordRight(lines, cursorX, cursorY);
+    lines.at(cursorY).erase(oldCursorX, cursorX - oldCursorX);
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    m_modelAccess.getEditorModel().setCursor(oldCursorX, cursorY);
+}
