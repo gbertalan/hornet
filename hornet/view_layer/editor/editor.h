@@ -9,6 +9,7 @@ class FontRenderer;
 struct EditorVisibleLinesDTO;
 struct EditorSettingsDTO;
 struct EditorViewStateDTO;
+struct EditorUserInputDTO;
 
 class Editor : public QWidget
 {
@@ -23,6 +24,7 @@ public:
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
+    void editorUserInputOccured(const EditorUserInputDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

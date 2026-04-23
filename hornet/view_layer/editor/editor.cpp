@@ -3,6 +3,7 @@
 #include <QPainter>
 #include <QScrollArea>
 #include "shared/dto_bidirectional/editorsettingsdto.h"
+#include "shared/dto_view_to_model/editoruserinputdto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/theme.h"
 #include <qevent.h>
@@ -16,6 +17,7 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
     m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
+
     m_lineHeight = settings.lineHeight;
     m_fontScale = settings.fontScale;
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
@@ -201,4 +203,7 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
     m_cursorY = std::min(m_cursorY, m_noOfAllLines - 1);
 
     update();
+
+    EditorUserInputDTO dto{m_cursorX, m_cursorY};
+    emit editorUserInputOccured(dto);
 }

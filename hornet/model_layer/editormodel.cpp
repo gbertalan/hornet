@@ -5,6 +5,9 @@ EditorModel::EditorModel()
     : m_noOfVisibleLines(0)
     , m_topLineIndex(0)
     , m_noOfCharsOfLongestLine(0)
+    , m_mode(EditorMode::plaintext)
+    , m_cursorX(0)
+    , m_cursorY(0)
 {}
 
 int EditorModel::getNoOfVisibleLines() const
@@ -67,4 +70,30 @@ const std::string &EditorModel::getFileType() const
 void EditorModel::setFileType(std::string fileType)
 {
     m_fileType = std::move(fileType);
+}
+
+EditorMode EditorModel::getMode()
+{
+    return m_mode;
+}
+
+void EditorModel::setMode(EditorMode mode)
+{
+    m_mode = mode;
+}
+
+int EditorModel::getCursorX() const
+{
+    return m_cursorX;
+}
+
+int EditorModel::getCursorY() const
+{
+    return m_cursorY;
+}
+
+void EditorModel::setCursor(int cursorX, int cursorY)
+{
+    m_cursorX = cursorX;
+    m_cursorY = cursorY;
 }

@@ -6,6 +6,7 @@
 #include "service_layer/editorservice.h"
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
+#include "shared/dto_view_to_model/editoruserinputdto.h"
 #include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
@@ -126,6 +127,11 @@ void Control::sendTextToEditor()
     m_view.updateEditorLines(dto);
 }
 
+void Control::onEditorUserInputOccured(const EditorUserInputDTO &dto)
+{
+    m_editorService.storeUserInput(dto);
+}
+
 void Control::onDebugRequested()
 {
 #ifdef QT_DEBUG
@@ -148,6 +154,7 @@ void Control::printModel() const
     qDebug() << "    " << "noOfLines:" << editorModel.getNoOfLines()
              << "noOfCharsOfLongestLine:" << editorModel.getNoOfCharsOfLongestLine()
              << "fileType:" << editorModel.getFileType();
+    qDebug() << "cursorX:" << editorModel.getCursorX() << "cursorY:" << editorModel.getCursorY();
     qDebug() << "=== MODEL STATE END ===";
     qDebug() << "";
     debugPrintCounter++;

@@ -1,6 +1,7 @@
 #include "editorservice.h"
 #include "model_layer/editormodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
+#include "shared/dto_view_to_model/editoruserinputdto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 
 #include <qdebug.h>
@@ -32,4 +33,9 @@ void EditorService::setTextLines(std::vector<std::u32string> textLines, std::str
 {
     m_modelAccess.getEditorModel().setTextLines(std::move(textLines));
     m_modelAccess.getEditorModel().setFileType(fileType);
+}
+
+void EditorService::storeUserInput(const EditorUserInputDTO &dto)
+{
+    m_modelAccess.getEditorModel().setCursor(dto.cursorX, dto.cursorY);
 }
