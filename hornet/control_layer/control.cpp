@@ -135,6 +135,11 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
 
+    sendCursorPosToEditor();
+}
+
+void Control::sendCursorPosToEditor()
+{
     int cursorX = m_modelAccess.getEditorModel().getCursorX();
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     EditorCursorPosDTO dtoToSendToView{cursorX, cursorY};
@@ -148,6 +153,7 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     m_editorService.insertCharacter(dto.key);
 
     sendStateToEditor();
+    sendCursorPosToEditor();
 }
 
 void Control::onDebugRequested()

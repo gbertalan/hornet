@@ -228,6 +228,26 @@ void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
     m_cursorVisible = true;
     m_cursorTimer.start(200);
     update(cursorRect(m_cursorX, m_cursorY));
+    scrollToCursor();
+}
+
+void Editor::scrollToCursor()
+{
+    QScrollArea *scrollArea = nullptr;
+    QWidget *p = parentWidget();
+    while (p) {
+        scrollArea = qobject_cast<QScrollArea *>(p);
+        if (scrollArea)
+            break;
+        p = p->parentWidget();
+    }
+    if (!scrollArea)
+        return;
+    QRect rect = cursorRect(m_cursorX, m_cursorY);
+    scrollArea->ensureVisible(rect.x(), rect.y(), 50, 50);
+
+    qDebug() << "scrollArea found:" << (scrollArea != nullptr);
+    qDebug() << "cursor rect:" << cursorRect(m_cursorX, m_cursorY);
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)

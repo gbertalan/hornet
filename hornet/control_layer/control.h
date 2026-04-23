@@ -36,6 +36,7 @@ public slots:
 
 private:
     void sendStateToEditor();
+    void sendCursorPosToEditor();
 
     IModelAccessRead &m_modelAccess;
     NumberService &m_service;

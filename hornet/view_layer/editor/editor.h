@@ -46,6 +46,7 @@ private:
     void drawLineText(QPainter &painter, int index, float textX, float y);
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
     QRect cursorRect(int cursorX, int cursorY) const;
+    void scrollToCursor();
 
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
