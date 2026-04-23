@@ -3,7 +3,7 @@
 
 class IModelAccessReadWrite;
 struct EditorVisibleLinesDTO;
-struct EditorUserInputDTO;
+struct EditorCursorPosDTO;
 
 class EditorService
 {
@@ -12,7 +12,7 @@ public:
     void storeEditorState(const EditorVisibleLinesDTO &dto);
     std::vector<std::u32string> retrieveActiveLines();
     void setTextLines(std::vector<std::u32string> textLines, std::string fileType);
-    void storeUserInput(const EditorUserInputDTO &dto);
+    void storeCursorPos(const EditorCursorPosDTO &dto);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

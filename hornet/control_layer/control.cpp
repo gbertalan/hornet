@@ -6,7 +6,7 @@
 #include "service_layer/editorservice.h"
 #include "service_layer/numberservice.h"
 #include "service_layer/windowservice.h"
-#include "shared/dto_view_to_model/editoruserinputdto.h"
+#include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
@@ -94,14 +94,14 @@ void Control::onWindowStateChanged(const WindowDTO &dto)
 void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
 {
     m_editorService.storeEditorState(dto);
-    sendTextToEditor();
+    sendStateToEditor();
 }
 
 /**
- * @brief Control::sendTextToEditor Retrieves visible lines (and metadata) from Model and sends
+ * @brief Control::sendStateToEditor Retrieves visible lines (and metadata) from Model and sends
  * them to View
  */
-void Control::sendTextToEditor()
+void Control::sendStateToEditor()
 {
     std::vector<std::u32string> lines = m_editorService.retrieveActiveLines();
     if (lines.empty())
@@ -117,19 +117,23 @@ void Control::sendTextToEditor()
         qLines.push_back(QString::fromUcs4(reinterpret_cast<const char32_t *>(line.c_str()),
                                            static_cast<int>(line.size())));
 
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+
     EditorViewStateDTO dto{qLines,
                            noOfAllLines,
                            noOfCharsOfLongestLine,
                            QString::fromStdString(fileType),
-                           0,
-                           0};
+                           cursorX,
+                           cursorY};
 
     m_view.updateEditorLines(dto);
 }
 
-void Control::onEditorUserInputOccured(const EditorUserInputDTO &dto)
+void Control::onEditorUserInputOccured(const EditorCursorPosDTO &dto)
 {
-    m_editorService.storeUserInput(dto);
+    m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
+    // m_modelAccess.getEditorModel().
 }
 
 void Control::onDebugRequested()
@@ -154,7 +158,8 @@ void Control::printModel() const
     qDebug() << "    " << "noOfLines:" << editorModel.getNoOfLines()
              << "noOfCharsOfLongestLine:" << editorModel.getNoOfCharsOfLongestLine()
              << "fileType:" << editorModel.getFileType();
-    qDebug() << "cursorX:" << editorModel.getCursorX() << "cursorY:" << editorModel.getCursorY();
+    qDebug() << "    " << "cursorX:" << editorModel.getCursorX()
+             << "cursorY:" << editorModel.getCursorY();
     qDebug() << "=== MODEL STATE END ===";
     qDebug() << "";
     debugPrintCounter++;

@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QScrollBar>
 
-struct EditorUserInputDTO;
+struct EditorCursorPosDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 class CustomScrollBar;
@@ -39,7 +39,7 @@ public:
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorUserInputDTO &dto);
+    void editorUserInputOccured(const EditorCursorPosDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

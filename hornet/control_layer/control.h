@@ -11,7 +11,7 @@ class View;
 struct NumberDTO;
 struct WindowDTO;
 struct EditorVisibleLinesDTO;
-struct EditorUserInputDTO;
+struct EditorCursorPosDTO;
 
 class Control : public QObject
 {
@@ -30,10 +30,10 @@ public slots:
     void onDebugRequested();
     void onWindowStateChanged(const WindowDTO &dto);
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
-    void onEditorUserInputOccured(const EditorUserInputDTO &dto);
+    void onEditorUserInputOccured(const EditorCursorPosDTO &dto);
 
 private:
-    void sendTextToEditor();
+    void sendStateToEditor();
 
     IModelAccessRead &m_modelAccess;
     NumberService &m_service;

@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QScrollArea>
 #include "shared/dto_bidirectional/editorsettingsdto.h"
-#include "shared/dto_view_to_model/editoruserinputdto.h"
+#include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/theme.h"
 #include <qevent.h>
@@ -108,6 +108,8 @@ void Editor::updateLines(const EditorViewStateDTO &dto)
     float lineNumberSectionWidth = 5.f + m_fontAtlas.textWidth(digits + 2, m_fontScale);
     updateWidth(lineNumberSectionWidth
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
+    m_cursorX = dto.cursorX;
+    m_cursorY = dto.cursorY;
 
     update();
 }
@@ -204,6 +206,6 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
 
     update();
 
-    EditorUserInputDTO dto{m_cursorX, m_cursorY};
+    EditorCursorPosDTO dto{m_cursorX, m_cursorY};
     emit editorUserInputOccured(dto);
 }

@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-struct EditorUserInputDTO;
+struct EditorCursorPosDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 struct WindowDTO;
@@ -26,7 +26,7 @@ signals:
     void debugRequested();
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorUserInputDTO &dto);
+    void editorUserInputOccured(const EditorCursorPosDTO &dto);
 
 private:
     Window* m_window;

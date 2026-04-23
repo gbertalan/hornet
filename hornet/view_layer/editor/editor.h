@@ -9,7 +9,7 @@ class FontRenderer;
 struct EditorVisibleLinesDTO;
 struct EditorSettingsDTO;
 struct EditorViewStateDTO;
-struct EditorUserInputDTO;
+struct EditorCursorPosDTO;
 
 class Editor : public QWidget
 {
@@ -24,7 +24,7 @@ public:
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorUserInputDTO &dto);
+    void editorUserInputOccured(const EditorCursorPosDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -58,8 +58,8 @@ private:
     QString m_fileType;
     QVector<QString> m_textLinesToDisplay;
 
-    int m_cursorX = 10; // column
-    int m_cursorY = 15; // row
+    int m_cursorX = 0; // column
+    int m_cursorY = 0; // row
     QTimer m_cursorTimer;
     bool m_cursorVisible = true;
 };
