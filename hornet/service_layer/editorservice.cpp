@@ -40,5 +40,7 @@ void EditorService::storeCursorPos(const EditorCursorPosDTO &dto)
     std::vector<std::u32string> allLines = m_modelAccess.getEditorModel().getTextLines();
     int noOfLines = m_modelAccess.getEditorModel().getNoOfLines();
     int cursorY = std::min(dto.cursorY, noOfLines - 1);
-    m_modelAccess.getEditorModel().setCursor(dto.cursorX, cursorY);
+    int lineLength = static_cast<int>(allLines.at(cursorY).length());
+    int cursorX = std::min(dto.cursorX, lineLength);
+    m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }
