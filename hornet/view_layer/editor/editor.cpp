@@ -21,6 +21,7 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
 
     m_lineHeight = settings.lineHeight;
     m_fontScale = settings.fontScale;
+
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
         update(cursorRect(m_cursorX, m_cursorY));
@@ -29,6 +30,8 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
 
     setFocusPolicy(Qt::StrongFocus);
     QTimer::singleShot(0, this, [this]() { setFocus(); }); // gets focus, after constructor is ready.
+
+    setMouseTracking(true);
 }
 
 void Editor::setSettings(const EditorSettingsDTO &settings)
@@ -240,4 +243,18 @@ void Editor::keyPressEvent(QKeyEvent *event)
 
     EditorKeyPressDTO dto{key, ctrl, shift, alt};
     emit editorKeyPressed(dto);
+}
+
+void Editor::mouseMoveEvent(QMouseEvent *event)
+{
+    float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
+                                                  m_fontScale);
+    float textX = 5.f + lineNumberWidth;
+
+    bool overText = event->pos().x() >= textX;
+    if (overText == m_isTextCursor)
+        return;
+
+    m_isTextCursor = overText;
+    setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
 }

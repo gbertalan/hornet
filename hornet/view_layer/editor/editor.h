@@ -35,6 +35,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     void updateSize();
@@ -67,4 +68,6 @@ private:
     int m_cursorY = 0; // row
     QTimer m_cursorTimer;
     bool m_cursorVisible = true;
+
+    bool m_isTextCursor = false;
 };
