@@ -25,6 +25,8 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
         update(cursorRect(m_cursorX, m_cursorY));
     });
     m_cursorTimer.start(200);
+
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void Editor::setSettings(const EditorSettingsDTO &settings)
@@ -196,7 +198,7 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
     cursorY = std::max(0, cursorY);
 
     EditorCursorPosDTO dto{cursorX, cursorY};
-    emit editorUserInputOccured(dto);
+    emit editorCursorPosChanged(dto);
 }
 
 QRect Editor::cursorRect(int cursorX, int cursorY) const
@@ -221,4 +223,18 @@ void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
     m_cursorVisible = true;
     m_cursorTimer.start(200);
     update(cursorRect(m_cursorX, m_cursorY));
+}
+
+void Editor::keyPressEvent(QKeyEvent *event)
+{
+    QString text = event->text();
+    if (text.isEmpty())
+        return;
+
+    char32_t key = text.toUcs4().first();
+    bool ctrl = event->modifiers() & Qt::ControlModifier;
+    bool shift = event->modifiers() & Qt::ShiftModifier;
+    bool alt = event->modifiers() & Qt::AltModifier;
+
+    // emit editorKeyPressed(EditorKeyPressDTO(key, ctrl, shift, alt));
 }

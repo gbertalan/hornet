@@ -5,6 +5,7 @@
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
+struct EditorKeyPressDTO;
 class FontRenderer;
 struct EditorVisibleLinesDTO;
 struct EditorSettingsDTO;
@@ -25,13 +26,15 @@ public:
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorCursorPosDTO &dto);
+    void editorCursorPosChanged(const EditorCursorPosDTO &dto);
+    void editorKeyPressed(const EditorKeyPressDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void showEvent(QShowEvent *event) override;
     bool eventFilter(QObject *watched, QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     void updateSize();

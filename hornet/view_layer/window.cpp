@@ -73,7 +73,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     });
 
     connect(m_splitPane, &SplitPane::editorStateChanged, this, &Window::editorStateChanged);
-    connect(m_splitPane, &SplitPane::editorUserInputOccured, this, &Window::editorUserInputOccured);
+    connect(m_splitPane, &SplitPane::editorCursorPosChanged, this, &Window::editorCursorPosChanged);
 }
 
 void Window::displayNumber(const NumberDTO& dto) {

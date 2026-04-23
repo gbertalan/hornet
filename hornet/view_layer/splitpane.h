@@ -40,7 +40,7 @@ public:
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorCursorPosDTO &dto);
+    void editorCursorPosChanged(const EditorCursorPosDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

@@ -130,7 +130,7 @@ void Control::sendStateToEditor()
     m_view.updateEditorLines(dto);
 }
 
-void Control::onEditorUserInputOccured(const EditorCursorPosDTO &dto)
+void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
     // sendStateToEditor();

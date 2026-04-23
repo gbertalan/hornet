@@ -50,9 +50,9 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::closeClicked, &app, &QApplication::quit);
     QObject::connect(&view, &View::editorStateChanged, &control, &Control::onEditorStateChanged);
     QObject::connect(&view,
-                     &View::editorUserInputOccured,
+                     &View::editorCursorPosChanged,
                      &control,
-                     &Control::onEditorUserInputOccured);
+                     &Control::onEditorCursorPosChanged);
 
     control.init();
 

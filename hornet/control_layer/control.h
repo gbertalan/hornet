@@ -30,7 +30,7 @@ public slots:
     void onDebugRequested();
     void onWindowStateChanged(const WindowDTO &dto);
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
-    void onEditorUserInputOccured(const EditorCursorPosDTO &dto);
+    void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
 
 private:
     void sendStateToEditor();

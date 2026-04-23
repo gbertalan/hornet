@@ -142,7 +142,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     setAttribute(Qt::WA_StaticContents); // telling Qt that the content doesn't change during resize, this can help with redraw perf.
 
     connect(m_editor, &Editor::editorStateChanged, this, &SplitPane::editorStateChanged);
-    connect(m_editor, &Editor::editorUserInputOccured, this, &SplitPane::editorUserInputOccured);
+    connect(m_editor, &Editor::editorCursorPosChanged, this, &SplitPane::editorCursorPosChanged);
 }
 
 QSplitterHandle* SplitPane::createHandle() {

@@ -29,7 +29,7 @@ signals:
     void windowStateChanged(const WindowDTO& dto);
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorCursorPosDTO &dto);
+    void editorCursorPosChanged(const EditorCursorPosDTO &dto);
 
 private:
     TitleBar* m_titleBar;

@@ -27,7 +27,7 @@ signals:
     void debugRequested();
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
-    void editorUserInputOccured(const EditorCursorPosDTO &dto);
+    void editorCursorPosChanged(const EditorCursorPosDTO &dto);
 
 private:
     Window* m_window;
