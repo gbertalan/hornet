@@ -112,6 +112,11 @@ void Window::updateEditorLines(const EditorViewStateDTO &dto)
     m_splitPane->updateEditorLines(dto);
 }
 
+void Window::updateEditorCursorPos(const EditorCursorPosDTO &dto)
+{
+    m_splitPane->updateEditorCursorPos(dto);
+}
+
 void Window::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     m_splitPane->setGeometry(0, 0, width(), height());

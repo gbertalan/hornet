@@ -30,3 +30,8 @@ void View::updateEditorLines(const EditorViewStateDTO &dto)
 {
     m_window->updateEditorLines(dto);
 }
+
+void View::updateEditorCursorPos(const EditorCursorPosDTO &dto)
+{
+    m_window->updateEditorCursorPos(dto);
+}

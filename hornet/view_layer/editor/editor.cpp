@@ -22,16 +22,7 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     m_fontScale = settings.fontScale;
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
-        float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
-                                                      m_fontScale);
-        float cursorPixelX = 5.f + lineNumberWidth + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
-        float lineTop = (m_cursorY) *m_lineHeight;
-        float fontHeight = m_fontAtlas.textHeight(m_fontScale);
-        float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-        float topMargin = verticalPadding / 2.f;
-        float y = lineTop + verticalPadding - topMargin;
-        float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
-        update(QRectF(cursorPixelX, y + verticalPadding, charWidth, m_lineHeight).toRect());
+        update(cursorRect(m_cursorX, m_cursorY));
     });
     m_cursorTimer.start(200);
 }
@@ -206,4 +197,28 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
 
     EditorCursorPosDTO dto{cursorX, cursorY};
     emit editorUserInputOccured(dto);
+}
+
+QRect Editor::cursorRect(int cursorX, int cursorY) const
+{
+    float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
+                                                  m_fontScale);
+    float cursorPixelX = 5.f + lineNumberWidth + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
+    float lineTop = (m_cursorY) *m_lineHeight;
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float topMargin = verticalPadding / 2.f;
+    float y = lineTop + verticalPadding - topMargin;
+    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
+    return QRectF(cursorPixelX, y + verticalPadding, charWidth, m_lineHeight).toRect();
+}
+
+void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
+{
+    update(cursorRect(m_cursorX, m_cursorY));
+    m_cursorX = dto.cursorX;
+    m_cursorY = dto.cursorY;
+    m_cursorVisible = true;
+    m_cursorTimer.start(200);
+    update(cursorRect(m_cursorX, m_cursorY));
 }

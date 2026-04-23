@@ -133,7 +133,12 @@ void Control::sendStateToEditor()
 void Control::onEditorUserInputOccured(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
-    sendStateToEditor();
+    // sendStateToEditor();
+
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    EditorCursorPosDTO dtoToSendToView{cursorX, cursorY};
+    m_view.updateEditorCursorPos(dtoToSendToView);
 }
 
 void Control::onDebugRequested()

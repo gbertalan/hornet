@@ -36,6 +36,7 @@ public:
     QWidget* leftPane() const;
     QWidget* rightPane() const;
     void updateEditorLines(const EditorViewStateDTO &dto);
+    void updateEditorCursorPos(const EditorCursorPosDTO &dto);
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);

@@ -21,6 +21,7 @@ public:
     void updateHeight(int height);
     void setSettings(const EditorSettingsDTO &settings);
     void updateLines(const EditorViewStateDTO &dto);
+    void updateCursorPosition(const EditorCursorPosDTO &dto);
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
@@ -40,6 +41,7 @@ private:
     void drawLineNumber(QPainter &painter, int index, int digits, float leftMargin, float y);
     void drawLineText(QPainter &painter, int index, float textX, float y);
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
+    QRect cursorRect(int cursorX, int cursorY) const;
 
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;

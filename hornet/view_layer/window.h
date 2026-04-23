@@ -21,6 +21,7 @@ public:
     void restoreWindowedSize();
     void restoreWindowedLocation();
     void updateEditorLines(const EditorViewStateDTO &dto);
+    void updateEditorCursorPos(const EditorCursorPosDTO &dto);
 
 signals:
     void buttonClicked();

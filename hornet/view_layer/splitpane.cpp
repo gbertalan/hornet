@@ -162,6 +162,11 @@ void SplitPane::updateEditorLines(const EditorViewStateDTO &dto)
     m_editor->updateLines(dto);
 }
 
+void SplitPane::updateEditorCursorPos(const EditorCursorPosDTO &dto)
+{
+    m_editor->updateCursorPosition(dto);
+}
+
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {
     if (event->type() == QEvent::Enter) {
         m_scrollBarHideTimer->stop();
