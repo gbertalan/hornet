@@ -243,8 +243,16 @@ void EditorService::deleteWordLeft()
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
     int oldCursorX = cursorX;
+    int oldCursorY = cursorY;
     moveCursorWordLeft(lines, cursorX, cursorY);
-    lines.at(cursorY).erase(cursorX, oldCursorX - cursorX);
+
+    // If word jump crossed a line boundary, merge the current line into the previous one
+    if (cursorY != oldCursorY) {
+        lines.at(cursorY) += lines.at(oldCursorY);
+        lines.erase(lines.begin() + oldCursorY);
+    } else {
+        lines.at(cursorY).erase(cursorX, oldCursorX - cursorX);
+    }
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }
@@ -259,7 +267,6 @@ void EditorService::deleteWordRight()
     moveCursorWordRight(lines, cursorX, cursorY);
 
     // If word jump crossed a line boundary, merge the next line in rather than erasing
-
     if (cursorY != oldCursorY) {
         lines.at(oldCursorY) += lines.at(cursorY);
         lines.erase(lines.begin() + cursorY);
