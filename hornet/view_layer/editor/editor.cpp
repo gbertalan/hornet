@@ -156,16 +156,29 @@ void Editor::paintEvent(QPaintEvent *event)
 
 void Editor::drawLineNumber(QPainter &painter, int index, int digits, float leftMargin, float y)
 {
+    float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
+                                                  m_fontScale);
     QString lineNumber = QString::number(m_topLineIndex + index + 1);
-    float numberX = leftMargin + m_fontAtlas.textWidth(digits - lineNumber.length(), m_fontScale);
+    float numberWidth = m_fontAtlas.textWidth(lineNumber.length(), m_fontScale);
+    float numberX = (lineNumberWidth - numberWidth) / 2.f;
     if (m_topLineIndex + index == m_cursorY)
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
     else
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
+
+    painter.save();
+    painter.setPen(QPen(Theme::darkGray(), 1));
+    painter.drawLine(QPointF(lineNumberWidth, y), QPointF(lineNumberWidth, y + m_lineHeight));
+    painter.restore();
 }
 
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
 {
+    // painter.save();
+    // painter.setPen(QPen(Theme::darkGray(), 1));
+    // painter.drawLine(QPointF(textX - 5, y), QPointF(textX - 5, y + m_lineHeight));
+    // painter.restore();
+
     m_fontRenderer
         ->drawText(painter, textX, y, m_textLinesToDisplay[index], Theme::darkAmber(), m_fontScale);
 }
