@@ -1,7 +1,7 @@
 #pragma once
 #include <QDebug>
 #include <QObject>
-
+#include <QProcess>
 struct EditorKeyPressDTO;
 class IModelAccessRead;
 class NumberService;
@@ -37,6 +37,7 @@ private:
     void sendCursorPosToEditor();
     bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
     void handleEditorKeyPress(const EditorKeyPressDTO &dto);
+    void executeCommand();
     IModelAccessRead &m_modelAccess;
     NumberService &m_service;
     WindowService &m_windowService;
@@ -44,6 +45,7 @@ private:
     TerminalService &m_terminalService;
     View &m_view;
     bool m_isTerminal = false;
+    QProcess m_process;
     void printModel() const;
     mutable int debugPrintCounter = 0;
 };

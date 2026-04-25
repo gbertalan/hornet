@@ -8,11 +8,6 @@ TerminalService::TerminalService(EditorService &editorService)
 
 void TerminalService::navigateHistory(EditorKeyPressDTO::SpecialKey direction) {}
 
-void TerminalService::executeCommand()
-{
-    std::cout << "executeCommand called" << std::endl;
-}
-
 std::u32string TerminalService::getPrompt() const
 {
     std::string segment = m_terminalModel.getCurrentDirectory().filename().string();

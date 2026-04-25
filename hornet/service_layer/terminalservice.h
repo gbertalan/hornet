@@ -11,7 +11,6 @@ class TerminalService
 public:
     explicit TerminalService(EditorService &editorService);
     void navigateHistory(EditorKeyPressDTO::SpecialKey direction);
-    void executeCommand();
     std::u32string getPrompt() const;
     const std::vector<std::u32string> &getLinePrompts() const;
     void addLinePrompt(const std::u32string &prompt);

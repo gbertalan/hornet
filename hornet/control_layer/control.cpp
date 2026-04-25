@@ -12,6 +12,7 @@
 #include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
+#include <iostream>
 #include <shared/dto_model_to_view/editorviewstatedto.h>
 #include <stdexcept>
 
@@ -139,7 +140,7 @@ bool Control::handleTerminalKeyPress(const EditorKeyPressDTO &dto)
         return true;
     }
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter) {
-        m_terminalService.executeCommand();
+        executeCommand();
         sendStateToEditor();
         sendCursorPosToEditor();
         return true;
@@ -184,6 +185,22 @@ void Control::handleEditorKeyPress(const EditorKeyPressDTO &dto)
         m_editorService.insertTab();
     else
         m_editorService.moveCursor(dto);
+}
+
+void Control::executeCommand()
+{
+    const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
+    if (lines.empty())
+        return;
+    const std::u32string &lastLine = lines.back();
+    if (lastLine.empty())
+        return;
+    QString command = QString::fromUcs4(reinterpret_cast<const char32_t *>(lastLine.c_str()),
+                                        static_cast<int>(lastLine.size()));
+    m_process.start("/bin/sh", QStringList() << "-c" << command);
+    m_process.waitForFinished();
+    QString output = QString::fromUtf8(m_process.readAllStandardOutput());
+    std::cout << output.toStdString() << std::endl;
 }
 
 void Control::onDebugRequested()
