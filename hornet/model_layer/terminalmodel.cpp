@@ -29,3 +29,13 @@ void TerminalModel::setCurrentDirectory(const std::filesystem::path &path)
 {
     m_currentDirectory = path;
 }
+
+const std::vector<std::u32string> &TerminalModel::getLinePrompts() const
+{
+    return m_linePrompts;
+}
+
+void TerminalModel::addLinePrompt(const std::u32string &prompt)
+{
+    m_linePrompts.push_back(prompt);
+}

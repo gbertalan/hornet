@@ -38,7 +38,7 @@ void Editor::setSettings(const EditorSettingsDTO &settings)
     m_lineHeight = settings.lineHeight;
     m_fontScale = settings.fontScale;
     m_isTerminal = settings.isTerminal;
-    if (m_isTerminal)
+    if (!m_isTerminal)
         m_textUniColor = Theme::darkAmber();
     else
         m_textUniColor = Theme::desaturatedTeal();
@@ -103,11 +103,9 @@ void Editor::updateEditorState(const EditorViewStateDTO &dto)
     m_noOfAllLines = dto.noOfAllLines;
     m_noOfCharsOfLongestLine = dto.noOfCharsOfLongestLine;
     m_fileType = dto.fileType;
-    m_terminalPrompt = dto.terminalPrompt;
+    m_terminalPrompts = dto.terminalPrompts;
     updateHeight(m_noOfAllLines * m_lineHeight + (m_lineHeight / 2.f));
-    int digits = QString::number(m_noOfAllLines).length();
-    float lineNumberSectionWidth = 5.f + m_fontAtlas.textWidth(digits + 2, m_fontScale);
-    updateWidth(lineNumberSectionWidth
+    updateWidth(5.f + leftColumnWidth()
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
     update();
 }
@@ -140,17 +138,17 @@ bool Editor::eventFilter(QObject *watched, QEvent *event)
 void Editor::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    int digits = QString::number(m_noOfAllLines).length();
-    float lineNumberWidth = m_fontAtlas.textWidth(digits + 2, m_fontScale);
     float leftMargin = 5.f;
-    float textX = leftMargin + lineNumberWidth;
+    float textX = leftMargin + leftColumnWidth();
     float fontHeight = m_fontAtlas.textHeight(m_fontScale);
     float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
     float topMargin = verticalPadding / 2.f;
+    int digits = QString::number(m_noOfAllLines).length();
     for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
         float lineTop = (m_topLineIndex + i) * m_lineHeight;
         float y = lineTop + verticalPadding - topMargin;
         drawLineNumber(painter, i, digits, leftMargin, y);
+        drawTerminalPrompt(painter, i, leftMargin + lineNumberSectionWidth(), y);
         drawLineText(painter, i, textX, y);
         drawCursor(painter, i, textX, y, verticalPadding);
     }
@@ -200,10 +198,7 @@ void Editor::drawCursor(QPainter &painter, int index, float textX, float y, floa
 
 void Editor::mouseReleaseEvent(QMouseEvent *event)
 {
-    int digits = QString::number(m_noOfAllLines).length();
-    float lineNumberWidth = m_fontAtlas.textWidth(digits + 2, m_fontScale);
-    float textX = 5.f + lineNumberWidth;
-
+    float textX = 5.f + leftColumnWidth();
     float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
     int cursorX = static_cast<int>((event->pos().x() - textX) / charWidth);
     float fontHeight = m_fontAtlas.textHeight(m_fontScale);
@@ -211,20 +206,16 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
     float topMargin = verticalPadding / 2.f;
     int cursorY = static_cast<int>((event->pos().y() - verticalPadding - topMargin)
                                    / (m_lineHeight));
-
     cursorX = std::max(0, cursorX);
     cursorY = std::max(0, cursorY);
-
     EditorCursorPosDTO dto{cursorX, cursorY};
     emit editorCursorPosChanged(dto);
 }
 
 QRect Editor::cursorRect(int cursorX, int cursorY) const
 {
-    float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
-                                                  m_fontScale);
-    float cursorPixelX = 5.f + lineNumberWidth + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
-    float lineTop = (m_cursorY) *m_lineHeight;
+    float cursorPixelX = 5.f + leftColumnWidth() + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
+    float lineTop = m_cursorY * m_lineHeight;
     float fontHeight = m_fontAtlas.textHeight(m_fontScale);
     float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
     float topMargin = verticalPadding / 2.f;
@@ -235,21 +226,15 @@ QRect Editor::cursorRect(int cursorX, int cursorY) const
 
 void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
 {
-    float lineNumberWidth = 5.f
-                            + m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
-                                                    m_fontScale);
-
+    float lineNumberWidth = 5.f + leftColumnWidth();
     update(cursorRect(m_cursorX, m_cursorY));
     update(QRectF(0, m_cursorY * m_lineHeight, lineNumberWidth, m_lineHeight).toRect());
-
     m_cursorX = dto.cursorX;
     m_cursorY = dto.cursorY;
     m_cursorVisible = true;
     m_cursorTimer.start(200);
-
     update(cursorRect(m_cursorX, m_cursorY));
     update(QRectF(0, m_cursorY * m_lineHeight, lineNumberWidth, m_lineHeight).toRect());
-
     scrollToCursor();
 }
 
@@ -329,14 +314,10 @@ void Editor::keyPressEvent(QKeyEvent *event)
 
 void Editor::mouseMoveEvent(QMouseEvent *event)
 {
-    float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
-                                                  m_fontScale);
-    float textX = 5.f + lineNumberWidth;
-
+    float textX = 5.f + leftColumnWidth();
     bool overText = event->pos().x() >= textX;
     if (overText == m_isTextCursor)
         return;
-
     m_isTextCursor = overText;
     setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
 }
@@ -346,4 +327,35 @@ void Editor::focusOutEvent(QFocusEvent *event)
     // Reclaim focus if lost to scrollbar clicks so keyboard input keeps working
     if (event->reason() == Qt::MouseFocusReason)
         setFocus();
+}
+
+float Editor::lineNumberSectionWidth() const
+{
+    int digits = QString::number(m_noOfAllLines).length();
+    return m_fontAtlas.textWidth(digits + 2, m_fontScale);
+}
+
+float Editor::leftColumnWidth() const
+{
+    float lnWidth = lineNumberSectionWidth();
+    qDebug() << "terminalPrompts size:" << m_terminalPrompts.size();
+    if (!m_isTerminal || m_terminalPrompts.isEmpty())
+        return lnWidth;
+    int maxPromptLen = 0;
+    for (const QString &p : m_terminalPrompts)
+        maxPromptLen = std::max(maxPromptLen, static_cast<int>(p.length()));
+    qDebug() << "leftColumnWidth returning:"
+             << lnWidth + m_fontAtlas.textWidth(maxPromptLen + 2, m_fontScale);
+    return lnWidth + m_fontAtlas.textWidth(maxPromptLen + 2, m_fontScale);
+}
+
+void Editor::drawTerminalPrompt(QPainter &painter, int index, float x, float y)
+{
+    int lineIndex = m_topLineIndex + index;
+    if (lineIndex >= m_terminalPrompts.size())
+        return;
+    const QString &prompt = m_terminalPrompts[lineIndex];
+    if (prompt.isEmpty())
+        return;
+    m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
 }

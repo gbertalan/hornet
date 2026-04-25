@@ -1,5 +1,4 @@
 #pragma once
-
 #include <filesystem>
 #include <string>
 #include <vector>
@@ -13,9 +12,12 @@ public:
     void setHistoryIndex(int index);
     const std::filesystem::path &getCurrentDirectory() const;
     void setCurrentDirectory(const std::filesystem::path &path);
+    const std::vector<std::u32string> &getLinePrompts() const;
+    void addLinePrompt(const std::u32string &prompt);
 
 private:
     std::vector<std::u32string> m_commandHistory;
     int m_historyIndex = -1;
     std::filesystem::path m_currentDirectory = std::filesystem::current_path();
+    std::vector<std::u32string> m_linePrompts;
 };

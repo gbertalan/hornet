@@ -22,3 +22,13 @@ std::u32string TerminalService::getPrompt() const
         prompt += static_cast<char32_t>(c);
     return prompt;
 }
+
+const std::vector<std::u32string> &TerminalService::getLinePrompts() const
+{
+    return m_terminalModel.getLinePrompts();
+}
+
+void TerminalService::addLinePrompt(const std::u32string &prompt)
+{
+    m_terminalModel.addLinePrompt(prompt);
+}

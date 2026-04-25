@@ -81,7 +81,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
 
     int lineHeight = 20;
     float fontScale = 0.5;
-    EditorSettingsDTO editorSettingsDTO{lineHeight, fontScale};
+    EditorSettingsDTO editorSettingsDTO{lineHeight, fontScale, true};
 
     m_editor = new Editor(editorSettingsDTO, this);
 

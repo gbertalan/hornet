@@ -52,6 +52,9 @@ private:
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
     QRect cursorRect(int cursorX, int cursorY) const;
     void scrollToCursor();
+    float leftColumnWidth() const;
+    float lineNumberSectionWidth() const;
+    void drawTerminalPrompt(QPainter &painter, int index, float x, float y);
 
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
@@ -79,5 +82,5 @@ private:
 
     bool m_isTerminal = false;
     QColor m_textUniColor;
-    QString m_terminalPrompt;
+    QVector<QString> m_terminalPrompts;
 };

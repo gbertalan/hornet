@@ -27,57 +27,14 @@ Control::Control(IModelAccessRead &modelAccess,
     , m_editorService(editorService)
     , m_terminalService(terminalService)
     , m_view(view)
-{
-    m_editorService
-        .setTextLines({U"int main()",
-                       U"{",
-                       U"    std::cout << \"Hello, World!\" << std::endl;",
-                       U"    int x = 0;",
-                       U"    int y = 10;",
-                       U"    for (int i = 0; i < y; i++) {",
-                       U"        x += i;",
-                       U"        std::cout << \"Iteration: \" << i << std::endl;",
-                       U"    }",
-                       U"    if (x > 0) {",
-                       U"        std::cout << \"x is positive: \" << x << std::endl;",
-                       U"    } else {",
-                       U"        std::cout << \"x is zero or negative\" << std::endl;",
-                       U"    }",
-                       U"    std::vector<int> numbers = {1, 2, 3, 4, 5};",
-                       U"    for (int num : numbers) {",
-                       U"        std::cout << num << \" \";",
-                       U"    }",
-                       U"    std::cout << std::endl;",
-                       U"    auto lambda = [](int a, int b) { return a + b; };",
-                       U"    int result = lambda(5, 3);",
-                       U"    std::cout << \"Lambda result: \" << result << std::endl;",
-                       U"    std::string greeting = \"Hello\";",
-                       U"    greeting += \" World!\";",
-                       U"    std::cout << greeting << std::endl;",
-                       U"    try {",
-                       U"        throw std::runtime_error(\"Something went wrong\");",
-                       U"    } catch (const std::exception& e) {",
-                       U"        std::cout << \"Caught: \" << e.what() << std::endl;",
-                       U"    }",
-                       U"    std::unique_ptr<int> ptr = std::make_unique<int>(42);",
-                       U"    std::cout << *ptr << std::endl;",
-                       U"    std::map<std::string, int> ages;",
-                       U"    ages[\"Alice\"] = 30;",
-                       U"    ages[\"Bob\"] = 25;",
-                       U"    for (const auto& pair : ages) {",
-                       U"        std::cout << pair.first << \": \" << pair.second << std::endl;",
-                       U"    }",
-                       U"    std::cout << \"Press any key to continue...\" << std::endl;",
-                       U"    std::cin.get();",
-                       U"    return 0;",
-                       U"}"},
-                      "txt");
-}
+{}
 
 void Control::init()
 {
     NumberDTO dto{m_modelAccess.getNumberModel().getValue()};
     m_view.displayNumber(dto);
+
+    m_editorService.setTextLines({U"int main()"}, "txt");
 
     m_isTerminal = true;
     if (m_isTerminal) {
@@ -85,6 +42,7 @@ void Control::init()
         EditorCursorPosDTO dto{0, lastLine};
         m_editorService.storeCursorPos(dto);
         sendCursorPosToEditor();
+        m_terminalService.addLinePrompt(U"~/projects");
     }
 }
 
@@ -126,17 +84,19 @@ void Control::sendStateToEditor()
     for (const std::u32string &line : lines)
         qLines.push_back(QString::fromUcs4(reinterpret_cast<const char32_t *>(line.c_str()),
                                            static_cast<int>(line.size())));
-    QString terminalPrompt;
+    QVector<QString> terminalPrompts;
     if (m_isTerminal) {
-        std::u32string prompt = m_terminalService.getPrompt();
-        terminalPrompt = QString::fromUcs4(reinterpret_cast<const char32_t *>(prompt.c_str()),
-                                           static_cast<int>(prompt.size()));
+        const std::vector<std::u32string> &prompts = m_terminalService.getLinePrompts();
+        for (const std::u32string &prompt : prompts)
+            terminalPrompts.push_back(
+                QString::fromUcs4(reinterpret_cast<const char32_t *>(prompt.c_str()),
+                                  static_cast<int>(prompt.size())));
     }
     EditorViewStateDTO dto{qLines,
                            noOfAllLines,
                            noOfCharsOfLongestLine,
                            QString::fromStdString(fileType),
-                           terminalPrompt};
+                           terminalPrompts};
     m_view.updateEditorState(dto);
 }
 
