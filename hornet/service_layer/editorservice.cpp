@@ -177,7 +177,8 @@ void EditorService::insertTab()
 
 static bool isWordChar(char32_t ch)
 {
-    return (ch >= U'a' && ch <= U'z') || (ch >= U'A' && ch <= U'Z') || (ch >= U'0' && ch <= U'9');
+    return (ch >= U'a' && ch <= U'z') || (ch >= U'A' && ch <= U'Z') || (ch >= U'0' && ch <= U'9')
+           || (ch == U';') || (ch == U'>') || (ch == U'<');
 }
 
 void EditorService::moveCursorWordRight(std::vector<std::u32string> &lines,

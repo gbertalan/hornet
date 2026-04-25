@@ -78,7 +78,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_scrollArea->viewport()->setStyleSheet("background: transparent;");
 
     // Editor:
-    // m_editorWidget = new Editor(this);
+
     int lineHeight = 20;
     float fontScale = 0.5;
     EditorSettingsDTO editorSettingsDTO{lineHeight, fontScale};

@@ -76,4 +76,7 @@ private:
     bool m_cursorVisible = true;
 
     bool m_isTextCursor = false;
+
+    bool m_isTerminal = false;
+    QColor m_textUniColor;
 };

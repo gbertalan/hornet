@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QDebug>
 #include <QObject>
 
@@ -8,24 +7,23 @@ class IModelAccessRead;
 class NumberService;
 class WindowService;
 class EditorService;
+class TerminalService;
 class View;
 struct NumberDTO;
 struct WindowDTO;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
-
 class Control : public QObject
 {
     Q_OBJECT
-
 public:
     explicit Control(IModelAccessRead &modelAccess,
                      NumberService &service,
                      WindowService &windowService,
                      EditorService &editorService,
+                     TerminalService &terminalService,
                      View &view);
     void init();
-
 public slots:
     void onButtonClicked();
     void onDebugRequested();
@@ -37,12 +35,15 @@ public slots:
 private:
     void sendStateToEditor();
     void sendCursorPosToEditor();
-
+    bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
+    void handleEditorKeyPress(const EditorKeyPressDTO &dto);
     IModelAccessRead &m_modelAccess;
     NumberService &m_service;
     WindowService &m_windowService;
     EditorService &m_editorService;
+    TerminalService &m_terminalService;
     View &m_view;
+    bool m_isTerminal = false;
     void printModel() const;
-    mutable int debugPrintCounter = 0; // mutable, to use in const function
+    mutable int debugPrintCounter = 0;
 };

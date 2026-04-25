@@ -19,8 +19,7 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
 
-    m_lineHeight = settings.lineHeight;
-    m_fontScale = settings.fontScale;
+    setSettings(settings);
 
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
@@ -38,6 +37,11 @@ void Editor::setSettings(const EditorSettingsDTO &settings)
 {
     m_lineHeight = settings.lineHeight;
     m_fontScale = settings.fontScale;
+    m_isTerminal = settings.isTerminal;
+    if (m_isTerminal)
+        m_textUniColor = Theme::darkAmber();
+    else
+        m_textUniColor = Theme::desaturatedTeal();
     update();
 }
 
@@ -158,6 +162,7 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
 {
     float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
                                                   m_fontScale);
+    // line number:
     QString lineNumber = QString::number(m_topLineIndex + index + 1);
     float numberWidth = m_fontAtlas.textWidth(lineNumber.length(), m_fontScale);
     float numberX = (lineNumberWidth - numberWidth) / 2.f;
@@ -166,6 +171,7 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
     else
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
 
+    // gray separator line:
     painter.save();
     painter.setPen(QPen(Theme::darkGray(), 1));
     painter.drawLine(QPointF(lineNumberWidth, y), QPointF(lineNumberWidth, y + m_lineHeight));
@@ -174,13 +180,8 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
 
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
 {
-    // painter.save();
-    // painter.setPen(QPen(Theme::darkGray(), 1));
-    // painter.drawLine(QPointF(textX - 5, y), QPointF(textX - 5, y + m_lineHeight));
-    // painter.restore();
-
     m_fontRenderer
-        ->drawText(painter, textX, y, m_textLinesToDisplay[index], Theme::darkAmber(), m_fontScale);
+        ->drawText(painter, textX, y, m_textLinesToDisplay[index], m_textUniColor, m_fontScale);
 }
 
 void Editor::drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding)

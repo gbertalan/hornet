@@ -5,6 +5,7 @@
 #include "model_layer/windowmodel.h"
 #include "service_layer/editorservice.h"
 #include "service_layer/numberservice.h"
+#include "service_layer/terminalservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
@@ -18,11 +19,13 @@ Control::Control(IModelAccessRead &modelAccess,
                  NumberService &service,
                  WindowService &windowService,
                  EditorService &editorService,
+                 TerminalService &terminalService,
                  View &view)
     : m_modelAccess(modelAccess)
     , m_service(service)
     , m_windowService(windowService)
     , m_editorService(editorService)
+    , m_terminalService(terminalService)
     , m_view(view)
 {
     m_editorService
@@ -75,6 +78,14 @@ void Control::init()
 {
     NumberDTO dto{m_modelAccess.getNumberModel().getValue()};
     m_view.displayNumber(dto);
+
+    m_isTerminal = true;
+    if (m_isTerminal) {
+        int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+        EditorCursorPosDTO dto{0, lastLine};
+        m_editorService.storeCursorPos(dto);
+        sendCursorPosToEditor();
+    }
 }
 
 void Control::onButtonClicked()
@@ -128,8 +139,13 @@ void Control::sendStateToEditor()
 
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
-    m_editorService.storeCursorPos(dto); // ebben kezelni, ha tulmegy a soron, stb.
-
+    if (m_isTerminal) {
+        int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+        EditorCursorPosDTO terminalDto{dto.cursorX, lastLine};
+        m_editorService.storeCursorPos(terminalDto);
+    } else {
+        m_editorService.storeCursorPos(dto);
+    }
     sendCursorPosToEditor();
 }
 
@@ -143,9 +159,48 @@ void Control::sendCursorPosToEditor()
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
+    if (m_isTerminal && handleTerminalKeyPress(dto))
+        return;
+    handleEditorKeyPress(dto);
+    sendStateToEditor();
+    sendCursorPosToEditor();
+}
+
+bool Control::handleTerminalKeyPress(const EditorKeyPressDTO &dto)
+{
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Up
+        || dto.specialKey == EditorKeyPressDTO::SpecialKey::Down) {
+        m_terminalService.navigateHistory(dto.specialKey);
+        sendStateToEditor();
+        sendCursorPosToEditor();
+        return true;
+    }
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter) {
+        m_terminalService.executeCommand();
+        sendStateToEditor();
+        sendCursorPosToEditor();
+        return true;
+    }
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Left
+        || dto.specialKey == EditorKeyPressDTO::SpecialKey::Right) {
+        int cursorX = m_modelAccess.getEditorModel().getCursorX();
+        if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Left && cursorX == 0)
+            return true;
+        m_editorService.moveCursor(dto);
+        int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+        EditorCursorPosDTO cursorDto{m_modelAccess.getEditorModel().getCursorX(), lastLine};
+        m_editorService.storeCursorPos(cursorDto);
+        sendStateToEditor();
+        sendCursorPosToEditor();
+        return true;
+    }
+    return false;
+}
+
+void Control::handleEditorKeyPress(const EditorKeyPressDTO &dto)
+{
     if (dto.alt)
         return;
-
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::None) {
         if (dto.ctrl)
             return;
@@ -164,12 +219,8 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         m_editorService.insertNewLine();
     else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Tab)
         m_editorService.insertTab();
-
     else
         m_editorService.moveCursor(dto);
-
-    sendStateToEditor();
-    sendCursorPosToEditor();
 }
 
 void Control::onDebugRequested()
