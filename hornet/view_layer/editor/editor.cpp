@@ -103,14 +103,12 @@ void Editor::updateEditorState(const EditorViewStateDTO &dto)
     m_noOfAllLines = dto.noOfAllLines;
     m_noOfCharsOfLongestLine = dto.noOfCharsOfLongestLine;
     m_fileType = dto.fileType;
-
+    m_terminalPrompt = dto.terminalPrompt;
     updateHeight(m_noOfAllLines * m_lineHeight + (m_lineHeight / 2.f));
-
     int digits = QString::number(m_noOfAllLines).length();
     float lineNumberSectionWidth = 5.f + m_fontAtlas.textWidth(digits + 2, m_fontScale);
     updateWidth(lineNumberSectionWidth
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
-
     update();
 }
 

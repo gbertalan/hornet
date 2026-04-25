@@ -118,22 +118,25 @@ void Control::sendStateToEditor()
     std::vector<std::u32string> lines = m_editorService.retrieveActiveLines();
     if (lines.empty())
         return;
-
     int noOfAllLines = m_modelAccess.getEditorModel().getNoOfLines();
     int noOfCharsOfLongestLine = m_modelAccess.getEditorModel().getNoOfCharsOfLongestLine();
     std::string fileType = m_modelAccess.getEditorModel().getFileType();
-
     QVector<QString> qLines;
     qLines.reserve(static_cast<int>(lines.size()));
     for (const std::u32string &line : lines)
         qLines.push_back(QString::fromUcs4(reinterpret_cast<const char32_t *>(line.c_str()),
                                            static_cast<int>(line.size())));
-
+    QString terminalPrompt;
+    if (m_isTerminal) {
+        std::u32string prompt = m_terminalService.getPrompt();
+        terminalPrompt = QString::fromUcs4(reinterpret_cast<const char32_t *>(prompt.c_str()),
+                                           static_cast<int>(prompt.size()));
+    }
     EditorViewStateDTO dto{qLines,
                            noOfAllLines,
                            noOfCharsOfLongestLine,
-                           QString::fromStdString(fileType)};
-
+                           QString::fromStdString(fileType),
+                           terminalPrompt};
     m_view.updateEditorState(dto);
 }
 

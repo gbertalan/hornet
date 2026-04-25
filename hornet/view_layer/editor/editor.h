@@ -79,4 +79,5 @@ private:
 
     bool m_isTerminal = false;
     QColor m_textUniColor;
+    QString m_terminalPrompt;
 };

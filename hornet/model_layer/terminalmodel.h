@@ -1,15 +1,21 @@
-#ifndef TERMINALMODEL_H
-#define TERMINALMODEL_H
+#pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
 class TerminalModel
 {
 public:
-    TerminalModel();
-    std::vector<std::u32string> commandHistory;
-    int historyIndex = -1;
-};
+    const std::vector<std::u32string> &getCommandHistory() const;
+    void addToHistory(const std::u32string &command);
+    int getHistoryIndex() const;
+    void setHistoryIndex(int index);
+    const std::filesystem::path &getCurrentDirectory() const;
+    void setCurrentDirectory(const std::filesystem::path &path);
 
-#endif // TERMINALMODEL_H
+private:
+    std::vector<std::u32string> m_commandHistory;
+    int m_historyIndex = -1;
+    std::filesystem::path m_currentDirectory = std::filesystem::current_path();
+};

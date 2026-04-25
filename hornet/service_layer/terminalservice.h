@@ -12,6 +12,7 @@ public:
     explicit TerminalService(EditorService &editorService);
     void navigateHistory(EditorKeyPressDTO::SpecialKey direction);
     void executeCommand();
+    std::u32string getPrompt() const;
 
 private:
     EditorService &m_editorService;

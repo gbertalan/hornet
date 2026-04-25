@@ -11,3 +11,14 @@ void TerminalService::executeCommand()
 {
     std::cout << "executeCommand called" << std::endl;
 }
+
+std::u32string TerminalService::getPrompt() const
+{
+    std::string segment = m_terminalModel.getCurrentDirectory().filename().string();
+    if (segment.empty())
+        segment = m_terminalModel.getCurrentDirectory().string();
+    std::u32string prompt;
+    for (unsigned char c : segment)
+        prompt += static_cast<char32_t>(c);
+    return prompt;
+}
