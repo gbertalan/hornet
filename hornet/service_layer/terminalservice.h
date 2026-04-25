@@ -15,6 +15,7 @@ public:
     std::u32string getPrompt() const;
     const std::vector<std::u32string> &getLinePrompts() const;
     void addLinePrompt(const std::u32string &prompt);
+    void initialize();
 
 private:
     EditorService &m_editorService;

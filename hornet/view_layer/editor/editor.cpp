@@ -338,14 +338,11 @@ float Editor::lineNumberSectionWidth() const
 float Editor::leftColumnWidth() const
 {
     float lnWidth = lineNumberSectionWidth();
-    qDebug() << "terminalPrompts size:" << m_terminalPrompts.size();
     if (!m_isTerminal || m_terminalPrompts.isEmpty())
         return lnWidth;
     int maxPromptLen = 0;
     for (const QString &p : m_terminalPrompts)
         maxPromptLen = std::max(maxPromptLen, static_cast<int>(p.length()));
-    qDebug() << "leftColumnWidth returning:"
-             << lnWidth + m_fontAtlas.textWidth(maxPromptLen + 2, m_fontScale);
     return lnWidth + m_fontAtlas.textWidth(maxPromptLen + 2, m_fontScale);
 }
 

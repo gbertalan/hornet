@@ -1,4 +1,5 @@
 #include "terminalservice.h"
+#include "editorservice.h"
 #include <iostream>
 
 TerminalService::TerminalService(EditorService &editorService)
@@ -31,4 +32,10 @@ const std::vector<std::u32string> &TerminalService::getLinePrompts() const
 void TerminalService::addLinePrompt(const std::u32string &prompt)
 {
     m_terminalModel.addLinePrompt(prompt);
+}
+
+void TerminalService::initialize()
+{
+    m_editorService.setTextLines({U""}, "txt");
+    m_terminalModel.addLinePrompt(m_terminalModel.getCurrentDirectory().filename().u32string());
 }

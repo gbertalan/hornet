@@ -34,7 +34,7 @@ void Control::init()
     NumberDTO dto{m_modelAccess.getNumberModel().getValue()};
     m_view.displayNumber(dto);
 
-    m_editorService.setTextLines({U"int main()"}, "txt");
+    m_editorService.setTextLines({U""}, "txt"); // never empty
 
     m_isTerminal = true;
     if (m_isTerminal) {
@@ -42,7 +42,7 @@ void Control::init()
         EditorCursorPosDTO dto{0, lastLine};
         m_editorService.storeCursorPos(dto);
         sendCursorPosToEditor();
-        m_terminalService.addLinePrompt(U"~/projects");
+        m_terminalService.initialize();
     }
 }
 
