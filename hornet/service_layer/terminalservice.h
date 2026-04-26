@@ -1,20 +1,23 @@
 #pragma once
 
+#include <filesystem>
+
 #include <model_layer/terminalmodel.h>
 
-#include <shared/dto_view_to_model/editorkeypressdto.h>
-
 class EditorService;
+struct EditorKeyPressDTO;
 
 class TerminalService
 {
 public:
     explicit TerminalService(EditorService &editorService);
-    void navigateHistory(EditorKeyPressDTO::SpecialKey direction);
-    std::u32string getPrompt() const;
-    const std::vector<std::u32string> &getLinePrompts() const;
-    void addLinePrompt(const std::u32string &prompt);
     void initialize();
+    void addTerminalLine(const TerminalLine &line);
+    const std::vector<TerminalLine> &getTerminalLines() const;
+    std::u32string getCurrentPrompt() const;
+    const std::filesystem::path &getCurrentDirectory() const;
+    void setCurrentDirectory(const std::filesystem::path &path);
+    void updateTerminalLineDirectory(int index, const std::filesystem::path &directory);
 
 private:
     EditorService &m_editorService;

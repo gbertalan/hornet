@@ -2,6 +2,7 @@
 #include "model_layer/editormodel.h"
 #include "model_layer/imodelaccess_read.h"
 #include "model_layer/numbermodel.h"
+#include "model_layer/terminalmodel.h"
 #include "model_layer/windowmodel.h"
 #include "service_layer/editorservice.h"
 #include "service_layer/numberservice.h"
@@ -39,10 +40,10 @@ void Control::init()
 
     m_isTerminal = true;
     if (m_isTerminal) {
-        int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
-        EditorCursorPosDTO dto{0, lastLine};
-        m_editorService.storeCursorPos(dto);
-        sendCursorPosToEditor();
+        // int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+        // EditorCursorPosDTO dto{0, lastLine};
+        // m_editorService.storeCursorPos(dto);
+        // sendCursorPosToEditor();
         m_terminalService.initialize();
     }
 }
@@ -87,11 +88,11 @@ void Control::sendStateToEditor()
                                            static_cast<int>(line.size())));
     QVector<QString> terminalPrompts;
     if (m_isTerminal) {
-        const std::vector<std::u32string> &prompts = m_terminalService.getLinePrompts();
-        for (const std::u32string &prompt : prompts)
+        const std::vector<TerminalLine> &terminalLines = m_terminalService.getTerminalLines();
+        for (const TerminalLine &line : terminalLines)
             terminalPrompts.push_back(
-                QString::fromUcs4(reinterpret_cast<const char32_t *>(prompt.c_str()),
-                                  static_cast<int>(prompt.size())));
+                QString::fromUcs4(reinterpret_cast<const char32_t *>(line.prompt.c_str()),
+                                  static_cast<int>(line.prompt.size())));
     }
     EditorViewStateDTO dto{qLines,
                            noOfAllLines,
@@ -103,12 +104,11 @@ void Control::sendStateToEditor()
 
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
+    m_editorService.storeCursorPos(dto);
     if (m_isTerminal) {
-        int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
-        EditorCursorPosDTO terminalDto{dto.cursorX, lastLine};
-        m_editorService.storeCursorPos(terminalDto);
-    } else {
-        m_editorService.storeCursorPos(dto);
+        const std::vector<TerminalLine> &terminalLines = m_terminalService.getTerminalLines();
+        if (dto.cursorY < static_cast<int>(terminalLines.size()))
+            m_terminalService.setCurrentDirectory(terminalLines.at(dto.cursorY).directory);
     }
     sendCursorPosToEditor();
 }
@@ -132,28 +132,8 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 
 bool Control::handleTerminalKeyPress(const EditorKeyPressDTO &dto)
 {
-    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Up
-        || dto.specialKey == EditorKeyPressDTO::SpecialKey::Down) {
-        m_terminalService.navigateHistory(dto.specialKey);
-        sendStateToEditor();
-        sendCursorPosToEditor();
-        return true;
-    }
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter) {
         executeCommand();
-        sendStateToEditor();
-        sendCursorPosToEditor();
-        return true;
-    }
-    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Left
-        || dto.specialKey == EditorKeyPressDTO::SpecialKey::Right) {
-        int cursorX = m_modelAccess.getEditorModel().getCursorX();
-        if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Left && cursorX == 0)
-            return true;
-        m_editorService.moveCursor(dto);
-        int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
-        EditorCursorPosDTO cursorDto{m_modelAccess.getEditorModel().getCursorX(), lastLine};
-        m_editorService.storeCursorPos(cursorDto);
         sendStateToEditor();
         sendCursorPosToEditor();
         return true;
@@ -192,15 +172,71 @@ void Control::executeCommand()
     const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
     if (lines.empty())
         return;
-    const std::u32string &lastLine = lines.back();
-    if (lastLine.empty())
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+    const std::u32string &currentLine = lines.at(cursorY);
+    if (currentLine.empty())
         return;
-    QString command = QString::fromUcs4(reinterpret_cast<const char32_t *>(lastLine.c_str()),
-                                        static_cast<int>(lastLine.size()));
-    m_process.start("/bin/sh", QStringList() << "-c" << command);
+    QString command = QString::fromUcs4(reinterpret_cast<const char32_t *>(currentLine.c_str()),
+                                        static_cast<int>(currentLine.size()));
+    const std::vector<TerminalLine> &terminalLines = m_terminalService.getTerminalLines();
+    std::filesystem::path workingDir = cursorY < static_cast<int>(terminalLines.size())
+                                           ? terminalLines.at(cursorY).directory
+                                           : m_terminalService.getCurrentDirectory();
+    QString sentinel = "---HORNET_PWD---";
+    QString combinedCommand = command + "; echo " + sentinel + "; pwd";
+    if (cursorY == lastLine)
+        m_terminalService.setCurrentDirectory(workingDir);
+    m_process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
+    qDebug() << "workingDir:" << QString::fromStdString(workingDir.string());
+    qDebug() << "getCurrentDirectory before:"
+             << QString::fromStdString(m_terminalService.getCurrentDirectory().string());
+    m_process.start("/bin/sh", QStringList() << "-c" << combinedCommand);
     m_process.waitForFinished();
     QString output = QString::fromUtf8(m_process.readAllStandardOutput());
-    std::cout << output.toStdString() << std::endl;
+    int sentinelIndex = output.indexOf(sentinel);
+    if (sentinelIndex != -1) {
+        QString commandOutput = output.left(sentinelIndex).trimmed();
+        QString newDir = output.mid(sentinelIndex + sentinel.length()).trimmed();
+        qDebug() << "newDir from pwd:" << newDir;
+        if (!commandOutput.isEmpty())
+            std::cout << commandOutput.toStdString() << std::endl;
+        m_terminalService.setCurrentDirectory(std::filesystem::path(newDir.toStdString()));
+    } else {
+        std::cout << output.toStdString() << std::endl;
+    }
+    qDebug() << "getCurrentDirectory after:"
+             << QString::fromStdString(m_terminalService.getCurrentDirectory().string());
+    if (cursorY == lastLine) {
+        std::filesystem::path newLineDir = m_terminalService.getCurrentDirectory();
+        std::u32string newLinePrompt = m_terminalService.getCurrentPrompt();
+        m_terminalService.addTerminalLine({newLinePrompt, newLineDir});
+        std::vector<std::u32string> updatedLines = m_modelAccess.getEditorModel().getTextLines();
+        updatedLines.push_back(U"");
+        m_editorService.setTextLines(updatedLines, "txt");
+        int newLastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+        EditorCursorPosDTO cursorDto{0, newLastLine};
+        m_editorService.storeCursorPos(cursorDto);
+        m_terminalService.setCurrentDirectory(newLineDir);
+    } else {
+        m_terminalService.updateTerminalLineDirectory(cursorY,
+                                                      m_terminalService.getCurrentDirectory());
+        const std::vector<TerminalLine> &updatedTerminalLines = m_terminalService.getTerminalLines();
+        if (lastLine < static_cast<int>(updatedTerminalLines.size()))
+            m_terminalService.setCurrentDirectory(updatedTerminalLines.at(lastLine).directory);
+    }
+    sendStateToEditor();
+    sendCursorPosToEditor();
+}
+
+void Control::syncTerminalDirectory()
+{
+    if (!m_isTerminal)
+        return;
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    const std::vector<TerminalLine> &terminalLines = m_terminalService.getTerminalLines();
+    if (cursorY < static_cast<int>(terminalLines.size()))
+        m_terminalService.setCurrentDirectory(terminalLines.at(cursorY).directory);
 }
 
 void Control::onDebugRequested()

@@ -162,7 +162,7 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
     QString lineNumber = QString::number(m_topLineIndex + index + 1);
     float numberWidth = m_fontAtlas.textWidth(lineNumber.length(), m_fontScale);
     float numberX = (lineNumberWidth - numberWidth) / 2.f;
-    if (m_topLineIndex + index == m_cursorY)
+    if (index == m_cursorY)
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
     else
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
@@ -176,8 +176,16 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
 
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
 {
-    m_fontRenderer
-        ->drawText(painter, textX, y, m_textLinesToDisplay[index], m_textUniColor, m_fontScale);
+    if (index != m_cursorY)
+        m_fontRenderer->drawText(painter,
+                                 textX,
+                                 y,
+                                 m_textLinesToDisplay[index],
+                                 Theme::darkGray(),
+                                 m_fontScale);
+    else
+        m_fontRenderer
+            ->drawText(painter, textX, y, m_textLinesToDisplay[index], m_textUniColor, m_fontScale);
 }
 
 void Editor::drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding)
@@ -354,5 +362,9 @@ void Editor::drawTerminalPrompt(QPainter &painter, int index, float x, float y)
     const QString &prompt = m_terminalPrompts[lineIndex];
     if (prompt.isEmpty())
         return;
-    m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
+
+    if (index == m_cursorY)
+        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
+    else
+        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkGray(), m_fontScale);
 }

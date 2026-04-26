@@ -6,31 +6,55 @@ TerminalService::TerminalService(EditorService &editorService)
     : m_editorService(editorService)
 {}
 
-void TerminalService::navigateHistory(EditorKeyPressDTO::SpecialKey direction) {}
-
-std::u32string TerminalService::getPrompt() const
+void TerminalService::addTerminalLine(const TerminalLine &line)
 {
-    std::string segment = m_terminalModel.getCurrentDirectory().filename().string();
-    if (segment.empty())
-        segment = m_terminalModel.getCurrentDirectory().string();
-    std::u32string prompt;
-    for (unsigned char c : segment)
-        prompt += static_cast<char32_t>(c);
-    return prompt;
+    m_terminalModel.addTerminalLine(line);
 }
 
-const std::vector<std::u32string> &TerminalService::getLinePrompts() const
+const std::vector<TerminalLine> &TerminalService::getTerminalLines() const
 {
-    return m_terminalModel.getLinePrompts();
-}
-
-void TerminalService::addLinePrompt(const std::u32string &prompt)
-{
-    m_terminalModel.addLinePrompt(prompt);
+    return m_terminalModel.getTerminalLines();
 }
 
 void TerminalService::initialize()
 {
     m_editorService.setTextLines({U""}, "txt");
-    m_terminalModel.addLinePrompt(m_terminalModel.getCurrentDirectory().filename().u32string());
+    m_terminalModel.addTerminalLine({getCurrentPrompt(), m_terminalModel.getCurrentDirectory()});
+}
+
+std::u32string TerminalService::getCurrentPrompt() const
+{
+    std::filesystem::path dir = m_terminalModel.getCurrentDirectory();
+    std::string result;
+
+    std::filesystem::path homeDir;
+#ifdef _WIN32
+    homeDir = std::filesystem::path(std::getenv("USERPROFILE"));
+#else
+    homeDir = std::filesystem::path(std::getenv("HOME"));
+#endif
+
+    if (dir == homeDir)
+        result = "~/";
+    else if (dir == dir.root_path())
+        result = "/";
+    else
+        result = "../" + dir.filename().string() + "/";
+
+    return std::u32string(result.begin(), result.end());
+}
+
+const std::filesystem::path &TerminalService::getCurrentDirectory() const
+{
+    return m_terminalModel.getCurrentDirectory();
+}
+
+void TerminalService::setCurrentDirectory(const std::filesystem::path &path)
+{
+    m_terminalModel.setCurrentDirectory(path);
+}
+
+void TerminalService::updateTerminalLineDirectory(int index, const std::filesystem::path &directory)
+{
+    m_terminalModel.updateLineDirectory(index, directory, getCurrentPrompt());
 }
