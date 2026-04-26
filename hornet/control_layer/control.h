@@ -38,7 +38,6 @@ private:
     bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
     void handleEditorKeyPress(const EditorKeyPressDTO &dto);
     void executeCommand();
-    void syncTerminalDirectory();
     IModelAccessRead &m_modelAccess;
     NumberService &m_service;
     WindowService &m_windowService;

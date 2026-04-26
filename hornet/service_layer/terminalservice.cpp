@@ -6,20 +6,21 @@ TerminalService::TerminalService(EditorService &editorService)
     : m_editorService(editorService)
 {}
 
-void TerminalService::addTerminalLine(const TerminalLine &line)
+void TerminalService::addTerminalPromptAndDir(const TerminalPromptAndDir &promptAndDir)
 {
-    m_terminalModel.addTerminalLine(line);
+    m_terminalModel.addTerminalPromptAndDir(promptAndDir);
 }
 
-const std::vector<TerminalLine> &TerminalService::getTerminalLines() const
+const std::vector<TerminalPromptAndDir> &TerminalService::getTerminalPromptAndDirs() const
 {
-    return m_terminalModel.getTerminalLines();
+    return m_terminalModel.getTerminalTerminalPromptAndDirs();
 }
 
 void TerminalService::initialize()
 {
     m_editorService.setTextLines({U""}, "txt");
-    m_terminalModel.addTerminalLine({getCurrentPrompt(), m_terminalModel.getCurrentDirectory()});
+    m_terminalModel.addTerminalPromptAndDir(
+        {getCurrentPrompt(), m_terminalModel.getCurrentDirectory()});
 }
 
 std::u32string TerminalService::getCurrentPrompt() const

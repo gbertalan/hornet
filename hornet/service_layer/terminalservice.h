@@ -12,8 +12,8 @@ class TerminalService
 public:
     explicit TerminalService(EditorService &editorService);
     void initialize();
-    void addTerminalLine(const TerminalLine &line);
-    const std::vector<TerminalLine> &getTerminalLines() const;
+    void addTerminalPromptAndDir(const TerminalPromptAndDir &promptAndDir);
+    const std::vector<TerminalPromptAndDir> &getTerminalPromptAndDirs() const;
     std::u32string getCurrentPrompt() const;
     const std::filesystem::path &getCurrentDirectory() const;
     void setCurrentDirectory(const std::filesystem::path &path);
