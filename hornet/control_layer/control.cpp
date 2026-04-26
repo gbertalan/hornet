@@ -1,30 +1,24 @@
 #include "control.h"
 #include "model_layer/editormodel.h"
 #include "model_layer/imodelaccess_read.h"
-#include "model_layer/numbermodel.h"
 #include "model_layer/terminalmodel.h"
 #include "model_layer/windowmodel.h"
 #include "service_layer/editorservice.h"
-#include "service_layer/numberservice.h"
 #include "service_layer/terminalservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
-#include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
 #include <iostream>
 #include <shared/dto_model_to_view/editorviewstatedto.h>
-#include <stdexcept>
 
 Control::Control(IModelAccessRead &modelAccess,
-                 NumberService &service,
                  WindowService &windowService,
                  EditorService &editorService,
                  TerminalService &terminalService,
                  View &view)
     : m_modelAccess(modelAccess)
-    , m_service(service)
     , m_windowService(windowService)
     , m_editorService(editorService)
     , m_terminalService(terminalService)
@@ -33,8 +27,6 @@ Control::Control(IModelAccessRead &modelAccess,
 
 void Control::init()
 {
-    NumberDTO dto{m_modelAccess.getNumberModel().getValue()};
-    m_view.displayNumber(dto);
 
     m_editorService.setTextLines({U""}, "txt"); // never empty
 
@@ -45,16 +37,6 @@ void Control::init()
         // m_editorService.storeCursorPos(dto);
         // sendCursorPosToEditor();
         m_terminalService.initialize();
-    }
-}
-
-void Control::onButtonClicked()
-{
-    try {
-        NumberDTO dto = m_service.doubleNumber();
-        m_view.displayNumber(dto);
-    } catch (const std::out_of_range &) {
-        m_view.showError("Value out of range");
     }
 }
 
@@ -203,7 +185,6 @@ void Control::executeCommand()
     if (sentinelIndex != -1) {
         QString commandOutput = output.left(sentinelIndex).trimmed();
         QString newDir = output.mid(sentinelIndex + sentinel.length()).trimmed();
-        qDebug() << "newDir from pwd:" << newDir;
         if (!commandOutput.isEmpty())
             std::cout << commandOutput.toStdString() << std::endl;
         m_terminalService.setCurrentDirectory(std::filesystem::path(newDir.toStdString()));

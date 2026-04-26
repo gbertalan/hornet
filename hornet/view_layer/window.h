@@ -5,7 +5,6 @@
 struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
 struct WindowDTO;
-struct NumberDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 class TitleBar;
@@ -18,7 +17,6 @@ class Window : public QWidget {
 
 public:
     explicit Window(const WindowDTO& initialState, QWidget* parent = nullptr);
-    void displayNumber(const NumberDTO& dto);
     void restoreWindowedSize();
     void restoreWindowedLocation();
     void updateEditorState(const EditorViewStateDTO &dto);

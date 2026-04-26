@@ -30,7 +30,6 @@ set(PROJECT_SOURCES
     main.cpp
     model_layer/modelaccess.cpp
     model_layer/windowmodel.cpp
-    model_layer/numbermodel.cpp
     view_layer/window.cpp
     view_layer/theme.cpp
     view_layer/titlebar.cpp
@@ -47,7 +46,6 @@ set(PROJECT_SOURCES
     control_layer/control.cpp
     service_layer/projectservice.cpp
     service_layer/validator.cpp
-    service_layer/numberservice.cpp
     service_layer/windowservice.cpp
     service_layer/diskreaderservice.cpp
     service_layer/diskwriterservice.cpp
@@ -56,7 +54,6 @@ set(PROJECT_SOURCES
 set(PROJECT_HEADERS
     model_layer/modelaccess.h
     model_layer/windowmodel.h
-    model_layer/numbermodel.h
     model_layer/imodelaccess_read.h
     model_layer/imodelaccess_readwrite.h
     view_layer/window.h
@@ -75,11 +72,9 @@ set(PROJECT_HEADERS
     control_layer/control.h
     service_layer/projectservice.h
     service_layer/validator.h
-    service_layer/numberservice.h
     service_layer/windowservice.h
     service_layer/diskreaderservice.h
     service_layer/diskwriterservice.h
-    shared/dto_view_to_model/numberdto.h
     shared/dto_view_to_model/windowdto.h
 )
 qt_add_executable(hornet

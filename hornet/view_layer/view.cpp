@@ -1,5 +1,4 @@
 #include "view_layer/view.h"
-#include "shared/dto_view_to_model/numberdto.h"
 #include "view_layer/window.h"
 
 #include <QMessageBox>
@@ -17,10 +16,6 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
 
 void View::show() {
     m_window->show();
-}
-
-void View::displayNumber(const NumberDTO& dto) {
-    m_window->displayNumber(dto);
 }
 
 void View::showError(const QString& message) {

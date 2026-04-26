@@ -9,7 +9,6 @@
 #include <QPalette>
 #include <QResizeEvent>
 #include <QVBoxLayout>
-#include "shared/dto_view_to_model/numberdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "theme.h"
 #include "view_layer/overlaywidget.h"
@@ -75,9 +74,6 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_splitPane, &SplitPane::editorStateChanged, this, &Window::editorStateChanged);
     connect(m_splitPane, &SplitPane::editorCursorPosChanged, this, &Window::editorCursorPosChanged);
     connect(m_splitPane, &SplitPane::editorKeyPressed, this, &Window::editorKeyPressed);
-}
-
-void Window::displayNumber(const NumberDTO& dto) {
 }
 
 void Window::setupResizeHandles() {

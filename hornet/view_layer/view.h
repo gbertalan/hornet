@@ -8,7 +8,6 @@ struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 struct WindowDTO;
 
-struct NumberDTO;
 class Window;
 
 class View : public QObject {
@@ -17,7 +16,6 @@ class View : public QObject {
 public:
     explicit View(const WindowDTO& initialState, QObject* parent = nullptr);
     void show();
-    void displayNumber(const NumberDTO& dto);
     void showError(const QString& message);
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
