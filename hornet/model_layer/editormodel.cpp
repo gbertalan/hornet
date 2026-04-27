@@ -97,3 +97,20 @@ void EditorModel::setCursor(int cursorX, int cursorY)
     m_cursorX = cursorX;
     m_cursorY = cursorY;
 }
+
+int EditorModel::getLineHeight() const
+{
+    return m_lineHeight;
+}
+void EditorModel::setLineHeight(int lineHeight)
+{
+    m_lineHeight = lineHeight;
+}
+float EditorModel::getFontScale() const
+{
+    return m_fontScale;
+}
+void EditorModel::setFontScale(float fontScale)
+{
+    m_fontScale = fontScale;
+}

@@ -176,7 +176,7 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
 
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
 {
-    if (index != m_cursorY)
+    if (m_isTerminal && index != m_cursorY)
         m_fontRenderer->drawText(painter,
                                  textX,
                                  y,

@@ -18,6 +18,7 @@ public:
     void sendStateToEditor(const QVector<QString> &terminalPrompts = QVector<QString>{});
     void sendCursorPosToEditor();
     void handleEditorKeyPress(const EditorKeyPressDTO &dto);
+    void sendSettingsToEditor(bool isTerminal);
 
 private:
     IModelAccessRead &m_modelAccess;

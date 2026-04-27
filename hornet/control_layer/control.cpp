@@ -30,6 +30,7 @@ void Control::init()
 {
 
     m_editorService.setTextLines({U""}, "txt"); // never empty
+    m_editorControl.sendSettingsToEditor(m_isTerminal);
 
     if (m_isTerminal) {
         // int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;

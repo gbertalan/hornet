@@ -1,13 +1,13 @@
 #include "editorcontrol.h"
 #include "model_layer/editormodel.h"
 #include "model_layer/imodelaccess_read.h"
-#include "model_layer/terminalmodel.h"
 #include "service_layer/editorservice.h"
 #include "shared/dto_model_to_view/editorviewstatedto.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
-#include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/view.h"
+
+#include <shared/dto_bidirectional/editorsettingsdto.h>
 
 EditorControl::EditorControl(IModelAccessRead &modelAccess, EditorService &editorService, View &view)
     : m_modelAccess(modelAccess)
@@ -68,4 +68,12 @@ void EditorControl::handleEditorKeyPress(const EditorKeyPressDTO &dto)
         m_editorService.insertTab();
     else
         m_editorService.moveCursor(dto);
+}
+
+void EditorControl::sendSettingsToEditor(bool isTerminal)
+{
+    EditorSettingsDTO dto{m_modelAccess.getEditorModel().getLineHeight(),
+                          m_modelAccess.getEditorModel().getFontScale(),
+                          isTerminal};
+    m_view.updateEditorSettings(dto);
 }

@@ -7,6 +7,7 @@ struct EditorCursorPosDTO;
 struct WindowDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
+struct EditorSettingsDTO;
 class TitleBar;
 class ResizeHandle;
 class SplitPane;
@@ -21,6 +22,7 @@ public:
     void restoreWindowedLocation();
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
+    void updateEditorSettings(const EditorSettingsDTO &dto);
 
 signals:
     void buttonClicked();

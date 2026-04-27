@@ -10,6 +10,7 @@ struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
+struct EditorSettingsDTO;
 class CustomScrollBar;
 class Editor;
 
@@ -38,6 +39,7 @@ public:
     QWidget* rightPane() const;
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
+    void updateEditorSettings(const EditorSettingsDTO &dto);
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);

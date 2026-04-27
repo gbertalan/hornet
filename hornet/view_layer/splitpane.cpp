@@ -78,14 +78,10 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_scrollArea->viewport()->setStyleSheet("background: transparent;");
 
     // Editor:
-
-    int lineHeight = 20;
-    float fontScale = 0.5;
-    EditorSettingsDTO editorSettingsDTO{lineHeight, fontScale, true};
-
+    EditorSettingsDTO editorSettingsDTO{20, 0.5, false};
     m_editor = new Editor(editorSettingsDTO, this);
 
-    m_scrollArea->setWidgetResizable(false); // must be false — this is the default, just be explicit
+    m_scrollArea->setWidgetResizable(false); // must be false - this is the default, just be explicit
     m_scrollArea->setWidget(m_editor);
 
     m_editor->show();
@@ -166,6 +162,11 @@ void SplitPane::updateEditorState(const EditorViewStateDTO &dto)
 void SplitPane::updateEditorCursorPos(const EditorCursorPosDTO &dto)
 {
     m_editor->updateCursorPosition(dto);
+}
+
+void SplitPane::updateEditorSettings(const EditorSettingsDTO &dto)
+{
+    m_editor->setSettings(dto);
 }
 
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {

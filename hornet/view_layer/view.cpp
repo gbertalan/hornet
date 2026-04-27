@@ -31,3 +31,8 @@ void View::updateEditorCursorPos(const EditorCursorPosDTO &dto)
 {
     m_window->updateEditorCursorPos(dto);
 }
+
+void View::updateEditorSettings(const EditorSettingsDTO &dto)
+{
+    m_window->updateEditorSettings(dto);
+}
