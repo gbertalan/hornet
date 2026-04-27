@@ -1,6 +1,5 @@
 #include "terminalservice.h"
 #include "editorservice.h"
-#include <iostream>
 
 TerminalService::TerminalService(EditorService &editorService)
     : m_editorService(editorService)
@@ -18,7 +17,6 @@ const std::vector<TerminalPromptAndDir> &TerminalService::getTerminalPromptAndDi
 
 void TerminalService::initialize()
 {
-    m_editorService.setTextLines({U""}, "txt");
     m_terminalModel.addTerminalPromptAndDir(
         {getCurrentPrompt(), m_terminalModel.getCurrentDirectory()});
 }

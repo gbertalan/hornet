@@ -114,3 +114,12 @@ void EditorModel::setFontScale(float fontScale)
 {
     m_fontScale = fontScale;
 }
+
+bool EditorModel::isTerminal() const
+{
+    return m_isTerminal;
+}
+void EditorModel::setIsTerminal(bool isTerminal)
+{
+    m_isTerminal = isTerminal;
+}

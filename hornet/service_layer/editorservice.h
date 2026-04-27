@@ -10,6 +10,7 @@ class EditorService
 {
 public:
     explicit EditorService(IModelAccessReadWrite &modelAccess);
+    void initialize();
     void storeEditorState(const EditorVisibleLinesDTO &dto);
     std::vector<std::u32string> retrieveActiveLines();
     void setTextLines(std::vector<std::u32string> textLines, std::string fileType);
@@ -21,6 +22,8 @@ public:
     void insertTab();
     void deleteWordLeft();
     void deleteWordRight();
+    bool isTerminal() const;
+    void setIsTerminal(bool isTerminal);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

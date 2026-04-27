@@ -25,6 +25,8 @@ public:
     void setLineHeight(int lineHeight);
     float getFontScale() const;
     void setFontScale(float fontScale);
+    bool isTerminal() const;
+    void setIsTerminal(bool isTerminal);
 
 private:
     void setNoOfCharsOfLongestLine();
@@ -39,4 +41,5 @@ private:
     int m_cursorY; // row
     int m_lineHeight = 20;
     float m_fontScale = 0.5f;
+    bool m_isTerminal = false;
 };

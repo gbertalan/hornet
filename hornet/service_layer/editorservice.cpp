@@ -11,6 +11,11 @@ EditorService::EditorService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
 {}
 
+void EditorService::initialize()
+{
+    setTextLines({U""}, "");
+}
+
 void EditorService::storeEditorState(const EditorVisibleLinesDTO &dto)
 {
     m_modelAccess.getEditorModel().setNoOfVisibleLines(dto.noOfVisibleLines);
@@ -277,4 +282,14 @@ void EditorService::deleteWordRight()
 
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(oldCursorX, oldCursorY);
+}
+
+bool EditorService::isTerminal() const
+{
+    return m_modelAccess.getEditorModel().isTerminal();
+}
+
+void EditorService::setIsTerminal(bool isTerminal)
+{
+    m_modelAccess.getEditorModel().setIsTerminal(isTerminal);
 }

@@ -28,17 +28,12 @@ Control::Control(IModelAccessRead &modelAccess,
 
 void Control::init()
 {
-
-    m_editorService.setTextLines({U""}, "txt"); // never empty
-    m_editorControl.sendSettingsToEditor(m_isTerminal);
-
-    if (m_isTerminal) {
-        // int lastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
-        // EditorCursorPosDTO dto{0, lastLine};
-        // m_editorService.storeCursorPos(dto);
-        // sendCursorPosToEditor();
-        m_terminalService.initialize();
-    }
+    m_editorService.setIsTerminal(true);
+    m_editorControl.init();
+    m_terminalControl.init();
+    m_editorControl.sendSettingsToEditor();
+    m_editorControl.sendStateToEditor(buildTerminalPrompts());
+    m_editorControl.sendCursorPosToEditor();
 }
 
 void Control::onWindowStateChanged(const WindowDTO &dto)
@@ -49,27 +44,31 @@ void Control::onWindowStateChanged(const WindowDTO &dto)
 void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
 {
     m_editorService.storeEditorState(dto);
-    m_editorControl.sendStateToEditor(m_isTerminal ? buildTerminalPrompts() : QVector<QString>{});
+    m_editorControl.sendStateToEditor(
+        m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
 }
 
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto);
-    if (m_isTerminal)
+    if (m_modelAccess.getEditorModel().isTerminal())
         m_terminalControl.onEditorCursorPosChanged(dto);
     m_editorControl.sendCursorPosToEditor();
 }
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
-    if (m_isTerminal && m_terminalControl.handleTerminalKeyPress(dto)) {
-        m_editorControl.sendStateToEditor(m_isTerminal ? buildTerminalPrompts()
-                                                       : QVector<QString>{});
+    if (m_modelAccess.getEditorModel().isTerminal()
+        && m_terminalControl.handleTerminalKeyPress(dto)) {
+        m_editorControl.sendStateToEditor(m_modelAccess.getEditorModel().isTerminal()
+                                              ? buildTerminalPrompts()
+                                              : QVector<QString>{});
         m_editorControl.sendCursorPosToEditor();
         return;
     }
     m_editorControl.handleEditorKeyPress(dto);
-    m_editorControl.sendStateToEditor(m_isTerminal ? buildTerminalPrompts() : QVector<QString>{});
+    m_editorControl.sendStateToEditor(
+        m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();
 }
 

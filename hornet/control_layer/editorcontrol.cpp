@@ -15,6 +15,11 @@ EditorControl::EditorControl(IModelAccessRead &modelAccess, EditorService &edito
     , m_view(view)
 {}
 
+void EditorControl::init()
+{
+    m_editorService.initialize();
+}
+
 void EditorControl::sendStateToEditor(const QVector<QString> &terminalPrompts)
 {
     std::vector<std::u32string> lines = m_editorService.retrieveActiveLines();
@@ -70,10 +75,10 @@ void EditorControl::handleEditorKeyPress(const EditorKeyPressDTO &dto)
         m_editorService.moveCursor(dto);
 }
 
-void EditorControl::sendSettingsToEditor(bool isTerminal)
+void EditorControl::sendSettingsToEditor()
 {
     EditorSettingsDTO dto{m_modelAccess.getEditorModel().getLineHeight(),
                           m_modelAccess.getEditorModel().getFontScale(),
-                          isTerminal};
+                          m_modelAccess.getEditorModel().isTerminal()};
     m_view.updateEditorSettings(dto);
 }

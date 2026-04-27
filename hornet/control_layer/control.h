@@ -34,7 +34,6 @@ private:
     IModelAccessRead &m_modelAccess;
     EditorService &m_editorService;
     TerminalService &m_terminalService;
-    bool m_isTerminal = true;
     WindowControl m_windowControl;
     EditorControl m_editorControl;
     TerminalControl m_terminalControl;

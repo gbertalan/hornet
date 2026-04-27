@@ -13,6 +13,7 @@ public:
     explicit TerminalControl(IModelAccessRead &modelAccess,
                              EditorService &editorService,
                              TerminalService &terminalService);
+    void init();
     bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void executeCommand();

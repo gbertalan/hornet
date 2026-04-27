@@ -16,6 +16,10 @@ TerminalControl::TerminalControl(IModelAccessRead &modelAccess,
     , m_terminalService(terminalService)
 {}
 
+void TerminalControl::init()
+{
+    m_terminalService.initialize();
+}
 void TerminalControl::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
