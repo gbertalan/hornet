@@ -18,18 +18,14 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
     m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
-
     setSettings(settings);
-
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
         update(cursorRect(m_cursorX, m_cursorY));
     });
     m_cursorTimer.start(200);
-
     setFocusPolicy(Qt::StrongFocus);
     QTimer::singleShot(0, this, [this]() { setFocus(); }); // gets focus, after constructor is ready.
-
     setMouseTracking(true);
 }
 
@@ -80,7 +76,6 @@ int Editor::calculateTopLineIndex() const
     QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
     if (!scrollArea || m_lineHeight == 0)
         return 0;
-
     int topLineIndex = scrollArea->verticalScrollBar()->value() / m_lineHeight;
     return topLineIndex;
 }
@@ -147,6 +142,7 @@ void Editor::paintEvent(QPaintEvent *event)
     for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
         float lineTop = (m_topLineIndex + i) * m_lineHeight;
         float y = lineTop + verticalPadding - topMargin;
+        // drawLineDebugBackground(painter, i, y);
         drawLineNumber(painter, i, digits, leftMargin, y);
         drawTerminalPrompt(painter, i, leftMargin + lineNumberSectionWidth(), y);
         drawLineText(painter, i, textX, y);
@@ -154,11 +150,27 @@ void Editor::paintEvent(QPaintEvent *event)
     }
 }
 
+void Editor::drawLineDebugBackground(QPainter &painter, int index, float y)
+{
+    static const QColor colors[] = {
+        QColor(255, 0, 0, 40),
+        QColor(0, 255, 0, 40),
+        QColor(0, 0, 255, 40),
+        QColor(255, 255, 0, 40),
+    };
+    QColor color = colors[index % 4];
+
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float topMargin = verticalPadding / 2.f;
+
+    painter.fillRect(QRectF(0, topMargin + y + 1, width(), m_lineHeight), color);
+}
+
 void Editor::drawLineNumber(QPainter &painter, int index, int digits, float leftMargin, float y)
 {
     float lineNumberWidth = m_fontAtlas.textWidth(QString::number(m_noOfAllLines).length() + 2,
                                                   m_fontScale);
-    // line number:
     QString lineNumber = QString::number(m_topLineIndex + index + 1);
     float numberWidth = m_fontAtlas.textWidth(lineNumber.length(), m_fontScale);
     float numberX = (lineNumberWidth - numberWidth) / 2.f;
@@ -166,7 +178,6 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
     else
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
-
     // gray separator line:
     painter.save();
     painter.setPen(QPen(Theme::darkGray(), 1));
@@ -234,25 +245,24 @@ QRect Editor::cursorRect(int cursorX, int cursorY) const
 
 void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
 {
-    float lineNumberWidth = 5.f + leftColumnWidth();
-    update(cursorRect(m_cursorX, m_cursorY));
-    update(QRectF(0, m_cursorY * m_lineHeight, lineNumberWidth, m_lineHeight).toRect());
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float lineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
+    update(QRectF(0, lineTop, width(), m_lineHeight).toRect());
     m_cursorX = dto.cursorX;
     m_cursorY = dto.cursorY;
     m_cursorVisible = true;
     m_cursorTimer.start(200);
-    update(cursorRect(m_cursorX, m_cursorY));
-    update(QRectF(0, m_cursorY * m_lineHeight, lineNumberWidth, m_lineHeight).toRect());
+    float newLineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
+    update(QRectF(0, newLineTop, width(), m_lineHeight).toRect());
     scrollToCursor();
 }
-
 void Editor::scrollToCursor()
 {
     QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
     if (!scrollArea)
         return;
     QRect rect = cursorRect(m_cursorX, m_cursorY);
-
     int noOfCharsAsMargin = 5;
     float horizontalScrollMargin = m_fontAtlas.textWidth(noOfCharsAsMargin, m_fontScale);
     int noOfRowsAsMargin = 3;
@@ -265,7 +275,6 @@ void Editor::keyPressEvent(QKeyEvent *event)
     bool ctrl = event->modifiers() & Qt::ControlModifier;
     bool shift = event->modifiers() & Qt::ShiftModifier;
     bool alt = event->modifiers() & Qt::AltModifier;
-
     EditorKeyPressDTO::SpecialKey specialKey = EditorKeyPressDTO::SpecialKey::None;
     switch (event->key()) {
     case Qt::Key_Left:
@@ -306,16 +315,13 @@ void Editor::keyPressEvent(QKeyEvent *event)
         specialKey = EditorKeyPressDTO::SpecialKey::Tab;
         break;
     }
-
     if (specialKey != EditorKeyPressDTO::SpecialKey::None) {
         emit editorKeyPressed(EditorKeyPressDTO(0, specialKey, ctrl, shift, alt));
         return;
     }
-
     QString text = event->text();
     if (text.isEmpty())
         return;
-
     char32_t key = text.toUcs4().first();
     emit editorKeyPressed(EditorKeyPressDTO(key, specialKey, ctrl, shift, alt));
 }
@@ -362,7 +368,6 @@ void Editor::drawTerminalPrompt(QPainter &painter, int index, float x, float y)
     const QString &prompt = m_terminalPrompts[lineIndex];
     if (prompt.isEmpty())
         return;
-
     if (index == m_cursorY)
         m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
     else
