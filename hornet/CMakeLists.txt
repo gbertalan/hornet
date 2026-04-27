@@ -91,6 +91,9 @@ qt_add_executable(hornet
     shared/dto_view_to_model/editorkeypressdto.h
     model_layer/terminalmodel.h model_layer/terminalmodel.cpp
     service_layer/terminalservice.h service_layer/terminalservice.cpp
+    control_layer/terminalcontrol.h control_layer/terminalcontrol.cpp
+    control_layer/editorcontrol.h control_layer/editorcontrol.cpp
+    control_layer/windowcontrol.h control_layer/windowcontrol.cpp
 
 
 

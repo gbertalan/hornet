@@ -1,14 +1,15 @@
 #pragma once
 #include <QDebug>
 #include <QObject>
-#include <QProcess>
+#include "control_layer/editorcontrol.h"
+#include "control_layer/terminalcontrol.h"
+#include "control_layer/windowcontrol.h"
 struct EditorKeyPressDTO;
 class IModelAccessRead;
 class WindowService;
 class EditorService;
 class TerminalService;
 class View;
-struct WindowDTO;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
 class Control : public QObject
@@ -29,18 +30,14 @@ public slots:
     void onEditorKeyPressed(const EditorKeyPressDTO &dto);
 
 private:
-    void sendStateToEditor();
-    void sendCursorPosToEditor();
-    bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
-    void handleEditorKeyPress(const EditorKeyPressDTO &dto);
-    void executeCommand();
+    QVector<QString> buildTerminalPrompts() const;
     IModelAccessRead &m_modelAccess;
-    WindowService &m_windowService;
     EditorService &m_editorService;
     TerminalService &m_terminalService;
-    View &m_view;
-    bool m_isTerminal = false;
-    QProcess m_process;
+    bool m_isTerminal = true;
+    WindowControl m_windowControl;
+    EditorControl m_editorControl;
+    TerminalControl m_terminalControl;
     void printModel() const;
     mutable int debugPrintCounter = 0;
 };
