@@ -1,6 +1,7 @@
 #pragma once
 #include <QObject>
 #include <QProcess>
+#include <filesystem>
 class IModelAccessRead;
 class EditorService;
 class TerminalService;
@@ -19,6 +20,11 @@ public:
     void executeCommand();
 
 private:
+    QString getCurrentLineAsQString(int cursorY) const;
+    std::filesystem::path getWorkingDirForLine(int cursorY) const;
+    QString runCommand(const QString &command, const std::filesystem::path &workingDir);
+    void handleLastLineExecution();
+    void handleNonLastLineExecution(int cursorY, int lastLineNumber);
     IModelAccessRead &m_modelAccess;
     EditorService &m_editorService;
     TerminalService &m_terminalService;

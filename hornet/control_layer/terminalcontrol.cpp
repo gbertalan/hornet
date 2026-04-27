@@ -7,6 +7,7 @@
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
 #include <iostream>
+#include <qdebug.h>
 
 TerminalControl::TerminalControl(IModelAccessRead &modelAccess,
                                  EditorService &editorService,
@@ -20,12 +21,14 @@ void TerminalControl::init()
 {
     m_terminalService.initialize();
 }
+
 void TerminalControl::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
     const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
         = m_terminalService.getTerminalPromptAndDirs();
-    if (dto.cursorY < static_cast<int>(terminalPromptAndDirs.size()))
-        m_terminalService.setCurrentDirectory(terminalPromptAndDirs.at(dto.cursorY).directory);
+    if (cursorY < static_cast<int>(terminalPromptAndDirs.size()))
+        m_terminalService.setCurrentDirectory(terminalPromptAndDirs.at(cursorY).directory);
 }
 
 bool TerminalControl::handleTerminalKeyPress(const EditorKeyPressDTO &dto)
@@ -44,20 +47,74 @@ void TerminalControl::executeCommand()
         return;
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     int lastLineNumber = m_modelAccess.getEditorModel().getNoOfLines() - 1;
-    const std::u32string &currentLine = lines.at(cursorY);
-    if (currentLine.empty())
+    if (lines.at(cursorY).empty())
         return;
-    QString command = QString::fromUcs4(reinterpret_cast<const char32_t *>(currentLine.c_str()),
-                                        static_cast<int>(currentLine.size()));
-    const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
-        = m_terminalService.getTerminalPromptAndDirs();
-    std::filesystem::path workingDir = m_terminalService.getCurrentDirectory();
-    if (cursorY < static_cast<int>(terminalPromptAndDirs.size()))
-        workingDir = terminalPromptAndDirs.at(cursorY).directory;
-    QString sentinel = "---HORNET_PWD---";
-    QString combinedCommand = command + "; echo " + sentinel + "; pwd";
+    QString command = getCurrentLineAsQString(cursorY);
+    std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
     if (cursorY == lastLineNumber)
         m_terminalService.setCurrentDirectory(workingDir);
+    runCommand(command, workingDir);
+    if (cursorY == lastLineNumber)
+        handleLastLineExecution();
+    else
+        handleNonLastLineExecution(cursorY, lastLineNumber);
+
+    qDebug() << "=== executeCommand result ===";
+    qDebug() << "editor lines:" << m_modelAccess.getEditorModel().getNoOfLines();
+    qDebug() << "promptAndDirs count:" << m_terminalService.getTerminalPromptAndDirs().size();
+    qDebug() << "line0:"
+             << QString::fromUcs4(reinterpret_cast<const char32_t *>(
+                                      m_modelAccess.getEditorModel().getTextLines().at(0).c_str()),
+                                  static_cast<int>(
+                                      m_modelAccess.getEditorModel().getTextLines().at(0).size()));
+    qDebug() << "dir0:"
+             << QString::fromStdString(
+                    m_terminalService.getTerminalPromptAndDirs().at(0).directory.string());
+    qDebug() << "prompt0:"
+             << QString::fromUcs4(
+                    reinterpret_cast<const char32_t *>(
+                        m_terminalService.getTerminalPromptAndDirs().at(0).prompt.c_str()),
+                    static_cast<int>(
+                        m_terminalService.getTerminalPromptAndDirs().at(0).prompt.size()));
+    qDebug() << "line1:"
+             << QString::fromUcs4(reinterpret_cast<const char32_t *>(
+                                      m_modelAccess.getEditorModel().getTextLines().at(1).c_str()),
+                                  static_cast<int>(
+                                      m_modelAccess.getEditorModel().getTextLines().at(1).size()));
+    qDebug() << "dir1:"
+             << QString::fromStdString(
+                    m_terminalService.getTerminalPromptAndDirs().at(1).directory.string());
+    qDebug() << "prompt1:"
+             << QString::fromUcs4(
+                    reinterpret_cast<const char32_t *>(
+                        m_terminalService.getTerminalPromptAndDirs().at(1).prompt.c_str()),
+                    static_cast<int>(
+                        m_terminalService.getTerminalPromptAndDirs().at(1).prompt.size()));
+    qDebug() << "=== end ===";
+}
+
+QString TerminalControl::getCurrentLineAsQString(int cursorY) const
+{
+    const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
+    const std::u32string &line = lines.at(cursorY);
+    return QString::fromUcs4(reinterpret_cast<const char32_t *>(line.c_str()),
+                             static_cast<int>(line.size()));
+}
+
+std::filesystem::path TerminalControl::getWorkingDirForLine(int cursorY) const
+{
+    const std::vector<TerminalPromptAndDir> &promptAndDirs = m_terminalService
+                                                                 .getTerminalPromptAndDirs();
+    if (cursorY < static_cast<int>(promptAndDirs.size()))
+        return promptAndDirs.at(cursorY).directory;
+
+    return m_terminalService.getCurrentDirectory();
+}
+
+QString TerminalControl::runCommand(const QString &command, const std::filesystem::path &workingDir)
+{
+    QString sentinel = "---HORNET_PWD---";
+    QString combinedCommand = command + "; echo " + sentinel + "; pwd";
     m_process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
     m_process.start("/bin/sh", QStringList() << "-c" << combinedCommand);
     m_process.waitForFinished();
@@ -72,24 +129,28 @@ void TerminalControl::executeCommand()
     } else {
         std::cout << output.toStdString() << std::endl;
     }
-    if (cursorY == lastLineNumber) {
-        std::filesystem::path newLineDir = m_terminalService.getCurrentDirectory();
-        std::u32string newLinePrompt = m_terminalService.getCurrentPrompt();
-        m_terminalService.addTerminalPromptAndDir({newLinePrompt, newLineDir});
-        std::vector<std::u32string> updatedLines = m_modelAccess.getEditorModel().getTextLines();
-        updatedLines.push_back(U"");
-        m_editorService.setTextLines(updatedLines, "txt");
-        int newLastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
-        EditorCursorPosDTO cursorDto{0, newLastLine};
-        m_editorService.storeCursorPos(cursorDto);
-        m_terminalService.setCurrentDirectory(newLineDir);
-    } else {
-        m_terminalService.updateTerminalLineDirectory(cursorY,
-                                                      m_terminalService.getCurrentDirectory());
-        const std::vector<TerminalPromptAndDir> &updatedTerminalPromptAndDirs
-            = m_terminalService.getTerminalPromptAndDirs();
-        if (lastLineNumber < static_cast<int>(updatedTerminalPromptAndDirs.size()))
-            m_terminalService.setCurrentDirectory(
-                updatedTerminalPromptAndDirs.at(lastLineNumber).directory);
-    }
+    return output;
+}
+
+void TerminalControl::handleLastLineExecution()
+{
+    std::filesystem::path newLineDir = m_terminalService.getCurrentDirectory();
+    std::u32string newLinePrompt = m_terminalService.getCurrentPrompt();
+    m_terminalService.addTerminalPromptAndDir({newLinePrompt, newLineDir});
+    std::vector<std::u32string> updatedLines = m_modelAccess.getEditorModel().getTextLines();
+    updatedLines.push_back(U"");
+    m_editorService.setTextLines(updatedLines, "txt");
+    int newLastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
+    EditorCursorPosDTO cursorDto{0, newLastLine};
+    m_editorService.storeCursorPos(cursorDto);
+    m_terminalService.setCurrentDirectory(newLineDir);
+}
+
+void TerminalControl::handleNonLastLineExecution(int cursorY, int lastLineNumber)
+{
+    m_terminalService.updateTerminalLineDirectory(cursorY, m_terminalService.getCurrentDirectory());
+    const std::vector<TerminalPromptAndDir> &updatedPromptAndDirs = m_terminalService
+                                                                        .getTerminalPromptAndDirs();
+    if (lastLineNumber < static_cast<int>(updatedPromptAndDirs.size()))
+        m_terminalService.setCurrentDirectory(updatedPromptAndDirs.at(lastLineNumber).directory);
 }
