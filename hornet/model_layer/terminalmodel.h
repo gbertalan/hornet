@@ -19,6 +19,7 @@ public:
     void updateLineDirectory(int index,
                              const std::filesystem::path &directory,
                              const std::u32string &prompt);
+    void removeTerminalPromptAndDir(int index);
 
 private:
     std::filesystem::path m_currentDirectory = std::filesystem::current_path();

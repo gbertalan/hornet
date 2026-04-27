@@ -60,13 +60,15 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
     if (m_modelAccess.getEditorModel().isTerminal()
         && m_terminalControl.handleTerminalKeyPress(dto)) {
-        m_editorControl.sendStateToEditor(m_modelAccess.getEditorModel().isTerminal()
-                                              ? buildTerminalPrompts()
-                                              : QVector<QString>{});
+        m_editorControl.sendStateToEditor(buildTerminalPrompts());
         m_editorControl.sendCursorPosToEditor();
         return;
     }
+    int lineCountBefore = m_modelAccess.getEditorModel().getNoOfLines();
+    int cursorYBefore = m_modelAccess.getEditorModel().getCursorY();
     m_editorControl.handleEditorKeyPress(dto);
+    if (m_modelAccess.getEditorModel().isTerminal())
+        m_terminalControl.postKeyPress(lineCountBefore, cursorYBefore);
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();

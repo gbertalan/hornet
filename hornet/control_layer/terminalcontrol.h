@@ -16,6 +16,7 @@ public:
                              TerminalService &terminalService);
     void init();
     bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
+    void postKeyPress(int lineCountBefore, int cursorYBefore);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void executeCommand();
 

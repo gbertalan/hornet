@@ -18,6 +18,7 @@ public:
     const std::filesystem::path &getCurrentDirectory() const;
     void setCurrentDirectory(const std::filesystem::path &path);
     void updateTerminalLineDirectory(int index, const std::filesystem::path &directory);
+    void removeTerminalPromptAndDir(int index);
 
 private:
     EditorService &m_editorService;

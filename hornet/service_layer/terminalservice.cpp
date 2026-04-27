@@ -57,3 +57,8 @@ void TerminalService::updateTerminalLineDirectory(int index, const std::filesyst
 {
     m_terminalModel.updateLineDirectory(index, directory, getCurrentPrompt());
 }
+
+void TerminalService::removeTerminalPromptAndDir(int index)
+{
+    m_terminalModel.removeTerminalPromptAndDir(index);
+}

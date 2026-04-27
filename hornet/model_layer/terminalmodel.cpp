@@ -29,3 +29,9 @@ void TerminalModel::updateLineDirectory(int index,
         m_terminalPromptAndDirs.at(index).prompt = prompt;
     }
 }
+
+void TerminalModel::removeTerminalPromptAndDir(int index)
+{
+    if (index >= 0 && index < static_cast<int>(m_terminalPromptAndDirs.size()))
+        m_terminalPromptAndDirs.erase(m_terminalPromptAndDirs.begin() + index);
+}

@@ -58,39 +58,6 @@ void TerminalControl::executeCommand()
         handleLastLineExecution();
     else
         handleNonLastLineExecution(cursorY, lastLineNumber);
-
-    qDebug() << "=== executeCommand result ===";
-    qDebug() << "editor lines:" << m_modelAccess.getEditorModel().getNoOfLines();
-    qDebug() << "promptAndDirs count:" << m_terminalService.getTerminalPromptAndDirs().size();
-    qDebug() << "line0:"
-             << QString::fromUcs4(reinterpret_cast<const char32_t *>(
-                                      m_modelAccess.getEditorModel().getTextLines().at(0).c_str()),
-                                  static_cast<int>(
-                                      m_modelAccess.getEditorModel().getTextLines().at(0).size()));
-    qDebug() << "dir0:"
-             << QString::fromStdString(
-                    m_terminalService.getTerminalPromptAndDirs().at(0).directory.string());
-    qDebug() << "prompt0:"
-             << QString::fromUcs4(
-                    reinterpret_cast<const char32_t *>(
-                        m_terminalService.getTerminalPromptAndDirs().at(0).prompt.c_str()),
-                    static_cast<int>(
-                        m_terminalService.getTerminalPromptAndDirs().at(0).prompt.size()));
-    qDebug() << "line1:"
-             << QString::fromUcs4(reinterpret_cast<const char32_t *>(
-                                      m_modelAccess.getEditorModel().getTextLines().at(1).c_str()),
-                                  static_cast<int>(
-                                      m_modelAccess.getEditorModel().getTextLines().at(1).size()));
-    qDebug() << "dir1:"
-             << QString::fromStdString(
-                    m_terminalService.getTerminalPromptAndDirs().at(1).directory.string());
-    qDebug() << "prompt1:"
-             << QString::fromUcs4(
-                    reinterpret_cast<const char32_t *>(
-                        m_terminalService.getTerminalPromptAndDirs().at(1).prompt.c_str()),
-                    static_cast<int>(
-                        m_terminalService.getTerminalPromptAndDirs().at(1).prompt.size()));
-    qDebug() << "=== end ===";
 }
 
 QString TerminalControl::getCurrentLineAsQString(int cursorY) const
@@ -153,4 +120,11 @@ void TerminalControl::handleNonLastLineExecution(int cursorY, int lastLineNumber
                                                                         .getTerminalPromptAndDirs();
     if (lastLineNumber < static_cast<int>(updatedPromptAndDirs.size()))
         m_terminalService.setCurrentDirectory(updatedPromptAndDirs.at(lastLineNumber).directory);
+}
+
+void TerminalControl::postKeyPress(int lineCountBefore, int cursorYBefore)
+{
+    int lineCountAfter = m_modelAccess.getEditorModel().getNoOfLines();
+    if (lineCountAfter < lineCountBefore)
+        m_terminalService.removeTerminalPromptAndDir(cursorYBefore);
 }
