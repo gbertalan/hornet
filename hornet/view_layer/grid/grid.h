@@ -1,6 +1,6 @@
 #ifndef GRID_H
 #define GRID_H
-#include <QPointF>
+#include <QPoint>
 #include <QWidget>
 
 class Grid : public QWidget
@@ -9,12 +9,12 @@ public:
     explicit Grid(QWidget *parent);
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
 
 private:
     float gridGap = 30.0f;
-    float scale = 1.0f;
-    QPointF offset = {0, 0};
+    double scale = 1.0;
+    QPoint offset = {0, 0};
 };
 #endif // GRID_H
