@@ -4,6 +4,7 @@
 #include "model_layer/terminalmodel.h"
 #include "model_layer/windowmodel.h"
 #include "service_layer/editorservice.h"
+#include "service_layer/gridservice.h"
 #include "service_layer/terminalservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
@@ -17,10 +18,12 @@ Control::Control(IModelAccessRead &modelAccess,
                  WindowService &windowService,
                  EditorService &editorService,
                  TerminalService &terminalService,
+                 GridService &gridService,
                  View &view)
     : m_modelAccess(modelAccess)
     , m_editorService(editorService)
     , m_terminalService(terminalService)
+    , m_gridService(gridService)
     , m_windowControl(modelAccess, windowService, view)
     , m_editorControl(modelAccess, editorService, view)
     , m_terminalControl(modelAccess, editorService, terminalService)

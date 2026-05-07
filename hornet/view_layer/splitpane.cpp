@@ -94,6 +94,15 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     leftLayout->addWidget(m_scrollArea);
     m_leftPane->setLayout(leftLayout);
 
+    // Grid:
+    m_grid = new Grid(m_rightPane);
+
+    QVBoxLayout *rightLayout = new QVBoxLayout(m_rightPane);
+    rightLayout->setContentsMargins(0, 0, 0, 0);
+    rightLayout->setSpacing(0);
+    rightLayout->addWidget(m_grid);
+    m_rightPane->setLayout(rightLayout);
+
     // scrollbars:
 
     m_verticalScrollBar = new CustomScrollBar(Qt::Vertical, m_scrollArea);

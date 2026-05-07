@@ -2,6 +2,7 @@
 #include "control_layer/control.h"
 #include "model_layer/modelaccess.h"
 #include "service_layer/editorservice.h"
+#include "service_layer/gridservice.h"
 #include "service_layer/windowservice.h"
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
@@ -31,6 +32,7 @@ int main(int argc, char* argv[]) {
     WindowService windowService(modelAccess);
     EditorService editorService(modelAccess);
     TerminalService terminalService(editorService);
+    GridService gridService(modelAccess);
 
     int x = modelAccess.getWindowModel().getX();
     int y = modelAccess.getWindowModel().getY();
@@ -41,7 +43,7 @@ int main(int argc, char* argv[]) {
 
     View view(initialState);
 
-    Control control(modelAccess, windowService, editorService, terminalService, view);
+    Control control(modelAccess, windowService, editorService, terminalService, gridService, view);
 
     // connect(sender, signal, receiver, slot)
     QObject::connect(&view, &View::debugRequested, &control, &Control::onDebugRequested);

@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QScrollBar>
 
+#include <view_layer/grid/grid.h>
+
 struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
 struct EditorVisibleLinesDTO;
@@ -59,4 +61,5 @@ private:
     CustomScrollBar* m_horizontalScrollBar;
     QTimer* m_scrollBarHideTimer;
     Editor *m_editor;
+    Grid *m_grid;
 };

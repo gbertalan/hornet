@@ -94,6 +94,13 @@ qt_add_executable(hornet
     control_layer/terminalcontrol.h control_layer/terminalcontrol.cpp
     control_layer/editorcontrol.h control_layer/editorcontrol.cpp
     control_layer/windowcontrol.h control_layer/windowcontrol.cpp
+    model_layer/boxmodel.h model_layer/boxmodel.cpp
+    service_layer/boxservice.h service_layer/boxservice.cpp
+    control_layer/gridcontrol.h control_layer/gridcontrol.cpp
+    model_layer/gridmodel.h model_layer/gridmodel.cpp
+    service_layer/gridservice.h service_layer/gridservice.cpp
+    view_layer/grid/grid.h view_layer/grid/grid.cpp
+
 
 
 
