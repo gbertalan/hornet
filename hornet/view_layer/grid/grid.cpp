@@ -1,5 +1,6 @@
 #include "grid.h"
 #include <QPainter>
+#include <QWheelEvent>
 #include <cmath>
 
 Grid::Grid(QWidget *parent)
@@ -28,4 +29,11 @@ void Grid::paintEvent(QPaintEvent *)
         const float y = startY + i * scaledGap;
         painter.drawLine(QPointF(0, y), QPointF(width(), y));
     }
+}
+
+void Grid::wheelEvent(QWheelEvent *event)
+{
+    const int delta = event->angleDelta().y();
+    qDebug() << "wheel delta:" << delta << "position:" << event->position();
+    event->accept();
 }
