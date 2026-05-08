@@ -196,13 +196,6 @@ void Window::changeEvent(QEvent* event) {
     }
 }
 
-void Window::keyPressEvent(QKeyEvent* event) {
-    if (event->key() == Qt::Key_D && event->modifiers() == Qt::ControlModifier) {
-        emit debugRequested();
-    }
-    QWidget::keyPressEvent(event);
-}
-
 // When exiting fullscreen, the size gets reset to the previous size
 // when it was still windowed, not fullscreen.
 void Window::restoreWindowedSize() {

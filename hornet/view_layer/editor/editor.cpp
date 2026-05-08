@@ -276,6 +276,13 @@ void Editor::keyPressEvent(QKeyEvent *event)
     bool shift = event->modifiers() & Qt::ShiftModifier;
     bool alt = event->modifiers() & Qt::AltModifier;
     EditorKeyPressDTO::SpecialKey specialKey = EditorKeyPressDTO::SpecialKey::None;
+
+    if (ctrl && event->key() == Qt::Key_D) {
+        emit editorKeyPressed(
+            EditorKeyPressDTO(0, EditorKeyPressDTO::SpecialKey::CtrlD, ctrl, shift, alt));
+        return;
+    }
+
     switch (event->key()) {
     case Qt::Key_Left:
         specialKey = EditorKeyPressDTO::SpecialKey::Left;

@@ -15,7 +15,8 @@ struct EditorKeyPressDTO
         End,
         PageUp,
         PageDown,
-        Tab
+        Tab,
+        CtrlD
     };
     char32_t key;
     SpecialKey specialKey;

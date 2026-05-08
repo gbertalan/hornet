@@ -26,7 +26,6 @@ public:
 signals:
     void buttonClicked();
     void windowStateChanged(const WindowDTO& dto);
-    void debugRequested();
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);

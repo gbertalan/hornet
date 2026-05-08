@@ -27,7 +27,6 @@ public:
 
 signals:
     void buttonClicked();
-    void debugRequested();
     void windowStateChanged(const WindowDTO& dto);
     void closeClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
@@ -63,5 +62,4 @@ protected:
     void moveEvent(QMoveEvent* event) override;
     // Disable resize when in fullscreen mode
     void changeEvent(QEvent* event) override;
-    void keyPressEvent(QKeyEvent* event) override;
 };

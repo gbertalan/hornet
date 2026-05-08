@@ -63,6 +63,10 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::CtrlD) {
+        onDebugRequested();
+        return;
+    }
     if (m_modelAccess.getEditorModel().isTerminal()
         && m_terminalControl.handleTerminalKeyPress(dto)) {
         m_editorControl.sendStateToEditor(buildTerminalPrompts());

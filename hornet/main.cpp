@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
     Control control(modelAccess, windowService, editorService, terminalService, gridService, view);
 
     // connect(sender, signal, receiver, slot)
-    QObject::connect(&view, &View::debugRequested, &control, &Control::onDebugRequested);
     QObject::connect(&view, &View::windowStateChanged, &control, &Control::onWindowStateChanged);
     QObject::connect(&view, &View::closeClicked, &app, &QApplication::quit);
     QObject::connect(&view, &View::editorStateChanged, &control, &Control::onEditorStateChanged);
