@@ -2,8 +2,7 @@
 #define GRID_H
 #include <QPoint>
 #include <QWidget>
-
-#include <shared/dto_bidirectional/gridzoomdto.h>
+#include "shared/dto_bidirectional/gridzoomdto.h"
 
 class Grid : public QWidget
 {
@@ -23,9 +22,5 @@ private:
     float gridGap = 30.0f;
     double scale = 1.0;
     QPoint offset = {0, 0};
-    int zoomLevel = 25;
-
-    static constexpr int minZoom = 0;
-    static constexpr int maxZoom = 50;
 };
 #endif // GRID_H

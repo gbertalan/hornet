@@ -2,13 +2,15 @@
 
 #include <QPoint>
 
+enum class ScrollDirection { Up, Down };
+
 struct GridZoomDTO
 {
-    int zoomLevel;
+    ScrollDirection scrollDirection;
     QPoint cursorPosition;
 
-    explicit GridZoomDTO(int zoomLevel, QPoint cursorPosition)
-        : zoomLevel(zoomLevel)
+    explicit GridZoomDTO(ScrollDirection scrollDirection, QPoint cursorPosition)
+        : scrollDirection(scrollDirection)
         , cursorPosition(cursorPosition)
     {}
 };

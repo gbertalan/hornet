@@ -34,14 +34,9 @@ void Grid::paintEvent(QPaintEvent *)
 
 void Grid::wheelEvent(QWheelEvent *event)
 {
-    const int delta = event->angleDelta().y();
-    const int newZoomLevel = std::clamp(zoomLevel + (delta > 0 ? 1 : -1), minZoom, maxZoom);
+    const ScrollDirection direction = event->angleDelta().y() > 0 ? ScrollDirection::Up
+                                                                  : ScrollDirection::Down;
 
-    if (newZoomLevel != zoomLevel) {
-        zoomLevel = newZoomLevel;
-        const QPoint cursorPosition = event->position().toPoint();
-        emit gridZoomChanged(GridZoomDTO(zoomLevel, cursorPosition));
-    }
-
+    emit gridZoomChanged(GridZoomDTO(direction, event->position().toPoint()));
     event->accept();
 }

@@ -1,4 +1,6 @@
 #include "gridcontrol.h"
+#include "model_layer/imodelaccess_read.h"
+#include "service_layer/gridservice.h"
 
 #include <qdebug.h>
 
@@ -11,4 +13,5 @@ GridControl::GridControl(IModelAccessRead &modelAccess, GridService &gridService
 void GridControl::handleGridZoomChange(const GridZoomDTO &dto)
 {
     qDebug() << "GridControl: zoom";
+    m_gridService.adjustZoom(dto);
 }

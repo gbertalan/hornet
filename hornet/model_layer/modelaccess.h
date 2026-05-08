@@ -1,6 +1,7 @@
 #pragma once
 
 #include "editormodel.h"
+#include "gridmodel.h"
 #include "imodelaccess_readwrite.h"
 #include "windowmodel.h"
 
@@ -33,7 +34,14 @@ public:
     // Returns as read-write.
     EditorModel &getEditorModel() override;
 
+    // Returns as read-only.
+    const GridModel &getGridModel() const override;
+
+    // Returns as read-write.
+    GridModel &getGridModel() override;
+
 private:
     WindowModel m_windowModel;
     EditorModel m_editorModel;
+    GridModel m_gridModel;
 };

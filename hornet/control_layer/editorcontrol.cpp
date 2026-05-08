@@ -7,6 +7,7 @@
 #include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "view_layer/view.h"
 
+#include <qdebug.h>
 #include <shared/dto_bidirectional/editorsettingsdto.h>
 
 EditorControl::EditorControl(IModelAccessRead &modelAccess, EditorService &editorService, View &view)
@@ -54,8 +55,10 @@ void EditorControl::handleEditorKeyPress(const EditorKeyPressDTO &dto)
     if (dto.alt)
         return;
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::None) {
-        if (dto.ctrl)
+        if (dto.ctrl) {
+            qDebug() << "EditorControl says CONTROL PRESSED";
             return;
+        }
         m_editorService.insertCharacter(dto.key);
     } else if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace
                || dto.specialKey == EditorKeyPressDTO::SpecialKey::Delete) {

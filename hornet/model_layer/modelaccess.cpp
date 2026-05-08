@@ -21,3 +21,13 @@ EditorModel &ModelAccess::getEditorModel()
 {
     return m_editorModel;
 }
+
+const GridModel &ModelAccess::getGridModel() const
+{
+    return m_gridModel;
+}
+
+GridModel &ModelAccess::getGridModel()
+{
+    return m_gridModel;
+}

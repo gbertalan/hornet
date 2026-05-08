@@ -1,5 +1,6 @@
 #include "control.h"
 #include "model_layer/editormodel.h"
+#include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_read.h"
 #include "model_layer/terminalmodel.h"
 #include "model_layer/windowmodel.h"
@@ -106,11 +107,13 @@ void Control::printModel() const
 {
     const WindowModel &windowModel = m_modelAccess.getWindowModel();
     const EditorModel &editorModel = m_modelAccess.getEditorModel();
+    const GridModel &gridModel = m_modelAccess.getGridModel();
     qDebug() << "===" << " MODEL STATE" << debugPrintCounter << "===";
     qDebug() << "WindowModel:";
     qDebug() << "    " << "x:" << windowModel.getX() << "y:" << windowModel.getY()
              << "width:" << windowModel.getWidth() << "height:" << windowModel.getHeight()
              << "fullscreen:" << windowModel.isFullscreen();
+
     qDebug() << "EditorModel:";
     qDebug() << "    " << "noOfVisibleLines:" << editorModel.getNoOfVisibleLines()
              << "topLineIndex:" << editorModel.getTopLineIndex();
@@ -119,6 +122,11 @@ void Control::printModel() const
              << "fileType:" << editorModel.getFileType();
     qDebug() << "    " << "cursorX:" << editorModel.getCursorX()
              << "cursorY:" << editorModel.getCursorY();
+
+    qDebug() << "GridModel:";
+    qDebug() << "    " << "zoomLevel:" << gridModel.getZoomLevel()
+             << "gridGap:" << gridModel.getGridGap() << "offset:" << gridModel.getOffset();
+
     qDebug() << "=== MODEL STATE END ===";
     qDebug() << "";
     debugPrintCounter++;
