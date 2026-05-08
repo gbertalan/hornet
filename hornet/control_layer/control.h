@@ -14,6 +14,8 @@ class GridService;
 class View;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
+struct GridZoomDTO;
+
 class Control : public QObject
 {
     Q_OBJECT
@@ -31,6 +33,7 @@ public slots:
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void onEditorKeyPressed(const EditorKeyPressDTO &dto);
+    void onGridZoomChanged(const GridZoomDTO &dto);
 
 private:
     QVector<QString> buildTerminalPrompts() const;

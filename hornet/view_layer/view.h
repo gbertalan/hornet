@@ -8,6 +8,7 @@ struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 struct EditorSettingsDTO;
 struct WindowDTO;
+struct GridZoomDTO;
 
 class Window;
 
@@ -30,6 +31,7 @@ signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+    void gridZoomChanged(const GridZoomDTO &dto);
 
 private:
     Window* m_window;

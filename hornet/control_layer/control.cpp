@@ -27,6 +27,7 @@ Control::Control(IModelAccessRead &modelAccess,
     , m_windowControl(modelAccess, windowService, view)
     , m_editorControl(modelAccess, editorService, view)
     , m_terminalControl(modelAccess, editorService, terminalService)
+    , m_gridControl(modelAccess, gridService, view)
 {}
 
 void Control::init()
@@ -75,6 +76,11 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();
+}
+
+void Control::onGridZoomChanged(const GridZoomDTO &dto)
+{
+    m_gridControl.handleGridZoomChange(dto);
 }
 
 QVector<QString> Control::buildTerminalPrompts() const

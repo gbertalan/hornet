@@ -8,6 +8,7 @@ struct WindowDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 struct EditorSettingsDTO;
+struct GridZoomDTO;
 class TitleBar;
 class ResizeHandle;
 class SplitPane;
@@ -32,6 +33,7 @@ signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+    void gridZoomChanged(const GridZoomDTO &dto);
 
 private:
     TitleBar* m_titleBar;

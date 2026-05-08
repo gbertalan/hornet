@@ -47,6 +47,7 @@ signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+    void gridZoomChanged(const GridZoomDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

@@ -3,10 +3,17 @@
 #include <QPoint>
 #include <QWidget>
 
+#include <shared/dto_bidirectional/gridzoomdto.h>
+
 class Grid : public QWidget
 {
+    Q_OBJECT
+
 public:
     explicit Grid(QWidget *parent);
+
+signals:
+    void gridZoomChanged(const GridZoomDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -16,5 +23,9 @@ private:
     float gridGap = 30.0f;
     double scale = 1.0;
     QPoint offset = {0, 0};
+    int zoomLevel = 25;
+
+    static constexpr int minZoom = 0;
+    static constexpr int maxZoom = 50;
 };
 #endif // GRID_H
