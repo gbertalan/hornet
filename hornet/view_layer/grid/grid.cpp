@@ -46,3 +46,32 @@ void Grid::wheelEvent(QWheelEvent *event)
     emit gridZoomChanged(GridZoomDTO(direction, event->position().toPoint()));
     event->accept();
 }
+
+void Grid::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_isDragging = true;
+        m_lastMousePos = event->pos();
+        qDebug() << "drag started at:" << event->pos();
+    }
+    event->accept();
+}
+
+void Grid::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_isDragging) {
+        const QPoint delta = event->pos() - m_lastMousePos;
+        m_lastMousePos = event->pos();
+        qDebug() << "drag delta:" << delta;
+    }
+    event->accept();
+}
+
+void Grid::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_isDragging = false;
+        qDebug() << "drag ended";
+    }
+    event->accept();
+}

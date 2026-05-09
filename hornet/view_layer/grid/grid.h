@@ -21,10 +21,14 @@ signals:
 protected:
     void paintEvent(QPaintEvent *) override;
     void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     double gridGap = 30.0;
-    double scale = 1.0;
     QPoint offset = {0, 0};
+    QPoint m_lastMousePos;
+    bool m_isDragging = false;
 };
 #endif // GRID_H
