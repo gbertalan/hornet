@@ -12,6 +12,7 @@ GridControl::GridControl(IModelAccessRead &modelAccess, GridService &gridService
 
 void GridControl::handleGridZoomChange(const GridZoomDTO &dto)
 {
-    qDebug() << "GridControl: zoom";
+    qDebug() << "GridControl: zoom direction:"
+             << (dto.scrollDirection == ScrollDirection::Up ? "Up" : "Down");
     m_gridService.adjustZoom(dto);
 }
