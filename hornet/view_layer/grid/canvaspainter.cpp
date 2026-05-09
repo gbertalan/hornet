@@ -30,7 +30,8 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
 void CanvasPainter::drawBoxes(QPainter &painter,
                               double gridGap,
                               QPoint offset,
-                              const std::vector<BoxModel> &boxes)
+                              const std::vector<BoxModel> &boxes,
+                              FontRenderer &fontRenderer)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
 

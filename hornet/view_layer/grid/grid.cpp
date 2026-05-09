@@ -12,7 +12,13 @@ Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
     : QWidget(parent)
     , gridGap(initialState.gridGap)
     , offset(initialState.offset)
-{}
+    , boxes(initialState.boxes)
+{
+    m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
+    m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
+    m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
+    m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
+}
 
 void Grid::updateGridViewState(const GridViewStateDTO &dto)
 {
@@ -26,7 +32,7 @@ void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     CanvasPainter::drawGrid(painter, gridGap, offset, size());
-    CanvasPainter::drawBoxes(painter, gridGap, offset, boxes);
+    CanvasPainter::drawBoxes(painter, gridGap, offset, boxes, *m_fontRenderer);
 }
 
 void Grid::wheelEvent(QWheelEvent *event)

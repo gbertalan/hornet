@@ -3,6 +3,9 @@
 #include <QPoint>
 #include <QWidget>
 #include "model_layer/boxmodel.h"
+#include <memory>
+#include <view_layer/font_renderer/FontAtlas.h>
+#include <view_layer/font_renderer/FontRenderer.h>
 
 struct GridDragDTO;
 struct GridViewStateDTO;
@@ -32,5 +35,7 @@ private:
     QPoint m_lastMousePos;
     bool m_isDragging = false;
     std::vector<BoxModel> boxes;
+    FontAtlas m_fontAtlas;
+    std::unique_ptr<FontRenderer> m_fontRenderer;
 };
 #endif // GRID_H
