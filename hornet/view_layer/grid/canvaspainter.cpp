@@ -37,6 +37,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
     const double edgeThickness = gridGap / 10.0;
     const int headerHeightUnits = 2;
+    const float textScale = static_cast<float>(gridGap * 0.8) / fontRenderer.charWidth();
+    const float textPadding = static_cast<float>(gridGap * 0.1);
 
     for (const BoxModel &box : boxes) {
         const double screenX = offset.x() + box.getPosX() * gridGap;
@@ -59,5 +61,22 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setPen(QPen(QColor(120, 120, 150), edgeThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(fullRect);
+
+        fontRenderer.drawText(painter,
+                              static_cast<float>(screenX + textPadding),
+                              static_cast<float>(screenY + textPadding),
+                              box.getHeaderText(),
+                              QColor(220, 220, 220),
+                              textScale);
+
+        for (int i = 0; i < box.getBodyLines().size(); ++i) {
+            const float lineY = static_cast<float>(screenY + headerH + textPadding + i * gridGap);
+            fontRenderer.drawText(painter,
+                                  static_cast<float>(screenX + textPadding),
+                                  lineY,
+                                  box.getBodyLines()[i],
+                                  QColor(180, 180, 180),
+                                  textScale);
+        }
     }
 }
