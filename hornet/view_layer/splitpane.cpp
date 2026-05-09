@@ -179,6 +179,11 @@ void SplitPane::updateEditorSettings(const EditorSettingsDTO &dto)
     m_editor->setSettings(dto);
 }
 
+void SplitPane::updateGridViewState(const GridViewStateDTO &dto)
+{
+    m_grid->updateGridViewState(dto);
+}
+
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {
     if (event->type() == QEvent::Enter) {
         m_scrollBarHideTimer->stop();

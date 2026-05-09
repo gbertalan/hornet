@@ -36,3 +36,8 @@ void View::updateEditorSettings(const EditorSettingsDTO &dto)
 {
     m_window->updateEditorSettings(dto);
 }
+
+void View::updateGridViewState(const GridViewStateDTO &dto)
+{
+    m_window->updateGridViewState(dto);
+}

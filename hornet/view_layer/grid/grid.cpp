@@ -8,26 +8,32 @@ Grid::Grid(QWidget *parent)
     : QWidget(parent)
 {}
 
+void Grid::updateGridViewState(const GridViewStateDTO &dto)
+{
+    gridGap = dto.gridGap;
+    offset = dto.offset;
+    update();
+}
+
 void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, false);
 
-    const double scaledGap = gridGap * scale;
-    const double startX = std::fmod(offset.x(), scaledGap);
-    const double startY = std::fmod(offset.y(), scaledGap);
+    const double startX = std::fmod(offset.x(), gridGap);
+    const double startY = std::fmod(offset.y(), gridGap);
 
     painter.setPen(QPen(Qt::white, 1));
 
-    const int verticalLines = static_cast<int>(std::ceil((width() - startX) / scaledGap)) + 1;
+    const int verticalLines = static_cast<int>(std::ceil((width() - startX) / gridGap)) + 1;
     for (int i = 0; i < verticalLines; ++i) {
-        const double x = startX + i * scaledGap;
+        const double x = startX + i * gridGap;
         painter.drawLine(QPointF(x, 0), QPointF(x, height()));
     }
 
-    const int horizontalLines = static_cast<int>(std::ceil((height() - startY) / scaledGap)) + 1;
+    const int horizontalLines = static_cast<int>(std::ceil((height() - startY) / gridGap)) + 1;
     for (int i = 0; i < horizontalLines; ++i) {
-        const double y = startY + i * scaledGap;
+        const double y = startY + i * gridGap;
         painter.drawLine(QPointF(0, y), QPointF(width(), y));
     }
 }

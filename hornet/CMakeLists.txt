@@ -101,6 +101,7 @@ qt_add_executable(hornet
     service_layer/gridservice.h service_layer/gridservice.cpp
     view_layer/grid/grid.h view_layer/grid/grid.cpp
     shared/dto_view_to_model/gridzoomdto.h
+    shared/dto_model_to_view/gridviewstatedto.h
 
 
 

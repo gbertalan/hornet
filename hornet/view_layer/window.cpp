@@ -120,6 +120,11 @@ void Window::updateEditorSettings(const EditorSettingsDTO &dto)
     m_splitPane->updateEditorSettings(dto);
 }
 
+void Window::updateGridViewState(const GridViewStateDTO &dto)
+{
+    m_splitPane->updateGridViewState(dto);
+}
+
 void Window::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     m_splitPane->setGeometry(0, 0, width(), height());

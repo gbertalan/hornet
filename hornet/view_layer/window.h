@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+struct GridViewStateDTO;
 struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
 struct WindowDTO;
@@ -24,6 +25,7 @@ public:
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
     void updateEditorSettings(const EditorSettingsDTO &dto);
+    void updateGridViewState(const GridViewStateDTO &dto);
 
 signals:
     void buttonClicked();
