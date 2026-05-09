@@ -75,6 +75,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_splitPane, &SplitPane::editorCursorPosChanged, this, &Window::editorCursorPosChanged);
     connect(m_splitPane, &SplitPane::editorKeyPressed, this, &Window::editorKeyPressed);
     connect(m_splitPane, &SplitPane::gridZoomChanged, this, &Window::gridZoomChanged);
+    connect(m_splitPane, &SplitPane::gridDragged, this, &Window::gridDragged);
 }
 
 void Window::setupResizeHandles() {

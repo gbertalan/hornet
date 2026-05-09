@@ -12,6 +12,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::editorCursorPosChanged, this, &View::editorCursorPosChanged);
     connect(m_window, &Window::editorKeyPressed, this, &View::editorKeyPressed);
     connect(m_window, &Window::gridZoomChanged, this, &View::gridZoomChanged);
+    connect(m_window, &Window::gridDragged, this, &View::gridDragged);
 }
 
 void View::show() {
