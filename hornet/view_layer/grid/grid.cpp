@@ -26,7 +26,12 @@ void Grid::paintEvent(QPaintEvent *)
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
 
-    painter.setPen(QPen(Qt::white, 1));
+    // line transparency will depend on how wide the gap is:
+    constexpr double minVisibleGap = 7.18;
+    constexpr double maxGap = 325.49;
+    const int alpha = static_cast<int>(
+        std::clamp((gridGap - minVisibleGap) / (maxGap - minVisibleGap), 0.0, 1.0) * 255);
+    painter.setPen(QPen(QColor(250, 250, 250, alpha), 1));
 
     const int verticalLines = static_cast<int>(std::ceil((width() - startX) / gridGap)) + 1;
     for (int i = 0; i < verticalLines; ++i) {
