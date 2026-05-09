@@ -11,7 +11,7 @@ class Grid : public QWidget
     Q_OBJECT
 
 public:
-    explicit Grid(QWidget *parent);
+    explicit Grid(const GridViewStateDTO &initialState, QWidget *parent);
     void updateGridViewState(const GridViewStateDTO &dto);
 
 signals:

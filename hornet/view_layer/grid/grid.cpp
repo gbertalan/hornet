@@ -7,8 +7,10 @@
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/griddragdto.h>
 
-Grid::Grid(QWidget *parent)
+Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
     : QWidget(parent)
+    , gridGap(initialState.gridGap)
+    , offset(initialState.offset)
 {}
 
 void Grid::updateGridViewState(const GridViewStateDTO &dto)

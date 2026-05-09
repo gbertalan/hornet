@@ -7,6 +7,7 @@
 #include "shared/dto_bidirectional/editorsettingsdto.h"
 #include "theme.h"
 #include "view_layer/customscrollbar.h"
+#include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <view_layer/editor/editor.h>
 #include <view_layer/editor/editorcontainer.h>
 
@@ -95,7 +96,8 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_leftPane->setLayout(leftLayout);
 
     // Grid:
-    m_grid = new Grid(m_rightPane);
+    GridViewStateDTO gridViewStateDTO{25, 30.0, QPoint(0, 0)};
+    m_grid = new Grid(gridViewStateDTO, m_rightPane);
 
     QVBoxLayout *rightLayout = new QVBoxLayout(m_rightPane);
     rightLayout->setContentsMargins(0, 0, 0, 0);
