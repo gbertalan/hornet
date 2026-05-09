@@ -2,7 +2,10 @@
 #include <QDebug>
 #include <QPainter>
 #include <QWheelEvent>
+#include "shared/dto_view_to_model/gridzoomdto.h"
 #include <cmath>
+#include <shared/dto_model_to_view/gridviewstatedto.h>
+#include <shared/dto_view_to_model/griddragdto.h>
 
 Grid::Grid(QWidget *parent)
     : QWidget(parent)
@@ -52,7 +55,6 @@ void Grid::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton) {
         m_isDragging = true;
         m_lastMousePos = event->pos();
-        qDebug() << "drag started at:" << event->pos();
     }
     event->accept();
 }
@@ -62,16 +64,14 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
     if (m_isDragging) {
         const QPoint delta = event->pos() - m_lastMousePos;
         m_lastMousePos = event->pos();
-        qDebug() << "drag delta:" << delta;
+        emit gridDragged(GridDragDTO(delta, event->pos()));
     }
     event->accept();
 }
 
 void Grid::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton)
         m_isDragging = false;
-        qDebug() << "drag ended";
-    }
     event->accept();
 }

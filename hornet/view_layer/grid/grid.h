@@ -3,10 +3,9 @@
 #include <QPoint>
 #include <QWidget>
 
-#include <shared/dto_model_to_view/gridviewstatedto.h>
-
-#include <shared/dto_view_to_model/gridzoomdto.h>
-
+struct GridDragDTO;
+struct GridViewStateDTO;
+struct GridZoomDTO;
 class Grid : public QWidget
 {
     Q_OBJECT
@@ -17,6 +16,7 @@ public:
 
 signals:
     void gridZoomChanged(const GridZoomDTO &dto);
+    void gridDragged(const GridDragDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;
