@@ -1,6 +1,7 @@
 #include "gridservice.h"
 #include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
+#include "shared/dto_view_to_model/griddragdto.h"
 
 GridService::GridService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
@@ -33,4 +34,10 @@ GridViewStateDTO GridService::retrieveGridViewState() const
 {
     const GridModel &gridModel = m_modelAccess.getGridModel();
     return GridViewStateDTO(gridModel.getZoomLevel(), gridModel.getGridGap(), gridModel.getOffset());
+}
+
+void GridService::adjustOffset(const GridDragDTO &dto)
+{
+    GridModel &gridModel = m_modelAccess.getGridModel();
+    gridModel.setOffset(gridModel.getOffset() + dto.delta);
 }

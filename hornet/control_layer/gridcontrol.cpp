@@ -19,3 +19,10 @@ void GridControl::handleGridZoomChange(const GridZoomDTO &dto)
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);
 }
+
+void GridControl::handleGridDrag(const GridDragDTO &dto)
+{
+    m_gridService.adjustOffset(dto);
+    const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
+    m_view.updateGridViewState(viewStateDTO);
+}

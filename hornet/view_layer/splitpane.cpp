@@ -150,6 +150,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     connect(m_editor, &Editor::editorCursorPosChanged, this, &SplitPane::editorCursorPosChanged);
     connect(m_editor, &Editor::editorKeyPressed, this, &SplitPane::editorKeyPressed);
     connect(m_grid, &Grid::gridZoomChanged, this, &SplitPane::gridZoomChanged);
+    connect(m_grid, &Grid::gridDragged, this, &SplitPane::gridDragged);
 }
 
 QSplitterHandle* SplitPane::createHandle() {

@@ -5,6 +5,8 @@
 #include "control_layer/gridcontrol.h"
 #include "control_layer/terminalcontrol.h"
 #include "control_layer/windowcontrol.h"
+
+struct GridDragDTO;
 struct EditorKeyPressDTO;
 class IModelAccessRead;
 class WindowService;
@@ -34,6 +36,7 @@ public slots:
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void onEditorKeyPressed(const EditorKeyPressDTO &dto);
     void onGridZoomChanged(const GridZoomDTO &dto);
+    void onGridDrag(const GridDragDTO &dto);
 
 private:
     QVector<QString> buildTerminalPrompts() const;

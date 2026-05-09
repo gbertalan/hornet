@@ -88,6 +88,11 @@ void Control::onGridZoomChanged(const GridZoomDTO &dto)
     m_gridControl.handleGridZoomChange(dto);
 }
 
+void Control::onGridDrag(const GridDragDTO &dto)
+{
+    m_gridControl.handleGridDrag(dto);
+}
+
 QVector<QString> Control::buildTerminalPrompts() const
 {
     QVector<QString> terminalPrompts;
