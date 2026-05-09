@@ -15,6 +15,12 @@ public:
     void adjustZoom(const GridZoomDTO &dto);
     GridViewStateDTO retrieveGridViewState() const;
     void adjustOffset(const GridDragDTO &dto);
+    void addBox(int posX,
+                int posY,
+                int width,
+                int height,
+                const QString &headerText,
+                const QVector<QString> &bodyLines);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

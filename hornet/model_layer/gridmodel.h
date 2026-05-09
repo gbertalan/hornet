@@ -2,6 +2,8 @@
 #define GRIDMODEL_H
 
 #include <QPoint>
+#include "model_layer/boxmodel.h"
+#include <vector>
 
 class GridModel
 {
@@ -16,9 +18,21 @@ public:
     QPoint getOffset() const;
     void setOffset(QPoint offset);
 
+    const std::vector<BoxModel> &getBoxes() const;
+    BoxModel &getBox(int id);
+    int addBox(int posX,
+               int posY,
+               int width,
+               int height,
+               const QString &headerText,
+               const QVector<QString> &bodyLines);
+    void removeBox(int id);
+
 private:
     int m_zoomLevel = 25;
     QPoint m_offset = {0, 0};
+    std::vector<BoxModel> m_boxes;
+    int m_nextBoxId = 1;
 
     static constexpr int m_minZoom = 0;
     static constexpr int m_maxZoom = 50;

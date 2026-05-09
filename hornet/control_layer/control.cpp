@@ -39,6 +39,7 @@ void Control::init()
     m_editorControl.sendSettingsToEditor();
     m_editorControl.sendStateToEditor(buildTerminalPrompts());
     m_editorControl.sendCursorPosToEditor();
+    m_gridControl.init();
 }
 
 void Control::onWindowStateChanged(const WindowDTO &dto)

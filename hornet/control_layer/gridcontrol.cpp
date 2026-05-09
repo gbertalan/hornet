@@ -12,6 +12,13 @@ GridControl::GridControl(IModelAccessRead &modelAccess, GridService &gridService
     , m_view(view)
 {}
 
+void GridControl::init()
+{
+    m_gridService.addBox(2, 2, 8, 6, "My first box", {"line one", "line two", "line three"});
+    const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
+    m_view.updateGridViewState(viewStateDTO);
+}
+
 void GridControl::handleGridZoomChange(const GridZoomDTO &dto)
 {
     m_gridService.adjustZoom(dto);
@@ -21,7 +28,6 @@ void GridControl::handleGridZoomChange(const GridZoomDTO &dto)
 
 void GridControl::handleGridDrag(const GridDragDTO &dto)
 {
-    qDebug() << "GridControl: drag delta:" << dto.delta;
     m_gridService.adjustOffset(dto);
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);

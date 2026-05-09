@@ -2,6 +2,7 @@
 #define GRID_H
 #include <QPoint>
 #include <QWidget>
+#include "model_layer/boxmodel.h"
 
 struct GridDragDTO;
 struct GridViewStateDTO;
@@ -30,5 +31,6 @@ private:
     QPoint offset = {0, 0};
     QPoint m_lastMousePos;
     bool m_isDragging = false;
+    std::vector<BoxModel> boxes;
 };
 #endif // GRID_H

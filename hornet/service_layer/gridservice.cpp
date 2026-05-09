@@ -33,11 +33,24 @@ void GridService::adjustZoom(const GridZoomDTO &dto)
 GridViewStateDTO GridService::retrieveGridViewState() const
 {
     const GridModel &gridModel = m_modelAccess.getGridModel();
-    return GridViewStateDTO(gridModel.getZoomLevel(), gridModel.getGridGap(), gridModel.getOffset());
+    return GridViewStateDTO(gridModel.getZoomLevel(),
+                            gridModel.getGridGap(),
+                            gridModel.getOffset(),
+                            gridModel.getBoxes());
 }
 
 void GridService::adjustOffset(const GridDragDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
     gridModel.setOffset(gridModel.getOffset() + dto.delta);
+}
+
+void GridService::addBox(int posX,
+                         int posY,
+                         int width,
+                         int height,
+                         const QString &headerText,
+                         const QVector<QString> &bodyLines)
+{
+    m_modelAccess.getGridModel().addBox(posX, posY, width, height, headerText, bodyLines);
 }

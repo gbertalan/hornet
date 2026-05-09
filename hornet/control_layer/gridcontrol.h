@@ -11,6 +11,7 @@ class GridControl
 {
 public:
     explicit GridControl(IModelAccessRead &modelAccess, GridService &gridService, View &view);
+    void init();
     void handleGridZoomChange(const GridZoomDTO &dto);
     void handleGridDrag(const GridDragDTO &dto);
 
