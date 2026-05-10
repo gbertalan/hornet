@@ -62,6 +62,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(fullRect);
 
+        painter.setClipRect(fullRect);
+        painter.setClipping(true);
+
         fontRenderer.drawText(painter,
                               static_cast<float>(screenX + textPadding),
                               static_cast<float>(screenY + textPadding),
@@ -69,14 +72,17 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               QColor(220, 220, 220),
                               textScale);
 
-        for (int i = 0; i < box.getBodyLines().size(); ++i) {
+        const QVector<QString> &bodyLines = box.getBodyLines();
+        for (int i = 0; i < bodyLines.size(); ++i) {
             const float lineY = static_cast<float>(screenY + headerH + textPadding + i * gridGap);
             fontRenderer.drawText(painter,
                                   static_cast<float>(screenX + textPadding),
                                   lineY,
-                                  box.getBodyLines()[i],
+                                  bodyLines[i],
                                   QColor(180, 180, 180),
                                   textScale);
         }
+
+        painter.setClipping(false);
     }
 }
