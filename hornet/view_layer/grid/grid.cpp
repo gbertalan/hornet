@@ -32,7 +32,7 @@ void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     CanvasPainter::drawGrid(painter, gridGap, offset, size());
-    CanvasPainter::drawBoxes(painter, gridGap, offset, boxes, *m_fontRenderer);
+    CanvasPainter::drawBoxes(painter, gridGap, offset, boxes, *m_fontRenderer, m_fontAtlas);
 }
 
 void Grid::wheelEvent(QWheelEvent *event)

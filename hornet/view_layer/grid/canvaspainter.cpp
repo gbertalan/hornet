@@ -1,5 +1,7 @@
 #include "canvaspainter.h"
+#include "view_layer/theme.h"
 #include <cmath>
+#include <qdebug.h>
 
 void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, QSize size)
 {
@@ -31,7 +33,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               double gridGap,
                               QPoint offset,
                               const std::vector<BoxModel> &boxes,
-                              FontRenderer &fontRenderer)
+                              FontRenderer &fontRenderer,
+                              FontAtlas &fontAtlas)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -39,8 +42,13 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const double halfEdge = edgeThickness / 2.0;
     const int headerHeightUnits = 2;
     const float textScale = static_cast<float>(gridGap * 0.8)
-                            / static_cast<float>(fontRenderer.cellHeight());
+                            / static_cast<float>(fontAtlas.getAscenderPx());
+    const float textHeight = static_cast<float>(fontAtlas.getAscenderPx()) * textScale;
+    const float lineOffset = (static_cast<float>(gridGap) - textHeight) / 2.0f;
     const float textPadding = static_cast<float>(gridGap * 0.1);
+
+    qDebug() << "cellHeight:" << fontAtlas.cellHeight()
+             << "ascenderPx:" << fontAtlas.getAscenderPx();
 
     for (const BoxModel &box : boxes) {
         const double screenX = offset.x() + box.getPosX() * gridGap;
@@ -58,13 +66,13 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                 screenH - edgeThickness);
 
         painter.setPen(Qt::NoPen);
-        painter.setBrush(QColor(50, 50, 60));
+        painter.setBrush(Theme::almostBlack());
         painter.drawRect(bodyRect);
 
-        painter.setBrush(QColor(70, 70, 90));
+        painter.setBrush(Theme::darkAmber());
         painter.drawRect(headerRect);
 
-        painter.setPen(QPen(QColor(120, 120, 150), edgeThickness));
+        painter.setPen(QPen(Theme::darkAmber(), edgeThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(borderRect);
 
@@ -73,14 +81,15 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
         fontRenderer.drawText(painter,
                               static_cast<float>(screenX + textPadding),
-                              static_cast<float>(screenY + textPadding),
+                              static_cast<float>(screenY) + lineOffset,
                               box.getHeaderText(),
-                              QColor(220, 220, 220),
-                              textScale);
+                              Theme::almostBlack(),
+                              textScale * 2);
 
         const QVector<QString> &bodyLines = box.getBodyLines();
         for (int i = 0; i < bodyLines.size(); ++i) {
-            const float lineY = static_cast<float>(screenY + headerH + textPadding + i * gridGap);
+            const float lineY = static_cast<float>(screenY + headerH) + lineOffset
+                                + i * static_cast<float>(gridGap);
             fontRenderer.drawText(painter,
                                   static_cast<float>(screenX + textPadding),
                                   lineY,

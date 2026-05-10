@@ -15,6 +15,7 @@ public:
                           double gridGap,
                           QPoint offset,
                           const std::vector<BoxModel> &boxes,
-                          FontRenderer &fontRenderer);
+                          FontRenderer &fontRenderer,
+                          FontAtlas &fontAtlas);
 };
 #endif // CANVASPAINTER_H
