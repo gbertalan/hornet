@@ -42,13 +42,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const double halfEdge = edgeThickness / 2.0;
     const int headerHeightUnits = 2;
     const float textScale = static_cast<float>(gridGap * 0.8)
-                            / static_cast<float>(fontAtlas.getAscenderPx());
-    const float textHeight = static_cast<float>(fontAtlas.getAscenderPx()) * textScale;
+                            / static_cast<float>(fontAtlas.cellHeight());
+    const float textHeight = static_cast<float>(fontAtlas.cellHeight()) * textScale;
     const float lineOffset = (static_cast<float>(gridGap) - textHeight) / 2.0f;
     const float textPadding = static_cast<float>(gridGap * 0.1);
-
-    qDebug() << "cellHeight:" << fontAtlas.cellHeight()
-             << "ascenderPx:" << fontAtlas.getAscenderPx();
 
     for (const BoxModel &box : boxes) {
         const double screenX = offset.x() + box.getPosX() * gridGap;
@@ -64,6 +61,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                 screenY + halfEdge,
                                 screenW - edgeThickness,
                                 screenH - edgeThickness);
+        const QRectF clipRect(screenX + edgeThickness,
+                              screenY + edgeThickness,
+                              screenW - edgeThickness * 2,
+                              screenH - edgeThickness * 2);
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Theme::almostBlack());
@@ -76,7 +77,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(borderRect);
 
-        painter.setClipRect(fullRect);
+        painter.setClipRect(clipRect);
         painter.setClipping(true);
 
         fontRenderer.drawText(painter,
@@ -94,7 +95,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                   static_cast<float>(screenX + textPadding),
                                   lineY,
                                   bodyLines[i],
-                                  QColor(180, 180, 180),
+                                  Theme::darkAmber(),
                                   textScale);
         }
 

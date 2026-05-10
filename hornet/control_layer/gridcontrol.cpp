@@ -16,12 +16,12 @@ void GridControl::init()
 {
     m_gridService.addBox(2,
                          2,
-                         14,
+                         15,
                          10,
                          "My first box",
                          {"line one: this is the first line.",
                           "line two: and this is the second line.",
-                          "line three: I can write y n g and more!"});
+                          "line three: I can write y n m and more!"});
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);
 }
