@@ -77,3 +77,8 @@ float FontRenderer::charWidth(float scale) const
 {
     return m_atlas.textWidth(1, scale);
 }
+
+int FontRenderer::cellHeight() const
+{
+    return m_atlas.cellHeight();
+}

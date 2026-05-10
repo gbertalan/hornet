@@ -38,7 +38,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const double edgeThickness = gridGap / 10.0;
     const double halfEdge = edgeThickness / 2.0;
     const int headerHeightUnits = 2;
-    const float textScale = static_cast<float>(gridGap * 0.8) / fontRenderer.charWidth();
+    const float textScale = static_cast<float>(gridGap * 0.8)
+                            / static_cast<float>(fontRenderer.cellHeight());
     const float textPadding = static_cast<float>(gridGap * 0.1);
 
     for (const BoxModel &box : boxes) {

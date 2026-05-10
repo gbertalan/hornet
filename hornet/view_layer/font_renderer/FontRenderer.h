@@ -16,6 +16,7 @@ public:
                   const QColor&  color,
                   float          scale = 1.0f);
     float charWidth(float scale = 1.0f) const;
+    int cellHeight() const;
 
 private:
     FontAtlas &m_atlas;
