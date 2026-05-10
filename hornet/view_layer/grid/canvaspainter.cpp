@@ -5,13 +5,14 @@
 
 void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, QSize size)
 {
-    constexpr double minVisibleGap = 7.18;
-    constexpr double maxGap = 325.49;
+    constexpr double minVisibleGap
+        = 7.18; // precomputed from the formula baseGap * pow(zoomFactor, zoomLevel - defaultZoom).
+    constexpr double maxGap = 48.31;
     const int alpha = static_cast<int>(
         std::clamp((gridGap - minVisibleGap) / (maxGap - minVisibleGap), 0.0, 1.0) * 255);
 
     painter.setRenderHint(QPainter::Antialiasing, false);
-    painter.setPen(QPen(QColor(180, 180, 180, alpha), 1));
+    painter.setPen(QPen(QColor(240, 240, 240, alpha), 1));
 
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
@@ -80,7 +81,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setClipRect(clipRect);
         painter.setClipping(true);
 
-        float scaleFactor = 3.5f;
+        float scaleFactor = 2.5f;
         const float headerTextWidth = fontAtlas.textWidth(box.getHeaderText().length(), textScale)
                                       * scaleFactor;
         const float headerTextX = static_cast<float>(screenX + screenW / 2.0)
@@ -88,7 +89,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
         fontRenderer.drawText(painter,
                               headerTextX,
-                              static_cast<float>(screenY) + lineOffset - (gridGap * 0.7),
+                              static_cast<float>(screenY) + lineOffset,
                               box.getHeaderText(),
                               Theme::almostBlack(),
                               textScale * scaleFactor);

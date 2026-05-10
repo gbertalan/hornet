@@ -35,7 +35,7 @@ private:
     int m_nextBoxId = 1;
 
     static constexpr int m_minZoom = 0;
-    static constexpr int m_maxZoom = 50;
+    static constexpr int m_maxZoom = 30;
     static constexpr double m_baseGap = 30.0;
     static constexpr int m_defaultZoom = 25;
     static constexpr double m_zoomFactor = 1.1;
