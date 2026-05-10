@@ -36,6 +36,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     painter.setRenderHint(QPainter::Antialiasing, true);
 
     const double edgeThickness = gridGap / 10.0;
+    const double halfEdge = edgeThickness / 2.0;
     const int headerHeightUnits = 2;
     const float textScale = static_cast<float>(gridGap * 0.8) / fontRenderer.charWidth();
     const float textPadding = static_cast<float>(gridGap * 0.1);
@@ -50,6 +51,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const QRectF fullRect(screenX, screenY, screenW, screenH);
         const QRectF headerRect(screenX, screenY, screenW, headerH);
         const QRectF bodyRect(screenX, screenY + headerH, screenW, screenH - headerH);
+        const QRectF borderRect(screenX + halfEdge,
+                                screenY + halfEdge,
+                                screenW - edgeThickness,
+                                screenH - edgeThickness);
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(QColor(50, 50, 60));
@@ -60,7 +65,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
         painter.setPen(QPen(QColor(120, 120, 150), edgeThickness));
         painter.setBrush(Qt::NoBrush);
-        painter.drawRect(fullRect);
+        painter.drawRect(borderRect);
 
         painter.setClipRect(fullRect);
         painter.setClipping(true);
