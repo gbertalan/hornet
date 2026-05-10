@@ -40,7 +40,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
     const double edgeThickness = gridGap / 10.0;
     const double halfEdge = edgeThickness / 2.0;
-    const int headerHeightUnits = 4;
+    const int headerHeightUnits = 3;
     const float textScale = static_cast<float>(gridGap * 0.8)
                             / static_cast<float>(fontAtlas.cellHeight());
     const float textHeight = static_cast<float>(fontAtlas.cellHeight()) * textScale;
@@ -80,12 +80,18 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setClipRect(clipRect);
         painter.setClipping(true);
 
+        float scaleFactor = 3.5f;
+        const float headerTextWidth = fontAtlas.textWidth(box.getHeaderText().length(), textScale)
+                                      * scaleFactor;
+        const float headerTextX = static_cast<float>(screenX + screenW / 2.0)
+                                  - headerTextWidth / 2.0f;
+
         fontRenderer.drawText(painter,
-                              static_cast<float>(screenX + textPadding),
-                              static_cast<float>(screenY) + lineOffset,
+                              headerTextX,
+                              static_cast<float>(screenY) + lineOffset - (gridGap * 0.7),
                               box.getHeaderText(),
                               Theme::almostBlack(),
-                              textScale * 3);
+                              textScale * scaleFactor);
 
         const QVector<QString> &bodyLines = box.getBodyLines();
         for (int i = 0; i < bodyLines.size(); ++i) {
