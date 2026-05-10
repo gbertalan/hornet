@@ -29,15 +29,15 @@ public:
     void removeBox(int id);
 
 private:
-    int m_zoomLevel = 25;
+    int m_zoomLevel = 22;
     QPoint m_offset = {0, 0};
     std::vector<BoxModel> m_boxes;
     int m_nextBoxId = 1;
 
     static constexpr int m_minZoom = 0;
     static constexpr int m_maxZoom = 30;
-    static constexpr double m_baseGap = 30.0;
-    static constexpr int m_defaultZoom = 25;
+    static constexpr double m_baseGap = 15.0;
+    static constexpr int m_defaultZoom = 22;
     static constexpr double m_zoomFactor = 1.1;
 };
 #endif // GRIDMODEL_H
