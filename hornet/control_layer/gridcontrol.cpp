@@ -16,8 +16,8 @@ void GridControl::init()
 {
     m_gridService.addBox(2,
                          2,
+                         19,
                          15,
-                         10,
                          "My first box",
                          {"line one: this is the first line.",
                           "line two: and this is the second line.",
