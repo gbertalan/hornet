@@ -17,14 +17,16 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
 
-    const int verticalLines = static_cast<int>(std::ceil((size.width() - startX) / gridGap)) + 1;
-    for (int i = 0; i < verticalLines; ++i) {
+    const int noOfVerticalLines = static_cast<int>(std::ceil((size.width() - startX) / gridGap))
+                                  + 1;
+    for (int i = 0; i < noOfVerticalLines; ++i) {
         const double x = startX + i * gridGap;
         painter.drawLine(QPointF(x, 0), QPointF(x, size.height()));
     }
 
-    const int horizontalLines = static_cast<int>(std::ceil((size.height() - startY) / gridGap)) + 1;
-    for (int i = 0; i < horizontalLines; ++i) {
+    const int noOfHorizontalLines = static_cast<int>(std::ceil((size.height() - startY) / gridGap))
+                                    + 1;
+    for (int i = 0; i < noOfHorizontalLines; ++i) {
         const double y = startY + i * gridGap;
         painter.drawLine(QPointF(0, y), QPointF(0 + size.width(), y));
     }
@@ -41,6 +43,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
     const double edgeThickness = gridGap / 10.0;
     const double halfEdge = edgeThickness / 2.0;
+
     const int headerHeightUnits = 3;
     const float textScale = static_cast<float>(gridGap * 0.8)
                             / static_cast<float>(fontAtlas.cellHeight());
@@ -64,8 +67,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                 screenH - edgeThickness);
         const QRectF clipRect(screenX + edgeThickness,
                               screenY + edgeThickness,
-                              screenW - edgeThickness * 2,
-                              screenH - edgeThickness * 2);
+                              screenW - (edgeThickness * 2),
+                              screenH - (edgeThickness * 2));
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Theme::almostBlack());
@@ -87,6 +90,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const float headerTextX = static_cast<float>(screenX + screenW / 2.0)
                                   - headerTextWidth / 2.0f;
 
+        // header text:
         fontRenderer.drawText(painter,
                               headerTextX,
                               static_cast<float>(screenY) + lineOffset,
@@ -94,6 +98,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               Theme::almostBlack(),
                               textScale * scaleFactor);
 
+        // body text:
         const QVector<QString> &bodyLines = box.getBodyLines();
         for (int i = 0; i < bodyLines.size(); ++i) {
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset
