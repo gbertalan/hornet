@@ -10,7 +10,7 @@ This project follows the **MVC (Model-View-Control)** pattern with an additional
 - **Model** layer: `ModelAccess` class (which implicitly creats the `Model` classes),
 - **Service** layer: all `Service` classes,
 - **View** layer: the `View` (which creates its internal `Qt` components) and
-- **Control** layer: the `Control` class.
+- **Control** layer: the `Control` class (which internally instantiates its family of specialized control classes).
   
 Main connects View's *signals* to Control's *slots*.
 
@@ -57,6 +57,33 @@ The *sender* **creates** and **writes** the DTO, the *receiver* only **reads** i
 DTOs contain **values**, not pointers or references.
 
 Consequence: functions that are used for inter-layer communication have either **no parameters**, or **one parameter** that is a **DTO**.
+
+---
+### Specific Layer Communication Patterns
+
+#### Complex path 1: View -> Model
+
+Signals are declared but not defined in Qt.
+
+1. Declare a signal in the widget as a function with one DTO parameter.
+2. Emit this signal from the widget when the event occurs.
+3. In each ancestor widget up to **View**: declare the same signal with the same function signature, and in the ancestor's constructor connect the child's signal to the ancestor's signal.
+4. In **View**: declare the same signal.
+5. In `main.cpp`: connect **View**'s signal to **Control**'s slot.
+6. In **Control**: the slot calls the specific sub-control's handler function (e.g. `GridControl::handleGridZoomChange`).
+7. The sub-control calls the specific **Service**'s function.
+8. The **Service** stores the data in **Model** via `IModelAccessReadWrite` (read+write access, used by **Service** layer). Add a setter to the relevant **Model** class, and call it via e.g. `m_modelAccess.getGridModel().setXxx()`.
+
+
+#### Complex path 2: Model -> View
+
+1. In the sub-control (e.g. `GridControl`), after the **Service** has updated the **Model**, read the updated state back from **Model** via `IModelAccessRead` (read-only access, used by **Control** layer).
+2. Package the data into a view-facing DTO (e.g. `GridViewStateDTO`).
+3. Call the **View** API function directly via the `m_view` reference (e.g. `m_view.updateGridViewState(dto)`).
+4. In **View**: the API function cascades the DTO down the widget hierarchy until it reaches the target widget.
+5. The target widget applies the data and calls `update()` to trigger a repaint.
+
+---
 
 ## Debug Print
 
