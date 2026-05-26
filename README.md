@@ -74,6 +74,7 @@ Signals are declared but not defined in Qt.
 7. The sub-control calls the specific **Service**'s function.
 8. The **Service** stores the data in **Model** via `IModelAccessReadWrite` (read+write access, used by **Service** layer). Add a setter to the relevant **Model** class, and call it via e.g. `m_modelAccess.getGridModel().setXxx()`.
 
+![View to Model](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/view_to_model.png)
 
 #### Complex path 2: Model -> View
 
@@ -83,6 +84,7 @@ Signals are declared but not defined in Qt.
 4. In **View**: the API function cascades the DTO down the widget hierarchy until it reaches the target widget.
 5. The target widget applies the data and calls `update()` to trigger a repaint.
 
+![Model to View](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/view_to_model.png)
 ---
 
 ## Debug Print
