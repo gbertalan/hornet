@@ -31,6 +31,12 @@ Main connects View's *signals* to Control's *slots*.
   Coordination only.
 
 ---
+
+#### View Layer
+
+![View Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/view_layer.png)
+
+---
 ### Inter-Layer Communication
 **Path #1:** View -> Control
 
