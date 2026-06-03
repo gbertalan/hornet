@@ -32,9 +32,35 @@ Main connects View's *signals* to Control's *slots*.
 
 ---
 
-#### View Layer
+### View Layer
 
 ![View Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/view_layer.png)
+
+A high level overview of the **View Layer** components.
+
+---
+
+### Initialization Flow
+
+Main creates:
+- QApplication
+  - Manages the GUI application's control flow and main settings
+- ModelAccess
+  - ModelAccess inherits from IModelAccessReadWrite,
+    - IModelAccessReadWrite inherits from IModelAccessRead
+  - ModelAccess internally creates:
+    - All Models
+- All Services
+- The View
+  - View creates its internal components
+- The Control
+  
+Main connects:
+- View's signals to Control's slots
+  
+Main calls:
+- control.init()
+- view.show()
 
 ---
 ### Inter-Layer Communication
