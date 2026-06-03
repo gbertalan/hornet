@@ -19,10 +19,6 @@ void View::show() {
     m_window->show();
 }
 
-void View::showError(const QString& message) {
-    QMessageBox::warning(m_window, "Error", message, QMessageBox::Ok);
-}
-
 void View::updateEditorState(const EditorViewStateDTO &dto)
 {
     m_window->updateEditorState(dto);

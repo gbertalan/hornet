@@ -63,6 +63,7 @@ private:
     CustomScrollBar* m_verticalScrollBar;
     CustomScrollBar* m_horizontalScrollBar;
     QTimer* m_scrollBarHideTimer;
+
     Editor *m_editor;
     Grid *m_grid;
 };

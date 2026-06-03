@@ -1,6 +1,7 @@
 #include "theme.h"
 
 const QColor Theme::m_almostBlack(18, 18, 18);
+// const QColor Theme::m_almostBlack(42, 24, 9);
 const QColor Theme::m_almostWhite(208, 208, 208);
 const QColor Theme::m_darkGrayTranslucent(22, 22, 22, 200);
 const QColor Theme::m_brightAmber(255, 196, 0);
