@@ -32,11 +32,39 @@ Main connects View's *signals* to Control's *slots*.
 
 ---
 
+### Model Layer
+
+The **ModelAccess** class gives access to _Models_.
+
+There are two interfaces in this layer, **IModelAccessRead** and **IModelAccessReadWrite**. What function we place into which interface controls what can be read/written from a given model.
+
+If the calling class has the interface IModelAccessRead included, it has reading access only.
+Otherwise the interface IModelAccessReadWrite is needed for both reading and writing rights.
+ 
+In this design **Control** has reading right, **Services** have reading and writing rights.
+
+![Model Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/model_layer.png)
+
+#### Reading/Writing Models
+
+---
+
+### Service Layer
+
+![Service Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/service_layer.png)
+
+---
+
 ### View Layer
 
 ![View Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/view_layer.png)
 
 A high level overview of the **View Layer** components.
+
+---
+
+### Control Layer
+
 
 ---
 
@@ -88,7 +116,7 @@ The *sender* **creates** and **writes** the DTO, the *receiver* only **reads** i
 
 DTOs contain **values**, not pointers or references.
 
-Consequence: functions that are used for inter-layer communication have either **no parameters**, or **one parameter** that is a **DTO**.
+_Functions that are used for inter-layer communication have either **no parameters**, or **one parameter** that is a **DTO**._
 
 ---
 ### Specific Layer Communication Patterns
@@ -121,4 +149,4 @@ Signals are declared but not defined in Qt.
 
 ## Debug Print
 
-The `Ctrl + D` shortcut prints the full contents of Model."
+The `Ctrl + D` shortcut prints the full contents of Model.
