@@ -19,16 +19,16 @@ Main connects View's *signals* to Control's *slots*.
 
 #### Layer Responsibilities
 - **Model** layer<br>
-  Data storage only.
+  Data storage.
 
 - **Service**  layer<br>
-  Business logic only.
+  Business logic.
 
 - **View**  layer<br>
   Qt GUI.
 
 - **Control**  layer<br>
-  Coordination only.
+  Coordination.
 
 ---
 
@@ -44,8 +44,6 @@ Otherwise the interface IModelAccessReadWrite is needed for both reading and wri
 In this design **Control** has reading right, **Services** have reading and writing rights.
 
 ![Model Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/model_layer.png)
-
-#### Reading/Writing Models
 
 ---
 
@@ -65,6 +63,7 @@ A high level overview of the **View Layer** components.
 
 ### Control Layer
 
+![Control Layer Diagram](https://github.com/gbertalan/hornet/blob/main/hornet/design_images/control_layer.png)
 
 ---
 
