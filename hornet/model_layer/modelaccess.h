@@ -3,6 +3,7 @@
 #include "editormodel.h"
 #include "gridmodel.h"
 #include "imodelaccess_readwrite.h"
+#include "terminalmodel.h"
 #include "windowmodel.h"
 
 /**
@@ -35,6 +36,12 @@ public:
     EditorModel &getEditorModel() override;
 
     // Returns as read-only.
+    const TerminalModel &getTerminalModel() const override;
+
+    // Returns as read-write.
+    TerminalModel &getTerminalModel() override;
+
+    // Returns as read-only.
     const GridModel &getGridModel() const override;
 
     // Returns as read-write.
@@ -43,5 +50,6 @@ public:
 private:
     WindowModel m_windowModel;
     EditorModel m_editorModel;
+    TerminalModel m_terminalModel;
     GridModel m_gridModel;
 };

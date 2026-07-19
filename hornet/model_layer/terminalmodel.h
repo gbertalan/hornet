@@ -14,7 +14,7 @@ class TerminalModel
 public:
     const std::filesystem::path &getCurrentDirectory() const;
     void setCurrentDirectory(const std::filesystem::path &path);
-    const std::vector<TerminalPromptAndDir> &getTerminalTerminalPromptAndDirs() const;
+    const std::vector<TerminalPromptAndDir> &getTerminalPromptAndDirs() const;
     void addTerminalPromptAndDir(const TerminalPromptAndDir &terminalPromptAndDir);
     void updateLineDirectory(int index,
                              const std::filesystem::path &directory,

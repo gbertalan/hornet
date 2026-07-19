@@ -19,7 +19,7 @@ TerminalControl::TerminalControl(IModelAccessRead &modelAccess,
 
 void TerminalControl::init()
 {
-    m_terminalService.initialize();
+    m_terminalService.init();
 }
 
 void TerminalControl::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
@@ -80,7 +80,7 @@ std::filesystem::path TerminalControl::getWorkingDirForLine(int cursorY) const
 
 QString TerminalControl::runCommand(const QString &command, const std::filesystem::path &workingDir)
 {
-    QString sentinel = "---HORNET_PWD---";
+    QString sentinel = "---SENTINEL---";
     QString combinedCommand = command + "; echo " + sentinel + "; pwd";
     m_process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
     m_process.start("/bin/sh", QStringList() << "-c" << combinedCommand);
@@ -106,7 +106,7 @@ void TerminalControl::handleLastLineExecution()
     m_terminalService.addTerminalPromptAndDir({newLinePrompt, newLineDir});
     std::vector<std::u32string> updatedLines = m_modelAccess.getEditorModel().getTextLines();
     updatedLines.push_back(U"");
-    m_editorService.setTextLines(updatedLines, "txt");
+    m_editorService.storeTextLines(updatedLines, "txt");
     int newLastLine = m_modelAccess.getEditorModel().getNoOfLines() - 1;
     EditorCursorPosDTO cursorDto{0, newLastLine};
     m_editorService.storeCursorPos(cursorDto);

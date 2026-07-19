@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 
     WindowService windowService(modelAccess);
     EditorService editorService(modelAccess);
-    TerminalService terminalService(editorService);
+    TerminalService terminalService(modelAccess, editorService);
     GridService gridService(modelAccess);
 
     int x = modelAccess.getWindowModel().getX();

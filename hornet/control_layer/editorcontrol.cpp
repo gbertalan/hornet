@@ -18,8 +18,12 @@ EditorControl::EditorControl(IModelAccessRead &modelAccess, EditorService &edito
 
 void EditorControl::init()
 {
-    m_editorService.initialize();
+    m_editorService.init();
+    sendSettingsToEditor();
+    sendCursorPosToEditor();
 }
+
+// -- Sending data to the editor ----------------------
 
 void EditorControl::sendStateToEditor(const QVector<QString> &terminalPrompts)
 {
@@ -46,9 +50,19 @@ void EditorControl::sendCursorPosToEditor()
 {
     int cursorX = m_modelAccess.getEditorModel().getCursorX();
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
-    EditorCursorPosDTO dtoToSendToView{cursorX, cursorY};
-    m_view.updateEditorCursorPos(dtoToSendToView);
+    EditorCursorPosDTO dto{cursorX, cursorY};
+    m_view.updateEditorCursorPos(dto);
 }
+
+void EditorControl::sendSettingsToEditor()
+{
+    EditorSettingsDTO dto{m_modelAccess.getEditorModel().getLineHeight(),
+                          m_modelAccess.getEditorModel().getFontScale(),
+                          m_modelAccess.getEditorModel().isTerminal()};
+    m_view.updateEditorSettings(dto);
+}
+
+// -- Sending data to the editor - end ---------------
 
 void EditorControl::handleEditorKeyPress(const EditorKeyPressDTO &dto)
 {
@@ -76,12 +90,4 @@ void EditorControl::handleEditorKeyPress(const EditorKeyPressDTO &dto)
         m_editorService.insertTab();
     else
         m_editorService.moveCursor(dto);
-}
-
-void EditorControl::sendSettingsToEditor()
-{
-    EditorSettingsDTO dto{m_modelAccess.getEditorModel().getLineHeight(),
-                          m_modelAccess.getEditorModel().getFontScale(),
-                          m_modelAccess.getEditorModel().isTerminal()};
-    m_view.updateEditorSettings(dto);
 }

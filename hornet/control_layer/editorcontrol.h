@@ -12,14 +12,26 @@ class EditorControl : public QObject
 public:
     explicit EditorControl(IModelAccessRead &modelAccess, EditorService &editorService, View &view);
     void init();
+
+    // -- Sending data to the editor ----------------------
     /**
- * @brief sendStateToEditor Retrieves visible lines (and metadata) from Model and sends
- * them to View
- */
+    * @brief sendStateToEditor Retrieves visible lines (and metadata) from Model,
+    * packages them in a DTO and calls View's API with this DTO.
+    */
     void sendStateToEditor(const QVector<QString> &terminalPrompts = QVector<QString>{});
+    /**
+     * @brief sendCursorPosToEditor Retrieves cursorX and cursorY from Model, 
+     * packages them in a DTO and calls View's API with this DTO.
+     */
     void sendCursorPosToEditor();
-    void handleEditorKeyPress(const EditorKeyPressDTO &dto);
+    /**
+     * @brief sendSettingsToEditor Retrieves editor setting (line height, font scale, isTerminal) from Model,
+     * packages them in a DTO and calls View's API with this DTO.
+     */
     void sendSettingsToEditor();
+    // -- Sending data to the editor - end ---------------
+
+    void handleEditorKeyPress(const EditorKeyPressDTO &dto);
 
 private:
     IModelAccessRead &m_modelAccess;

@@ -22,6 +22,16 @@ EditorModel &ModelAccess::getEditorModel()
     return m_editorModel;
 }
 
+const TerminalModel &ModelAccess::getTerminalModel() const
+{
+    return m_terminalModel;
+}
+
+TerminalModel &ModelAccess::getTerminalModel()
+{
+    return m_terminalModel;
+}
+
 const GridModel &ModelAccess::getGridModel() const
 {
     return m_gridModel;

@@ -1,17 +1,18 @@
-#pragma once
-
+#ifndef TERMINALSERVICE_H
+#define TERMINALSERVICE_H
+#include "model_layer/terminalmodel.h"
 #include <filesystem>
-
-#include <model_layer/terminalmodel.h>
+#include <string>
+#include <vector>
 
 class EditorService;
-struct EditorKeyPressDTO;
+class IModelAccessReadWrite;
 
 class TerminalService
 {
 public:
-    explicit TerminalService(EditorService &editorService);
-    void initialize();
+    explicit TerminalService(IModelAccessReadWrite &modelAccess, EditorService &editorService);
+    void init();
     void addTerminalPromptAndDir(const TerminalPromptAndDir &promptAndDir);
     const std::vector<TerminalPromptAndDir> &getTerminalPromptAndDirs() const;
     std::u32string getCurrentPrompt() const;
@@ -21,6 +22,7 @@ public:
     void removeTerminalPromptAndDir(int index);
 
 private:
+    IModelAccessReadWrite &m_modelAccess;
     EditorService &m_editorService;
-    TerminalModel m_terminalModel;
 };
+#endif // TERMINALSERVICE_H

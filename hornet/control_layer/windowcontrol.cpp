@@ -10,6 +10,8 @@ WindowControl::WindowControl(IModelAccessRead &modelAccess, WindowService &windo
     , m_view(view)
 {}
 
+void WindowControl::init() {}
+
 void WindowControl::onWindowStateChanged(const WindowDTO &dto)
 {
     m_windowService.storeWindowState(dto);

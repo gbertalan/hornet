@@ -37,5 +37,5 @@ private:
     int m_cursorY; // row
     int m_lineHeight = 20;
     float m_fontScale = 0.5f;
-    bool m_isTerminal = false;
+    bool m_isTerminal = true;
 };

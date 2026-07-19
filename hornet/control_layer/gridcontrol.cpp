@@ -28,9 +28,9 @@ void GridControl::init()
                          25,
                          15,
                          "my_second_box.txt",
-                         {"line one: this is the first line.",
-                          "line two: and this is the second line.",
-                          "line three: I can write y n m and more!"});
+                         {"line 1: this is the first line.",
+                          "line 2: and this is the second line.",
+                          "line 3: I can write y n m and more!"});
 
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);

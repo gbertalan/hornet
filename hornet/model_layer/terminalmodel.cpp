@@ -10,7 +10,7 @@ void TerminalModel::setCurrentDirectory(const std::filesystem::path &path)
     m_currentDirectory = path;
 }
 
-const std::vector<TerminalPromptAndDir> &TerminalModel::getTerminalTerminalPromptAndDirs() const
+const std::vector<TerminalPromptAndDir> &TerminalModel::getTerminalPromptAndDirs() const
 {
     return m_terminalPromptAndDirs;
 }

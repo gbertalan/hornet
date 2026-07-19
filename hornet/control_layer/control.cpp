@@ -33,12 +33,9 @@ Control::Control(IModelAccessRead &modelAccess,
 
 void Control::init()
 {
-    m_editorService.setIsTerminal(true);
+    m_windowControl.init();
     m_editorControl.init();
     m_terminalControl.init();
-    m_editorControl.sendSettingsToEditor();
-    m_editorControl.sendStateToEditor(buildTerminalPrompts());
-    m_editorControl.sendCursorPosToEditor();
     m_gridControl.init();
 }
 
@@ -98,7 +95,7 @@ QVector<QString> Control::buildTerminalPrompts() const
 {
     QVector<QString> terminalPrompts;
     const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
-        = m_terminalService.getTerminalPromptAndDirs();
+        = m_modelAccess.getTerminalModel().getTerminalPromptAndDirs();
     for (const TerminalPromptAndDir &line : terminalPromptAndDirs)
         terminalPrompts.push_back(
             QString::fromUcs4(reinterpret_cast<const char32_t *>(line.prompt.c_str()),

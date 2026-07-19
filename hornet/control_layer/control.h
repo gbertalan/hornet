@@ -39,15 +39,22 @@ public slots:
     void onGridDrag(const GridDragDTO &dto);
 
 private:
+    /**
+     * @brief buildTerminalPrompts Reads ALL terminal prompt-lines from Model and converts them to QString,
+     * in the same order as the terminal lines in the editor buffer.
+     */
     QVector<QString> buildTerminalPrompts() const;
     IModelAccessRead &m_modelAccess;
+
     EditorService &m_editorService;
     TerminalService &m_terminalService;
     GridService &m_gridService;
+
     WindowControl m_windowControl;
     EditorControl m_editorControl;
     TerminalControl m_terminalControl;
     GridControl m_gridControl;
+
     void printModel() const;
     mutable int debugPrintCounter = 0;
 };

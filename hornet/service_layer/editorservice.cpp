@@ -11,9 +11,9 @@ EditorService::EditorService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
 {}
 
-void EditorService::initialize()
+void EditorService::init()
 {
-    setTextLines({U""}, "");
+    storeTextLines({U""}, "");
 }
 
 void EditorService::storeEditorState(const EditorVisibleLinesDTO &dto)
@@ -35,7 +35,7 @@ std::vector<std::u32string> EditorService::retrieveActiveLines()
     return visibleLines;
 }
 
-void EditorService::setTextLines(std::vector<std::u32string> textLines, std::string fileType)
+void EditorService::storeTextLines(std::vector<std::u32string> textLines, std::string fileType)
 {
     m_modelAccess.getEditorModel().setTextLines(std::move(textLines));
     m_modelAccess.getEditorModel().setFileType(fileType);

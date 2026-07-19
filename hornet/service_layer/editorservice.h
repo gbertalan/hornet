@@ -10,10 +10,10 @@ class EditorService
 {
 public:
     explicit EditorService(IModelAccessReadWrite &modelAccess);
-    void initialize();
+    void init();
     void storeEditorState(const EditorVisibleLinesDTO &dto);
     std::vector<std::u32string> retrieveActiveLines();
-    void setTextLines(std::vector<std::u32string> textLines, std::string fileType);
+    void storeTextLines(std::vector<std::u32string> textLines, std::string fileType);
     void storeCursorPos(const EditorCursorPosDTO &dto);
     void insertCharacter(char32_t character);
     void moveCursor(const EditorKeyPressDTO &dto);
