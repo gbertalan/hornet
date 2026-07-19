@@ -10,7 +10,7 @@ class WindowControl : public QObject
 public:
     explicit WindowControl(IModelAccessRead &modelAccess, WindowService &windowService, View &view);
     void init();
-    void onWindowStateChanged(const WindowDTO &dto);
+    void dispatchWindowStateChanged(const WindowDTO &dto);
 
 private:
     IModelAccessRead &m_modelAccess;

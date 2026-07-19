@@ -64,7 +64,7 @@ void EditorControl::sendSettingsToEditor()
 
 // -- Sending data to the editor - end ---------------
 
-void EditorControl::handleEditorKeyPress(const EditorKeyPressDTO &dto)
+void EditorControl::dispatchEditorKeyPress(const EditorKeyPressDTO &dto)
 {
     if (dto.alt)
         return;

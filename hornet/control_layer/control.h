@@ -6,17 +6,18 @@
 #include "control_layer/terminalcontrol.h"
 #include "control_layer/windowcontrol.h"
 
-struct GridDragDTO;
-struct EditorKeyPressDTO;
 class IModelAccessRead;
 class WindowService;
 class EditorService;
 class TerminalService;
 class GridService;
 class View;
+
+struct EditorKeyPressDTO;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
 struct GridZoomDTO;
+struct GridDragDTO;
 
 class Control : public QObject
 {
@@ -30,13 +31,17 @@ public:
                      View &view);
     void init();
 public slots:
-    void onDebugRequested();
+    // window:
     void onWindowStateChanged(const WindowDTO &dto);
+    // editor:
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void onEditorKeyPressed(const EditorKeyPressDTO &dto);
+    // grid:
     void onGridZoomChanged(const GridZoomDTO &dto);
     void onGridDrag(const GridDragDTO &dto);
+    // debug:
+    void onDebugRequested();
 
 private:
     /**
@@ -44,6 +49,8 @@ private:
      * in the same order as the terminal lines in the editor buffer.
      */
     QVector<QString> buildTerminalPrompts() const;
+    void printModel() const;
+
     IModelAccessRead &m_modelAccess;
 
     EditorService &m_editorService;
@@ -55,6 +62,5 @@ private:
     TerminalControl m_terminalControl;
     GridControl m_gridControl;
 
-    void printModel() const;
     mutable int debugPrintCounter = 0;
 };

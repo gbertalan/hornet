@@ -31,7 +31,7 @@ public:
     void sendSettingsToEditor();
     // -- Sending data to the editor - end ---------------
 
-    void handleEditorKeyPress(const EditorKeyPressDTO &dto);
+    void dispatchEditorKeyPress(const EditorKeyPressDTO &dto);
 
 private:
     IModelAccessRead &m_modelAccess;

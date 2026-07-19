@@ -15,9 +15,9 @@ public:
                              EditorService &editorService,
                              TerminalService &terminalService);
     void init();
-    bool handleTerminalKeyPress(const EditorKeyPressDTO &dto);
+    bool dispatchTerminalKeyPress(const EditorKeyPressDTO &dto);
     void postKeyPress(int lineCountBefore, int cursorYBefore);
-    void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
+    void dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void executeCommand();
 
 private:

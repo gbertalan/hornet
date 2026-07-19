@@ -41,7 +41,7 @@ void Control::init()
 
 void Control::onWindowStateChanged(const WindowDTO &dto)
 {
-    m_windowControl.onWindowStateChanged(dto);
+    m_windowControl.dispatchWindowStateChanged(dto);
 }
 
 void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
@@ -55,7 +55,7 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto);
     if (m_modelAccess.getEditorModel().isTerminal())
-        m_terminalControl.onEditorCursorPosChanged(dto);
+        m_terminalControl.dispatchEditorCursorPosChanged(dto);
     m_editorControl.sendCursorPosToEditor();
 }
 
@@ -66,14 +66,14 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         return;
     }
     if (m_modelAccess.getEditorModel().isTerminal()
-        && m_terminalControl.handleTerminalKeyPress(dto)) {
+        && m_terminalControl.dispatchTerminalKeyPress(dto)) {
         m_editorControl.sendStateToEditor(buildTerminalPrompts());
         m_editorControl.sendCursorPosToEditor();
         return;
     }
     int lineCountBefore = m_modelAccess.getEditorModel().getNoOfLines();
     int cursorYBefore = m_modelAccess.getEditorModel().getCursorY();
-    m_editorControl.handleEditorKeyPress(dto);
+    m_editorControl.dispatchEditorKeyPress(dto);
     if (m_modelAccess.getEditorModel().isTerminal())
         m_terminalControl.postKeyPress(lineCountBefore, cursorYBefore);
     m_editorControl.sendStateToEditor(
@@ -83,12 +83,12 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 
 void Control::onGridZoomChanged(const GridZoomDTO &dto)
 {
-    m_gridControl.handleGridZoomChange(dto);
+    m_gridControl.dispatchGridZoomChange(dto);
 }
 
 void Control::onGridDrag(const GridDragDTO &dto)
 {
-    m_gridControl.handleGridDrag(dto);
+    m_gridControl.dispatchGridDrag(dto);
 }
 
 QVector<QString> Control::buildTerminalPrompts() const

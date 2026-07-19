@@ -22,7 +22,7 @@ void TerminalControl::init()
     m_terminalService.init();
 }
 
-void TerminalControl::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
+void TerminalControl::dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
@@ -31,7 +31,7 @@ void TerminalControl::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
         m_terminalService.setCurrentDirectory(terminalPromptAndDirs.at(cursorY).directory);
 }
 
-bool TerminalControl::handleTerminalKeyPress(const EditorKeyPressDTO &dto)
+bool TerminalControl::dispatchTerminalKeyPress(const EditorKeyPressDTO &dto)
 {
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter) {
         executeCommand();

@@ -12,8 +12,8 @@ class GridControl
 public:
     explicit GridControl(IModelAccessRead &modelAccess, GridService &gridService, View &view);
     void init();
-    void handleGridZoomChange(const GridZoomDTO &dto);
-    void handleGridDrag(const GridDragDTO &dto);
+    void dispatchGridZoomChange(const GridZoomDTO &dto);
+    void dispatchGridDrag(const GridDragDTO &dto);
 
 private:
     IModelAccessRead &m_modelAccess;
