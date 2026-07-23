@@ -14,6 +14,8 @@ public:
                           QPoint offset,
                           const std::vector<BoxViewDTO> &boxes,
                           int hoveredBoxId,
+                          int draggedBoxId,
+                          QPoint draggedBoxLiveOffset,
                           FontRenderer &fontRenderer,
                           FontAtlas &fontAtlas);
     static int findBoxAtPosition(QPoint mousePosition,

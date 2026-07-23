@@ -38,6 +38,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               QPoint offset,
                               const std::vector<BoxViewDTO> &boxes,
                               int hoveredBoxId,
+                              int draggedBoxId,
+                              QPoint draggedBoxLiveOffset,
                               FontRenderer &fontRenderer,
                               FontAtlas &fontAtlas)
 {
@@ -54,8 +56,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const float textPadding = static_cast<float>(gridGap * 0.1);
 
     for (const BoxViewDTO &box : boxes) {
-        const double screenX = offset.x() + box.posX * gridGap;
-        const double screenY = offset.y() + box.posY * gridGap;
+        const QPoint liveOffset = (box.id == draggedBoxId) ? draggedBoxLiveOffset : QPoint(0, 0);
+        const double screenX = offset.x() + box.posX * gridGap + liveOffset.x();
+        const double screenY = offset.y() + box.posY * gridGap + liveOffset.y();
         const double screenW = box.width * gridGap;
         const double screenH = box.height * gridGap;
         const double headerH = headerHeightUnits * gridGap;

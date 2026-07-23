@@ -39,6 +39,8 @@ void Grid::paintEvent(QPaintEvent *)
                              offset,
                              boxes,
                              m_hoveredBoxId,
+                             m_isDraggingBox ? m_draggedBoxId : -1,
+                             m_draggedBoxLiveOffset,
                              *m_fontRenderer,
                              m_fontAtlas);
 }
