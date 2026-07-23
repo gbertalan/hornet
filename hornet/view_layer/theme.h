@@ -11,6 +11,7 @@ private:
     static const QColor m_brightAmber;
     static const QColor m_brightYellow;
     static const QColor m_darkAmber;
+    static const QColor m_darkerAmber;
     static const QColor m_darkGray;
     static const QColor m_darkerGray;
     static const QColor m_desaturatedTeal;
@@ -36,6 +37,9 @@ public:
 
     // Keywords (bold weight only) - same as brightAmber but bold
     static const QColor& darkAmber();
+
+    // Grid
+    static const QColor &darkerAmber();
 
     // Main border
     static const QColor& darkGray();

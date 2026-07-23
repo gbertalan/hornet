@@ -7,7 +7,6 @@
 #include <cmath>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/griddragdto.h>
-
 Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
     : QWidget(parent)
     , gridGap(initialState.gridGap)
@@ -19,7 +18,6 @@ Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
     m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
 }
-
 void Grid::updateGridViewState(const GridViewStateDTO &dto)
 {
     gridGap = dto.gridGap;
@@ -27,23 +25,19 @@ void Grid::updateGridViewState(const GridViewStateDTO &dto)
     boxes = dto.boxes;
     update();
 }
-
 void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     CanvasPainter::drawGrid(painter, gridGap, offset, size());
     CanvasPainter::drawBoxes(painter, gridGap, offset, boxes, *m_fontRenderer, m_fontAtlas);
 }
-
 void Grid::wheelEvent(QWheelEvent *event)
 {
     const ScrollDirection direction = event->angleDelta().y() > 0 ? ScrollDirection::Up
                                                                   : ScrollDirection::Down;
-
     emit gridZoomChanged(GridZoomDTO(direction, event->position().toPoint()));
     event->accept();
 }
-
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
@@ -52,7 +46,6 @@ void Grid::mousePressEvent(QMouseEvent *event)
     }
     event->accept();
 }
-
 void Grid::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_isDragging) {
@@ -62,7 +55,6 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
     }
     event->accept();
 }
-
 void Grid::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)

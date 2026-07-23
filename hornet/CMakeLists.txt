@@ -104,6 +104,7 @@ qt_add_executable(hornet
     shared/dto_model_to_view/gridviewstatedto.h
     shared/dto_view_to_model/griddragdto.h
     view_layer/grid/canvaspainter.h view_layer/grid/canvaspainter.cpp
+    shared/dto_model_to_view/boxviewdto.h
 
 
 

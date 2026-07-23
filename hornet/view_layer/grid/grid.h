@@ -2,18 +2,16 @@
 #define GRID_H
 #include <QPoint>
 #include <QWidget>
-#include "model_layer/boxmodel.h"
+#include "shared/dto_model_to_view/boxviewdto.h"
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
-
 struct GridDragDTO;
 struct GridViewStateDTO;
 struct GridZoomDTO;
 class Grid : public QWidget
 {
     Q_OBJECT
-
 public:
     explicit Grid(const GridViewStateDTO &initialState, QWidget *parent);
     void updateGridViewState(const GridViewStateDTO &dto);
@@ -30,11 +28,16 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
+    // cached render state, mirrors GridModel via GridViewStateDTO
     double gridGap = 30.0;
     QPoint offset = {0, 0};
+    std::vector<BoxViewDTO> boxes;
+
+    // drag interaction state, local to the view only:
     QPoint m_lastMousePos;
     bool m_isDragging = false;
-    std::vector<BoxModel> boxes;
+
+    // text rendering:
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
 };

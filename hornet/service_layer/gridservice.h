@@ -6,12 +6,10 @@
 
 class GridDragDTO;
 class IModelAccessReadWrite;
-
 class GridService
 {
 public:
     explicit GridService(IModelAccessReadWrite &modelAccess);
-
     void adjustZoom(const GridZoomDTO &dto);
     GridViewStateDTO retrieveGridViewState() const;
     void adjustOffset(const GridDragDTO &dto);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QPoint>
-#include "model_layer/boxmodel.h"
+#include "shared/dto_model_to_view/boxviewdto.h"
 #include <vector>
 
 struct GridViewStateDTO
@@ -9,12 +9,12 @@ struct GridViewStateDTO
     int zoomLevel;
     double gridGap;
     QPoint offset;
-    std::vector<BoxModel> boxes;
+    std::vector<BoxViewDTO> boxes;
 
     explicit GridViewStateDTO(int zoomLevel,
                               double gridGap,
                               QPoint offset,
-                              std::vector<BoxModel> boxes)
+                              std::vector<BoxViewDTO> boxes)
         : zoomLevel(zoomLevel)
         , gridGap(gridGap)
         , offset(offset)

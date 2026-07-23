@@ -122,7 +122,7 @@ void TerminalControl::handleNonLastLineExecution(int cursorY, int lastLineNumber
         m_terminalService.setCurrentDirectory(updatedPromptAndDirs.at(lastLineNumber).directory);
 }
 
-void TerminalControl::postKeyPress(int lineCountBefore, int cursorYBefore)
+void TerminalControl::removePromptForDeletedLine(int lineCountBefore, int cursorYBefore)
 {
     int lineCountAfter = m_modelAccess.getEditorModel().getNoOfLines();
     if (lineCountAfter < lineCountBefore)

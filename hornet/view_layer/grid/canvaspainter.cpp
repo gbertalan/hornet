@@ -35,7 +35,7 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
 void CanvasPainter::drawBoxes(QPainter &painter,
                               double gridGap,
                               QPoint offset,
-                              const std::vector<BoxModel> &boxes,
+                              const std::vector<BoxViewDTO> &boxes,
                               FontRenderer &fontRenderer,
                               FontAtlas &fontAtlas)
 {
@@ -51,11 +51,11 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const float lineOffset = (static_cast<float>(gridGap) - textHeight) / 2.0f;
     const float textPadding = static_cast<float>(gridGap * 0.1);
 
-    for (const BoxModel &box : boxes) {
-        const double screenX = offset.x() + box.getPosX() * gridGap;
-        const double screenY = offset.y() + box.getPosY() * gridGap;
-        const double screenW = box.getWidth() * gridGap;
-        const double screenH = box.getHeight() * gridGap;
+    for (const BoxViewDTO &box : boxes) {
+        const double screenX = offset.x() + box.posX * gridGap;
+        const double screenY = offset.y() + box.posY * gridGap;
+        const double screenW = box.width * gridGap;
+        const double screenH = box.height * gridGap;
         const double headerH = headerHeightUnits * gridGap;
 
         const QRectF fullRect(screenX, screenY, screenW, screenH);
@@ -85,7 +85,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setClipping(true);
 
         float scaleFactor = 2.5f;
-        const float headerTextWidth = fontAtlas.textWidth(box.getHeaderText().length(), textScale)
+        const float headerTextWidth = fontAtlas.textWidth(box.headerText.length(), textScale)
                                       * scaleFactor;
         const float headerTextX = static_cast<float>(screenX + screenW / 2.0)
                                   - headerTextWidth / 2.0f;
@@ -94,12 +94,12 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         fontRenderer.drawText(painter,
                               headerTextX,
                               static_cast<float>(screenY) + lineOffset,
-                              box.getHeaderText(),
+                              box.headerText,
                               Theme::almostBlack(),
                               textScale * scaleFactor);
 
         // body text:
-        const QVector<QString> &bodyLines = box.getBodyLines();
+        const QVector<QString> &bodyLines = box.bodyLines;
         for (int i = 0; i < bodyLines.size(); ++i) {
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset
                                 + i * static_cast<float>(gridGap);

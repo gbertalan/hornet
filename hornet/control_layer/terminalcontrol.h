@@ -16,7 +16,7 @@ public:
                              TerminalService &terminalService);
     void init();
     bool dispatchTerminalKeyPress(const EditorKeyPressDTO &dto);
-    void postKeyPress(int lineCountBefore, int cursorYBefore);
+    void removePromptForDeletedLine(int lineCountBefore, int cursorYBefore);
     void dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     void executeCommand();
 

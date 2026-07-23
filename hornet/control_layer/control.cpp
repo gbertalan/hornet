@@ -75,7 +75,7 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     int cursorYBefore = m_modelAccess.getEditorModel().getCursorY();
     m_editorControl.dispatchEditorKeyPress(dto);
     if (m_modelAccess.getEditorModel().isTerminal())
-        m_terminalControl.postKeyPress(lineCountBefore, cursorYBefore);
+        m_terminalControl.removePromptForDeletedLine(lineCountBefore, cursorYBefore);
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();
