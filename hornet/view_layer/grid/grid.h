@@ -37,7 +37,7 @@ private:
     QPoint offset = {0, 0};
     std::vector<BoxViewDTO> boxes;
 
-    // drag interaction state, local to the view only:
+    // drag, hover interaction state, local to the view only:
     QPoint m_lastMousePos;
     bool m_isDragging = false;
     int m_hoveredBoxId = -1;
@@ -46,6 +46,9 @@ private:
     int m_draggedBoxId = -1;
     QPoint m_dragStartMousePos;
     QPoint m_draggedBoxLiveOffset; // how much we are dragging right now
+    int m_selectedBoxId = -1;
+    static constexpr int m_clickDistanceThreshold
+        = 5; // pixels; press+release under this = a click, not a drag
 
     // text rendering:
     FontAtlas m_fontAtlas;

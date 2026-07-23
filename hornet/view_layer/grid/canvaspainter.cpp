@@ -49,6 +49,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               QPoint offset,
                               const std::vector<BoxViewDTO> &boxes,
                               int hoveredBoxId,
+                              int selectedBoxId,
                               int draggedBoxId,
                               QPoint draggedBoxLiveOffset,
                               FontRenderer &fontRenderer,
@@ -87,6 +88,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               screenH - (edgeThickness * 2));
 
         const bool isHovered = (box.id == hoveredBoxId);
+        const bool isSelected = (box.id == selectedBoxId);
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Theme::almostBlack());
@@ -95,7 +97,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setBrush(isHovered ? Theme::brightAmber() : Theme::darkAmber());
         painter.drawRect(headerRect);
 
-        painter.setPen(QPen(isHovered ? Theme::brightAmber() : Theme::darkAmber(), edgeThickness));
+        painter.setPen(
+            QPen(isSelected ? Qt::red : (isHovered ? Theme::brightAmber() : Theme::darkAmber()),
+                 edgeThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(borderRect);
 

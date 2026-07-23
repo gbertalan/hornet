@@ -39,6 +39,7 @@ void Grid::paintEvent(QPaintEvent *)
                              offset,
                              boxes,
                              m_hoveredBoxId,
+                             m_selectedBoxId,
                              m_isDraggingBox ? m_draggedBoxId : -1,
                              m_draggedBoxLiveOffset,
                              *m_fontRenderer,
@@ -113,7 +114,12 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         if (m_isDraggingBox) {
-            emit boxDragged(BoxDragDTO({m_draggedBoxId}, event->pos() - m_dragStartMousePos));
+            const QPoint totalDisplacement = event->pos() - m_dragStartMousePos;
+            const bool wasClick = totalDisplacement.manhattanLength() < m_clickDistanceThreshold;
+            if (wasClick)
+                m_selectedBoxId = m_draggedBoxId;
+            else
+                emit boxDragged(BoxDragDTO({m_draggedBoxId}, totalDisplacement));
         }
         m_isDraggingGrid = false;
         m_isDraggingBox = false;

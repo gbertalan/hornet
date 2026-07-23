@@ -14,6 +14,7 @@ public:
                           QPoint offset,
                           const std::vector<BoxViewDTO> &boxes,
                           int hoveredBoxId,
+                          int selectedBoxId,
                           int draggedBoxId,
                           QPoint draggedBoxLiveOffset,
                           FontRenderer &fontRenderer,
