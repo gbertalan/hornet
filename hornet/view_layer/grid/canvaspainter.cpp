@@ -13,7 +13,8 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
 
     painter.setRenderHint(QPainter::Antialiasing, false);
     QColor gridColor = Theme::darkerAmber();
-    painter.setPen(QPen(QColor(gridColor.red(), gridColor.green(), gridColor.blue(), alpha), 1));
+    gridColor.setAlpha(alpha);
+    painter.setPen(QPen(gridColor, 1));
 
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
