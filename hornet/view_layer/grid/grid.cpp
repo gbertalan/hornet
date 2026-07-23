@@ -79,8 +79,22 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
         m_lastMousePos = event->pos();
         emit gridDragged(GridDragDTO(delta, event->pos()));
     } else if (m_isDraggingBox) {
+        const BoxViewDTO *draggedBox = nullptr;
+        for (const BoxViewDTO &box : boxes)
+            if (box.id == m_draggedBoxId)
+                draggedBox = &box;
+
+        const QRectF rectBeforeMove = CanvasPainter::getBoxScreenRect(*draggedBox,
+                                                                      gridGap,
+                                                                      offset,
+                                                                      m_draggedBoxLiveOffset);
         m_draggedBoxLiveOffset = event->pos() - m_dragStartMousePos;
-        update();
+        const QRectF rectAfterMove = CanvasPainter::getBoxScreenRect(*draggedBox,
+                                                                     gridGap,
+                                                                     offset,
+                                                                     m_draggedBoxLiveOffset);
+
+        update((rectBeforeMove | rectAfterMove).toAlignedRect());
     } else { // hover detection:
         const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
                                                                       gridGap,

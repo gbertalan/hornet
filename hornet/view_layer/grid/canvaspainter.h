@@ -22,5 +22,17 @@ public:
                                  double gridGap,
                                  QPoint offset,
                                  const std::vector<BoxViewDTO> &boxes);
+    /**
+     * @brief getBoxScreenRect Gives us the rect where the box is, for efficient repaint
+     * @param box
+     * @param gridGap
+     * @param offset
+     * @param liveOffset
+     * @return 
+     */
+    static QRectF getBoxScreenRect(const BoxViewDTO &box,
+                                   double gridGap,
+                                   QPoint offset,
+                                   QPoint liveOffset = QPoint(0, 0));
 };
 #endif // CANVASPAINTER_H

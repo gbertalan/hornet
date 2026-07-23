@@ -12,8 +12,7 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
         std::clamp((gridGap - minVisibleGap) / (maxGap - minVisibleGap), 0.0, 1.0) * 255);
 
     painter.setRenderHint(QPainter::Antialiasing, false);
-    QColor gridColor = Theme::darkerAmber();
-    painter.setPen(QPen(QColor(gridColor.red(), gridColor.green(), gridColor.blue(), alpha), 1));
+    painter.setPen(QPen(QColor(240, 240, 240, alpha), 1));
 
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
@@ -31,6 +30,18 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
         const double y = startY + i * gridGap;
         painter.drawLine(QPointF(0, y), QPointF(0 + size.width(), y));
     }
+}
+
+QRectF CanvasPainter::getBoxScreenRect(const BoxViewDTO &box,
+                                       double gridGap,
+                                       QPoint offset,
+                                       QPoint liveOffset)
+{
+    const double screenX = offset.x() + box.posX * gridGap + liveOffset.x();
+    const double screenY = offset.y() + box.posY * gridGap + liveOffset.y();
+    const double screenW = box.width * gridGap;
+    const double screenH = box.height * gridGap;
+    return QRectF(screenX, screenY, screenW, screenH);
 }
 
 void CanvasPainter::drawBoxes(QPainter &painter,
@@ -57,13 +68,13 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
     for (const BoxViewDTO &box : boxes) {
         const QPoint liveOffset = (box.id == draggedBoxId) ? draggedBoxLiveOffset : QPoint(0, 0);
-        const double screenX = offset.x() + box.posX * gridGap + liveOffset.x();
-        const double screenY = offset.y() + box.posY * gridGap + liveOffset.y();
-        const double screenW = box.width * gridGap;
-        const double screenH = box.height * gridGap;
+        const QRectF fullRect = getBoxScreenRect(box, gridGap, offset, liveOffset);
+        const double screenX = fullRect.x();
+        const double screenY = fullRect.y();
+        const double screenW = fullRect.width();
+        const double screenH = fullRect.height();
         const double headerH = headerHeightUnits * gridGap;
 
-        const QRectF fullRect(screenX, screenY, screenW, screenH);
         const QRectF headerRect(screenX, screenY, screenW, headerH);
         const QRectF bodyRect(screenX, screenY + headerH, screenW, screenH - headerH);
         const QRectF borderRect(screenX + halfEdge,
@@ -128,12 +139,7 @@ int CanvasPainter::findBoxAtPosition(QPoint mousePosition,
                                      const std::vector<BoxViewDTO> &boxes)
 {
     for (const BoxViewDTO &box : boxes) {
-        const double screenX = offset.x() + box.posX * gridGap;
-        const double screenY = offset.y() + box.posY * gridGap;
-        const double screenW = box.width * gridGap;
-        const double screenH = box.height * gridGap;
-
-        const QRectF fullRect(screenX, screenY, screenW, screenH);
+        const QRectF fullRect = getBoxScreenRect(box, gridGap, offset);
         if (fullRect.contains(mousePosition))
             return box.id;
     }
