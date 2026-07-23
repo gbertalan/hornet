@@ -12,7 +12,8 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
         std::clamp((gridGap - minVisibleGap) / (maxGap - minVisibleGap), 0.0, 1.0) * 255);
 
     painter.setRenderHint(QPainter::Antialiasing, false);
-    painter.setPen(QPen(QColor(240, 240, 240, alpha), 1));
+    QColor gridColor = Theme::darkerAmber();
+    painter.setPen(QPen(QColor(gridColor.red(), gridColor.green(), gridColor.blue(), alpha), 1));
 
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
