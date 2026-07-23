@@ -50,6 +50,7 @@ signals:
     void editorKeyPressed(const EditorKeyPressDTO &dto);
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
+    void boxDragged(const BoxDragDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

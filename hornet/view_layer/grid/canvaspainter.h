@@ -13,7 +13,12 @@ public:
                           double gridGap,
                           QPoint offset,
                           const std::vector<BoxViewDTO> &boxes,
+                          int hoveredBoxId,
                           FontRenderer &fontRenderer,
                           FontAtlas &fontAtlas);
+    static int findBoxAtPosition(QPoint mousePosition,
+                                 double gridGap,
+                                 QPoint offset,
+                                 const std::vector<BoxViewDTO> &boxes);
 };
 #endif // CANVASPAINTER_H

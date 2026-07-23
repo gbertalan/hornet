@@ -37,6 +37,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               double gridGap,
                               QPoint offset,
                               const std::vector<BoxViewDTO> &boxes,
+                              int hoveredBoxId,
                               FontRenderer &fontRenderer,
                               FontAtlas &fontAtlas)
 {
@@ -71,14 +72,16 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               screenW - (edgeThickness * 2),
                               screenH - (edgeThickness * 2));
 
+        const bool isHovered = (box.id == hoveredBoxId);
+
         painter.setPen(Qt::NoPen);
         painter.setBrush(Theme::almostBlack());
         painter.drawRect(bodyRect);
 
-        painter.setBrush(Theme::darkAmber());
+        painter.setBrush(isHovered ? Theme::brightAmber() : Theme::darkAmber());
         painter.drawRect(headerRect);
 
-        painter.setPen(QPen(Theme::darkAmber(), edgeThickness));
+        painter.setPen(QPen(isHovered ? Theme::brightAmber() : Theme::darkAmber(), edgeThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(borderRect);
 
@@ -114,4 +117,22 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
         painter.setClipping(false);
     }
+}
+
+int CanvasPainter::findBoxAtPosition(QPoint mousePosition,
+                                     double gridGap,
+                                     QPoint offset,
+                                     const std::vector<BoxViewDTO> &boxes)
+{
+    for (const BoxViewDTO &box : boxes) {
+        const double screenX = offset.x() + box.posX * gridGap;
+        const double screenY = offset.y() + box.posY * gridGap;
+        const double screenW = box.width * gridGap;
+        const double screenH = box.height * gridGap;
+
+        const QRectF fullRect(screenX, screenY, screenW, screenH);
+        if (fullRect.contains(mousePosition))
+            return box.id;
+    }
+    return -1;
 }

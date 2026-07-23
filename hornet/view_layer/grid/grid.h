@@ -6,9 +6,12 @@
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
+
 struct GridDragDTO;
 struct GridViewStateDTO;
 struct GridZoomDTO;
+struct BoxDragDTO;
+
 class Grid : public QWidget
 {
     Q_OBJECT
@@ -19,6 +22,7 @@ public:
 signals:
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
+    void boxDragged(const BoxDragDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -36,6 +40,12 @@ private:
     // drag interaction state, local to the view only:
     QPoint m_lastMousePos;
     bool m_isDragging = false;
+    int m_hoveredBoxId = -1;
+    bool m_isDraggingGrid = false;
+    bool m_isDraggingBox = false;
+    int m_draggedBoxId = -1;
+    QPoint m_dragStartMousePos;
+    QPoint m_draggedBoxLiveOffset; // how much we are dragging right now
 
     // text rendering:
     FontAtlas m_fontAtlas;

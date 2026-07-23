@@ -6,6 +6,8 @@
 
 class GridDragDTO;
 class IModelAccessReadWrite;
+class BoxDragDTO;
+
 class GridService
 {
 public:
@@ -19,6 +21,7 @@ public:
                 int height,
                 const QString &headerText,
                 const QVector<QString> &bodyLines);
+    void moveBoxes(const BoxDragDTO &dto);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

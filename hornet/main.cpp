@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::editorKeyPressed, &control, &Control::onEditorKeyPressed);
     QObject::connect(&view, &View::gridZoomChanged, &control, &Control::onGridZoomChanged);
     QObject::connect(&view, &View::gridDragged, &control, &Control::onGridDrag);
+    QObject::connect(&view, &View::boxDragged, &control, &Control::onBoxDragged);
 
     control.init();
 

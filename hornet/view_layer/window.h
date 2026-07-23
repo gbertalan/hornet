@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+struct BoxDragDTO;
 struct GridDragDTO;
 struct GridViewStateDTO;
 struct EditorKeyPressDTO;
@@ -37,6 +38,7 @@ signals:
     void editorKeyPressed(const EditorKeyPressDTO &dto);
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
+    void boxDragged(const BoxDragDTO &dto);
 
 private:
     TitleBar* m_titleBar;

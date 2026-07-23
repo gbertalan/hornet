@@ -1,6 +1,7 @@
 #include "gridcontrol.h"
 #include "model_layer/imodelaccess_read.h"
 #include "service_layer/gridservice.h"
+#include "shared/dto_view_to_model/boxdragdto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
 #include "view_layer/view.h"
 
@@ -46,6 +47,13 @@ void GridControl::dispatchGridZoomChange(const GridZoomDTO &dto)
 void GridControl::dispatchGridDrag(const GridDragDTO &dto)
 {
     m_gridService.adjustOffset(dto);
+    const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
+    m_view.updateGridViewState(viewStateDTO);
+}
+
+void GridControl::dispatchBoxDrag(const BoxDragDTO &dto)
+{
+    m_gridService.moveBoxes(dto);
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);
 }

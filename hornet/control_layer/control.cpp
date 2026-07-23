@@ -91,6 +91,11 @@ void Control::onGridDrag(const GridDragDTO &dto)
     m_gridControl.dispatchGridDrag(dto);
 }
 
+void Control::onBoxDragged(const BoxDragDTO &dto)
+{
+    m_gridControl.dispatchBoxDrag(dto);
+}
+
 QVector<QString> Control::buildTerminalPrompts() const
 {
     QVector<QString> terminalPrompts;

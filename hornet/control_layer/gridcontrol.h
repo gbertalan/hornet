@@ -1,6 +1,7 @@
 #ifndef GRIDCONTROL_H
 #define GRIDCONTROL_H
 
+struct BoxDragDTO;
 struct GridDragDTO;
 class View;
 class GridService;
@@ -14,6 +15,7 @@ public:
     void init();
     void dispatchGridZoomChange(const GridZoomDTO &dto);
     void dispatchGridDrag(const GridDragDTO &dto);
+    void dispatchBoxDrag(const BoxDragDTO &dto);
 
 private:
     IModelAccessRead &m_modelAccess;

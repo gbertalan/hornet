@@ -18,6 +18,7 @@ struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
 struct GridZoomDTO;
 struct GridDragDTO;
+struct BoxDragDTO;
 
 class Control : public QObject
 {
@@ -40,6 +41,7 @@ public slots:
     // grid:
     void onGridZoomChanged(const GridZoomDTO &dto);
     void onGridDrag(const GridDragDTO &dto);
+    void onBoxDragged(const BoxDragDTO &dto);
     // debug:
     void onDebugRequested();
 

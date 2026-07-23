@@ -1,10 +1,13 @@
 #include "gridservice.h"
 #include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
+#include "shared/dto_view_to_model/boxdragdto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
+
 GridService::GridService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
 {}
+
 void GridService::adjustZoom(const GridZoomDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
@@ -22,6 +25,7 @@ void GridService::adjustZoom(const GridZoomDTO &dto)
         std::round(cursor.y() - (cursor.y() - oldOffset.y()) * ratio));
     gridModel.setOffset(QPoint(newOffsetX, newOffsetY));
 }
+
 GridViewStateDTO GridService::retrieveGridViewState() const
 {
     const GridModel &gridModel = m_modelAccess.getGridModel();
@@ -43,11 +47,13 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                             gridModel.getOffset(),
                             boxViewDTOs};
 }
+
 void GridService::adjustOffset(const GridDragDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
     gridModel.setOffset(gridModel.getOffset() + dto.delta);
 }
+
 void GridService::addBox(int posX,
                          int posY,
                          int width,
@@ -56,4 +62,18 @@ void GridService::addBox(int posX,
                          const QVector<QString> &bodyLines)
 {
     m_modelAccess.getGridModel().addBox(posX, posY, width, height, headerText, bodyLines);
+}
+
+void GridService::moveBoxes(const BoxDragDTO &dto)
+{
+    GridModel &gridModel = m_modelAccess.getGridModel();
+    const double gridGap = gridModel.getGridGap();
+    const int cellDeltaX = static_cast<int>(std::round(dto.delta.x() / gridGap));
+    const int cellDeltaY = static_cast<int>(std::round(dto.delta.y() / gridGap));
+
+    for (const int boxId : dto.boxIds) {
+        BoxModel &box = gridModel.getBox(boxId);
+        box.setPosX(box.getPosX() + cellDeltaX);
+        box.setPosY(box.getPosY() + cellDeltaY);
+    }
 }
