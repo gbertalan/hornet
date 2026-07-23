@@ -95,7 +95,15 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                          gridGap,
                                                                          offset,
                                                                          m_draggedBoxLiveOffset);
-            update((rectBeforeMove | rectAfterMove).toAlignedRect());
+
+            constexpr int repaintMarginPixels = 1;
+            const QRect dirtyRect = (rectBeforeMove | rectAfterMove)
+                                        .toAlignedRect()
+                                        .adjusted(-repaintMarginPixels,
+                                                  -repaintMarginPixels,
+                                                  repaintMarginPixels,
+                                                  repaintMarginPixels);
+            update(dirtyRect);
         }
     } else { // hover detection:
         const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
