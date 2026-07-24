@@ -108,6 +108,7 @@ qt_add_executable(hornet
     shared/dto_view_to_model/boxdragdto.h
     shared/dto_view_to_model/boxselecteddto.h
     shared/dto_model_to_view/boxcontentdto.h
+    model_layer/boxcontenttype.h
 
 
 

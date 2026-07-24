@@ -1,9 +1,8 @@
 #ifndef BOXMODEL_H
 #define BOXMODEL_H
-
 #include <QString>
 #include <QVector>
-
+#include "model_layer/boxcontenttype.h"
 class BoxModel
 {
 public:
@@ -14,7 +13,6 @@ public:
                       int height,
                       const QString &headerText,
                       const QVector<QString> &bodyLines);
-
     int getId() const;
     int getPosX() const;
     int getPosY() const;
@@ -22,7 +20,7 @@ public:
     int getHeight() const;
     QString getHeaderText() const;
     QVector<QString> getBodyLines() const;
-
+    BoxContentType getContentType() const;
     void setPosX(int posX);
     void setPosY(int posY);
     void setWidth(int width);
@@ -38,8 +36,9 @@ private:
     int m_height;
     QString m_headerText;
     QVector<QString> m_bodyLines;
-
+    BoxContentType m_contentType;
     static constexpr int m_minWidth = 5;
     static constexpr int m_minHeight = 3;
+    static BoxContentType determineContentTypeFromHeaderText(const QString &headerText);
 };
 #endif // BOXMODEL_H
