@@ -19,6 +19,7 @@ struct EditorCursorPosDTO;
 struct GridZoomDTO;
 struct GridDragDTO;
 struct BoxDragDTO;
+struct BoxSelectedDTO;
 
 class Control : public QObject
 {
@@ -42,6 +43,7 @@ public slots:
     void onGridZoomChanged(const GridZoomDTO &dto);
     void onGridDrag(const GridDragDTO &dto);
     void onBoxDragged(const BoxDragDTO &dto);
+    void onBoxSelected(const BoxSelectedDTO &dto);
     // debug:
     void onDebugRequested();
 
@@ -51,6 +53,7 @@ private:
      * in the same order as the terminal lines in the editor buffer.
      */
     QVector<QString> buildTerminalPrompts() const;
+    std::u32string convertQStringToU32String(const QString &text) const;
     void printModel() const;
 
     IModelAccessRead &m_modelAccess;

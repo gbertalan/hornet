@@ -8,6 +8,7 @@
 #include "service_layer/gridservice.h"
 #include "service_layer/terminalservice.h"
 #include "service_layer/windowservice.h"
+#include "shared/dto_view_to_model/boxselecteddto.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
@@ -106,6 +107,27 @@ QVector<QString> Control::buildTerminalPrompts() const
             QString::fromUcs4(reinterpret_cast<const char32_t *>(line.prompt.c_str()),
                               static_cast<int>(line.prompt.size())));
     return terminalPrompts;
+}
+
+void Control::onBoxSelected(const BoxSelectedDTO &dto)
+{
+    const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(dto.boxId);
+
+    std::vector<std::u32string> bodyLinesAsU32;
+    bodyLinesAsU32.reserve(boxContent.bodyLines.size());
+    for (const QString &line : boxContent.bodyLines)
+        bodyLinesAsU32.push_back(convertQStringToU32String(line));
+
+    m_editorService.storeTextLines(bodyLinesAsU32, "txt");
+    m_editorService.setIsTerminal(false);
+    m_editorControl.sendStateToEditor();
+    m_editorControl.sendSettingsToEditor();
+}
+
+std::u32string Control::convertQStringToU32String(const QString &text) const
+{
+    const QVector<uint> ucs4 = text.toUcs4();
+    return std::u32string(ucs4.begin(), ucs4.end());
 }
 
 void Control::onDebugRequested()

@@ -4,6 +4,7 @@
 #include <QWheelEvent>
 #include "canvaspainter.h"
 #include "shared/dto_view_to_model/boxdragdto.h"
+#include "shared/dto_view_to_model/boxselecteddto.h"
 #include "shared/dto_view_to_model/gridzoomdto.h"
 #include <cmath>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
@@ -124,9 +125,10 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
         if (m_isDraggingBox) {
             const QPoint totalDisplacement = event->pos() - m_dragStartMousePos;
             const bool wasClick = totalDisplacement.manhattanLength() < m_clickDistanceThreshold;
-            if (wasClick)
+            if (wasClick) {
                 m_selectedBoxId = m_draggedBoxId;
-            else
+                emit boxSelected(BoxSelectedDTO(m_selectedBoxId));
+            } else
                 emit boxDragged(BoxDragDTO({m_draggedBoxId}, totalDisplacement));
         }
         m_isDraggingGrid = false;

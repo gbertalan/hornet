@@ -77,3 +77,9 @@ void GridService::moveBoxes(const BoxDragDTO &dto)
         box.setPosY(box.getPosY() + cellDeltaY);
     }
 }
+
+BoxContentDTO GridService::retrieveBoxContent(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return BoxContentDTO{box.getHeaderText(), box.getBodyLines()};
+}

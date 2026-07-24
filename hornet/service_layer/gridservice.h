@@ -1,6 +1,7 @@
 #ifndef GRIDSERVICE_H
 #define GRIDSERVICE_H
 
+#include <shared/dto_model_to_view/boxcontentdto.h>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/gridzoomdto.h>
 
@@ -22,6 +23,7 @@ public:
                 const QString &headerText,
                 const QVector<QString> &bodyLines);
     void moveBoxes(const BoxDragDTO &dto);
+    BoxContentDTO retrieveBoxContent(int boxId) const;
 
 private:
     IModelAccessReadWrite &m_modelAccess;

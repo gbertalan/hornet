@@ -51,6 +51,7 @@ signals:
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
     void boxDragged(const BoxDragDTO &dto);
+    void boxSelected(const BoxSelectedDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

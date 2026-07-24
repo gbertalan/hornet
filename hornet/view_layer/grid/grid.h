@@ -11,6 +11,7 @@ struct GridDragDTO;
 struct GridViewStateDTO;
 struct GridZoomDTO;
 struct BoxDragDTO;
+struct BoxSelectedDTO;
 
 class Grid : public QWidget
 {
@@ -23,6 +24,7 @@ signals:
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
     void boxDragged(const BoxDragDTO &dto);
+    void boxSelected(const BoxSelectedDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;

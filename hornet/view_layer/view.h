@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+struct BoxSelectedDTO;
 struct BoxDragDTO;
 struct GridDragDTO;
 struct GridViewStateDTO;
@@ -37,6 +38,7 @@ signals:
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
     void boxDragged(const BoxDragDTO &dto);
+    void boxSelected(const BoxSelectedDTO &dto);
 
 private:
     Window* m_window;

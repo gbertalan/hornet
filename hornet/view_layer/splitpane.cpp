@@ -154,6 +154,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     connect(m_grid, &Grid::gridZoomChanged, this, &SplitPane::gridZoomChanged);
     connect(m_grid, &Grid::gridDragged, this, &SplitPane::gridDragged);
     connect(m_grid, &Grid::boxDragged, this, &SplitPane::boxDragged);
+    connect(m_grid, &Grid::boxSelected, this, &SplitPane::boxSelected);
 }
 
 QSplitterHandle* SplitPane::createHandle() {
