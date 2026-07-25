@@ -124,22 +124,13 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
         flushEditorContentToBox(m_currentlySelectedBoxId);
 
     const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(dto.boxId);
+    const std::vector<std::u32string> bodyLinesAsU32 = convertBodyLinesToU32(boxContent.bodyLines);
 
     if (boxContent.contentType == BoxContentType::Terminal) {
-        std::vector<std::u32string> bodyLinesAsU32;
-        bodyLinesAsU32.reserve(boxContent.bodyLines.size());
-        for (const QString &line : boxContent.bodyLines)
-            bodyLinesAsU32.push_back(convertQStringToU32String(line));
-
         m_editorService.storeTextLines(bodyLinesAsU32, "txt");
         m_editorService.setIsTerminal(true);
         m_editorControl.sendStateToEditor(buildTerminalPrompts());
     } else {
-        std::vector<std::u32string> bodyLinesAsU32;
-        bodyLinesAsU32.reserve(boxContent.bodyLines.size());
-        for (const QString &line : boxContent.bodyLines)
-            bodyLinesAsU32.push_back(convertQStringToU32String(line));
-
         m_editorService.storeTextLines(bodyLinesAsU32, "txt");
         m_editorService.setIsTerminal(false);
         m_editorControl.sendStateToEditor();
@@ -172,6 +163,15 @@ std::u32string Control::convertQStringToU32String(const QString &text) const
 {
     const QVector<uint> ucs4 = text.toUcs4();
     return std::u32string(ucs4.begin(), ucs4.end());
+}
+
+std::vector<std::u32string> Control::convertBodyLinesToU32(const QVector<QString> &bodyLines) const
+{
+    std::vector<std::u32string> result;
+    result.reserve(bodyLines.size());
+    for (const QString &line : bodyLines)
+        result.push_back(convertQStringToU32String(line));
+    return result;
 }
 
 void Control::onDebugRequested()

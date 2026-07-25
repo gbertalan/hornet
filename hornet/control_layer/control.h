@@ -57,6 +57,7 @@ private:
     void flushEditorContentToBox(int boxId);
     QString convertU32StringToQString(const std::u32string &text) const;
     std::u32string convertQStringToU32String(const QString &text) const;
+    std::vector<std::u32string> convertBodyLinesToU32(const QVector<QString> &bodyLines) const;
     void printModel() const;
 
     IModelAccessRead &m_modelAccess;
