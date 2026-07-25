@@ -82,12 +82,21 @@ void GridService::moveBoxes(const BoxDragDTO &dto)
 BoxContentDTO GridService::retrieveBoxContent(int boxId) const
 {
     const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
-    return BoxContentDTO{box.getHeaderText(), box.getBodyLines(), box.getContentType()};
+    return BoxContentDTO{box.getHeaderText(),
+                         box.getBodyLines(),
+                         box.getContentType(),
+                         box.getCursorX(),
+                         box.getCursorY()};
 }
 
-void GridService::updateBoxContent(int boxId, const QVector<QString> &bodyLines)
+void GridService::updateBoxContent(int boxId,
+                                   const QVector<QString> &bodyLines,
+                                   int cursorX,
+                                   int cursorY)
 {
-    m_modelAccess.getGridModel().getBox(boxId).setBodyLines(bodyLines);
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setBodyLines(bodyLines);
+    box.setCursorPos(cursorX, cursorY);
 }
 
 int GridService::findFirstBoxIdOfType(BoxContentType contentType) const

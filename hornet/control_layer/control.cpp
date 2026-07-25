@@ -136,6 +136,8 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
         m_editorControl.sendStateToEditor();
     }
 
+    m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
+    m_editorControl.sendCursorPosToEditor();
     m_editorControl.sendSettingsToEditor();
     m_currentlySelectedBoxId = dto.boxId;
 
@@ -150,7 +152,10 @@ void Control::flushEditorContentToBox(int boxId)
     linesAsQString.reserve(static_cast<int>(currentLines.size()));
     for (const std::u32string &line : currentLines)
         linesAsQString.push_back(convertU32StringToQString(line));
-    m_gridService.updateBoxContent(boxId, linesAsQString);
+
+    const int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    const int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    m_gridService.updateBoxContent(boxId, linesAsQString, cursorX, cursorY);
 }
 
 QString Control::convertU32StringToQString(const std::u32string &text) const

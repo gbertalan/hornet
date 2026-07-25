@@ -83,3 +83,17 @@ BoxContentType BoxModel::determineContentTypeFromHeaderText(const QString &heade
         return BoxContentType::RenderScript;
     return BoxContentType::Unknown;
 }
+
+int BoxModel::getCursorX() const
+{
+    return m_cursorX;
+}
+int BoxModel::getCursorY() const
+{
+    return m_cursorY;
+}
+void BoxModel::setCursorPos(int cursorX, int cursorY)
+{
+    m_cursorX = cursorX;
+    m_cursorY = cursorY;
+}

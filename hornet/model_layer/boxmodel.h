@@ -27,6 +27,9 @@ public:
     void setHeight(int height);
     void setHeaderText(const QString &headerText);
     void setBodyLines(const QVector<QString> &bodyLines);
+    int getCursorX() const;
+    int getCursorY() const;
+    void setCursorPos(int cursorX, int cursorY);
 
 private:
     int m_id;
@@ -40,5 +43,7 @@ private:
     static constexpr int m_minWidth = 5;
     static constexpr int m_minHeight = 3;
     static BoxContentType determineContentTypeFromHeaderText(const QString &headerText);
+    int m_cursorX = 0;
+    int m_cursorY = 0;
 };
 #endif // BOXMODEL_H

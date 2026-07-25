@@ -9,5 +9,7 @@ struct BoxContentDTO
     QString headerText;
     QVector<QString> bodyLines;
     BoxContentType contentType;
+    int cursorX;
+    int cursorY;
 };
 #endif // BOXCONTENTDTO_H
