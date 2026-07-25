@@ -17,14 +17,35 @@ void GridControl::init()
 {
     m_gridService.addBox(2,
                          2,
-                         25,
                          15,
+                         10,
                          "my_first_box.txt",
-                         {"line one: this is the first line.",
-                          "line two: and this is the second line.",
-                          "line three: I can write y n m and more!"});
-    m_gridService.addBox(12, 18, 25, 15, "my_second_box.terminal", {});
-    m_gridService.addBox(22, 2, 25, 15, "my_third_box.render", {"line 10,10,20,20"});
+                         {"line 1: this is the first line.",
+                          "line 2: this is the second line.",
+                          "line 3: this is the third line.",
+                          "line 4: this is the fourth line.",
+                          "line 5: this is the fifth line.",
+                          "line 6: this is the sixth line.",
+                          "line 7: this is the seventh line.",
+                          "line 8: this is the eighth line.",
+                          "line 9: this is the ninth line.",
+                          "line 10: this is the tenth line."});
+    m_gridService.addBox(20, 2, 15, 10, "my_second_box.terminal", {});
+    m_gridService.addBox(38,
+                         2,
+                         15,
+                         10,
+                         "my_third_box.render",
+                         {"line 1,1,2,2",
+                          "line 2,2,3,3",
+                          "line 3,3,4,4",
+                          "line 4,4,5,5",
+                          "line 5,5,6,6",
+                          "line 6,6,7,7",
+                          "line 7,7,8,8",
+                          "line 8,8,9,9",
+                          "line 9,9,10,10",
+                          "line 10,10,11,11"});
     refreshGridViewState();
 }
 

@@ -30,6 +30,8 @@ public:
     int getCursorX() const;
     int getCursorY() const;
     void setCursorPos(int cursorX, int cursorY);
+    int getBodyScrollOffset() const;
+    void setBodyScrollOffset(int offset);
 
 private:
     int m_id;
@@ -45,5 +47,6 @@ private:
     static BoxContentType determineContentTypeFromHeaderText(const QString &headerText);
     int m_cursorX = 0;
     int m_cursorY = 0;
+    int m_bodyScrollOffset = 0;
 };
 #endif // BOXMODEL_H

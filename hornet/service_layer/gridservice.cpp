@@ -33,13 +33,22 @@ GridViewStateDTO GridService::retrieveGridViewState() const
     std::vector<BoxViewDTO> boxViewDTOs;
     boxViewDTOs.reserve(gridModel.getBoxes().size());
     for (const BoxModel &box : gridModel.getBoxes()) {
+        const int headerHeightUnits = 3;
+        const int visibleLineCount = std::max(0, box.getHeight() - headerHeightUnits + 1);
+        const QVector<QString> allBodyLines = box.getBodyLines();
+        const int totalLineCount = static_cast<int>(allBodyLines.size());
+        const int scrollStart = std::min(box.getBodyScrollOffset(), totalLineCount);
+        const int scrollEnd = std::min(scrollStart + visibleLineCount, totalLineCount);
+        const QVector<QString> visibleBodyLines = allBodyLines.mid(scrollStart,
+                                                                   scrollEnd - scrollStart);
+
         boxViewDTOs.push_back(BoxViewDTO{box.getId(),
                                          box.getPosX(),
                                          box.getPosY(),
                                          box.getWidth(),
                                          box.getHeight(),
                                          box.getHeaderText(),
-                                         box.getBodyLines()});
+                                         visibleBodyLines});
     }
 
     return GridViewStateDTO{gridModel.getZoomLevel(),

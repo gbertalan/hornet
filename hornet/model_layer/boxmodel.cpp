@@ -97,3 +97,12 @@ void BoxModel::setCursorPos(int cursorX, int cursorY)
     m_cursorX = cursorX;
     m_cursorY = cursorY;
 }
+
+int BoxModel::getBodyScrollOffset() const
+{
+    return m_bodyScrollOffset;
+}
+void BoxModel::setBodyScrollOffset(int offset)
+{
+    m_bodyScrollOffset = std::max(0, offset);
+}
