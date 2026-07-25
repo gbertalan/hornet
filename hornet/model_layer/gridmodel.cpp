@@ -62,3 +62,13 @@ void GridModel::removeBox(int id)
                                  [id](const BoxModel &box) { return box.getId() == id; }),
                   m_boxes.end());
 }
+
+int GridModel::getSelectedBoxId() const
+{
+    return m_selectedBoxId;
+}
+
+void GridModel::setSelectedBoxId(int boxId)
+{
+    m_selectedBoxId = boxId;
+}

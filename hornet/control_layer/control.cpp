@@ -38,8 +38,17 @@ void Control::init()
     m_editorControl.init();
     m_terminalControl.init();
     m_gridControl.init();
-}
 
+    const int terminalBoxId = m_gridService.findFirstBoxIdOfType(BoxContentType::Terminal);
+    if (terminalBoxId != -1) {
+        m_editorService.setIsTerminal(true);
+        m_editorControl.sendStateToEditor(buildTerminalPrompts());
+        m_editorControl.sendSettingsToEditor();
+        m_currentlySelectedBoxId = terminalBoxId;
+        m_gridService.setSelectedBox(terminalBoxId);
+        m_gridControl.refreshGridViewState();
+    }
+}
 void Control::onWindowStateChanged(const WindowDTO &dto)
 {
     m_windowControl.dispatchWindowStateChanged(dto);
@@ -111,17 +120,52 @@ QVector<QString> Control::buildTerminalPrompts() const
 
 void Control::onBoxSelected(const BoxSelectedDTO &dto)
 {
+    if (m_currentlySelectedBoxId != -1)
+        flushEditorContentToBox(m_currentlySelectedBoxId);
+
     const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(dto.boxId);
 
-    std::vector<std::u32string> bodyLinesAsU32;
-    bodyLinesAsU32.reserve(boxContent.bodyLines.size());
-    for (const QString &line : boxContent.bodyLines)
-        bodyLinesAsU32.push_back(convertQStringToU32String(line));
+    if (boxContent.contentType == BoxContentType::Terminal) {
+        std::vector<std::u32string> bodyLinesAsU32;
+        bodyLinesAsU32.reserve(boxContent.bodyLines.size());
+        for (const QString &line : boxContent.bodyLines)
+            bodyLinesAsU32.push_back(convertQStringToU32String(line));
 
-    m_editorService.storeTextLines(bodyLinesAsU32, "txt");
-    m_editorService.setIsTerminal(false);
-    m_editorControl.sendStateToEditor();
+        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
+        m_editorService.setIsTerminal(true);
+        m_editorControl.sendStateToEditor(buildTerminalPrompts());
+    } else {
+        std::vector<std::u32string> bodyLinesAsU32;
+        bodyLinesAsU32.reserve(boxContent.bodyLines.size());
+        for (const QString &line : boxContent.bodyLines)
+            bodyLinesAsU32.push_back(convertQStringToU32String(line));
+
+        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
+        m_editorService.setIsTerminal(false);
+        m_editorControl.sendStateToEditor();
+    }
+
     m_editorControl.sendSettingsToEditor();
+    m_currentlySelectedBoxId = dto.boxId;
+
+    m_gridService.setSelectedBox(dto.boxId);
+    m_gridControl.refreshGridViewState();
+}
+
+void Control::flushEditorContentToBox(int boxId)
+{
+    const std::vector<std::u32string> &currentLines = m_modelAccess.getEditorModel().getTextLines();
+    QVector<QString> linesAsQString;
+    linesAsQString.reserve(static_cast<int>(currentLines.size()));
+    for (const std::u32string &line : currentLines)
+        linesAsQString.push_back(convertU32StringToQString(line));
+    m_gridService.updateBoxContent(boxId, linesAsQString);
+}
+
+QString Control::convertU32StringToQString(const std::u32string &text) const
+{
+    return QString::fromUcs4(reinterpret_cast<const char32_t *>(text.c_str()),
+                             static_cast<int>(text.size()));
 }
 
 std::u32string Control::convertQStringToU32String(const QString &text) const

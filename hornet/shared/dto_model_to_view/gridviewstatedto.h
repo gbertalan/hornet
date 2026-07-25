@@ -10,14 +10,17 @@ struct GridViewStateDTO
     double gridGap;
     QPoint offset;
     std::vector<BoxViewDTO> boxes;
+    int selectedBoxId;
 
     explicit GridViewStateDTO(int zoomLevel,
                               double gridGap,
                               QPoint offset,
-                              std::vector<BoxViewDTO> boxes)
+                              std::vector<BoxViewDTO> boxes,
+                              int selectedBoxId)
         : zoomLevel(zoomLevel)
         , gridGap(gridGap)
         , offset(offset)
         , boxes(std::move(boxes))
+        , selectedBoxId(selectedBoxId)
     {}
 };

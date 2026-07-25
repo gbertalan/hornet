@@ -53,6 +53,9 @@ private:
      * in the same order as the terminal lines in the editor buffer.
      */
     QVector<QString> buildTerminalPrompts() const;
+    int m_currentlySelectedBoxId = -1;
+    void flushEditorContentToBox(int boxId);
+    QString convertU32StringToQString(const std::u32string &text) const;
     std::u32string convertQStringToU32String(const QString &text) const;
     void printModel() const;
 

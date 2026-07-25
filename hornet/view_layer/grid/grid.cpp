@@ -28,6 +28,7 @@ void Grid::updateGridViewState(const GridViewStateDTO &dto)
     gridGap = dto.gridGap;
     offset = dto.offset;
     boxes = dto.boxes;
+    m_selectedBoxId = dto.selectedBoxId;
     update();
 }
 
@@ -126,8 +127,7 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
             const QPoint totalDisplacement = event->pos() - m_dragStartMousePos;
             const bool wasClick = totalDisplacement.manhattanLength() < m_clickDistanceThreshold;
             if (wasClick) {
-                m_selectedBoxId = m_draggedBoxId;
-                emit boxSelected(BoxSelectedDTO(m_selectedBoxId));
+                emit boxSelected(BoxSelectedDTO(m_draggedBoxId));
             } else
                 emit boxDragged(BoxDragDTO({m_draggedBoxId}, totalDisplacement));
         }

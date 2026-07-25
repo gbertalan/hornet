@@ -24,6 +24,9 @@ public:
                 const QVector<QString> &bodyLines);
     void moveBoxes(const BoxDragDTO &dto);
     BoxContentDTO retrieveBoxContent(int boxId) const;
+    void updateBoxContent(int boxId, const QVector<QString> &bodyLines);
+    int findFirstBoxIdOfType(BoxContentType contentType) const;
+    void setSelectedBox(int boxId);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

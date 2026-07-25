@@ -45,7 +45,8 @@ GridViewStateDTO GridService::retrieveGridViewState() const
     return GridViewStateDTO{gridModel.getZoomLevel(),
                             gridModel.getGridGap(),
                             gridModel.getOffset(),
-                            boxViewDTOs};
+                            boxViewDTOs,
+                            gridModel.getSelectedBoxId()};
 }
 
 void GridService::adjustOffset(const GridDragDTO &dto)
@@ -81,5 +82,23 @@ void GridService::moveBoxes(const BoxDragDTO &dto)
 BoxContentDTO GridService::retrieveBoxContent(int boxId) const
 {
     const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
-    return BoxContentDTO{box.getHeaderText(), box.getBodyLines()};
+    return BoxContentDTO{box.getHeaderText(), box.getBodyLines(), box.getContentType()};
+}
+
+void GridService::updateBoxContent(int boxId, const QVector<QString> &bodyLines)
+{
+    m_modelAccess.getGridModel().getBox(boxId).setBodyLines(bodyLines);
+}
+
+int GridService::findFirstBoxIdOfType(BoxContentType contentType) const
+{
+    for (const BoxModel &box : m_modelAccess.getGridModel().getBoxes())
+        if (box.getContentType() == contentType)
+            return box.getId();
+    return -1;
+}
+
+void GridService::setSelectedBox(int boxId)
+{
+    m_modelAccess.getGridModel().setSelectedBoxId(boxId);
 }

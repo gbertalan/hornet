@@ -2,10 +2,12 @@
 #define BOXCONTENTDTO_H
 #include <QString>
 #include <QVector>
+#include "model_layer/boxcontenttype.h"
 
 struct BoxContentDTO
 {
     QString headerText;
     QVector<QString> bodyLines;
+    BoxContentType contentType;
 };
 #endif // BOXCONTENTDTO_H

@@ -27,6 +27,8 @@ public:
                const QString &headerText,
                const QVector<QString> &bodyLines);
     void removeBox(int id);
+    int getSelectedBoxId() const;
+    void setSelectedBoxId(int boxId);
 
 private:
     int m_zoomLevel = 22;
@@ -39,5 +41,7 @@ private:
     static constexpr double m_baseGap = 15.0;
     static constexpr int m_defaultZoom = 22;
     static constexpr double m_zoomFactor = 1.1;
+
+    int m_selectedBoxId = -1;
 };
 #endif // GRIDMODEL_H

@@ -96,7 +96,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     m_leftPane->setLayout(leftLayout);
 
     // Grid:
-    GridViewStateDTO gridViewStateDTO{25, 30.0, QPoint(0, 0), {}};
+    GridViewStateDTO gridViewStateDTO{25, 30.0, QPoint(0, 0), {}, -1};
     m_grid = new Grid(gridViewStateDTO, m_rightPane);
 
     QVBoxLayout *rightLayout = new QVBoxLayout(m_rightPane);
