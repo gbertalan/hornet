@@ -5,6 +5,7 @@
 #include "control_layer/gridcontrol.h"
 #include "control_layer/terminalcontrol.h"
 #include "control_layer/windowcontrol.h"
+#include <filesystem>
 
 class IModelAccessRead;
 class WindowService;
@@ -76,6 +77,8 @@ private:
     // a cached value from a different box must not suppress the first sync for
     // the newly selected one.
     int m_lastSyncedBoxScrollOffset = -1;
+
+    void dispatchHornetCommand(const HornetCommandDTO &command);
 
     mutable int debugPrintCounter = 0;
 };

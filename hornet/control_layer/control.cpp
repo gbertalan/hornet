@@ -17,6 +17,9 @@
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include <shared/dto_model_to_view/editorviewstatedto.h>
 
+#include <fstream>
+#include <iostream>
+
 Control::Control(IModelAccessRead &modelAccess,
                  WindowService &windowService,
                  EditorService &editorService,
@@ -82,11 +85,15 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         onDebugRequested();
         return;
     }
-    if (m_modelAccess.getEditorModel().isTerminal()
-        && m_terminalControl.dispatchTerminalKeyPress(dto)) {
-        m_editorControl.sendStateToEditor(buildTerminalPrompts());
-        m_editorControl.sendCursorPosToEditor();
-        return;
+    if (m_modelAccess.getEditorModel().isTerminal()) {
+        const TerminalKeyPressResultDTO result = m_terminalControl.dispatchTerminalKeyPress(dto);
+        if (result.wasHandled) {
+            if (result.hornetCommand.wasHornetCommand)
+                dispatchHornetCommand(result.hornetCommand);
+            m_editorControl.sendStateToEditor(buildTerminalPrompts());
+            m_editorControl.sendCursorPosToEditor();
+            return;
+        }
     }
     int lineCountBefore = m_modelAccess.getEditorModel().getNoOfLines();
     int cursorYBefore = m_modelAccess.getEditorModel().getCursorY();
@@ -187,6 +194,29 @@ std::vector<std::u32string> Control::convertBodyLinesToU32(const QVector<QString
     for (const QString &line : bodyLines)
         result.push_back(convertQStringToU32String(line));
     return result;
+}
+
+void Control::dispatchHornetCommand(const HornetCommandDTO &command)
+{
+    if (command.subcommand == "load") {
+        const std::filesystem::path filePath = command.workingDirectory
+                                               / command.argument.toStdString();
+
+        std::ifstream fileStream(filePath);
+        if (!fileStream.is_open()) {
+            std::cout << "hornet load: could not open file: " << filePath.string() << std::endl;
+            return;
+        }
+
+        QVector<QString> bodyLines;
+        std::string line;
+        while (std::getline(fileStream, line))
+            bodyLines.push_back(QString::fromStdString(line));
+
+        const QString headerText = QString::fromStdString(filePath.filename().string());
+        m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines);
+        m_gridControl.refreshGridViewState();
+    }
 }
 
 void Control::onDebugRequested()

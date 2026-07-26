@@ -7,6 +7,21 @@ class EditorService;
 class TerminalService;
 struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
+
+struct HornetCommandDTO
+{
+    bool wasHornetCommand;
+    QString subcommand;
+    QString argument;
+    std::filesystem::path workingDirectory;
+};
+
+struct TerminalKeyPressResultDTO
+{
+    bool wasHandled;
+    HornetCommandDTO hornetCommand; // wasHornetCommand=false unless a hornet command was executed
+};
+
 class TerminalControl : public QObject
 {
     Q_OBJECT
@@ -15,10 +30,11 @@ public:
                              EditorService &editorService,
                              TerminalService &terminalService);
     void init();
-    bool dispatchTerminalKeyPress(const EditorKeyPressDTO &dto);
+    TerminalKeyPressResultDTO dispatchTerminalKeyPress(const EditorKeyPressDTO &dto);
     void removePromptForDeletedLine(int lineCountBefore, int cursorYBefore);
     void dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto);
-    void executeCommand();
+    HornetCommandDTO executeCommand();
+    HornetCommandDTO checkForHornetCommand(int cursorY);
 
 private:
     QString getCurrentLineAsQString(int cursorY) const;

@@ -31,33 +31,45 @@ void TerminalControl::dispatchEditorCursorPosChanged(const EditorCursorPosDTO &d
         m_terminalService.setCurrentDirectory(terminalPromptAndDirs.at(cursorY).directory);
 }
 
-bool TerminalControl::dispatchTerminalKeyPress(const EditorKeyPressDTO &dto)
+TerminalKeyPressResultDTO TerminalControl::dispatchTerminalKeyPress(const EditorKeyPressDTO &dto)
 {
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter) {
-        executeCommand();
-        return true;
+        const HornetCommandDTO hornetCommand = executeCommand();
+        return TerminalKeyPressResultDTO{true, hornetCommand};
     }
-    return false;
+    return TerminalKeyPressResultDTO{false,
+                                     HornetCommandDTO{false,
+                                                      "",
+                                                      "",
+                                                      m_terminalService.getCurrentDirectory()}};
 }
 
-void TerminalControl::executeCommand()
+HornetCommandDTO TerminalControl::executeCommand()
 {
     const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
     if (lines.empty())
-        return;
+        return HornetCommandDTO{false, "", "", m_terminalService.getCurrentDirectory()};
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     int lastLineNumber = m_modelAccess.getEditorModel().getNoOfLines() - 1;
     if (lines.at(cursorY).empty())
-        return;
-    QString command = getCurrentLineAsQString(cursorY);
-    std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
-    if (cursorY == lastLineNumber)
-        m_terminalService.setCurrentDirectory(workingDir);
-    runCommand(command, workingDir);
+        return HornetCommandDTO{false, "", "", m_terminalService.getCurrentDirectory()};
+
+    const HornetCommandDTO hornetCommand = checkForHornetCommand(cursorY);
+
+    if (!hornetCommand.wasHornetCommand) {
+        QString command = getCurrentLineAsQString(cursorY);
+        std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
+        if (cursorY == lastLineNumber)
+            m_terminalService.setCurrentDirectory(workingDir);
+        runCommand(command, workingDir);
+    }
+
     if (cursorY == lastLineNumber)
         handleLastLineExecution();
     else
         handleNonLastLineExecution(cursorY, lastLineNumber);
+
+    return hornetCommand;
 }
 
 QString TerminalControl::getCurrentLineAsQString(int cursorY) const
@@ -127,4 +139,23 @@ void TerminalControl::removePromptForDeletedLine(int lineCountBefore, int cursor
     int lineCountAfter = m_modelAccess.getEditorModel().getNoOfLines();
     if (lineCountAfter < lineCountBefore)
         m_terminalService.removeTerminalPromptAndDir(cursorYBefore);
+}
+
+HornetCommandDTO TerminalControl::checkForHornetCommand(int cursorY)
+{
+    const QString line = getCurrentLineAsQString(cursorY).trimmed();
+    const QString prefix = "hornet ";
+    const std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
+
+    if (!line.startsWith(prefix))
+        return HornetCommandDTO{false, "", "", workingDir};
+
+    const QString remainder = line.mid(prefix.length()).trimmed();
+    const int spaceIndex = remainder.indexOf(' ');
+    if (spaceIndex == -1)
+        return HornetCommandDTO{true, remainder, "", workingDir};
+
+    const QString subcommand = remainder.left(spaceIndex);
+    const QString argument = remainder.mid(spaceIndex + 1).trimmed();
+    return HornetCommandDTO{true, subcommand, argument, workingDir};
 }
