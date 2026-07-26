@@ -14,6 +14,7 @@
 #include "shared/dto_view_to_model/windowdto.h"
 #include "view_layer/view.h"
 
+#include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include <shared/dto_model_to_view/editorviewstatedto.h>
 
 Control::Control(IModelAccessRead &modelAccess,
@@ -59,6 +60,12 @@ void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
     m_editorService.storeEditorState(dto);
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
+
+    if (m_currentlySelectedBoxId != -1 && dto.topLineIndex != m_lastSyncedBoxScrollOffset) {
+        m_gridService.setBoxScrollOffset(m_currentlySelectedBoxId, dto.topLineIndex);
+        m_lastSyncedBoxScrollOffset = dto.topLineIndex;
+        m_gridControl.refreshGridViewState();
+    }
 }
 
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
@@ -120,8 +127,12 @@ QVector<QString> Control::buildTerminalPrompts() const
 
 void Control::onBoxSelected(const BoxSelectedDTO &dto)
 {
-    if (m_currentlySelectedBoxId != -1)
-        flushEditorContentToBox(m_currentlySelectedBoxId);
+    const int previouslySelectedBoxId = m_currentlySelectedBoxId;
+    if (previouslySelectedBoxId != -1)
+        flushEditorContentToBox(previouslySelectedBoxId);
+
+    m_currentlySelectedBoxId = dto.boxId;
+    m_lastSyncedBoxScrollOffset = -1;
 
     const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(dto.boxId);
     const std::vector<std::u32string> bodyLinesAsU32 = convertBodyLinesToU32(boxContent.bodyLines);
@@ -139,7 +150,6 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
     m_editorControl.sendCursorPosToEditor();
     m_editorControl.sendSettingsToEditor();
-    m_currentlySelectedBoxId = dto.boxId;
 
     m_gridService.setSelectedBox(dto.boxId);
     m_gridControl.refreshGridViewState();

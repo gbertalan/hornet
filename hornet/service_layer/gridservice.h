@@ -27,6 +27,7 @@ public:
     void updateBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
     int findFirstBoxIdOfType(BoxContentType contentType) const;
     void setSelectedBox(int boxId);
+    void setBoxScrollOffset(int boxId, int scrollOffset);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

@@ -34,7 +34,7 @@ GridViewStateDTO GridService::retrieveGridViewState() const
     boxViewDTOs.reserve(gridModel.getBoxes().size());
     for (const BoxModel &box : gridModel.getBoxes()) {
         const int headerHeightUnits = 3;
-        const int visibleLineCount = std::max(0, box.getHeight() - headerHeightUnits + 1);
+        const int visibleLineCount = std::max(0, box.getHeight() - headerHeightUnits);
         const QVector<QString> allBodyLines = box.getBodyLines();
         const int totalLineCount = static_cast<int>(allBodyLines.size());
         const int scrollStart = std::min(box.getBodyScrollOffset(), totalLineCount);
@@ -119,4 +119,9 @@ int GridService::findFirstBoxIdOfType(BoxContentType contentType) const
 void GridService::setSelectedBox(int boxId)
 {
     m_modelAccess.getGridModel().setSelectedBoxId(boxId);
+}
+
+void GridService::setBoxScrollOffset(int boxId, int scrollOffset)
+{
+    m_modelAccess.getGridModel().getBox(boxId).setBodyScrollOffset(scrollOffset);
 }

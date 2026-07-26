@@ -71,5 +71,11 @@ private:
     TerminalControl m_terminalControl;
     GridControl m_gridControl;
 
+    // Avoids redundant grid refreshes when the Editor reports the same scroll
+    // position it already reported last time. Reset to -1 on box switch, since
+    // a cached value from a different box must not suppress the first sync for
+    // the newly selected one.
+    int m_lastSyncedBoxScrollOffset = -1;
+
     mutable int debugPrintCounter = 0;
 };
