@@ -74,7 +74,7 @@ void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
 void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 {
     m_editorService.storeCursorPos(dto);
-    if (m_modelAccess.getEditorModel().isTerminal())
+    if (m_modelAccess.getEditorModel().isTerminal() && !m_isRestoringBoxState)
         m_terminalControl.dispatchEditorCursorPosChanged(dto);
     m_editorControl.sendCursorPosToEditor();
 }
@@ -141,6 +141,8 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_currentlySelectedBoxId = dto.boxId;
     m_lastSyncedBoxScrollOffset = -1;
 
+    m_isRestoringBoxState = true;
+
     const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(dto.boxId);
     const std::vector<std::u32string> bodyLinesAsU32 = convertBodyLinesToU32(boxContent.bodyLines);
 
@@ -157,6 +159,8 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
     m_editorControl.sendCursorPosToEditor();
     m_editorControl.sendSettingsToEditor();
+
+    m_isRestoringBoxState = false;
 
     m_gridService.setSelectedBox(dto.boxId);
     m_gridControl.refreshGridViewState();

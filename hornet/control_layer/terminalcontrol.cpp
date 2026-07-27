@@ -62,6 +62,8 @@ HornetCommandDTO TerminalControl::executeCommand()
         if (cursorY == lastLineNumber)
             m_terminalService.setCurrentDirectory(workingDir);
         runCommand(command, workingDir);
+    } else {
+        m_terminalService.setCurrentDirectory(hornetCommand.workingDirectory);
     }
 
     if (cursorY == lastLineNumber)

@@ -80,5 +80,7 @@ private:
 
     void dispatchHornetCommand(const HornetCommandDTO &command);
 
+    bool m_isRestoringBoxState = false;
+
     mutable int debugPrintCounter = 0;
 };
