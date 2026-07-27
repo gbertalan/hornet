@@ -1,0 +1,12 @@
+English: The quick brown fox jumps over the lazy dog.
+Hungarian: Árvíztűrő tükörfúrógép, cukiszóló, jó éjszakát!
+Chinese (Simplified): 你好世界，这是一个测试文件。
+Chinese (Traditional): 你好世界，這是一個測試檔案。
+Japanese: こんにちは世界、これはテストファイルです。
+Korean: 안녕하세요 세계, 이것은 테스트 파일입니다.
+Arabic: مرحبا بالعالم، هذا ملف اختبار.
+Hebrew: שלום עולם, זהו קובץ בדיקה.
+Russian: Привет, мир! Это тестовый файл.
+Greek: Γειά σου Κόσμε, αυτό είναι ένα αρχείο δοκιμής.
+Emoji: 🐝🍯🔥💻🚀
+Mixed line: café, naïve, Zürich, façade, 東京, Москва
