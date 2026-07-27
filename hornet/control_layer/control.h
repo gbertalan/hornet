@@ -78,6 +78,7 @@ private:
     // the newly selected one.
     int m_lastSyncedBoxScrollOffset = -1;
 
+    bool loadFileIntoNewBox(const std::filesystem::path &filePath);
     void dispatchHornetCommand(const HornetCommandDTO &command);
 
     bool m_isRestoringBoxState = false;

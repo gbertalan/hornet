@@ -200,25 +200,61 @@ std::vector<std::u32string> Control::convertBodyLinesToU32(const QVector<QString
     return result;
 }
 
+bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
+{
+    std::ifstream fileStream(filePath);
+    if (!fileStream.is_open()) {
+        std::cout << "hornet load: could not open file: " << filePath.string() << std::endl;
+        return false;
+    }
+
+    QVector<QString> bodyLines;
+    std::string line;
+    while (std::getline(fileStream, line))
+        bodyLines.push_back(QString::fromStdString(line));
+
+    const QString headerText = QString::fromStdString(filePath.filename().string());
+    m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines);
+    return true;
+}
+
 void Control::dispatchHornetCommand(const HornetCommandDTO &command)
 {
     if (command.subcommand == "load") {
         const std::filesystem::path filePath = command.workingDirectory
                                                / command.argument.toStdString();
+        if (loadFileIntoNewBox(filePath))
+            m_gridControl.refreshGridViewState();
+    } else if (command.subcommand == "load-dir") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 2) {
+            std::cout << "hornet load-dir: usage: hornet load-dir <path> <extension> [recursive]"
+                      << std::endl;
+            return;
+        }
+        const std::filesystem::path dirPath = command.workingDirectory / parts.at(0).toStdString();
+        const std::string extensionWithDot = "." + parts.at(1).toStdString();
+        const bool recursive = (parts.size() >= 3 && parts.at(2) == "recursive");
 
-        std::ifstream fileStream(filePath);
-        if (!fileStream.is_open()) {
-            std::cout << "hornet load: could not open file: " << filePath.string() << std::endl;
+        if (!std::filesystem::exists(dirPath) || !std::filesystem::is_directory(dirPath)) {
+            std::cout << "hornet load-dir: not a directory: " << dirPath.string() << std::endl;
             return;
         }
 
-        QVector<QString> bodyLines;
-        std::string line;
-        while (std::getline(fileStream, line))
-            bodyLines.push_back(QString::fromStdString(line));
+        int filesLoaded = 0;
+        if (recursive) {
+            for (const auto &entry : std::filesystem::recursive_directory_iterator(dirPath))
+                if (entry.is_regular_file() && entry.path().extension() == extensionWithDot)
+                    if (loadFileIntoNewBox(entry.path()))
+                        ++filesLoaded;
+        } else {
+            for (const auto &entry : std::filesystem::directory_iterator(dirPath))
+                if (entry.is_regular_file() && entry.path().extension() == extensionWithDot)
+                    if (loadFileIntoNewBox(entry.path()))
+                        ++filesLoaded;
+        }
 
-        const QString headerText = QString::fromStdString(filePath.filename().string());
-        m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines);
+        std::cout << "hornet load-dir: loaded " << filesLoaded << " file(s)" << std::endl;
         m_gridControl.refreshGridViewState();
     }
 }
