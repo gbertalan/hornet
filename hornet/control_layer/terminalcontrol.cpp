@@ -34,34 +34,39 @@ void TerminalControl::dispatchEditorCursorPosChanged(const EditorCursorPosDTO &d
 TerminalKeyPressResultDTO TerminalControl::dispatchTerminalKeyPress(const EditorKeyPressDTO &dto)
 {
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Enter) {
-        const HornetCommandDTO hornetCommand = executeCommand();
-        return TerminalKeyPressResultDTO{true, hornetCommand};
+        const CommandExecutionResultDTO result = executeCommand();
+        return TerminalKeyPressResultDTO{true, result};
     }
-    return TerminalKeyPressResultDTO{false,
-                                     HornetCommandDTO{false,
-                                                      "",
-                                                      "",
-                                                      m_terminalService.getCurrentDirectory()}};
+    const CommandExecutionResultDTO
+        emptyResult{"",
+                    HornetCommandDTO{false, "", "", m_terminalService.getCurrentDirectory()},
+                    ""};
+    return TerminalKeyPressResultDTO{false, emptyResult};
 }
 
-HornetCommandDTO TerminalControl::executeCommand()
+CommandExecutionResultDTO TerminalControl::executeCommand()
 {
     const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
+    const CommandExecutionResultDTO
+        emptyResult{"",
+                    HornetCommandDTO{false, "", "", m_terminalService.getCurrentDirectory()},
+                    ""};
     if (lines.empty())
-        return HornetCommandDTO{false, "", "", m_terminalService.getCurrentDirectory()};
+        return emptyResult;
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     int lastLineNumber = m_modelAccess.getEditorModel().getNoOfLines() - 1;
     if (lines.at(cursorY).empty())
-        return HornetCommandDTO{false, "", "", m_terminalService.getCurrentDirectory()};
+        return emptyResult;
 
+    const QString commandText = getCurrentLineAsQString(cursorY);
     const HornetCommandDTO hornetCommand = checkForHornetCommand(cursorY);
 
+    QString shellOutput;
     if (!hornetCommand.wasHornetCommand) {
-        QString command = getCurrentLineAsQString(cursorY);
         std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
         if (cursorY == lastLineNumber)
             m_terminalService.setCurrentDirectory(workingDir);
-        runCommand(command, workingDir);
+        shellOutput = runCommand(commandText, workingDir);
     } else {
         m_terminalService.setCurrentDirectory(hornetCommand.workingDirectory);
     }
@@ -71,7 +76,7 @@ HornetCommandDTO TerminalControl::executeCommand()
     else
         handleNonLastLineExecution(cursorY, lastLineNumber);
 
-    return hornetCommand;
+    return CommandExecutionResultDTO{commandText, hornetCommand, shellOutput};
 }
 
 QString TerminalControl::getCurrentLineAsQString(int cursorY) const
@@ -101,16 +106,18 @@ QString TerminalControl::runCommand(const QString &command, const std::filesyste
     m_process.waitForFinished();
     QString output = QString::fromUtf8(m_process.readAllStandardOutput());
     int sentinelIndex = output.indexOf(sentinel);
+    QString commandOutput;
     if (sentinelIndex != -1) {
-        QString commandOutput = output.left(sentinelIndex).trimmed();
+        commandOutput = output.left(sentinelIndex).trimmed();
         QString newDir = output.mid(sentinelIndex + sentinel.length()).trimmed();
         if (!commandOutput.isEmpty())
             std::cout << commandOutput.toStdString() << std::endl;
         m_terminalService.setCurrentDirectory(std::filesystem::path(newDir.toStdString()));
     } else {
+        commandOutput = output.trimmed();
         std::cout << output.toStdString() << std::endl;
     }
-    return output;
+    return commandOutput;
 }
 
 void TerminalControl::handleLastLineExecution()

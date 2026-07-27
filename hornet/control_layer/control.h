@@ -79,7 +79,8 @@ private:
     int m_lastSyncedBoxScrollOffset = -1;
 
     bool loadFileIntoNewBox(const std::filesystem::path &filePath);
-    void dispatchHornetCommand(const HornetCommandDTO &command);
+    QString dispatchHornetCommand(const HornetCommandDTO &command);
+    void createCommandOutputBox(const QString &commandText, const QString &outputText);
 
     bool m_isRestoringBoxState = false;
 

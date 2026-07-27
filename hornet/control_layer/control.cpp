@@ -88,8 +88,17 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     if (m_modelAccess.getEditorModel().isTerminal()) {
         const TerminalKeyPressResultDTO result = m_terminalControl.dispatchTerminalKeyPress(dto);
         if (result.wasHandled) {
-            if (result.hornetCommand.wasHornetCommand)
-                dispatchHornetCommand(result.hornetCommand);
+            const CommandExecutionResultDTO &executionResult = result.commandExecutionResult;
+            if (!executionResult.commandText.isEmpty()) {
+                if (executionResult.hornetCommand.wasHornetCommand) {
+                    const QString hornetMessage = dispatchHornetCommand(
+                        executionResult.hornetCommand);
+                    createCommandOutputBox(executionResult.commandText, hornetMessage);
+                } else {
+                    createCommandOutputBox(executionResult.commandText, executionResult.shellOutput);
+                }
+                m_gridControl.refreshGridViewState();
+            }
             m_editorControl.sendStateToEditor(buildTerminalPrompts());
             m_editorControl.sendCursorPosToEditor();
             return;
@@ -218,28 +227,29 @@ bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
     return true;
 }
 
-void Control::dispatchHornetCommand(const HornetCommandDTO &command)
+QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
 {
     if (command.subcommand == "load") {
         const std::filesystem::path filePath = command.workingDirectory
                                                / command.argument.toStdString();
-        if (loadFileIntoNewBox(filePath))
+        if (loadFileIntoNewBox(filePath)) {
             m_gridControl.refreshGridViewState();
-    } else if (command.subcommand == "load-dir") {
-        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
-        if (parts.size() < 2) {
-            std::cout << "hornet load-dir: usage: hornet load-dir <path> <extension> [recursive]"
-                      << std::endl;
-            return;
+            return "loaded file: " + QString::fromStdString(filePath.filename().string());
         }
+        return "could not open file: " + QString::fromStdString(filePath.string());
+    }
+
+    if (command.subcommand == "load-dir") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 2)
+            return "usage: hornet load-dir <path> <extension> [recursive]";
+
         const std::filesystem::path dirPath = command.workingDirectory / parts.at(0).toStdString();
         const std::string extensionWithDot = "." + parts.at(1).toStdString();
         const bool recursive = (parts.size() >= 3 && parts.at(2) == "recursive");
 
-        if (!std::filesystem::exists(dirPath) || !std::filesystem::is_directory(dirPath)) {
-            std::cout << "hornet load-dir: not a directory: " << dirPath.string() << std::endl;
-            return;
-        }
+        if (!std::filesystem::exists(dirPath) || !std::filesystem::is_directory(dirPath))
+            return "not a directory: " + QString::fromStdString(dirPath.string());
 
         int filesLoaded = 0;
         if (recursive) {
@@ -254,9 +264,23 @@ void Control::dispatchHornetCommand(const HornetCommandDTO &command)
                         ++filesLoaded;
         }
 
-        std::cout << "hornet load-dir: loaded " << filesLoaded << " file(s)" << std::endl;
         m_gridControl.refreshGridViewState();
+        return "loaded " + QString::number(filesLoaded) + " file(s)";
     }
+
+    return "unknown hornet command: " + command.subcommand;
+}
+
+void Control::createCommandOutputBox(const QString &commandText, const QString &outputText)
+{
+    QVector<QString> bodyLines;
+    if (outputText.isEmpty()) {
+        bodyLines.push_back("(no output)");
+    } else {
+        for (const QString &line : outputText.split('\n'))
+            bodyLines.push_back(line);
+    }
+    m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines);
 }
 
 void Control::onDebugRequested()

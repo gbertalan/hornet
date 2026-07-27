@@ -16,10 +16,17 @@ struct HornetCommandDTO
     std::filesystem::path workingDirectory;
 };
 
+struct CommandExecutionResultDTO
+{
+    QString commandText;
+    HornetCommandDTO hornetCommand;
+    QString shellOutput;
+};
+
 struct TerminalKeyPressResultDTO
 {
     bool wasHandled;
-    HornetCommandDTO hornetCommand; // wasHornetCommand=false unless a hornet command was executed
+    CommandExecutionResultDTO commandExecutionResult;
 };
 
 class TerminalControl : public QObject
@@ -33,7 +40,7 @@ public:
     TerminalKeyPressResultDTO dispatchTerminalKeyPress(const EditorKeyPressDTO &dto);
     void removePromptForDeletedLine(int lineCountBefore, int cursorYBefore);
     void dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto);
-    HornetCommandDTO executeCommand();
+    CommandExecutionResultDTO executeCommand();
     HornetCommandDTO checkForHornetCommand(int cursorY);
 
 private:
