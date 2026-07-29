@@ -112,8 +112,16 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         float scaleFactor = 2.5f;
         const float headerTextWidth = fontAtlas.textWidth(box.headerText.length(), textScale)
                                       * scaleFactor;
-        const float headerTextX = static_cast<float>(screenX + screenW / 2.0)
-                                  - headerTextWidth / 2.0f;
+        const float oneCharWidth = fontAtlas.textWidth(1, textScale) * scaleFactor;
+        const float leftMargin = oneCharWidth;
+        const float availableWidth = static_cast<float>(screenW) - (leftMargin * 2.0f);
+
+        float headerTextX = 0.0f;
+        if (headerTextWidth > availableWidth) {
+            headerTextX = static_cast<float>(screenX) + leftMargin;
+        } else {
+            headerTextX = static_cast<float>(screenX + screenW / 2.0) - headerTextWidth / 2.0f;
+        }
 
         // header text:
         fontRenderer.drawText(painter,
