@@ -109,6 +109,10 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     m_editorControl.dispatchEditorKeyPress(dto);
     if (m_modelAccess.getEditorModel().isTerminal())
         m_terminalControl.removePromptForDeletedLine(lineCountBefore, cursorYBefore);
+    if (m_currentlySelectedBoxId != -1) {
+        flushEditorContentToBox(m_currentlySelectedBoxId);
+        m_gridControl.refreshGridViewState();
+    }
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();
