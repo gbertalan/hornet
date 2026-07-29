@@ -1,5 +1,6 @@
 #include "canvaspainter.h"
 #include "view_layer/theme.h"
+#include <algorithm>
 #include <cmath>
 #include <qdebug.h>
 
@@ -122,18 +123,43 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               Theme::almostBlack(),
                               textScale * scaleFactor);
 
-        // body text:
+        // line number gutter, sized to the box's total line count (not just the visible slice)
+        // so it doesn't resize as the box is scrolled:
+        const int digits = std::max(1,
+                                    static_cast<int>(
+                                        QString::number(box.totalBodyLineCount).length()));
+        const float gutterWidth = fontAtlas.textWidth(digits + 2, textScale);
+        const float gutterX = static_cast<float>(screenX + textPadding);
+        const float bodyTextX = gutterX + gutterWidth;
+
+        // body text + line numbers:
         const QVector<QString> &bodyLines = box.bodyLines;
         for (int i = 0; i < bodyLines.size(); ++i) {
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset
                                 + i * static_cast<float>(gridGap);
+
+            const QString lineNumber = QString::number(box.bodyScrollOffset + i + 1);
+            const float numberWidth = fontAtlas.textWidth(lineNumber.length(), textScale);
+            const float numberX = gutterX + (gutterWidth - numberWidth) / 2.0f;
+            fontRenderer.drawText(painter, numberX, lineY, lineNumber, Theme::darkGray(), textScale);
+
             fontRenderer.drawText(painter,
-                                  static_cast<float>(screenX + textPadding),
+                                  bodyTextX + (textPadding * 2),
                                   lineY,
                                   bodyLines[i],
                                   Theme::darkAmber(),
                                   textScale);
         }
+
+        // gutter separator line:
+        painter.save();
+        painter.setPen(QPen(Theme::darkGray(), 1));
+        for (int i = 0; i < bodyLines.size(); ++i) {
+            const double lineTop = screenY + headerH + i * gridGap;
+            painter.drawLine(QPointF(bodyTextX, lineTop + 1),
+                             QPointF(bodyTextX, lineTop + gridGap + 1));
+        }
+        painter.restore();
 
         painter.setClipping(false);
     }

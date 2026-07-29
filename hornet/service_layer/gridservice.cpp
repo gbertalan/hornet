@@ -48,7 +48,9 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                                          box.getWidth(),
                                          box.getHeight(),
                                          box.getHeaderText(),
-                                         visibleBodyLines});
+                                         visibleBodyLines,
+                                         totalLineCount,
+                                         scrollStart});
     }
 
     return GridViewStateDTO{gridModel.getZoomLevel(),
