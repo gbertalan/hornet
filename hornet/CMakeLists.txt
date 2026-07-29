@@ -24,7 +24,7 @@ set(FT_DISABLE_BROTLI   TRUE CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(freetype)
 # --------------------------------------------------------------------------
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGL OpenGLWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -124,8 +124,6 @@ qt_add_executable(hornet
 
 target_link_libraries(hornet PRIVATE
     Qt6::Widgets
-    Qt6::OpenGL
-    Qt6::OpenGLWidgets
     freetype
 )
 
