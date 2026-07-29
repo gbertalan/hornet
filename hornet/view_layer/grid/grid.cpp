@@ -29,6 +29,7 @@ void Grid::updateGridViewState(const GridViewStateDTO &dto)
     offset = dto.offset;
     boxes = dto.boxes;
     m_selectedBoxId = dto.selectedBoxId;
+
     update();
 }
 

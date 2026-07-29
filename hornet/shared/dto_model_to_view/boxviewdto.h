@@ -2,6 +2,7 @@
 #define BOXVIEWDTO_H
 #include <QString>
 #include <QVector>
+
 struct BoxViewDTO
 {
     int id;
@@ -13,6 +14,8 @@ struct BoxViewDTO
     QVector<QString> bodyLines;
     int totalBodyLineCount;
     int bodyScrollOffset;
+    int cursorX;
+    int cursorY;
 
     BoxViewDTO(int id,
                int posX,
@@ -22,7 +25,9 @@ struct BoxViewDTO
                const QString &headerText,
                const QVector<QString> &bodyLines,
                int totalBodyLineCount,
-               int bodyScrollOffset)
+               int bodyScrollOffset,
+               int cursorX,
+               int cursorY)
         : id(id)
         , posX(posX)
         , posY(posY)
@@ -32,6 +37,8 @@ struct BoxViewDTO
         , bodyLines(bodyLines)
         , totalBodyLineCount(totalBodyLineCount)
         , bodyScrollOffset(bodyScrollOffset)
+        , cursorX(cursorX)
+        , cursorY(cursorY)
     {}
 };
 #endif // BOXVIEWDTO_H

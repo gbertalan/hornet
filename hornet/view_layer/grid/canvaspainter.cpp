@@ -151,12 +151,31 @@ void CanvasPainter::drawBoxes(QPainter &painter,
             const float numberX = gutterX + (gutterWidth - numberWidth) / 2.0f;
             fontRenderer.drawText(painter, numberX, lineY, lineNumber, Theme::darkGray(), textScale);
 
-            fontRenderer.drawText(painter,
-                                  bodyTextX + (textPadding * 2),
-                                  lineY,
-                                  bodyLines[i],
-                                  Theme::darkAmber(),
-                                  textScale);
+            const float textX = bodyTextX + (textPadding * 2);
+            fontRenderer.drawText(painter, textX, lineY, bodyLines[i], Theme::darkAmber(), textScale);
+
+            // draw cursor in the selected box:
+            const int lineIndex = box.bodyScrollOffset + i;
+            if (isSelected && lineIndex == box.cursorY) {
+                const float charWidth = fontAtlas.textWidth(1, textScale);
+                const float cursorPixelX = textX + fontAtlas.textWidth(box.cursorX, textScale);
+
+                painter.fillRect(QRectF(cursorPixelX,
+                                        lineY + 2,
+                                        charWidth,
+                                        static_cast<float>(gridGap)),
+                                 Theme::brightAmber());
+
+                if (box.cursorX < bodyLines[i].length()) {
+                    const QString cursorChar = bodyLines[i][box.cursorX];
+                    fontRenderer.drawText(painter,
+                                          cursorPixelX,
+                                          lineY,
+                                          cursorChar,
+                                          Theme::almostBlack(),
+                                          textScale);
+                }
+            }
         }
 
         // gutter separator line:
