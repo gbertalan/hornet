@@ -44,11 +44,11 @@ set(PROJECT_SOURCES
     view_layer/font_renderer/FontRenderer.cpp
 
     control_layer/control.cpp
-    service_layer/projectservice.cpp
-    service_layer/validator.cpp
+
+
     service_layer/windowservice.cpp
-    service_layer/diskreaderservice.cpp
-    service_layer/diskwriterservice.cpp
+
+
     resources/resources.qrc
 )
 set(PROJECT_HEADERS
@@ -70,11 +70,11 @@ set(PROJECT_HEADERS
     view_layer/font_renderer/FontRenderer.h
 
     control_layer/control.h
-    service_layer/projectservice.h
-    service_layer/validator.h
+
+
     service_layer/windowservice.h
-    service_layer/diskreaderservice.h
-    service_layer/diskwriterservice.h
+
+
     shared/dto_view_to_model/windowdto.h
 )
 qt_add_executable(hornet
