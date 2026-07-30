@@ -77,6 +77,11 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
     if (m_modelAccess.getEditorModel().isTerminal() && !m_isRestoringBoxState)
         m_terminalControl.dispatchEditorCursorPosChanged(dto);
     m_editorControl.sendCursorPosToEditor();
+
+    if (m_currentlySelectedBoxId != -1 && !m_isRestoringBoxState) {
+        flushEditorContentToBox(m_currentlySelectedBoxId);
+        m_gridControl.refreshGridViewState();
+    }
 }
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
