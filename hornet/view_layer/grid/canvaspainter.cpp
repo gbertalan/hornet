@@ -175,6 +175,13 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               box.headerText,
                               Theme::almostBlack(),
                               textScale * scaleFactor);
+        const QString boxIdLabel = "#" + QString::number(box.id);
+        fontRenderer.drawText(painter,
+                              static_cast<float>(screenX) + textPadding,
+                              static_cast<float>(screenY) + lineOffset,
+                              boxIdLabel,
+                              Theme::almostBlack(),
+                              textScale);
 
         // line number gutter, sized to the box's total line count (not just the visible slice)
         // so it doesn't resize as the box is scrolled:
