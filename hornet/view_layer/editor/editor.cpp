@@ -179,7 +179,7 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
     QString lineNumber = QString::number(m_topLineIndex + index + 1);
     float numberWidth = m_fontAtlas.textWidth(lineNumber.length(), m_fontScale);
     float numberX = (lineNumberWidth - numberWidth) / 2.f;
-    if (index == m_cursorY)
+    if (m_topLineIndex + index == m_cursorY)
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
     else
         m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
