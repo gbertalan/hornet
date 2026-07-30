@@ -142,6 +142,26 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
         // body text + line numbers:
         const QVector<QString> &bodyLines = box.bodyLines;
+
+        if (bodyLines.isEmpty()) { // if empty, still draw caret
+            const float lineY = static_cast<float>(screenY + headerH) + lineOffset;
+            const float textX = bodyTextX + (textPadding * 2);
+            const float charWidth = fontAtlas.textWidth(1, textScale);
+            painter.fillRect(QRectF(textX, lineY + 2, charWidth, static_cast<float>(gridGap)),
+                             Theme::brightAmber());
+
+            const QString lineNumber = QString::number(box.bodyScrollOffset + 1);
+            const float numberWidth = fontAtlas.textWidth(lineNumber.length(), textScale);
+            const float numberX = gutterX + (gutterWidth - numberWidth) / 2.0f;
+            fontRenderer.drawText(painter, numberX, lineY, lineNumber, Theme::darkGray(), textScale);
+
+            painter.save();
+            painter.setPen(QPen(Theme::darkGray(), 1));
+            painter.drawLine(QPointF(bodyTextX, screenY + headerH + 1),
+                             QPointF(bodyTextX, screenY + headerH + gridGap + 1));
+            painter.restore();
+        }
+
         for (int i = 0; i < bodyLines.size(); ++i) {
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset
                                 + i * static_cast<float>(gridGap);
@@ -156,7 +176,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
             // draw cursor in the selected box:
             const int lineIndex = box.bodyScrollOffset + i;
-            if (isSelected && lineIndex == box.cursorY) {
+            if (lineIndex == box.cursorY) {
                 const float charWidth = fontAtlas.textWidth(1, textScale);
                 const float cursorPixelX = textX + fontAtlas.textWidth(box.cursorX, textScale);
 
