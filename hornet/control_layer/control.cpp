@@ -104,8 +104,10 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
                 } else {
                     createCommandOutputBox(executionResult.commandText, executionResult.shellOutput);
                 }
-                m_gridControl.refreshGridViewState();
             }
+            if (m_currentlySelectedBoxId != -1)
+                flushEditorContentToBox(m_currentlySelectedBoxId);
+            m_gridControl.refreshGridViewState();
             m_editorControl.sendStateToEditor(buildTerminalPrompts());
             m_editorControl.sendCursorPosToEditor();
             return;
