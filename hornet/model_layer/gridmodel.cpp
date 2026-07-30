@@ -48,10 +48,20 @@ int GridModel::addBox(int posX,
                       int width,
                       int height,
                       const QString &headerText,
-                      const QVector<QString> &bodyLines)
+                      const QVector<QString> &bodyLines,
+                      bool isFileBacked,
+                      const QString &originFilePath)
 {
     const int id = m_nextBoxId++;
-    m_boxes.emplace_back(id, posX, posY, width, height, headerText, bodyLines);
+    m_boxes.emplace_back(id,
+                         posX,
+                         posY,
+                         width,
+                         height,
+                         headerText,
+                         bodyLines,
+                         isFileBacked,
+                         originFilePath);
     return id;
 }
 

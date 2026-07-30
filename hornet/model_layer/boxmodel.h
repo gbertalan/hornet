@@ -12,7 +12,9 @@ public:
                       int width,
                       int height,
                       const QString &headerText,
-                      const QVector<QString> &bodyLines);
+                      const QVector<QString> &bodyLines,
+                      bool isFileBacked,
+                      const QString &originFilePath);
     int getId() const;
     int getPosX() const;
     int getPosY() const;
@@ -32,6 +34,8 @@ public:
     void setCursorPos(int cursorX, int cursorY);
     int getBodyScrollOffset() const;
     void setBodyScrollOffset(int offset);
+    bool getIsFileBacked() const;
+    QString getOriginFilePath() const;
 
 private:
     int m_id;
@@ -48,5 +52,7 @@ private:
     int m_cursorX = 0;
     int m_cursorY = 0;
     int m_bodyScrollOffset = 0;
+    bool m_isFileBacked;
+    QString m_originFilePath;
 };
 #endif // BOXMODEL_H

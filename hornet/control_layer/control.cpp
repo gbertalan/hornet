@@ -17,6 +17,7 @@
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include <shared/dto_model_to_view/editorviewstatedto.h>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 
@@ -238,7 +239,9 @@ bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
         bodyLines.push_back(QString::fromStdString(line));
 
     const QString headerText = QString::fromStdString(filePath.filename().string());
-    m_lastCreatedBoxId = m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines);
+    const QString originFilePath = QString::fromStdString(filePath.string());
+    m_lastCreatedBoxId = m_gridService
+                             .addBox(0, 0, 20, 15, headerText, bodyLines, true, originFilePath);
     return true;
 }
 
@@ -451,6 +454,14 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return executeScriptFile(scriptPath, command.workingDirectory, 1);
     }
 
+    if (command.subcommand == "save") {
+        if (command.argument.isEmpty())
+            return "usage: hornet save <file>";
+        const std::filesystem::path saveFilePath = command.workingDirectory
+                                                   / command.argument.toStdString();
+        return saveProjectToFile(saveFilePath);
+    }
+
     return "unknown hornet command: " + command.subcommand;
 }
 
@@ -512,7 +523,7 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
         for (const QString &line : outputText.split('\n'))
             bodyLines.push_back(line);
     }
-    m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines);
+    m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines, false, QString());
 }
 
 bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
@@ -529,6 +540,49 @@ bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
         return false;
     outBoxId = parsed;
     return true;
+}
+
+QString Control::saveProjectToFile(const std::filesystem::path &filePath)
+{
+    std::ofstream outStream(filePath);
+    if (!outStream.is_open())
+        return "could not open file for writing: " + QString::fromStdString(filePath.string());
+
+    const GridSaveDataDTO saveData = m_gridService.retrieveGridSaveData();
+    const std::filesystem::path saveDir = filePath.parent_path();
+
+    int savedCount = 0;
+    int skippedCount = 0;
+    for (const BoxSaveDataDTO &box : saveData.boxes) {
+        if (!box.isFileBacked) {
+            ++skippedCount;
+            continue;
+        }
+        const std::filesystem::path originPath(box.originFilePath.toStdString());
+        std::filesystem::path relativePath;
+        try {
+            relativePath = std::filesystem::relative(originPath, saveDir);
+        } catch (const std::filesystem::filesystem_error &) {
+            relativePath = originPath;
+        }
+
+        outStream << "hornet load " << relativePath.string() << "\n";
+        outStream << "hornet setpos last " << box.posX << " " << box.posY << "\n";
+        outStream << "hornet setsize last " << box.width << " " << box.height << "\n";
+        outStream << "hornet setscroll last " << box.scrollOffset << "\n";
+        outStream << "hornet setcursor last " << box.cursorX << " " << box.cursorY << "\n\n";
+        ++savedCount;
+    }
+
+    outStream << "hornet setzoom " << saveData.zoomLevel << "\n";
+    outStream << "hornet setoffset " << saveData.offset.x() << " " << saveData.offset.y() << "\n";
+    outStream.close();
+
+    QString message = "saved " + QString::number(savedCount) + " box(es) to "
+                      + QString::fromStdString(filePath.string());
+    if (skippedCount > 0)
+        message += " (skipped " + QString::number(skippedCount) + " non-file-backed box(es))";
+    return message;
 }
 
 void Control::onDebugRequested()

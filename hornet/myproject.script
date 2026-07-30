@@ -1,0 +1,8 @@
+hornet load main.cpp
+hornet setpos last 13 40
+hornet setsize last 20 15
+hornet setscroll last 0
+hornet setcursor last 0 0
+
+hornet setzoom 14
+hornet setoffset 130 195

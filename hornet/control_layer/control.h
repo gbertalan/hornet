@@ -49,6 +49,7 @@ public slots:
     void onBoxResized(const BoxResizeDTO &dto);
     // debug:
     void onDebugRequested();
+    QString saveProjectToFile(const std::filesystem::path &filePath);
 
 private:
     /**

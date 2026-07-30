@@ -25,7 +25,9 @@ public:
                int width,
                int height,
                const QString &headerText,
-               const QVector<QString> &bodyLines);
+               const QVector<QString> &bodyLines,
+               bool isFileBacked,
+               const QString &originFilePath);
     void removeBox(int id);
     int getSelectedBoxId() const;
     void setSelectedBoxId(int boxId);

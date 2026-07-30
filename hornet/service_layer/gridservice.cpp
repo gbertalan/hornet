@@ -74,10 +74,14 @@ int GridService::addBox(int posX,
                         int width,
                         int height,
                         const QString &headerText,
-                        const QVector<QString> &bodyLines)
+                        const QVector<QString> &bodyLines,
+                        bool isFileBacked,
+                        const QString &originFilePath)
 {
-    return m_modelAccess.getGridModel().addBox(posX, posY, width, height, headerText, bodyLines);
+    return m_modelAccess.getGridModel()
+        .addBox(posX, posY, width, height, headerText, bodyLines, isFileBacked, originFilePath);
 }
+
 void GridService::moveBoxes(const BoxDragDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
@@ -211,4 +215,24 @@ void GridService::removeBox(int boxId)
 {
     m_modelAccess.getGridModel().getBox(boxId); // throws if missing, same guard as other setters
     m_modelAccess.getGridModel().removeBox(boxId);
+}
+
+GridSaveDataDTO GridService::retrieveGridSaveData() const
+{
+    const GridModel &gridModel = m_modelAccess.getGridModel();
+    std::vector<BoxSaveDataDTO> boxes;
+    boxes.reserve(gridModel.getBoxes().size());
+    for (const BoxModel &box : gridModel.getBoxes()) {
+        boxes.push_back(BoxSaveDataDTO{box.getId(),
+                                       box.getPosX(),
+                                       box.getPosY(),
+                                       box.getWidth(),
+                                       box.getHeight(),
+                                       box.getBodyScrollOffset(),
+                                       box.getCursorX(),
+                                       box.getCursorY(),
+                                       box.getIsFileBacked(),
+                                       box.getOriginFilePath()});
+    }
+    return GridSaveDataDTO{gridModel.getZoomLevel(), gridModel.getOffset(), boxes};
 }

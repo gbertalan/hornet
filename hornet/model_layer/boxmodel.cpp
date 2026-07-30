@@ -6,7 +6,9 @@ BoxModel::BoxModel(int id,
                    int width,
                    int height,
                    const QString &headerText,
-                   const QVector<QString> &bodyLines)
+                   const QVector<QString> &bodyLines,
+                   bool isFileBacked,
+                   const QString &originFilePath)
     : m_id(id)
     , m_posX(posX)
     , m_posY(posY)
@@ -15,6 +17,8 @@ BoxModel::BoxModel(int id,
     , m_headerText(headerText)
     , m_bodyLines(bodyLines)
     , m_contentType(determineContentTypeFromHeaderText(headerText))
+    , m_isFileBacked(isFileBacked)
+    , m_originFilePath(originFilePath)
 {}
 int BoxModel::getId() const
 {
@@ -105,4 +109,13 @@ int BoxModel::getBodyScrollOffset() const
 void BoxModel::setBodyScrollOffset(int offset)
 {
     m_bodyScrollOffset = std::max(0, offset);
+}
+
+bool BoxModel::getIsFileBacked() const
+{
+    return m_isFileBacked;
+}
+QString BoxModel::getOriginFilePath() const
+{
+    return m_originFilePath;
 }
