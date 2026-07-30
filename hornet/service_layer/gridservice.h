@@ -31,6 +31,11 @@ public:
     void setBoxScrollOffset(int boxId, int scrollOffset);
     void resizeBox(const BoxResizeDTO &dto);
     void setBoxPosition(int boxId, int posX, int posY);
+    void setBoxSize(int boxId, int width, int height);
+    void setCursorPosition(int boxId, int cursorX, int cursorY);
+    void setZoomLevel(int zoomLevel);
+    void setGridOffset(int offsetX, int offsetY);
+    void removeBox(int boxId);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

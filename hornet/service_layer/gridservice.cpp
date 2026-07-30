@@ -184,3 +184,32 @@ void GridService::setBoxPosition(int boxId, int posX, int posY)
     box.setPosX(posX);
     box.setPosY(posY);
 }
+
+void GridService::setBoxSize(int boxId, int width, int height)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setWidth(width);
+    box.setHeight(height);
+}
+
+void GridService::setCursorPosition(int boxId, int cursorX, int cursorY)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setCursorPos(cursorX, cursorY);
+}
+
+void GridService::setZoomLevel(int zoomLevel)
+{
+    m_modelAccess.getGridModel().setZoomLevel(zoomLevel);
+}
+
+void GridService::setGridOffset(int offsetX, int offsetY)
+{
+    m_modelAccess.getGridModel().setOffset(QPoint(offsetX, offsetY));
+}
+
+void GridService::removeBox(int boxId)
+{
+    m_modelAccess.getGridModel().getBox(boxId); // throws if missing, same guard as other setters
+    m_modelAccess.getGridModel().removeBox(boxId);
+}

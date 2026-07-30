@@ -98,7 +98,8 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
                 if (executionResult.hornetCommand.wasHornetCommand) {
                     const QString hornetMessage = dispatchHornetCommand(
                         executionResult.hornetCommand);
-                    createCommandOutputBox(executionResult.commandText, hornetMessage);
+                    if (!hornetMessage.isEmpty())
+                        createCommandOutputBox(executionResult.commandText, hornetMessage);
                 } else {
                     createCommandOutputBox(executionResult.commandText, executionResult.shellOutput);
                 }
@@ -303,8 +304,131 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         }
 
         m_gridControl.refreshGridViewState();
-        return "moved box " + QString::number(boxId) + " to (" + QString::number(x) + ", "
-               + QString::number(y) + ")";
+        return "";
+    }
+
+    if (command.subcommand == "setsize") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 3)
+            return "usage: hornet setsize <boxId> <width> <height>";
+        bool boxIdOk = false, widthOk = false, heightOk = false;
+        const int boxId = parts.at(0).toInt(&boxIdOk);
+        const int width = parts.at(1).toInt(&widthOk);
+        const int height = parts.at(2).toInt(&heightOk);
+        if (!boxIdOk || !widthOk || !heightOk)
+            return "usage: hornet setsize <boxId> <width> <height> (all must be integers)";
+        try {
+            m_gridService.setBoxSize(boxId, width, height);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+        m_gridControl.refreshGridViewState();
+        return "";
+    }
+
+    if (command.subcommand == "setscroll") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 2)
+            return "usage: hornet setscroll <boxId> <offset>";
+        bool boxIdOk = false, offsetOk = false;
+        const int boxId = parts.at(0).toInt(&boxIdOk);
+        const int offset = parts.at(1).toInt(&offsetOk);
+        if (!boxIdOk || !offsetOk)
+            return "usage: hornet setscroll <boxId> <offset> (all must be integers)";
+        try {
+            m_gridService.setBoxScrollOffset(boxId, offset);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+        m_gridControl.refreshGridViewState();
+        return "";
+    }
+
+    if (command.subcommand == "setcursor") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 3)
+            return "usage: hornet setcursor <boxId> <x> <y>";
+        bool boxIdOk = false, xOk = false, yOk = false;
+        const int boxId = parts.at(0).toInt(&boxIdOk);
+        const int x = parts.at(1).toInt(&xOk);
+        const int y = parts.at(2).toInt(&yOk);
+        if (!boxIdOk || !xOk || !yOk)
+            return "usage: hornet setcursor <boxId> <x> <y> (all must be integers)";
+        try {
+            m_gridService.setCursorPosition(boxId, x, y);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+        m_gridControl.refreshGridViewState();
+        return "";
+    }
+
+    if (command.subcommand == "setzoom") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 1)
+            return "usage: hornet setzoom <zoomLevel>";
+        bool zoomOk = false;
+        const int zoomLevel = parts.at(0).toInt(&zoomOk);
+        if (!zoomOk)
+            return "usage: hornet setzoom <zoomLevel> (must be an integer)";
+        m_gridService.setZoomLevel(zoomLevel);
+        m_gridControl.refreshGridViewState();
+        return "";
+    }
+
+    if (command.subcommand == "setoffset") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 2)
+            return "usage: hornet setoffset <x> <y>";
+        bool xOk = false, yOk = false;
+        const int x = parts.at(0).toInt(&xOk);
+        const int y = parts.at(1).toInt(&yOk);
+        if (!xOk || !yOk)
+            return "usage: hornet setoffset <x> <y> (all must be integers)";
+        m_gridService.setGridOffset(x, y);
+        m_gridControl.refreshGridViewState();
+        return "";
+    }
+
+    if (command.subcommand == "unload") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.isEmpty())
+            return "usage: hornet unload <id|range> [<id|range> ...] (e.g. hornet unload 1-3 5 "
+                   "7-9)";
+
+        std::vector<int> idsToRemove;
+        for (const QString &part : parts) {
+            const int dashIndex = part.indexOf('-');
+            if (dashIndex == -1) {
+                bool ok = false;
+                const int id = part.toInt(&ok);
+                if (!ok)
+                    return "invalid id or range: " + part;
+                idsToRemove.push_back(id);
+            } else {
+                bool startOk = false, endOk = false;
+                const int start = part.left(dashIndex).toInt(&startOk);
+                const int end = part.mid(dashIndex + 1).toInt(&endOk);
+                if (!startOk || !endOk || start > end)
+                    return "invalid id or range: " + part;
+                for (int id = start; id <= end; ++id)
+                    idsToRemove.push_back(id);
+            }
+        }
+
+        QStringList notFound;
+        for (const int id : idsToRemove) {
+            try {
+                m_gridService.removeBox(id);
+            } catch (const std::runtime_error &) {
+                notFound.push_back(QString::number(id));
+            }
+        }
+
+        m_gridControl.refreshGridViewState();
+        if (!notFound.isEmpty())
+            return "no box(es) with id: " + notFound.join(", ");
+        return "";
     }
 
     return "unknown hornet command: " + command.subcommand;
