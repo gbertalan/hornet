@@ -17,12 +17,12 @@ public:
     void adjustZoom(const GridZoomDTO &dto);
     GridViewStateDTO retrieveGridViewState() const;
     void adjustOffset(const GridDragDTO &dto);
-    void addBox(int posX,
-                int posY,
-                int width,
-                int height,
-                const QString &headerText,
-                const QVector<QString> &bodyLines);
+    int addBox(int posX,
+               int posY,
+               int width,
+               int height,
+               const QString &headerText,
+               const QVector<QString> &bodyLines);
     void moveBoxes(const BoxDragDTO &dto);
     BoxContentDTO retrieveBoxContent(int boxId) const;
     void updateBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);

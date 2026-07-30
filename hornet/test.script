@@ -1,0 +1,12 @@
+# test.script - using "last" instead of hardcoded box ids
+
+pwd
+
+hornet load main.cpp
+hornet setpos last 5 5
+hornet setsize last 20 15
+hornet setscroll last 0
+hornet setcursor last 0 0
+
+hornet setzoom 22
+hornet setoffset 0 0

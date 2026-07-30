@@ -42,6 +42,11 @@ public:
     void dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto);
     CommandExecutionResultDTO executeCommand();
     HornetCommandDTO checkForHornetCommand(int cursorY);
+    HornetCommandDTO parseHornetCommand(const QString &line,
+                                        const std::filesystem::path &workingDir) const;
+    QString runShellCommandInDirectory(const QString &command,
+                                       const std::filesystem::path &workingDir,
+                                       std::filesystem::path &outResultingDirectory);
 
 private:
     QString getCurrentLineAsQString(int cursorY) const;

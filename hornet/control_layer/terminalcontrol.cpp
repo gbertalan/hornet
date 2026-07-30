@@ -152,14 +152,21 @@ void TerminalControl::removePromptForDeletedLine(int lineCountBefore, int cursor
 
 HornetCommandDTO TerminalControl::checkForHornetCommand(int cursorY)
 {
-    const QString line = getCurrentLineAsQString(cursorY).trimmed();
-    const QString prefix = "hornet ";
+    const QString line = getCurrentLineAsQString(cursorY);
     const std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
+    return parseHornetCommand(line, workingDir);
+}
 
-    if (!line.startsWith(prefix))
+HornetCommandDTO TerminalControl::parseHornetCommand(const QString &line,
+                                                     const std::filesystem::path &workingDir) const
+{
+    const QString trimmedLine = line.trimmed();
+    const QString prefix = "hornet ";
+
+    if (!trimmedLine.startsWith(prefix))
         return HornetCommandDTO{false, "", "", workingDir};
 
-    const QString remainder = line.mid(prefix.length()).trimmed();
+    const QString remainder = trimmedLine.mid(prefix.length()).trimmed();
     const int spaceIndex = remainder.indexOf(' ');
     if (spaceIndex == -1)
         return HornetCommandDTO{true, remainder, "", workingDir};
@@ -167,4 +174,28 @@ HornetCommandDTO TerminalControl::checkForHornetCommand(int cursorY)
     const QString subcommand = remainder.left(spaceIndex);
     const QString argument = remainder.mid(spaceIndex + 1).trimmed();
     return HornetCommandDTO{true, subcommand, argument, workingDir};
+}
+
+QString TerminalControl::runShellCommandInDirectory(const QString &command,
+                                                    const std::filesystem::path &workingDir,
+                                                    std::filesystem::path &outResultingDirectory)
+{
+    QString sentinel = "---SENTINEL---";
+    QString combinedCommand = command + "; echo " + sentinel + "; pwd";
+    QProcess process;
+    process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
+    process.start("/bin/sh", QStringList() << "-c" << combinedCommand);
+    process.waitForFinished();
+    QString output = QString::fromUtf8(process.readAllStandardOutput());
+    int sentinelIndex = output.indexOf(sentinel);
+    QString commandOutput;
+    if (sentinelIndex != -1) {
+        commandOutput = output.left(sentinelIndex).trimmed();
+        QString newDir = output.mid(sentinelIndex + sentinel.length()).trimmed();
+        outResultingDirectory = std::filesystem::path(newDir.toStdString());
+    } else {
+        commandOutput = output.trimmed();
+        outResultingDirectory = workingDir;
+    }
+    return commandOutput;
 }

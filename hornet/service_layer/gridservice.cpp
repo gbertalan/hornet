@@ -69,16 +69,15 @@ void GridService::adjustOffset(const GridDragDTO &dto)
     gridModel.setOffset(gridModel.getOffset() + dto.delta);
 }
 
-void GridService::addBox(int posX,
-                         int posY,
-                         int width,
-                         int height,
-                         const QString &headerText,
-                         const QVector<QString> &bodyLines)
+int GridService::addBox(int posX,
+                        int posY,
+                        int width,
+                        int height,
+                        const QString &headerText,
+                        const QVector<QString> &bodyLines)
 {
-    m_modelAccess.getGridModel().addBox(posX, posY, width, height, headerText, bodyLines);
+    return m_modelAccess.getGridModel().addBox(posX, posY, width, height, headerText, bodyLines);
 }
-
 void GridService::moveBoxes(const BoxDragDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();

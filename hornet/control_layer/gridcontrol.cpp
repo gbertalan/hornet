@@ -15,6 +15,7 @@ GridControl::GridControl(IModelAccessRead &modelAccess, GridService &gridService
 
 void GridControl::init()
 {
+    m_gridService.addBox(20, 2, 15, 10, "my_second_box.terminal", {});
     m_gridService
         .addBox(2,
                 2,
@@ -31,7 +32,6 @@ void GridControl::init()
                  "line 15: this is the fifteenth line.",   "line 16: this is the sixteenth line.",
                  "line 17: this is the seventeenth line.", "line 18: this is the eighteenth line.",
                  "line 19: this is the nineteenth line.",  "line 20: this is the twentieth line."});
-    m_gridService.addBox(20, 2, 15, 10, "my_second_box.terminal", {});
     m_gridService.addBox(38,
                          2,
                          15,

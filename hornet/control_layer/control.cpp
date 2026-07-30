@@ -238,7 +238,7 @@ bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
         bodyLines.push_back(QString::fromStdString(line));
 
     const QString headerText = QString::fromStdString(filePath.filename().string());
-    m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines);
+    m_lastCreatedBoxId = m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines);
     return true;
 }
 
@@ -288,14 +288,13 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         if (parts.size() < 3)
             return "usage: hornet setpos <boxId> <x> <y>";
 
-        bool boxIdOk = false;
-        bool xOk = false;
-        bool yOk = false;
-        const int boxId = parts.at(0).toInt(&boxIdOk);
+        int boxId = -1;
+        bool xOk = false, yOk = false;
+        const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
         const int x = parts.at(1).toInt(&xOk);
         const int y = parts.at(2).toInt(&yOk);
         if (!boxIdOk || !xOk || !yOk)
-            return "usage: hornet setpos <boxId> <x> <y> (all must be integers)";
+            return "usage: hornet setpos <boxId|last> <x> <y>";
 
         try {
             m_gridService.setBoxPosition(boxId, x, y);
@@ -311,12 +310,14 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
         if (parts.size() < 3)
             return "usage: hornet setsize <boxId> <width> <height>";
-        bool boxIdOk = false, widthOk = false, heightOk = false;
-        const int boxId = parts.at(0).toInt(&boxIdOk);
+        int boxId = -1;
+        bool widthOk = false, heightOk = false;
+        const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
         const int width = parts.at(1).toInt(&widthOk);
         const int height = parts.at(2).toInt(&heightOk);
         if (!boxIdOk || !widthOk || !heightOk)
-            return "usage: hornet setsize <boxId> <width> <height> (all must be integers)";
+            return "usage: hornet setsize <boxId|last> <width> <height>";
+
         try {
             m_gridService.setBoxSize(boxId, width, height);
         } catch (const std::runtime_error &) {
@@ -330,11 +331,12 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
         if (parts.size() < 2)
             return "usage: hornet setscroll <boxId> <offset>";
-        bool boxIdOk = false, offsetOk = false;
-        const int boxId = parts.at(0).toInt(&boxIdOk);
+        int boxId = -1;
+        bool offsetOk = false;
+        const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
         const int offset = parts.at(1).toInt(&offsetOk);
         if (!boxIdOk || !offsetOk)
-            return "usage: hornet setscroll <boxId> <offset> (all must be integers)";
+            return "usage: hornet setscroll <boxId|last> <offset>";
         try {
             m_gridService.setBoxScrollOffset(boxId, offset);
         } catch (const std::runtime_error &) {
@@ -348,12 +350,14 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
         if (parts.size() < 3)
             return "usage: hornet setcursor <boxId> <x> <y>";
-        bool boxIdOk = false, xOk = false, yOk = false;
-        const int boxId = parts.at(0).toInt(&boxIdOk);
+        int boxId = -1;
+        bool xOk = false, yOk = false;
+        const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
         const int x = parts.at(1).toInt(&xOk);
         const int y = parts.at(2).toInt(&yOk);
         if (!boxIdOk || !xOk || !yOk)
-            return "usage: hornet setcursor <boxId> <x> <y> (all must be integers)";
+            return "usage: hornet setcursor <boxId|last> <x> <y>";
+
         try {
             m_gridService.setCursorPosition(boxId, x, y);
         } catch (const std::runtime_error &) {
@@ -400,9 +404,8 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         for (const QString &part : parts) {
             const int dashIndex = part.indexOf('-');
             if (dashIndex == -1) {
-                bool ok = false;
-                const int id = part.toInt(&ok);
-                if (!ok)
+                int id = -1;
+                if (!resolveBoxIdToken(part, id))
                     return "invalid id or range: " + part;
                 idsToRemove.push_back(id);
             } else {
@@ -442,7 +445,62 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return "";
     }
 
+    if (command.subcommand == "run") {
+        const std::filesystem::path scriptPath = command.workingDirectory
+                                                 / command.argument.toStdString();
+        return executeScriptFile(scriptPath, command.workingDirectory, 1);
+    }
+
     return "unknown hornet command: " + command.subcommand;
+}
+
+QString Control::executeScriptFile(const std::filesystem::path &filePath,
+                                   const std::filesystem::path &workingDir,
+                                   int depth)
+{
+    constexpr int maxScriptDepth = 10;
+    if (depth > maxScriptDepth)
+        return "script recursion too deep (max " + QString::number(maxScriptDepth)
+               + "): " + QString::fromStdString(filePath.string());
+
+    std::ifstream fileStream(filePath);
+    if (!fileStream.is_open())
+        return "could not open script file: " + QString::fromStdString(filePath.string());
+
+    std::filesystem::path currentDir = workingDir;
+    QStringList problems;
+    std::string lineStr;
+    while (std::getline(fileStream, lineStr)) {
+        const QString line = QString::fromStdString(lineStr).trimmed();
+        if (line.isEmpty() || line.startsWith('#'))
+            continue;
+
+        const HornetCommandDTO hornetCommand = m_terminalControl.parseHornetCommand(line,
+                                                                                    currentDir);
+        if (hornetCommand.wasHornetCommand) {
+            if (hornetCommand.subcommand == "run") {
+                const std::filesystem::path nestedScriptPath
+                    = currentDir / hornetCommand.argument.toStdString();
+                const QString result = executeScriptFile(nestedScriptPath, currentDir, depth + 1);
+                if (!result.isEmpty())
+                    problems.push_back(result);
+            } else {
+                const QString message = dispatchHornetCommand(hornetCommand);
+                if (!message.isEmpty())
+                    problems.push_back(message);
+            }
+        } else {
+            std::filesystem::path resultingDir;
+            const QString output = m_terminalControl.runShellCommandInDirectory(line,
+                                                                                currentDir,
+                                                                                resultingDir);
+            currentDir = resultingDir;
+            createCommandOutputBox(line, output);
+        }
+    }
+
+    m_gridControl.refreshGridViewState();
+    return problems.join("; ");
 }
 
 void Control::createCommandOutputBox(const QString &commandText, const QString &outputText)
@@ -455,6 +513,22 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
             bodyLines.push_back(line);
     }
     m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines);
+}
+
+bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
+{
+    if (token == "last") {
+        if (m_lastCreatedBoxId == -1)
+            return false;
+        outBoxId = m_lastCreatedBoxId;
+        return true;
+    }
+    bool ok = false;
+    const int parsed = token.toInt(&ok);
+    if (!ok)
+        return false;
+    outBoxId = parsed;
+    return true;
 }
 
 void Control::onDebugRequested()

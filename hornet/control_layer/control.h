@@ -57,6 +57,7 @@ private:
      */
     QVector<QString> buildTerminalPrompts() const;
     int m_currentlySelectedBoxId = -1;
+    int m_lastCreatedBoxId = -1;
     void flushEditorContentToBox(int boxId);
     QString convertU32StringToQString(const std::u32string &text) const;
     std::u32string convertQStringToU32String(const QString &text) const;
@@ -82,9 +83,14 @@ private:
 
     bool loadFileIntoNewBox(const std::filesystem::path &filePath);
     QString dispatchHornetCommand(const HornetCommandDTO &command);
+    QString executeScriptFile(const std::filesystem::path &filePath,
+                              const std::filesystem::path &workingDir,
+                              int depth);
     void createCommandOutputBox(const QString &commandText, const QString &outputText);
 
     bool m_isRestoringBoxState = false;
+
+    bool resolveBoxIdToken(const QString &token, int &outBoxId) const;
 
     mutable int debugPrintCounter = 0;
 };
