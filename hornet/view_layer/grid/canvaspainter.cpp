@@ -222,7 +222,13 @@ void CanvasPainter::drawBoxes(QPainter &painter,
             const QString lineNumber = QString::number(box.bodyScrollOffset + i + 1);
             const float numberWidth = fontAtlas.textWidth(lineNumber.length(), textScale);
             const float numberX = gutterX + (gutterWidth - numberWidth) / 2.0f;
-            fontRenderer.drawText(painter, numberX, lineY, lineNumber, Theme::darkGray(), textScale);
+            const bool isCursorLine = (box.bodyScrollOffset + i == box.cursorY);
+            fontRenderer.drawText(painter,
+                                  numberX,
+                                  lineY,
+                                  lineNumber,
+                                  isCursorLine ? Theme::brightYellow() : Theme::darkGray(),
+                                  textScale);
 
             const float textX = bodyTextX + (textPadding * 2);
             fontRenderer.drawText(painter, textX, lineY, bodyLines[i], Theme::darkAmber(), textScale);
