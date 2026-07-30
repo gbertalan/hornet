@@ -4,10 +4,12 @@
 #include <QWheelEvent>
 #include "canvaspainter.h"
 #include "shared/dto_view_to_model/boxdragdto.h"
+#include "shared/dto_view_to_model/boxresizeedge.h"
 #include "shared/dto_view_to_model/boxselecteddto.h"
 #include "shared/dto_view_to_model/gridzoomdto.h"
 #include <cmath>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
+#include <shared/dto_view_to_model/boxresizedto.h>
 #include <shared/dto_view_to_model/griddragdto.h>
 
 Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
@@ -66,16 +68,30 @@ void Grid::wheelEvent(QWheelEvent *event)
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
-                                                                      gridGap,
-                                                                      offset,
-                                                                      boxes);
-        if (boxIdUnderCursor != -1) { // dragging a box
-            m_isDraggingBox = true;
-            m_draggedBoxId = boxIdUnderCursor;
-            m_draggedBoxLiveOffset = QPoint(0, 0); // resetting this when box drag starts.
-        } else {                                   // dragging the whole grid
-            m_isDraggingGrid = true;
+        int resizeBoxId = -1;
+        const BoxResizeEdge resizeEdge = CanvasPainter::findResizeEdgeAtPosition(event->pos(),
+                                                                                 gridGap,
+                                                                                 offset,
+                                                                                 boxes,
+                                                                                 resizeBoxId);
+        if (resizeEdge != BoxResizeEdge::None) { // resizing a box
+            m_isResizingBox = true;
+            m_resizedBoxId = resizeBoxId;
+            m_resizeEdge = resizeEdge;
+            m_resizeDragStartMousePos = event->pos();
+            m_lastAppliedResizeCellDelta = QPoint(0, 0);
+        } else {
+            const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
+                                                                          gridGap,
+                                                                          offset,
+                                                                          boxes);
+            if (boxIdUnderCursor != -1) { // dragging a box
+                m_isDraggingBox = true;
+                m_draggedBoxId = boxIdUnderCursor;
+                m_draggedBoxLiveOffset = QPoint(0, 0); // resetting this when box drag starts.
+            } else {                                   // dragging the whole grid
+                m_isDraggingGrid = true;
+            }
         }
         m_dragStartMousePos = event->pos();
         m_lastMousePos = event->pos();
@@ -85,7 +101,16 @@ void Grid::mousePressEvent(QMouseEvent *event)
 
 void Grid::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_isDraggingGrid) {
+    if (m_isResizingBox) {
+        const QPoint totalPixelDelta = event->pos() - m_resizeDragStartMousePos;
+        const QPoint totalCellDelta(static_cast<int>(std::round(totalPixelDelta.x() / gridGap)),
+                                    static_cast<int>(std::round(totalPixelDelta.y() / gridGap)));
+        if (totalCellDelta != m_lastAppliedResizeCellDelta) {
+            const QPoint incrementalCellDelta = totalCellDelta - m_lastAppliedResizeCellDelta;
+            m_lastAppliedResizeCellDelta = totalCellDelta;
+            emit boxResized(BoxResizeDTO(m_resizedBoxId, m_resizeEdge, incrementalCellDelta));
+        }
+    } else if (m_isDraggingGrid) {
         const QPoint delta = event->pos() - m_lastMousePos;
         m_lastMousePos = event->pos();
         emit gridDragged(GridDragDTO(delta, event->pos()));
@@ -116,6 +141,14 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
             update(dirtyRect);
         }
     } else { // hover detection:
+        int resizeBoxId = -1;
+        const BoxResizeEdge resizeEdge = CanvasPainter::findResizeEdgeAtPosition(event->pos(),
+                                                                                 gridGap,
+                                                                                 offset,
+                                                                                 boxes,
+                                                                                 resizeBoxId);
+        setCursor(cursorForResizeEdge(resizeEdge));
+
         const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
                                                                       gridGap,
                                                                       offset,
@@ -141,9 +174,33 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
         }
         m_isDraggingGrid = false;
         m_isDraggingBox = false;
+        m_isResizingBox = false;
+        m_resizedBoxId = -1;
+        m_resizeEdge = BoxResizeEdge::None;
         m_draggedBoxId = -1;
         m_draggedBoxLiveOffset = QPoint(0, 0);
         update();
     }
     event->accept();
+}
+
+Qt::CursorShape Grid::cursorForResizeEdge(BoxResizeEdge edge) const
+{
+    switch (edge) {
+    case BoxResizeEdge::Left:
+    case BoxResizeEdge::Right:
+        return Qt::SizeHorCursor;
+    case BoxResizeEdge::Top:
+    case BoxResizeEdge::Bottom:
+        return Qt::SizeVerCursor;
+    case BoxResizeEdge::TopLeft:
+    case BoxResizeEdge::BottomRight:
+        return Qt::SizeFDiagCursor;
+    case BoxResizeEdge::TopRight:
+    case BoxResizeEdge::BottomLeft:
+        return Qt::SizeBDiagCursor;
+    case BoxResizeEdge::None:
+    default:
+        return Qt::ArrowCursor;
+    }
 }

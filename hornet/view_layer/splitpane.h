@@ -13,6 +13,7 @@ struct EditorCursorPosDTO;
 struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 struct EditorSettingsDTO;
+struct BoxResizeDTO;
 class CustomScrollBar;
 class Editor;
 
@@ -52,6 +53,7 @@ signals:
     void gridDragged(const GridDragDTO &dto);
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
+    void boxResized(const BoxResizeDTO &dto);
 
 protected:
     QSplitterHandle* createHandle() override;

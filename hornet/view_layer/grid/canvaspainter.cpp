@@ -47,6 +47,50 @@ QRectF CanvasPainter::getBoxScreenRect(const BoxViewDTO &box,
     return QRectF(screenX, screenY, screenW, screenH);
 }
 
+BoxResizeEdge CanvasPainter::findResizeEdgeAtPosition(QPoint mousePosition,
+                                                      double gridGap,
+                                                      QPoint offset,
+                                                      const std::vector<BoxViewDTO> &boxes,
+                                                      int &outBoxId)
+{
+    const double margin = gridGap * 0.3;
+    for (const BoxViewDTO &box : boxes) {
+        const QRectF rect = getBoxScreenRect(box, gridGap, offset);
+        const bool inVerticalSpan = mousePosition.y() >= rect.top() - margin
+                                    && mousePosition.y() <= rect.bottom() + margin;
+        const bool inHorizontalSpan = mousePosition.x() >= rect.left() - margin
+                                      && mousePosition.x() <= rect.right() + margin;
+        if (!inVerticalSpan || !inHorizontalSpan)
+            continue;
+
+        const bool nearLeft = mousePosition.x() <= rect.left() + margin;
+        const bool nearRight = mousePosition.x() >= rect.right() - margin;
+        const bool nearTop = mousePosition.y() <= rect.top() + margin;
+        const bool nearBottom = mousePosition.y() >= rect.bottom() - margin;
+
+        outBoxId = box.id;
+
+        if (nearTop && nearLeft)
+            return BoxResizeEdge::TopLeft;
+        if (nearTop && nearRight)
+            return BoxResizeEdge::TopRight;
+        if (nearBottom && nearLeft)
+            return BoxResizeEdge::BottomLeft;
+        if (nearBottom && nearRight)
+            return BoxResizeEdge::BottomRight;
+        if (nearTop)
+            return BoxResizeEdge::Top;
+        if (nearBottom)
+            return BoxResizeEdge::Bottom;
+        if (nearLeft)
+            return BoxResizeEdge::Left;
+        if (nearRight)
+            return BoxResizeEdge::Right;
+    }
+    outBoxId = -1;
+    return BoxResizeEdge::None;
+}
+
 void CanvasPainter::drawBoxes(QPainter &painter,
                               double gridGap,
                               QPoint offset,

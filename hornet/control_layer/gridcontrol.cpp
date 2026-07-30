@@ -70,3 +70,9 @@ void GridControl::refreshGridViewState()
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);
 }
+
+void GridControl::dispatchBoxResize(const BoxResizeDTO &dto)
+{
+    m_gridService.resizeBox(dto);
+    refreshGridViewState();
+}

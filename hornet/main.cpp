@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::gridDragged, &control, &Control::onGridDrag);
     QObject::connect(&view, &View::boxDragged, &control, &Control::onBoxDragged);
     QObject::connect(&view, &View::boxSelected, &control, &Control::onBoxSelected);
+    QObject::connect(&view, &View::boxResized, &control, &Control::onBoxResized);
 
     control.init();
 

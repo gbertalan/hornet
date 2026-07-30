@@ -184,6 +184,11 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_gridControl.refreshGridViewState();
 }
 
+void Control::onBoxResized(const BoxResizeDTO &dto)
+{
+    m_gridControl.dispatchBoxResize(dto);
+}
+
 void Control::flushEditorContentToBox(int boxId)
 {
     const std::vector<std::u32string> &currentLines = m_modelAccess.getEditorModel().getTextLines();

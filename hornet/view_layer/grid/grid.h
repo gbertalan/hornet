@@ -3,10 +3,12 @@
 #include <QPoint>
 #include <QWidget>
 #include "shared/dto_model_to_view/boxviewdto.h"
+#include "shared/dto_view_to_model/boxresizeedge.h"
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
+struct BoxResizeDTO;
 struct GridDragDTO;
 struct GridViewStateDTO;
 struct GridZoomDTO;
@@ -26,6 +28,7 @@ signals:
     void gridDragged(const GridDragDTO &dto);
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
+    void boxResized(const BoxResizeDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -54,8 +57,16 @@ private:
     static constexpr int m_clickDistanceThreshold
         = 5; // pixels; press+release under this = a click, not a drag
 
+    bool m_isResizingBox = false;
+    int m_resizedBoxId = -1;
+    BoxResizeEdge m_resizeEdge = BoxResizeEdge::None;
+    QPoint m_resizeDragStartMousePos;
+    QPoint m_lastAppliedResizeCellDelta;
+
     // text rendering:
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
+
+    Qt::CursorShape cursorForResizeEdge(BoxResizeEdge edge) const;
 };
 #endif // GRID_H

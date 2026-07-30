@@ -5,9 +5,10 @@
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/gridzoomdto.h>
 
-class GridDragDTO;
+struct GridDragDTO;
 class IModelAccessReadWrite;
-class BoxDragDTO;
+struct BoxDragDTO;
+struct BoxResizeDTO;
 
 class GridService
 {
@@ -28,6 +29,7 @@ public:
     int findFirstBoxIdOfType(BoxContentType contentType) const;
     void setSelectedBox(int boxId);
     void setBoxScrollOffset(int boxId, int scrollOffset);
+    void resizeBox(const BoxResizeDTO &dto);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

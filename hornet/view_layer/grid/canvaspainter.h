@@ -3,8 +3,10 @@
 #include <QPainter>
 #include <QPoint>
 #include "shared/dto_model_to_view/boxviewdto.h"
+#include "shared/dto_view_to_model/boxresizeedge.h"
 #include <vector>
 #include <view_layer/font_renderer/FontRenderer.h>
+
 class CanvasPainter
 {
 public:
@@ -36,5 +38,10 @@ public:
                                    double gridGap,
                                    QPoint offset,
                                    QPoint liveOffset = QPoint(0, 0));
+    static BoxResizeEdge findResizeEdgeAtPosition(QPoint mousePosition,
+                                                  double gridGap,
+                                                  QPoint offset,
+                                                  const std::vector<BoxViewDTO> &boxes,
+                                                  int &outBoxId);
 };
 #endif // CANVASPAINTER_H

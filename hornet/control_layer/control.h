@@ -21,6 +21,7 @@ struct GridZoomDTO;
 struct GridDragDTO;
 struct BoxDragDTO;
 struct BoxSelectedDTO;
+struct BoxResizeDTO;
 
 class Control : public QObject
 {
@@ -45,6 +46,7 @@ public slots:
     void onGridDrag(const GridDragDTO &dto);
     void onBoxDragged(const BoxDragDTO &dto);
     void onBoxSelected(const BoxSelectedDTO &dto);
+    void onBoxResized(const BoxResizeDTO &dto);
     // debug:
     void onDebugRequested();
 

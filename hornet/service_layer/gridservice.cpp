@@ -2,6 +2,7 @@
 #include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
 #include "shared/dto_view_to_model/boxdragdto.h"
+#include "shared/dto_view_to_model/boxresizedto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
 
 GridService::GridService(IModelAccessReadWrite &modelAccess)
@@ -128,4 +129,51 @@ void GridService::setSelectedBox(int boxId)
 void GridService::setBoxScrollOffset(int boxId, int scrollOffset)
 {
     m_modelAccess.getGridModel().getBox(boxId).setBodyScrollOffset(scrollOffset);
+}
+
+void GridService::resizeBox(const BoxResizeDTO &dto)
+{
+    GridModel &gridModel = m_modelAccess.getGridModel();
+    BoxModel &box = gridModel.getBox(dto.boxId);
+    const int dx = dto.cellDelta.x();
+    const int dy = dto.cellDelta.y();
+
+    switch (dto.edge) {
+    case BoxResizeEdge::Left:
+        box.setPosX(box.getPosX() + dx);
+        box.setWidth(box.getWidth() - dx);
+        break;
+    case BoxResizeEdge::Right:
+        box.setWidth(box.getWidth() + dx);
+        break;
+    case BoxResizeEdge::Top:
+        box.setPosY(box.getPosY() + dy);
+        box.setHeight(box.getHeight() - dy);
+        break;
+    case BoxResizeEdge::Bottom:
+        box.setHeight(box.getHeight() + dy);
+        break;
+    case BoxResizeEdge::TopLeft:
+        box.setPosX(box.getPosX() + dx);
+        box.setWidth(box.getWidth() - dx);
+        box.setPosY(box.getPosY() + dy);
+        box.setHeight(box.getHeight() - dy);
+        break;
+    case BoxResizeEdge::TopRight:
+        box.setWidth(box.getWidth() + dx);
+        box.setPosY(box.getPosY() + dy);
+        box.setHeight(box.getHeight() - dy);
+        break;
+    case BoxResizeEdge::BottomLeft:
+        box.setPosX(box.getPosX() + dx);
+        box.setWidth(box.getWidth() - dx);
+        box.setHeight(box.getHeight() + dy);
+        break;
+    case BoxResizeEdge::BottomRight:
+        box.setWidth(box.getWidth() + dx);
+        box.setHeight(box.getHeight() + dy);
+        break;
+    case BoxResizeEdge::None:
+        break;
+    }
 }
