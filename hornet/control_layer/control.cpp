@@ -417,8 +417,14 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         }
 
         QStringList notFound;
+        QStringList protectedIds;
         for (const int id : idsToRemove) {
             try {
+                const BoxContentDTO content = m_gridService.retrieveBoxContent(id);
+                if (content.contentType == BoxContentType::Terminal) {
+                    protectedIds.push_back(QString::number(id));
+                    continue;
+                }
                 m_gridService.removeBox(id);
             } catch (const std::runtime_error &) {
                 notFound.push_back(QString::number(id));
@@ -426,8 +432,13 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         }
 
         m_gridControl.refreshGridViewState();
+        QStringList problems;
         if (!notFound.isEmpty())
-            return "no box(es) with id: " + notFound.join(", ");
+            problems.push_back("no box(es) with id: " + notFound.join(", "));
+        if (!protectedIds.isEmpty())
+            problems.push_back("cannot unload terminal box: #" + protectedIds.join(", "));
+        if (!problems.isEmpty())
+            return problems.join("; ");
         return "";
     }
 
