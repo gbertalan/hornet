@@ -62,7 +62,11 @@ void Editor::updateSize()
 {
     const QWidget *viewport = parentWidget();
     int w = viewport ? std::max(m_contentWidth, viewport->width()) : m_contentWidth;
-    int h = viewport ? std::max(m_contentHeight, viewport->height()) : m_contentHeight;
+    int viewportHeight = viewport ? viewport->height() : 0;
+    int scrollableHeight = m_noOfAllLines > 0 ? (m_noOfAllLines - 1) * m_lineHeight + viewportHeight
+                                              : m_contentHeight;
+    int h = viewport ? std::max({m_contentHeight, viewportHeight, scrollableHeight})
+                     : m_contentHeight;
     resize(w, h);
 }
 
