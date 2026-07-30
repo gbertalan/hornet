@@ -467,7 +467,7 @@ QString Control::executeScriptFile(const std::filesystem::path &filePath,
     if (!fileStream.is_open())
         return "could not open script file: " + QString::fromStdString(filePath.string());
 
-    std::filesystem::path currentDir = workingDir;
+    std::filesystem::path currentDir = filePath.parent_path();
     QStringList problems;
     std::string lineStr;
     while (std::getline(fileStream, lineStr)) {
