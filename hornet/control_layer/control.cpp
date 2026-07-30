@@ -282,6 +282,31 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return "loaded " + QString::number(filesLoaded) + " file(s)";
     }
 
+    if (command.subcommand == "setpos") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 3)
+            return "usage: hornet setpos <boxId> <x> <y>";
+
+        bool boxIdOk = false;
+        bool xOk = false;
+        bool yOk = false;
+        const int boxId = parts.at(0).toInt(&boxIdOk);
+        const int x = parts.at(1).toInt(&xOk);
+        const int y = parts.at(2).toInt(&yOk);
+        if (!boxIdOk || !xOk || !yOk)
+            return "usage: hornet setpos <boxId> <x> <y> (all must be integers)";
+
+        try {
+            m_gridService.setBoxPosition(boxId, x, y);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+
+        m_gridControl.refreshGridViewState();
+        return "moved box " + QString::number(boxId) + " to (" + QString::number(x) + ", "
+               + QString::number(y) + ")";
+    }
+
     return "unknown hornet command: " + command.subcommand;
 }
 

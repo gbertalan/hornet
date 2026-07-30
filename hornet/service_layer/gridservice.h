@@ -30,6 +30,7 @@ public:
     void setSelectedBox(int boxId);
     void setBoxScrollOffset(int boxId, int scrollOffset);
     void resizeBox(const BoxResizeDTO &dto);
+    void setBoxPosition(int boxId, int posX, int posY);
 
 private:
     IModelAccessReadWrite &m_modelAccess;

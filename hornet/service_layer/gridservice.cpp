@@ -177,3 +177,10 @@ void GridService::resizeBox(const BoxResizeDTO &dto)
         break;
     }
 }
+
+void GridService::setBoxPosition(int boxId, int posX, int posY)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setPosX(posX);
+    box.setPosY(posY);
+}
