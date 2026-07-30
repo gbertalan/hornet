@@ -56,7 +56,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               int draggedBoxId,
                               QPoint draggedBoxLiveOffset,
                               FontRenderer &fontRenderer,
-                              FontAtlas &fontAtlas)
+                              FontAtlas &fontAtlas,
+                              bool selectedBoxCursorVisible)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -147,8 +148,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset;
             const float textX = bodyTextX + (textPadding * 2);
             const float charWidth = fontAtlas.textWidth(1, textScale);
-            painter.fillRect(QRectF(textX, lineY + 2, charWidth, static_cast<float>(gridGap)),
-                             Theme::brightAmber());
+            if (!isSelected || selectedBoxCursorVisible)
+                painter.fillRect(QRectF(textX, lineY + 2, charWidth, static_cast<float>(gridGap)),
+                                 Theme::brightAmber());
 
             const QString lineNumber = QString::number(box.bodyScrollOffset + 1);
             const float numberWidth = fontAtlas.textWidth(lineNumber.length(), textScale);
@@ -176,7 +178,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
             // draw cursor in the selected box:
             const int lineIndex = box.bodyScrollOffset + i;
-            if (lineIndex == box.cursorY) {
+            const bool shouldDrawCursor = (lineIndex == box.cursorY)
+                                          && (!isSelected || selectedBoxCursorVisible);
+            if (shouldDrawCursor) {
                 const float charWidth = fontAtlas.textWidth(1, textScale);
                 const float cursorPixelX = textX + fontAtlas.textWidth(box.cursorX, textScale);
 

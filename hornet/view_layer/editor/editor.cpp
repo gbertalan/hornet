@@ -22,6 +22,7 @@ Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
         update(cursorRect(m_cursorX, m_cursorY));
+        emit cursorBlinkToggled(m_cursorVisible);
     });
     m_cursorTimer.start(200);
     setFocusPolicy(Qt::StrongFocus);
@@ -253,6 +254,8 @@ void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
     m_cursorY = dto.cursorY;
     m_cursorVisible = true;
     m_cursorTimer.start(200);
+    emit cursorBlinkToggled(m_cursorVisible);
+
     float newLineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
     update(QRectF(0, newLineTop, width(), m_lineHeight).toRect());
     scrollToCursor();

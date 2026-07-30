@@ -19,6 +19,7 @@ class Grid : public QWidget
 public:
     explicit Grid(const GridViewStateDTO &initialState, QWidget *parent);
     void updateGridViewState(const GridViewStateDTO &dto);
+    void setCursorBlinkVisible(bool visible);
 
 signals:
     void gridZoomChanged(const GridZoomDTO &dto);
@@ -49,6 +50,7 @@ private:
     QPoint m_dragStartMousePos;
     QPoint m_draggedBoxLiveOffset; // how much we are dragging right now
     int m_selectedBoxId = -1;
+    bool m_cursorBlinkVisible = true;
     static constexpr int m_clickDistanceThreshold
         = 5; // pixels; press+release under this = a click, not a drag
 

@@ -33,6 +33,12 @@ void Grid::updateGridViewState(const GridViewStateDTO &dto)
     update();
 }
 
+void Grid::setCursorBlinkVisible(bool visible)
+{
+    m_cursorBlinkVisible = visible;
+    update();
+}
+
 void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -46,7 +52,8 @@ void Grid::paintEvent(QPaintEvent *)
                              m_isDraggingBox ? m_draggedBoxId : -1,
                              m_draggedBoxLiveOffset,
                              *m_fontRenderer,
-                             m_fontAtlas);
+                             m_fontAtlas,
+                             m_cursorBlinkVisible);
 }
 
 void Grid::wheelEvent(QWheelEvent *event)

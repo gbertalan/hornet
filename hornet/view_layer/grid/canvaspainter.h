@@ -18,7 +18,8 @@ public:
                           int draggedBoxId,
                           QPoint draggedBoxLiveOffset,
                           FontRenderer &fontRenderer,
-                          FontAtlas &fontAtlas);
+                          FontAtlas &fontAtlas,
+                          bool selectedBoxCursorVisible);
     static int findBoxAtPosition(QPoint mousePosition,
                                  double gridGap,
                                  QPoint offset,

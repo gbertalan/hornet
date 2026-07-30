@@ -24,6 +24,7 @@ signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+    void cursorBlinkToggled(bool visible);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
