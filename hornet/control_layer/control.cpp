@@ -589,6 +589,21 @@ QString Control::saveProjectToFile(const std::filesystem::path &filePath)
 
 void Control::onBoxUnloadRequested(int boxId)
 {
+    BoxContentDTO content;
+    try {
+        content = m_gridService.retrieveBoxContent(boxId);
+    } catch (const std::runtime_error &) {
+        return;
+    }
+    if (content.contentType == BoxContentType::Terminal)
+        return;
+
+    if (boxId == m_currentlySelectedBoxId) {
+        const int terminalBoxId = m_gridService.findFirstBoxIdOfType(BoxContentType::Terminal);
+        if (terminalBoxId != -1)
+            onBoxSelected(BoxSelectedDTO(terminalBoxId));
+    }
+
     try {
         m_gridService.removeBox(boxId);
     } catch (const std::runtime_error &) {

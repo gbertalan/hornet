@@ -114,7 +114,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                             / static_cast<float>(fontAtlas.cellHeight());
     const float textHeight = static_cast<float>(fontAtlas.cellHeight()) * textScale;
     const float lineOffset = (static_cast<float>(gridGap) - textHeight) / 2.0f;
-    const float textPadding = static_cast<float>(gridGap * 0.1);
+    const float textPadding = static_cast<float>(gridGap * 0.2);
 
     for (const BoxViewDTO &box : boxes) {
         const QPoint liveOffset = (box.id == draggedBoxId) ? draggedBoxLiveOffset : QPoint(0, 0);
@@ -148,15 +148,15 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         // header background:
         QColor headerColor;
         if (isSelected)
-            headerColor = Theme::desaturatedTeal();
+            headerColor = Theme::almostBlack();
         else if (isHovered)
-            headerColor = Theme::brightAmber();
+            headerColor = Theme::darkerAmber();
         else
-            headerColor = Theme::darkAmber();
+            headerColor = Theme::almostBlack();
         painter.setBrush(headerColor);
         painter.drawRect(headerRect);
 
-        painter.setPen(QPen(isSelected ? Theme::desaturatedTeal()
+        painter.setPen(QPen(isSelected ? Theme::almostWhite()
                                        : (isHovered ? Theme::brightAmber() : Theme::darkAmber()),
                             edgeThickness));
         painter.setBrush(Qt::NoBrush);
@@ -196,14 +196,14 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               headerTextX,
                               static_cast<float>(screenY) + lineOffset,
                               displayText,
-                              Theme::almostBlack(),
+                              Theme::darkAmber(),
                               textScale * scaleFactor);
         const QString boxIdLabel = "#" + QString::number(box.id);
         fontRenderer.drawText(painter,
                               static_cast<float>(screenX) + textPadding,
                               static_cast<float>(screenY) + lineOffset,
                               boxIdLabel,
-                              Theme::almostBlack(),
+                              Theme::darkAmber(),
                               textScale);
 
         // line number gutter, sized to the box's total line count (not just the visible slice)
@@ -293,20 +293,22 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.restore();
 
         // closing X  button
-        const double margin = buttonMargin;
-        const double buttonX = screenX + screenW - buttonSize - margin;
-        const double buttonY = screenY + margin;
-        const double lineThickness = gridGap * 0.15;
-        const QColor closeButtonColor = isCtrlPressed ? Theme::almostBlack() : Theme::darkGray();
-        painter.setPen(QPen(closeButtonColor, lineThickness));
-        painter.setBrush(Qt::NoBrush);
+        if (box.contentType != BoxContentType::Terminal) {
+            const double margin = buttonMargin;
+            const double buttonX = screenX + screenW - buttonSize - margin;
+            const double buttonY = screenY + margin;
+            const double lineThickness = gridGap * 0.15;
+            const QColor closeButtonColor = isCtrlPressed ? Theme::darkAmber() : Theme::darkGray();
+            painter.setPen(QPen(closeButtonColor, lineThickness));
+            painter.setBrush(Qt::NoBrush);
 
-        const double xPadding = buttonSize * 0.25;
-        painter.drawLine(QPointF(buttonX + xPadding, buttonY + xPadding),
-                         QPointF(buttonX + buttonSize - xPadding, buttonY + buttonSize - xPadding));
-        painter.drawLine(QPointF(buttonX + buttonSize - xPadding, buttonY + xPadding),
-                         QPointF(buttonX + xPadding, buttonY + buttonSize - xPadding));
-
+            const double xPadding = buttonSize * 0.25;
+            painter.drawLine(QPointF(buttonX + xPadding, buttonY + xPadding),
+                             QPointF(buttonX + buttonSize - xPadding,
+                                     buttonY + buttonSize - xPadding));
+            painter.drawLine(QPointF(buttonX + buttonSize - xPadding, buttonY + xPadding),
+                             QPointF(buttonX + xPadding, buttonY + buttonSize - xPadding));
+        }
         painter.setClipping(false);
     }
 }
@@ -338,6 +340,8 @@ int CanvasPainter::findBoxCloseButtonAtPosition(QPoint mousePosition,
     for (const BoxViewDTO &box : boxes) {
         if (box.id != hoveredBoxId)
             continue;
+        if (box.contentType == BoxContentType::Terminal)
+            return -1;
         const QRectF rect = getBoxScreenRect(box, gridGap, offset);
         const double buttonX = rect.right() - buttonSize - margin;
         const double buttonY = rect.top() + margin;

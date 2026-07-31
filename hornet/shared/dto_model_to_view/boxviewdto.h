@@ -3,6 +3,8 @@
 #include <QString>
 #include <QVector>
 
+#include "model_layer/boxcontenttype.h"
+
 struct BoxViewDTO
 {
     int id;
@@ -16,7 +18,7 @@ struct BoxViewDTO
     int bodyScrollOffset;
     int cursorX;
     int cursorY;
-
+    BoxContentType contentType;
     BoxViewDTO(int id,
                int posX,
                int posY,
@@ -27,7 +29,8 @@ struct BoxViewDTO
                int totalBodyLineCount,
                int bodyScrollOffset,
                int cursorX,
-               int cursorY)
+               int cursorY,
+               BoxContentType contentType)
         : id(id)
         , posX(posX)
         , posY(posY)
@@ -39,6 +42,7 @@ struct BoxViewDTO
         , bodyScrollOffset(bodyScrollOffset)
         , cursorX(cursorX)
         , cursorY(cursorY)
+        , contentType(contentType)
     {}
 };
 #endif // BOXVIEWDTO_H
