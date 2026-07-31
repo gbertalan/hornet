@@ -118,6 +118,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
     for (const BoxViewDTO &box : boxes) {
         const QPoint liveOffset = (box.id == draggedBoxId) ? draggedBoxLiveOffset : QPoint(0, 0);
+        const double buttonSize = gridGap * 1.9;
+        const double buttonMargin = gridGap * 0.1;
         const QRectF fullRect = getBoxScreenRect(box, gridGap, offset, liveOffset);
         const double screenX = fullRect.x();
         const double screenY = fullRect.y();
@@ -156,24 +158,36 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setClipping(true);
 
         float scaleFactor = 2.5f;
-        const float headerTextWidth = fontAtlas.textWidth(box.headerText.length(), textScale)
-                                      * scaleFactor;
+        const float buttonAreaWidth = static_cast<float>(buttonSize + buttonMargin);
         const float oneCharWidth = fontAtlas.textWidth(1, textScale) * scaleFactor;
         const float leftMargin = oneCharWidth;
-        const float availableWidth = static_cast<float>(screenW) - (leftMargin * 2.0f);
+        const float availableWidth = static_cast<float>(screenW) - buttonAreaWidth
+                                     - (leftMargin * 2.0f);
 
-        float headerTextX = 0.0f;
-        if (headerTextWidth > availableWidth) {
-            headerTextX = static_cast<float>(screenX) + leftMargin;
-        } else {
-            headerTextX = static_cast<float>(screenX + screenW / 2.0) - headerTextWidth / 2.0f;
+        QString displayText = box.headerText;
+        float displayTextWidth = fontAtlas.textWidth(box.headerText.length(), textScale)
+                                 * scaleFactor;
+
+        if (displayTextWidth > availableWidth) {
+            const float ellipsisWidth = fontAtlas.textWidth(3, textScale) * scaleFactor;
+            const float maxTextWidth = availableWidth - ellipsisWidth;
+            displayText = box.headerText;
+            while (displayText.length() > 0) {
+                displayTextWidth = fontAtlas.textWidth(displayText.length(), textScale)
+                                   * scaleFactor;
+                if (displayTextWidth <= maxTextWidth)
+                    break;
+                displayText = displayText.left(displayText.length() - 1);
+            }
+            displayText += "...";
         }
 
-        // header text:
+        float headerTextX = static_cast<float>(screenX + screenW / 2.0) - displayTextWidth / 2.0f;
+
         fontRenderer.drawText(painter,
                               headerTextX,
                               static_cast<float>(screenY) + lineOffset,
-                              box.headerText,
+                              displayText,
                               Theme::almostBlack(),
                               textScale * scaleFactor);
         const QString boxIdLabel = "#" + QString::number(box.id);
@@ -271,8 +285,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.restore();
 
         // closing X  button
-        const double buttonSize = gridGap * 1.9;
-        const double margin = gridGap * 0.1;
+        const double margin = buttonMargin;
         const double buttonX = screenX + screenW - buttonSize - margin;
         const double buttonY = screenY + margin;
         const double lineThickness = gridGap * 0.15;
