@@ -279,6 +279,10 @@ void Editor::scrollToCursor()
 
 void Editor::keyPressEvent(QKeyEvent *event)
 {
+    if (event->key() == Qt::Key_Control && !event->isAutoRepeat()) {
+        emit ctrlStateChanged(true);
+    }
+
     bool ctrl = event->modifiers() & Qt::ControlModifier;
     bool shift = event->modifiers() & Qt::ShiftModifier;
     bool alt = event->modifiers() & Qt::AltModifier;
@@ -338,6 +342,14 @@ void Editor::keyPressEvent(QKeyEvent *event)
         return;
     char32_t key = text.toUcs4().first();
     emit editorKeyPressed(EditorKeyPressDTO(key, specialKey, ctrl, shift, alt));
+}
+
+void Editor::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Control && !event->isAutoRepeat()) {
+        emit ctrlStateChanged(false);
+    }
+    QWidget::keyReleaseEvent(event);
 }
 
 void Editor::mouseMoveEvent(QMouseEvent *event)

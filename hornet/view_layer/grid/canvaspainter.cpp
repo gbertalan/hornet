@@ -145,7 +145,15 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setBrush(isHovered ? Theme::darkerGray() : Theme::almostBlack());
         painter.drawRect(bodyRect);
 
-        painter.setBrush(isHovered ? Theme::brightAmber() : Theme::darkAmber());
+        // header background:
+        QColor headerColor;
+        if (isSelected)
+            headerColor = Theme::desaturatedTeal();
+        else if (isHovered)
+            headerColor = Theme::brightAmber();
+        else
+            headerColor = Theme::darkAmber();
+        painter.setBrush(headerColor);
         painter.drawRect(headerRect);
 
         painter.setPen(QPen(isSelected ? Theme::desaturatedTeal()
@@ -289,7 +297,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const double buttonX = screenX + screenW - buttonSize - margin;
         const double buttonY = screenY + margin;
         const double lineThickness = gridGap * 0.15;
-        painter.setPen(QPen(Theme::darkGray(), lineThickness));
+        const QColor closeButtonColor = isCtrlPressed ? Theme::almostBlack() : Theme::darkGray();
+        painter.setPen(QPen(closeButtonColor, lineThickness));
         painter.setBrush(Qt::NoBrush);
 
         const double xPadding = buttonSize * 0.25;

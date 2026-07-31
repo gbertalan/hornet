@@ -25,6 +25,7 @@ signals:
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
     void cursorBlinkToggled(bool visible);
+    void ctrlStateChanged(bool isCtrlPressed);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -32,6 +33,7 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
     bool focusNextPrevChild(bool next) override

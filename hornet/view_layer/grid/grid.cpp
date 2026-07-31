@@ -42,6 +42,12 @@ void Grid::setCursorBlinkVisible(bool visible)
     update();
 }
 
+void Grid::setCtrlPressed(bool isCtrlPressed)
+{
+    m_isCtrlPressed = isCtrlPressed;
+    update();
+}
+
 void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -57,7 +63,7 @@ void Grid::paintEvent(QPaintEvent *)
                              *m_fontRenderer,
                              m_fontAtlas,
                              m_cursorBlinkVisible,
-                             QApplication::keyboardModifiers() & Qt::ControlModifier);
+                             m_isCtrlPressed);
 }
 
 void Grid::wheelEvent(QWheelEvent *event)

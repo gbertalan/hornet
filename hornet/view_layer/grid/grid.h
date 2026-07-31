@@ -23,6 +23,9 @@ public:
     void updateGridViewState(const GridViewStateDTO &dto);
     void setCursorBlinkVisible(bool visible);
 
+public slots:
+    void setCtrlPressed(bool isCtrlPressed);
+
 signals:
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
@@ -68,5 +71,7 @@ private:
     std::unique_ptr<FontRenderer> m_fontRenderer;
 
     Qt::CursorShape cursorForResizeEdge(BoxResizeEdge edge) const;
+
+    bool m_isCtrlPressed = false;
 };
 #endif // GRID_H
