@@ -101,7 +101,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               QPoint draggedBoxLiveOffset,
                               FontRenderer &fontRenderer,
                               FontAtlas &fontAtlas,
-                              bool selectedBoxCursorVisible)
+                              bool selectedBoxCursorVisible,
+                              bool isCtrlPressed)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -268,6 +269,21 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                              QPointF(bodyTextX, lineTop + gridGap + 1));
         }
         painter.restore();
+
+        // closing X  button
+        const double buttonSize = gridGap * 1.9;
+        const double margin = gridGap * 0.1;
+        const double buttonX = screenX + screenW - buttonSize - margin;
+        const double buttonY = screenY + margin;
+        const double lineThickness = gridGap * 0.15;
+        painter.setPen(QPen(Theme::darkGray(), lineThickness));
+        painter.setBrush(Qt::NoBrush);
+
+        const double xPadding = buttonSize * 0.25;
+        painter.drawLine(QPointF(buttonX + xPadding, buttonY + xPadding),
+                         QPointF(buttonX + buttonSize - xPadding, buttonY + buttonSize - xPadding));
+        painter.drawLine(QPointF(buttonX + buttonSize - xPadding, buttonY + xPadding),
+                         QPointF(buttonX + xPadding, buttonY + buttonSize - xPadding));
 
         painter.setClipping(false);
     }

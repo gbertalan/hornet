@@ -1,4 +1,5 @@
 #include "grid.h"
+#include <QApplication>
 #include <QDebug>
 #include <QPainter>
 #include <QWheelEvent>
@@ -55,7 +56,8 @@ void Grid::paintEvent(QPaintEvent *)
                              m_draggedBoxLiveOffset,
                              *m_fontRenderer,
                              m_fontAtlas,
-                             m_cursorBlinkVisible);
+                             m_cursorBlinkVisible,
+                             QApplication::keyboardModifiers() & Qt::ControlModifier);
 }
 
 void Grid::wheelEvent(QWheelEvent *event)
