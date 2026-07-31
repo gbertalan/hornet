@@ -54,6 +54,7 @@ signals:
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
+    void boxUnloadRequested(int boxId);
 
 protected:
     QSplitterHandle* createHandle() override;

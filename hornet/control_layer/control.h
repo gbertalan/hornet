@@ -50,6 +50,7 @@ public slots:
     // debug:
     void onDebugRequested();
     QString saveProjectToFile(const std::filesystem::path &filePath);
+    void onBoxUnloadRequested(int boxId);
 
 private:
     /**

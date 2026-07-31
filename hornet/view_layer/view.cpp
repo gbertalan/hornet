@@ -16,6 +16,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::boxDragged, this, &View::boxDragged);
     connect(m_window, &Window::boxSelected, this, &View::boxSelected);
     connect(m_window, &Window::boxResized, this, &View::boxResized);
+    connect(m_window, &Window::boxUnloadRequested, this, &View::boxUnloadRequested);
 }
 
 void View::show() {

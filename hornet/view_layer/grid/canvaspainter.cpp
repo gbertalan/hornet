@@ -323,3 +323,28 @@ int CanvasPainter::findBoxAtPosition(QPoint mousePosition,
     }
     return -1;
 }
+
+int CanvasPainter::findBoxCloseButtonAtPosition(QPoint mousePosition,
+                                                double gridGap,
+                                                QPoint offset,
+                                                int hoveredBoxId,
+                                                const std::vector<BoxViewDTO> &boxes)
+{
+    if (hoveredBoxId == -1)
+        return -1;
+
+    const double buttonSize = gridGap * 1.9;
+    const double margin = gridGap * 0.1;
+    for (const BoxViewDTO &box : boxes) {
+        if (box.id != hoveredBoxId)
+            continue;
+        const QRectF rect = getBoxScreenRect(box, gridGap, offset);
+        const double buttonX = rect.right() - buttonSize - margin;
+        const double buttonY = rect.top() + margin;
+        const QRectF buttonRect(buttonX, buttonY, buttonSize, buttonSize);
+        if (buttonRect.contains(mousePosition))
+            return box.id;
+        break;
+    }
+    return -1;
+}

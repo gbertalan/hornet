@@ -76,6 +76,19 @@ void Grid::wheelEvent(QWheelEvent *event)
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+            const int closeBoxId = CanvasPainter::findBoxCloseButtonAtPosition(event->pos(),
+                                                                               gridGap,
+                                                                               offset,
+                                                                               m_hoveredBoxId,
+                                                                               boxes);
+            if (closeBoxId != -1) {
+                emit boxUnloadRequested(closeBoxId);
+                event->accept();
+                return;
+            }
+        }
+
         int resizeBoxId = -1;
         const BoxResizeEdge resizeEdge = CanvasPainter::findResizeEdgeAtPosition(event->pos(),
                                                                                  gridGap,

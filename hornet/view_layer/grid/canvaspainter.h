@@ -44,5 +44,11 @@ public:
                                                   QPoint offset,
                                                   const std::vector<BoxViewDTO> &boxes,
                                                   int &outBoxId);
+
+    static int findBoxCloseButtonAtPosition(QPoint mousePosition,
+                                            double gridGap,
+                                            QPoint offset,
+                                            int hoveredBoxId,
+                                            const std::vector<BoxViewDTO> &boxes);
 };
 #endif // CANVASPAINTER_H

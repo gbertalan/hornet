@@ -158,6 +158,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
     connect(m_grid, &Grid::boxDragged, this, &SplitPane::boxDragged);
     connect(m_grid, &Grid::boxSelected, this, &SplitPane::boxSelected);
     connect(m_grid, &Grid::boxResized, this, &SplitPane::boxResized);
+    connect(m_grid, &Grid::boxUnloadRequested, this, &SplitPane::boxUnloadRequested);
 }
 
 QSplitterHandle* SplitPane::createHandle() {

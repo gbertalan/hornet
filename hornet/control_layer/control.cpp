@@ -587,6 +587,16 @@ QString Control::saveProjectToFile(const std::filesystem::path &filePath)
     return message;
 }
 
+void Control::onBoxUnloadRequested(int boxId)
+{
+    try {
+        m_gridService.removeBox(boxId);
+    } catch (const std::runtime_error &) {
+        return;
+    }
+    m_gridControl.refreshGridViewState();
+}
+
 void Control::onDebugRequested()
 {
 #ifdef QT_DEBUG
