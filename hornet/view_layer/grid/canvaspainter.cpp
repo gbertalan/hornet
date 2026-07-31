@@ -135,19 +135,19 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               screenW - (edgeThickness * 2),
                               screenH - (edgeThickness * 2));
 
-        const bool isHovered = (box.id == hoveredBoxId);
         const bool isSelected = (box.id == selectedBoxId);
+        const bool isHovered = (box.id == hoveredBoxId) && !isSelected;
 
         painter.setPen(Qt::NoPen);
-        painter.setBrush(Theme::almostBlack());
+        painter.setBrush(isHovered ? Theme::darkerGray() : Theme::almostBlack());
         painter.drawRect(bodyRect);
 
         painter.setBrush(isHovered ? Theme::brightAmber() : Theme::darkAmber());
         painter.drawRect(headerRect);
 
-        painter.setPen(
-            QPen(isSelected ? Qt::red : (isHovered ? Theme::brightAmber() : Theme::darkAmber()),
-                 edgeThickness));
+        painter.setPen(QPen(isSelected ? Theme::desaturatedTeal()
+                                       : (isHovered ? Theme::brightAmber() : Theme::darkAmber()),
+                            edgeThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(borderRect);
 
