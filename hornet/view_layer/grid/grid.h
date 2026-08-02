@@ -7,28 +7,35 @@
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
-
 struct BoxResizeDTO;
 struct GridDragDTO;
 struct GridViewStateDTO;
 struct GridZoomDTO;
 struct BoxDragDTO;
 struct BoxSelectedDTO;
-
 class Grid : public QWidget
 {
     Q_OBJECT
 public:
     explicit Grid(const GridViewStateDTO &initialState, QWidget *parent);
     void updateGridViewState(const GridViewStateDTO &dto);
-    void setCursorBlinkVisible(bool visible);
 
+    // ================================================================
+    // SLICE: caret / Ctrl-state sync (direct wiring from Editor, no Control)
+    // ================================================================
+    void setCursorBlinkVisible(bool visible);
 public slots:
     void setCtrlPressed(bool isCtrlPressed);
-
 signals:
+    // ================================================================
+    // SLICE: grid viewport (zoom, pan)
+    // ================================================================
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
+
+    // ================================================================
+    // SLICE: box manipulation (drag, select, resize, unload)
+    // ================================================================
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
@@ -47,7 +54,10 @@ private:
     QPoint offset = {0, 0};
     std::vector<BoxViewDTO> boxes;
 
-    // drag, hover interaction state, local to the view only:
+    // ================================================================
+    // SLICE: drag / hover / resize interaction state (view-local only,
+    // not part of GridModel)
+    // ================================================================
     QPoint m_lastMousePos;
     bool m_isDragging = false;
     int m_hoveredBoxId = -1;
@@ -60,7 +70,6 @@ private:
     bool m_cursorBlinkVisible = true;
     static constexpr int m_clickDistanceThreshold
         = 5; // pixels; press+release under this = a click, not a drag
-
     bool m_isResizingBox = false;
     int m_resizedBoxId = -1;
     BoxResizeEdge m_resizeEdge = BoxResizeEdge::None;
@@ -70,9 +79,7 @@ private:
     // text rendering:
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
-
     Qt::CursorShape cursorForResizeEdge(BoxResizeEdge edge) const;
-
     bool m_isCtrlPressed = false;
 };
 #endif // GRID_H

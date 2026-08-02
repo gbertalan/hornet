@@ -13,6 +13,10 @@
 #include <shared/dto_view_to_model/boxresizedto.h>
 #include <shared/dto_view_to_model/griddragdto.h>
 
+// ================================================================
+// SLICE: construction & initialization
+// ================================================================
+
 Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
     : QWidget(parent)
     , gridGap(initialState.gridGap)
@@ -26,6 +30,11 @@ Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
     m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
     m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
 }
+
+// ================================================================
+// SLICE: Model -> View state push (called by Control via GridControl)
+// ================================================================
+
 void Grid::updateGridViewState(const GridViewStateDTO &dto)
 {
     gridGap = dto.gridGap;
@@ -35,6 +44,10 @@ void Grid::updateGridViewState(const GridViewStateDTO &dto)
 
     update();
 }
+
+// ================================================================
+// SLICE: caret / Ctrl-state sync (direct wiring from Editor, no Control)
+// ================================================================
 
 void Grid::setCursorBlinkVisible(bool visible)
 {
@@ -47,6 +60,10 @@ void Grid::setCtrlPressed(bool isCtrlPressed)
     m_isCtrlPressed = isCtrlPressed;
     update();
 }
+
+// ================================================================
+// SLICE: rendering
+// ================================================================
 
 void Grid::paintEvent(QPaintEvent *)
 {
@@ -66,6 +83,10 @@ void Grid::paintEvent(QPaintEvent *)
                              m_isCtrlPressed);
 }
 
+// ================================================================
+// SLICE: grid viewport (zoom via mouse wheel)
+// ================================================================
+
 void Grid::wheelEvent(QWheelEvent *event)
 {
     const ScrollDirection direction = event->angleDelta().y() > 0 ? ScrollDirection::Up
@@ -73,9 +94,16 @@ void Grid::wheelEvent(QWheelEvent *event)
     emit gridZoomChanged(GridZoomDTO(direction, event->position().toPoint()));
     event->accept();
 }
+
+// ================================================================
+// SLICE: mouse interaction - press (decides which drag mode starts:
+// close-button click, resize, box-drag, or grid-pan)
+// ================================================================
+
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
+        // --- close (X) button, only active while Ctrl is held ---
         if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
             const int closeBoxId = CanvasPainter::findBoxCloseButtonAtPosition(event->pos(),
                                                                                gridGap,
@@ -89,6 +117,7 @@ void Grid::mousePressEvent(QMouseEvent *event)
             }
         }
 
+        // --- resize edge/corner check ---
         int resizeBoxId = -1;
         const BoxResizeEdge resizeEdge = CanvasPainter::findResizeEdgeAtPosition(event->pos(),
                                                                                  gridGap,
@@ -102,6 +131,7 @@ void Grid::mousePressEvent(QMouseEvent *event)
             m_resizeDragStartMousePos = event->pos();
             m_lastAppliedResizeCellDelta = QPoint(0, 0);
         } else {
+            // --- box-drag vs. grid-pan ---
             const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
                                                                           gridGap,
                                                                           offset,
@@ -120,9 +150,15 @@ void Grid::mousePressEvent(QMouseEvent *event)
     event->accept();
 }
 
+// ================================================================
+// SLICE: mouse interaction - move (continues whichever drag mode
+// was started in mousePressEvent, or does hover detection if none)
+// ================================================================
+
 void Grid::mouseMoveEvent(QMouseEvent *event)
 {
     if (m_isResizingBox) {
+        // --- resize: discrete/snap-per-move, incremental cell delta ---
         const QPoint totalPixelDelta = event->pos() - m_resizeDragStartMousePos;
         const QPoint totalCellDelta(static_cast<int>(std::round(totalPixelDelta.x() / gridGap)),
                                     static_cast<int>(std::round(totalPixelDelta.y() / gridGap)));
@@ -132,10 +168,12 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
             emit boxResized(BoxResizeDTO(m_resizedBoxId, m_resizeEdge, incrementalCellDelta));
         }
     } else if (m_isDraggingGrid) {
+        // --- grid pan ---
         const QPoint delta = event->pos() - m_lastMousePos;
         m_lastMousePos = event->pos();
         emit gridDragged(GridDragDTO(delta, event->pos()));
     } else if (m_isDraggingBox) {
+        // --- box drag: continuous, live pixel offset, snapped to cells only on release ---
         const BoxViewDTO *draggedBox = nullptr;
         for (const BoxViewDTO &box : boxes)
             if (box.id == m_draggedBoxId)
@@ -162,6 +200,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
             update(dirtyRect);
         }
     } else { // hover detection:
+        // --- resize-cursor hover feedback ---
         int resizeBoxId = -1;
         const BoxResizeEdge resizeEdge = CanvasPainter::findResizeEdgeAtPosition(event->pos(),
                                                                                  gridGap,
@@ -170,6 +209,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                                  resizeBoxId);
         setCursor(cursorForResizeEdge(resizeEdge));
 
+        // --- box hover-highlight tracking ---
         const int boxIdUnderCursor = CanvasPainter::findBoxAtPosition(event->pos(),
                                                                       gridGap,
                                                                       offset,
@@ -181,6 +221,11 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
     }
     event->accept();
 }
+
+// ================================================================
+// SLICE: mouse interaction - release (commits whichever drag mode
+// was active: click-vs-drag decision, then resets all drag state)
+// ================================================================
 
 void Grid::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -204,6 +249,10 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
     }
     event->accept();
 }
+
+// ================================================================
+// SLICE: resize cursor-shape helper
+// ================================================================
 
 Qt::CursorShape Grid::cursorForResizeEdge(BoxResizeEdge edge) const
 {
