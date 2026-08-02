@@ -9,6 +9,10 @@
 #include <iostream>
 #include <qdebug.h>
 
+// ================================================================
+// SLICE: construction & initialization
+// ================================================================
+
 TerminalControl::TerminalControl(IModelAccessRead &modelAccess,
                                  EditorService &editorService,
                                  TerminalService &terminalService)
@@ -22,14 +26,9 @@ void TerminalControl::init()
     m_terminalService.init();
 }
 
-void TerminalControl::dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto)
-{
-    int cursorY = m_modelAccess.getEditorModel().getCursorY();
-    const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
-        = m_terminalService.getTerminalPromptAndDirs();
-    if (cursorY < static_cast<int>(terminalPromptAndDirs.size()))
-        m_terminalService.setCurrentDirectory(terminalPromptAndDirs.at(cursorY).directory);
-}
+// ================================================================
+// SLICE: live terminal key/command dispatch (typed into the terminal box)
+// ================================================================
 
 TerminalKeyPressResultDTO TerminalControl::dispatchTerminalKeyPress(const EditorKeyPressDTO &dto)
 {
@@ -79,6 +78,86 @@ CommandExecutionResultDTO TerminalControl::executeCommand()
     return CommandExecutionResultDTO{commandText, hornetCommand, shellOutput};
 }
 
+void TerminalControl::dispatchEditorCursorPosChanged(const EditorCursorPosDTO &dto)
+{
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
+        = m_terminalService.getTerminalPromptAndDirs();
+    if (cursorY < static_cast<int>(terminalPromptAndDirs.size()))
+        m_terminalService.setCurrentDirectory(terminalPromptAndDirs.at(cursorY).directory);
+}
+
+void TerminalControl::removePromptForDeletedLine(int lineCountBefore, int cursorYBefore)
+{
+    int lineCountAfter = m_modelAccess.getEditorModel().getNoOfLines();
+    if (lineCountAfter < lineCountBefore)
+        m_terminalService.removeTerminalPromptAndDir(cursorYBefore);
+}
+
+// ================================================================
+// SLICE: hornet command parsing (shared by live terminal AND by
+// Control's script execution - see parseHornetCommand)
+// ================================================================
+
+HornetCommandDTO TerminalControl::checkForHornetCommand(int cursorY)
+{
+    const QString line = getCurrentLineAsQString(cursorY);
+    const std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
+    return parseHornetCommand(line, workingDir);
+}
+
+HornetCommandDTO TerminalControl::parseHornetCommand(const QString &line,
+                                                     const std::filesystem::path &workingDir) const
+{
+    const QString trimmedLine = line.trimmed();
+    const QString prefix = "hornet ";
+
+    if (!trimmedLine.startsWith(prefix))
+        return HornetCommandDTO{false, "", "", workingDir};
+
+    const QString remainder = trimmedLine.mid(prefix.length()).trimmed();
+    const int spaceIndex = remainder.indexOf(' ');
+    if (spaceIndex == -1)
+        return HornetCommandDTO{true, remainder, "", workingDir};
+
+    const QString subcommand = remainder.left(spaceIndex);
+    const QString argument = remainder.mid(spaceIndex + 1).trimmed();
+    return HornetCommandDTO{true, subcommand, argument, workingDir};
+}
+
+// ================================================================
+// SLICE: shell execution for scripts (local QProcess, does NOT
+// touch the live terminal's own process/current-directory state)
+// ================================================================
+
+QString TerminalControl::runShellCommandInDirectory(const QString &command,
+                                                    const std::filesystem::path &workingDir,
+                                                    std::filesystem::path &outResultingDirectory)
+{
+    QString sentinel = "---SENTINEL---";
+    QString combinedCommand = command + "; echo " + sentinel + "; pwd";
+    QProcess process;
+    process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
+    process.start("/bin/sh", QStringList() << "-c" << combinedCommand);
+    process.waitForFinished();
+    QString output = QString::fromUtf8(process.readAllStandardOutput());
+    int sentinelIndex = output.indexOf(sentinel);
+    QString commandOutput;
+    if (sentinelIndex != -1) {
+        commandOutput = output.left(sentinelIndex).trimmed();
+        QString newDir = output.mid(sentinelIndex + sentinel.length()).trimmed();
+        outResultingDirectory = std::filesystem::path(newDir.toStdString());
+    } else {
+        commandOutput = output.trimmed();
+        outResultingDirectory = workingDir;
+    }
+    return commandOutput;
+}
+
+// ================================================================
+// SLICE: command line reading / working-directory helpers
+// ================================================================
+
 QString TerminalControl::getCurrentLineAsQString(int cursorY) const
 {
     const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
@@ -96,6 +175,10 @@ std::filesystem::path TerminalControl::getWorkingDirForLine(int cursorY) const
 
     return m_terminalService.getCurrentDirectory();
 }
+
+// ================================================================
+// SLICE: live terminal shell execution + post-execution bookkeeping
+// ================================================================
 
 QString TerminalControl::runCommand(const QString &command, const std::filesystem::path &workingDir)
 {
@@ -141,61 +224,4 @@ void TerminalControl::handleNonLastLineExecution(int cursorY, int lastLineNumber
                                                                         .getTerminalPromptAndDirs();
     if (lastLineNumber < static_cast<int>(updatedPromptAndDirs.size()))
         m_terminalService.setCurrentDirectory(updatedPromptAndDirs.at(lastLineNumber).directory);
-}
-
-void TerminalControl::removePromptForDeletedLine(int lineCountBefore, int cursorYBefore)
-{
-    int lineCountAfter = m_modelAccess.getEditorModel().getNoOfLines();
-    if (lineCountAfter < lineCountBefore)
-        m_terminalService.removeTerminalPromptAndDir(cursorYBefore);
-}
-
-HornetCommandDTO TerminalControl::checkForHornetCommand(int cursorY)
-{
-    const QString line = getCurrentLineAsQString(cursorY);
-    const std::filesystem::path workingDir = getWorkingDirForLine(cursorY);
-    return parseHornetCommand(line, workingDir);
-}
-
-HornetCommandDTO TerminalControl::parseHornetCommand(const QString &line,
-                                                     const std::filesystem::path &workingDir) const
-{
-    const QString trimmedLine = line.trimmed();
-    const QString prefix = "hornet ";
-
-    if (!trimmedLine.startsWith(prefix))
-        return HornetCommandDTO{false, "", "", workingDir};
-
-    const QString remainder = trimmedLine.mid(prefix.length()).trimmed();
-    const int spaceIndex = remainder.indexOf(' ');
-    if (spaceIndex == -1)
-        return HornetCommandDTO{true, remainder, "", workingDir};
-
-    const QString subcommand = remainder.left(spaceIndex);
-    const QString argument = remainder.mid(spaceIndex + 1).trimmed();
-    return HornetCommandDTO{true, subcommand, argument, workingDir};
-}
-
-QString TerminalControl::runShellCommandInDirectory(const QString &command,
-                                                    const std::filesystem::path &workingDir,
-                                                    std::filesystem::path &outResultingDirectory)
-{
-    QString sentinel = "---SENTINEL---";
-    QString combinedCommand = command + "; echo " + sentinel + "; pwd";
-    QProcess process;
-    process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
-    process.start("/bin/sh", QStringList() << "-c" << combinedCommand);
-    process.waitForFinished();
-    QString output = QString::fromUtf8(process.readAllStandardOutput());
-    int sentinelIndex = output.indexOf(sentinel);
-    QString commandOutput;
-    if (sentinelIndex != -1) {
-        commandOutput = output.left(sentinelIndex).trimmed();
-        QString newDir = output.mid(sentinelIndex + sentinel.length()).trimmed();
-        outResultingDirectory = std::filesystem::path(newDir.toStdString());
-    } else {
-        commandOutput = output.trimmed();
-        outResultingDirectory = workingDir;
-    }
-    return commandOutput;
 }
