@@ -11,6 +11,10 @@
 #include <qscrollbar.h>
 #include <shared/dto_model_to_view/editorviewstatedto.h>
 
+// ================================================================
+// SLICE: construction & settings
+// ================================================================
+
 Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
     : QWidget(parent)
 {
@@ -41,6 +45,10 @@ void Editor::setSettings(const EditorSettingsDTO &settings)
         m_textUniColor = Theme::desaturatedTeal();
     update();
 }
+
+// ================================================================
+// SLICE: sizing / scroll-state-reporting
+// ================================================================
 
 void Editor::updateWidth(int width)
 {
@@ -97,6 +105,23 @@ void Editor::sendEditorState()
     }
 }
 
+void Editor::scrollToCursor()
+{
+    QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
+    if (!scrollArea)
+        return;
+    QRect rect = cursorRect(m_cursorX, m_cursorY);
+    int noOfCharsAsMargin = 5;
+    float horizontalScrollMargin = m_fontAtlas.textWidth(noOfCharsAsMargin, m_fontScale);
+    int noOfRowsAsMargin = 3;
+    float verticalScrollMargin = m_lineHeight * noOfRowsAsMargin;
+    scrollArea->ensureVisible(rect.x(), rect.y(), horizontalScrollMargin, verticalScrollMargin);
+}
+
+// ================================================================
+// SLICE: Model -> View state push
+// ================================================================
+
 void Editor::updateEditorState(const EditorViewStateDTO &dto)
 {
     m_textLinesToDisplay = dto.textLinesToDisplay;
@@ -109,6 +134,27 @@ void Editor::updateEditorState(const EditorViewStateDTO &dto)
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
     update();
 }
+
+void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
+{
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float lineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
+    update(QRectF(0, lineTop, width(), m_lineHeight).toRect());
+    m_cursorX = dto.cursorX;
+    m_cursorY = dto.cursorY;
+    m_cursorVisible = true;
+    m_cursorTimer.start(200);
+    emit cursorBlinkToggled(m_cursorVisible);
+
+    float newLineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
+    update(QRectF(0, newLineTop, width(), m_lineHeight).toRect());
+    scrollToCursor();
+}
+
+// ================================================================
+// SLICE: Qt lifecycle / sizing plumbing
+// ================================================================
 
 void Editor::showEvent(QShowEvent *event)
 {
@@ -134,6 +180,10 @@ bool Editor::eventFilter(QObject *watched, QEvent *event)
     }
     return QWidget::eventFilter(watched, event);
 }
+
+// ================================================================
+// SLICE: rendering
+// ================================================================
 
 void Editor::paintEvent(QPaintEvent *event)
 {
@@ -190,6 +240,20 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
     painter.restore();
 }
 
+void Editor::drawTerminalPrompt(QPainter &painter, int index, float x, float y)
+{
+    int lineIndex = m_topLineIndex + index;
+    if (lineIndex >= m_terminalPrompts.size())
+        return;
+    const QString &prompt = m_terminalPrompts[lineIndex];
+    if (prompt.isEmpty())
+        return;
+    if (index == m_cursorY)
+        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
+    else
+        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkGray(), m_fontScale);
+}
+
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
 {
     if (m_isTerminal && index != m_cursorY)
@@ -220,6 +284,10 @@ void Editor::drawCursor(QPainter &painter, int index, float textX, float y, floa
     }
 }
 
+// ================================================================
+// SLICE: input handling (mouse + keyboard)
+// ================================================================
+
 void Editor::mouseReleaseEvent(QMouseEvent *event)
 {
     float textX = 5.f + leftColumnWidth();
@@ -236,45 +304,14 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
     emit editorCursorPosChanged(dto);
 }
 
-QRect Editor::cursorRect(int cursorX, int cursorY) const
+void Editor::mouseMoveEvent(QMouseEvent *event)
 {
-    float cursorPixelX = 5.f + leftColumnWidth() + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
-    float lineTop = m_cursorY * m_lineHeight;
-    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
-    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-    float topMargin = verticalPadding / 2.f;
-    float y = lineTop + verticalPadding - topMargin;
-    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
-    return QRectF(cursorPixelX, y + verticalPadding, charWidth, m_lineHeight).toRect();
-}
-
-void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
-{
-    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
-    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-    float lineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
-    update(QRectF(0, lineTop, width(), m_lineHeight).toRect());
-    m_cursorX = dto.cursorX;
-    m_cursorY = dto.cursorY;
-    m_cursorVisible = true;
-    m_cursorTimer.start(200);
-    emit cursorBlinkToggled(m_cursorVisible);
-
-    float newLineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
-    update(QRectF(0, newLineTop, width(), m_lineHeight).toRect());
-    scrollToCursor();
-}
-void Editor::scrollToCursor()
-{
-    QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
-    if (!scrollArea)
+    float textX = 5.f + leftColumnWidth();
+    bool overText = event->pos().x() >= textX;
+    if (overText == m_isTextCursor)
         return;
-    QRect rect = cursorRect(m_cursorX, m_cursorY);
-    int noOfCharsAsMargin = 5;
-    float horizontalScrollMargin = m_fontAtlas.textWidth(noOfCharsAsMargin, m_fontScale);
-    int noOfRowsAsMargin = 3;
-    float verticalScrollMargin = m_lineHeight * noOfRowsAsMargin;
-    scrollArea->ensureVisible(rect.x(), rect.y(), horizontalScrollMargin, verticalScrollMargin);
+    m_isTextCursor = overText;
+    setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)
@@ -352,21 +389,27 @@ void Editor::keyReleaseEvent(QKeyEvent *event)
     QWidget::keyReleaseEvent(event);
 }
 
-void Editor::mouseMoveEvent(QMouseEvent *event)
-{
-    float textX = 5.f + leftColumnWidth();
-    bool overText = event->pos().x() >= textX;
-    if (overText == m_isTextCursor)
-        return;
-    m_isTextCursor = overText;
-    setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
-}
-
 void Editor::focusOutEvent(QFocusEvent *event)
 {
     // Reclaim focus if lost to scrollbar clicks so keyboard input keeps working
     if (event->reason() == Qt::MouseFocusReason)
         setFocus();
+}
+
+// ================================================================
+// SLICE: geometry-measurement helpers
+// ================================================================
+
+QRect Editor::cursorRect(int cursorX, int cursorY) const
+{
+    float cursorPixelX = 5.f + leftColumnWidth() + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
+    float lineTop = m_cursorY * m_lineHeight;
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float topMargin = verticalPadding / 2.f;
+    float y = lineTop + verticalPadding - topMargin;
+    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
+    return QRectF(cursorPixelX, y + verticalPadding, charWidth, m_lineHeight).toRect();
 }
 
 float Editor::lineNumberSectionWidth() const
@@ -384,18 +427,4 @@ float Editor::leftColumnWidth() const
     for (const QString &p : m_terminalPrompts)
         maxPromptLen = std::max(maxPromptLen, static_cast<int>(p.length()));
     return lnWidth + m_fontAtlas.textWidth(maxPromptLen + 2, m_fontScale);
-}
-
-void Editor::drawTerminalPrompt(QPainter &painter, int index, float x, float y)
-{
-    int lineIndex = m_topLineIndex + index;
-    if (lineIndex >= m_terminalPrompts.size())
-        return;
-    const QString &prompt = m_terminalPrompts[lineIndex];
-    if (prompt.isEmpty())
-        return;
-    if (index == m_cursorY)
-        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
-    else
-        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkGray(), m_fontScale);
 }

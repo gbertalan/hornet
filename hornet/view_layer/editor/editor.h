@@ -15,45 +15,83 @@ class Editor : public QWidget
     Q_OBJECT
 public:
     explicit Editor(const EditorSettingsDTO &settings, QWidget *parent = nullptr);
+
+    // ================================================================
+    // SLICE: settings + sizing (public API called by SplitPane/Control)
+    // ================================================================
+    void setSettings(const EditorSettingsDTO &settings);
     void updateWidth(int width);
     void updateHeight(int height);
-    void setSettings(const EditorSettingsDTO &settings);
+
+    // ================================================================
+    // SLICE: Model -> View state push
+    // ================================================================
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateCursorPosition(const EditorCursorPosDTO &dto);
 signals:
+    // ================================================================
+    // SLICE: View -> Control (Editor's own state/input reported upward)
+    // ================================================================
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+
+    // ================================================================
+    // SLICE: direct sibling wiring (Editor -> Grid, bypasses Control)
+    // ================================================================
     void cursorBlinkToggled(bool visible);
     void ctrlStateChanged(bool isCtrlPressed);
 
 protected:
+    // ================================================================
+    // SLICE: rendering
+    // ================================================================
     void paintEvent(QPaintEvent *event) override;
+
+    // ================================================================
+    // SLICE: Qt lifecycle / sizing plumbing
+    // ================================================================
     void showEvent(QShowEvent *event) override;
     bool eventFilter(QObject *watched, QEvent *event) override;
+
+    // ================================================================
+    // SLICE: input handling (mouse + keyboard)
+    // ================================================================
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
     bool focusNextPrevChild(bool next) override
     {
         return false;
     } // prevent taking away focus when tab is pressed
 private:
+    // ================================================================
+    // SLICE: sizing / scroll-state-reporting helpers
+    // ================================================================
     void updateSize();
     int calculateNoOfVisibleLines() const;
     int calculateTopLineIndex() const;
     void sendEditorState();
+    void scrollToCursor();
+
+    // ================================================================
+    // SLICE: rendering helpers (called from paintEvent)
+    // ================================================================
     void drawLineDebugBackground(QPainter &painter, int index, float y);
     void drawLineNumber(QPainter &painter, int index, int digits, float leftMargin, float y);
+    void drawTerminalPrompt(QPainter &painter, int index, float x, float y);
     void drawLineText(QPainter &painter, int index, float textX, float y);
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
+
+    // ================================================================
+    // SLICE: geometry-measurement helpers
+    // ================================================================
     QRect cursorRect(int cursorX, int cursorY) const;
-    void scrollToCursor();
     float leftColumnWidth() const;
     float lineNumberSectionWidth() const;
-    void drawTerminalPrompt(QPainter &painter, int index, float x, float y);
+
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
     int m_lineHeight;
