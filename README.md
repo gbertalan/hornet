@@ -149,3 +149,15 @@ Signals are declared but not defined in Qt.
 ## Debug Print
 
 The `Ctrl + D` shortcut prints the full contents of Model.
+
+## Conventions
+
+Model — getField() / setField(), plain data only.
+
+Service — Reads from Model: retrieve.... Writes to Model: store.... Other logic: plain verbs (resizeBox, addBox, adjustZoom).
+
+Control — View-triggered entry points: onXxx(...). Sub-control calls: dispatchXxx(...). Pushing state to View: send[What]To[Widget].
+
+View — signals reporting something happened: past tense (boxSelected, boxResized). Signals requesting an action: [what]Requested. Methods receiving pushed state: update[What].
+
+DTOs — folder by direction (dto_view_to_model, dto_model_to_view, dto_bidirectional); non-View-crossing structs live in their producing class's header instead.
