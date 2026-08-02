@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
     // connect(sender, signal, receiver, slot)
     QObject::connect(&view, &View::windowStateChanged, &control, &Control::onWindowStateChanged);
-    QObject::connect(&view, &View::closeClicked, &app, &QApplication::quit);
+    QObject::connect(&view, &View::windowCloseClicked, &app, &QApplication::quit);
     QObject::connect(&view, &View::editorStateChanged, &control, &Control::onEditorStateChanged);
     QObject::connect(&view,
                      &View::editorCursorPosChanged,

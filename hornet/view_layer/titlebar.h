@@ -15,7 +15,7 @@ public:
     void setFullscreen(bool fullscreen);
 
 signals:
-    void closeClicked();
+    void windowCloseClicked();
     void minimizeClicked();
     void maximizeClicked();
 

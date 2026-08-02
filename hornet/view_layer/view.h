@@ -32,7 +32,7 @@ public:
 signals:
     void buttonClicked();
     void windowStateChanged(const WindowDTO& dto);
-    void closeClicked();
+    void windowCloseClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);

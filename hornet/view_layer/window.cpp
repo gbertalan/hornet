@@ -57,7 +57,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     if (initialState.isFullscreen)
         showFullScreen();
 
-    connect(m_titleBar, &TitleBar::closeClicked,    this, &Window::closeClicked);
+    connect(m_titleBar, &TitleBar::windowCloseClicked,    this, &Window::windowCloseClicked);
     connect(m_titleBar, &TitleBar::minimizeClicked, this, [this]() {
         showMinimized();
     });

@@ -33,7 +33,7 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doub
 
     connect(m_trayButton,   &TitlebarButton::clicked, this, &TitleBar::minimizeClicked);
     connect(m_maxMinButton, &TitlebarButton::clicked, this, &TitleBar::maximizeClicked);
-    connect(m_closeButton,  &TitlebarButton::clicked, this, &TitleBar::closeClicked);
+    connect(m_closeButton,  &TitlebarButton::clicked, this, &TitleBar::windowCloseClicked);
 }
 
 void TitleBar::setFullscreen(bool fullscreen) {

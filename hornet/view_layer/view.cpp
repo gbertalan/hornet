@@ -7,7 +7,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     m_window = new Window(initialState);
     connect(m_window, &Window::buttonClicked, this, &View::buttonClicked);
     connect(m_window, &Window::windowStateChanged, this, &View::windowStateChanged);
-    connect(m_window, &Window::closeClicked, this, &View::closeClicked);
+    connect(m_window, &Window::windowCloseClicked, this, &View::windowCloseClicked);
     connect(m_window, &Window::editorStateChanged, this, &View::editorStateChanged);
     connect(m_window, &Window::editorCursorPosChanged, this, &View::editorCursorPosChanged);
     connect(m_window, &Window::editorKeyPressed, this, &View::editorKeyPressed);
