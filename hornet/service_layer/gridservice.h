@@ -1,15 +1,17 @@
 #ifndef GRIDSERVICE_H
 #define GRIDSERVICE_H
-
 #include <shared/dto_model_to_view/boxcontentdto.h>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/gridzoomdto.h>
-
 struct GridDragDTO;
 class IModelAccessReadWrite;
 struct BoxDragDTO;
 struct BoxResizeDTO;
 
+// ================================================================
+// SLICE: hornet save - per-box and per-grid save-data DTOs
+// (not shared/dto_* since they never cross the View boundary)
+// ================================================================
 struct BoxSaveDataDTO
 {
     int id;
@@ -44,7 +46,6 @@ struct BoxSaveDataDTO
         , originFilePath(originFilePath)
     {}
 };
-
 struct GridSaveDataDTO
 {
     int zoomLevel;
@@ -61,9 +62,19 @@ class GridService
 {
 public:
     explicit GridService(IModelAccessReadWrite &modelAccess);
+
+    // ================================================================
+    // SLICE: grid viewport (zoom, pan) + full view-state retrieval
+    // ================================================================
     void adjustZoom(const GridZoomDTO &dto);
     GridViewStateDTO retrieveGridViewState() const;
     void adjustOffset(const GridDragDTO &dto);
+    void setZoomLevel(int zoomLevel);
+    void setGridOffset(int offsetX, int offsetY);
+
+    // ================================================================
+    // SLICE: box lifecycle (create, remove, lookup)
+    // ================================================================
     int addBox(int posX,
                int posY,
                int width,
@@ -72,19 +83,29 @@ public:
                const QVector<QString> &bodyLines,
                bool isFileBacked,
                const QString &originFilePath);
-    void moveBoxes(const BoxDragDTO &dto);
-    BoxContentDTO retrieveBoxContent(int boxId) const;
-    void updateBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
+    void removeBox(int boxId);
     int findFirstBoxIdOfType(BoxContentType contentType) const;
-    void setSelectedBox(int boxId);
-    void setBoxScrollOffset(int boxId, int scrollOffset);
+
+    // ================================================================
+    // SLICE: box position/size/drag/resize
+    // ================================================================
+    void moveBoxes(const BoxDragDTO &dto);
     void resizeBox(const BoxResizeDTO &dto);
     void setBoxPosition(int boxId, int posX, int posY);
     void setBoxSize(int boxId, int width, int height);
+
+    // ================================================================
+    // SLICE: box content, cursor, scroll, selection
+    // ================================================================
+    BoxContentDTO retrieveBoxContent(int boxId) const;
+    void updateBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
+    void setSelectedBox(int boxId);
+    void setBoxScrollOffset(int boxId, int scrollOffset);
     void setCursorPosition(int boxId, int cursorX, int cursorY);
-    void setZoomLevel(int zoomLevel);
-    void setGridOffset(int offsetX, int offsetY);
-    void removeBox(int boxId);
+
+    // ================================================================
+    // SLICE: hornet save
+    // ================================================================
     GridSaveDataDTO retrieveGridSaveData() const;
 
 private:

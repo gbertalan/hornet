@@ -9,6 +9,10 @@ GridService::GridService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
 {}
 
+// ================================================================
+// SLICE: grid viewport (zoom, pan) + full view-state retrieval
+// ================================================================
+
 void GridService::adjustZoom(const GridZoomDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
@@ -70,6 +74,20 @@ void GridService::adjustOffset(const GridDragDTO &dto)
     gridModel.setOffset(gridModel.getOffset() + dto.delta);
 }
 
+void GridService::setZoomLevel(int zoomLevel)
+{
+    m_modelAccess.getGridModel().setZoomLevel(zoomLevel);
+}
+
+void GridService::setGridOffset(int offsetX, int offsetY)
+{
+    m_modelAccess.getGridModel().setOffset(QPoint(offsetX, offsetY));
+}
+
+// ================================================================
+// SLICE: box lifecycle (create, remove, lookup)
+// ================================================================
+
 int GridService::addBox(int posX,
                         int posY,
                         int width,
@@ -83,6 +101,24 @@ int GridService::addBox(int posX,
         .addBox(posX, posY, width, height, headerText, bodyLines, isFileBacked, originFilePath);
 }
 
+void GridService::removeBox(int boxId)
+{
+    m_modelAccess.getGridModel().getBox(boxId); // throws if missing, same guard as other setters
+    m_modelAccess.getGridModel().removeBox(boxId);
+}
+
+int GridService::findFirstBoxIdOfType(BoxContentType contentType) const
+{
+    for (const BoxModel &box : m_modelAccess.getGridModel().getBoxes())
+        if (box.getContentType() == contentType)
+            return box.getId();
+    return -1;
+}
+
+// ================================================================
+// SLICE: box position/size/drag/resize
+// ================================================================
+
 void GridService::moveBoxes(const BoxDragDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
@@ -95,44 +131,6 @@ void GridService::moveBoxes(const BoxDragDTO &dto)
         box.setPosX(box.getPosX() + cellDeltaX);
         box.setPosY(box.getPosY() + cellDeltaY);
     }
-}
-
-BoxContentDTO GridService::retrieveBoxContent(int boxId) const
-{
-    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
-    return BoxContentDTO{box.getHeaderText(),
-                         box.getBodyLines(),
-                         box.getContentType(),
-                         box.getCursorX(),
-                         box.getCursorY()};
-}
-
-void GridService::updateBoxContent(int boxId,
-                                   const QVector<QString> &bodyLines,
-                                   int cursorX,
-                                   int cursorY)
-{
-    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
-    box.setBodyLines(bodyLines);
-    box.setCursorPos(cursorX, cursorY);
-}
-
-int GridService::findFirstBoxIdOfType(BoxContentType contentType) const
-{
-    for (const BoxModel &box : m_modelAccess.getGridModel().getBoxes())
-        if (box.getContentType() == contentType)
-            return box.getId();
-    return -1;
-}
-
-void GridService::setSelectedBox(int boxId)
-{
-    m_modelAccess.getGridModel().setSelectedBoxId(boxId);
-}
-
-void GridService::setBoxScrollOffset(int boxId, int scrollOffset)
-{
-    m_modelAccess.getGridModel().getBox(boxId).setBodyScrollOffset(scrollOffset);
 }
 
 void GridService::resizeBox(const BoxResizeDTO &dto)
@@ -196,27 +194,49 @@ void GridService::setBoxSize(int boxId, int width, int height)
     box.setHeight(height);
 }
 
+// ================================================================
+// SLICE: box content, cursor, scroll, selection
+// ================================================================
+
+BoxContentDTO GridService::retrieveBoxContent(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return BoxContentDTO{box.getHeaderText(),
+                         box.getBodyLines(),
+                         box.getContentType(),
+                         box.getCursorX(),
+                         box.getCursorY()};
+}
+
+void GridService::updateBoxContent(int boxId,
+                                   const QVector<QString> &bodyLines,
+                                   int cursorX,
+                                   int cursorY)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setBodyLines(bodyLines);
+    box.setCursorPos(cursorX, cursorY);
+}
+
+void GridService::setSelectedBox(int boxId)
+{
+    m_modelAccess.getGridModel().setSelectedBoxId(boxId);
+}
+
+void GridService::setBoxScrollOffset(int boxId, int scrollOffset)
+{
+    m_modelAccess.getGridModel().getBox(boxId).setBodyScrollOffset(scrollOffset);
+}
+
 void GridService::setCursorPosition(int boxId, int cursorX, int cursorY)
 {
     BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
     box.setCursorPos(cursorX, cursorY);
 }
 
-void GridService::setZoomLevel(int zoomLevel)
-{
-    m_modelAccess.getGridModel().setZoomLevel(zoomLevel);
-}
-
-void GridService::setGridOffset(int offsetX, int offsetY)
-{
-    m_modelAccess.getGridModel().setOffset(QPoint(offsetX, offsetY));
-}
-
-void GridService::removeBox(int boxId)
-{
-    m_modelAccess.getGridModel().getBox(boxId); // throws if missing, same guard as other setters
-    m_modelAccess.getGridModel().removeBox(boxId);
-}
+// ================================================================
+// SLICE: hornet save
+// ================================================================
 
 GridSaveDataDTO GridService::retrieveGridSaveData() const
 {
