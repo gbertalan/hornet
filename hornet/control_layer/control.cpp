@@ -21,6 +21,10 @@
 #include <fstream>
 #include <iostream>
 
+// ================================================================
+// SLICE: construction & initialization
+// ================================================================
+
 Control::Control(IModelAccessRead &modelAccess,
                  WindowService &windowService,
                  EditorService &editorService,
@@ -51,13 +55,22 @@ void Control::init()
         m_editorControl.sendSettingsToEditor();
         m_currentlySelectedBoxId = terminalBoxId;
         m_gridService.setSelectedBox(terminalBoxId);
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
     }
 }
+
+// ================================================================
+// SLICE: window
+// ================================================================
+
 void Control::onWindowStateChanged(const WindowDTO &dto)
 {
     m_windowControl.dispatchWindowStateChanged(dto);
 }
+
+// ================================================================
+// SLICE: editor <-> model sync (state/cursor)
+// ================================================================
 
 void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
 {
@@ -68,7 +81,7 @@ void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
     if (m_currentlySelectedBoxId != -1 && dto.topLineIndex != m_lastSyncedBoxScrollOffset) {
         m_gridService.setBoxScrollOffset(m_currentlySelectedBoxId, dto.topLineIndex);
         m_lastSyncedBoxScrollOffset = dto.topLineIndex;
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
     }
 }
 
@@ -81,9 +94,13 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
 
     if (m_currentlySelectedBoxId != -1 && !m_isRestoringBoxState) {
         flushEditorContentToBox(m_currentlySelectedBoxId);
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
     }
 }
+
+// ================================================================
+// SLICE: editor key dispatch (typing, plus terminal/hornet routing)
+// ================================================================
 
 void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
 {
@@ -107,7 +124,7 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
             }
             if (m_currentlySelectedBoxId != -1)
                 flushEditorContentToBox(m_currentlySelectedBoxId);
-            m_gridControl.refreshGridViewState();
+            m_gridControl.sendViewStateToGrid();
             m_editorControl.sendStateToEditor(buildTerminalPrompts());
             m_editorControl.sendCursorPosToEditor();
             return;
@@ -120,12 +137,16 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         m_terminalControl.removePromptForDeletedLine(lineCountBefore, cursorYBefore);
     if (m_currentlySelectedBoxId != -1) {
         flushEditorContentToBox(m_currentlySelectedBoxId);
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
     }
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();
 }
+
+// ================================================================
+// SLICE: grid viewport (zoom, pan)
+// ================================================================
 
 void Control::onGridZoomChanged(const GridZoomDTO &dto)
 {
@@ -137,10 +158,18 @@ void Control::onGridDrag(const GridDragDTO &dto)
     m_gridControl.dispatchGridDrag(dto);
 }
 
+// ================================================================
+// SLICE: box manipulation (drag)
+// ================================================================
+
 void Control::onBoxDragged(const BoxDragDTO &dto)
 {
     m_gridControl.dispatchBoxDrag(dto);
 }
+
+// ================================================================
+// SLICE: terminal prompt helper (used by editor sync + box selection)
+// ================================================================
 
 QVector<QString> Control::buildTerminalPrompts() const
 {
@@ -153,6 +182,10 @@ QVector<QString> Control::buildTerminalPrompts() const
                               static_cast<int>(line.prompt.size())));
     return terminalPrompts;
 }
+
+// ================================================================
+// SLICE: box selection
+// ================================================================
 
 void Control::onBoxSelected(const BoxSelectedDTO &dto)
 {
@@ -185,13 +218,21 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_isRestoringBoxState = false;
 
     m_gridService.setSelectedBox(dto.boxId);
-    m_gridControl.refreshGridViewState();
+    m_gridControl.sendViewStateToGrid();
 }
+
+// ================================================================
+// SLICE: box manipulation (resize)
+// ================================================================
 
 void Control::onBoxResized(const BoxResizeDTO &dto)
 {
     m_gridControl.dispatchBoxResize(dto);
 }
+
+// ================================================================
+// SLICE: editor <-> box sync helpers
+// ================================================================
 
 void Control::flushEditorContentToBox(int boxId)
 {
@@ -205,6 +246,10 @@ void Control::flushEditorContentToBox(int boxId)
     const int cursorY = m_modelAccess.getEditorModel().getCursorY();
     m_gridService.updateBoxContent(boxId, linesAsQString, cursorX, cursorY);
 }
+
+// ================================================================
+// SLICE: type conversion helpers (u32string <-> QString)
+// ================================================================
 
 QString Control::convertU32StringToQString(const std::u32string &text) const
 {
@@ -227,6 +272,10 @@ std::vector<std::u32string> Control::convertBodyLinesToU32(const QVector<QString
     return result;
 }
 
+// ================================================================
+// SLICE: hornet command system - file loading helper
+// ================================================================
+
 bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
 {
     std::ifstream fileStream(filePath);
@@ -247,13 +296,17 @@ bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
     return true;
 }
 
+// ================================================================
+// SLICE: hornet command system - main dispatch
+// ================================================================
+
 QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
 {
     if (command.subcommand == "load") {
         const std::filesystem::path filePath = command.workingDirectory
                                                / command.argument.toStdString();
         if (loadFileIntoNewBox(filePath)) {
-            m_gridControl.refreshGridViewState();
+            m_gridControl.sendViewStateToGrid();
             return "loaded file: " + QString::fromStdString(filePath.filename().string());
         }
         return "could not open file: " + QString::fromStdString(filePath.string());
@@ -284,7 +337,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
                         ++filesLoaded;
         }
 
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "loaded " + QString::number(filesLoaded) + " file(s)";
     }
 
@@ -307,7 +360,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             return "no box with id " + QString::number(boxId);
         }
 
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "";
     }
 
@@ -328,7 +381,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "";
     }
 
@@ -347,7 +400,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "";
     }
 
@@ -368,7 +421,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "";
     }
 
@@ -381,7 +434,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         if (!zoomOk)
             return "usage: hornet setzoom <zoomLevel> (must be an integer)";
         m_gridService.setZoomLevel(zoomLevel);
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "";
     }
 
@@ -395,7 +448,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         if (!xOk || !yOk)
             return "usage: hornet setoffset <x> <y> (all must be integers)";
         m_gridService.setGridOffset(x, y);
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         return "";
     }
 
@@ -439,7 +492,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             }
         }
 
-        m_gridControl.refreshGridViewState();
+        m_gridControl.sendViewStateToGrid();
         QStringList problems;
         if (!notFound.isEmpty())
             problems.push_back("no box(es) with id: " + notFound.join(", "));
@@ -466,6 +519,10 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
 
     return "unknown hornet command: " + command.subcommand;
 }
+
+// ================================================================
+// SLICE: hornet command system - script execution
+// ================================================================
 
 QString Control::executeScriptFile(const std::filesystem::path &filePath,
                                    const std::filesystem::path &workingDir,
@@ -512,9 +569,13 @@ QString Control::executeScriptFile(const std::filesystem::path &filePath,
         }
     }
 
-    m_gridControl.refreshGridViewState();
+    m_gridControl.sendViewStateToGrid();
     return problems.join("; ");
 }
+
+// ================================================================
+// SLICE: hornet command system - output box helper
+// ================================================================
 
 void Control::createCommandOutputBox(const QString &commandText, const QString &outputText)
 {
@@ -527,6 +588,10 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
     }
     m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines, false, QString());
 }
+
+// ================================================================
+// SLICE: hornet command system - "last" id resolution helper
+// ================================================================
 
 bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
 {
@@ -543,6 +608,10 @@ bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
     outBoxId = parsed;
     return true;
 }
+
+// ================================================================
+// SLICE: hornet command system - save
+// ================================================================
 
 QString Control::saveProjectToFile(const std::filesystem::path &filePath)
 {
@@ -587,6 +656,10 @@ QString Control::saveProjectToFile(const std::filesystem::path &filePath)
     return message;
 }
 
+// ================================================================
+// SLICE: box unload (close button - separate from "hornet unload")
+// ================================================================
+
 void Control::onBoxUnloadRequested(int boxId)
 {
     BoxContentDTO content;
@@ -609,8 +682,12 @@ void Control::onBoxUnloadRequested(int boxId)
     } catch (const std::runtime_error &) {
         return;
     }
-    m_gridControl.refreshGridViewState();
+    m_gridControl.sendViewStateToGrid();
 }
+
+// ================================================================
+// SLICE: debug
+// ================================================================
 
 void Control::onDebugRequested()
 {

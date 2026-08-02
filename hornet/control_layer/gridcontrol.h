@@ -17,7 +17,7 @@ public:
     void dispatchGridZoomChange(const GridZoomDTO &dto);
     void dispatchGridDrag(const GridDragDTO &dto);
     void dispatchBoxDrag(const BoxDragDTO &dto);
-    void refreshGridViewState();
+    void sendViewStateToGrid();
     void dispatchBoxResize(const BoxResizeDTO &dto);
 
 private:

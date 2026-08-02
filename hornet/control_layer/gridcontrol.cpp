@@ -16,28 +16,28 @@ GridControl::GridControl(IModelAccessRead &modelAccess, GridService &gridService
 void GridControl::init()
 {
     m_gridService.addBox(3, 3, 20, 15, ".terminal", {}, false, QString());
-    refreshGridViewState();
+    sendViewStateToGrid();
 }
 
 void GridControl::dispatchGridZoomChange(const GridZoomDTO &dto)
 {
     m_gridService.adjustZoom(dto);
-    refreshGridViewState();
+    sendViewStateToGrid();
 }
 
 void GridControl::dispatchGridDrag(const GridDragDTO &dto)
 {
     m_gridService.adjustOffset(dto);
-    refreshGridViewState();
+    sendViewStateToGrid();
 }
 
 void GridControl::dispatchBoxDrag(const BoxDragDTO &dto)
 {
     m_gridService.moveBoxes(dto);
-    refreshGridViewState();
+    sendViewStateToGrid();
 }
 
-void GridControl::refreshGridViewState()
+void GridControl::sendViewStateToGrid()
 {
     const GridViewStateDTO viewStateDTO = m_gridService.retrieveGridViewState();
     m_view.updateGridViewState(viewStateDTO);
@@ -46,5 +46,5 @@ void GridControl::refreshGridViewState()
 void GridControl::dispatchBoxResize(const BoxResizeDTO &dto)
 {
     m_gridService.resizeBox(dto);
-    refreshGridViewState();
+    sendViewStateToGrid();
 }

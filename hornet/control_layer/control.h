@@ -6,14 +6,12 @@
 #include "control_layer/terminalcontrol.h"
 #include "control_layer/windowcontrol.h"
 #include <filesystem>
-
 class IModelAccessRead;
 class WindowService;
 class EditorService;
 class TerminalService;
 class GridService;
 class View;
-
 struct EditorKeyPressDTO;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
@@ -22,7 +20,6 @@ struct GridDragDTO;
 struct BoxDragDTO;
 struct BoxSelectedDTO;
 struct BoxResizeDTO;
-
 class Control : public QObject
 {
     Q_OBJECT
@@ -35,20 +32,45 @@ public:
                      View &view);
     void init();
 public slots:
-    // window:
+    // ================================================================
+    // SLICE: window
+    // ================================================================
     void onWindowStateChanged(const WindowDTO &dto);
-    // editor:
+
+    // ================================================================
+    // SLICE: editor <-> model sync (state/cursor)
+    // ================================================================
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
+
+    // ================================================================
+    // SLICE: editor key dispatch (typing, plus terminal/hornet routing)
+    // ================================================================
     void onEditorKeyPressed(const EditorKeyPressDTO &dto);
-    // grid:
+
+    // ================================================================
+    // SLICE: grid viewport (zoom, pan)
+    // ================================================================
     void onGridZoomChanged(const GridZoomDTO &dto);
     void onGridDrag(const GridDragDTO &dto);
+
+    // ================================================================
+    // SLICE: box manipulation (drag, select, resize)
+    // ================================================================
     void onBoxDragged(const BoxDragDTO &dto);
     void onBoxSelected(const BoxSelectedDTO &dto);
     void onBoxResized(const BoxResizeDTO &dto);
-    // debug:
+
+    // ================================================================
+    // SLICE: debug
+    // ================================================================
     void onDebugRequested();
+
+    // Note: the two below are not actually connected as Qt slots today -
+    // saveProjectToFile is called directly from dispatchHornetCommand, and
+    // onBoxUnloadRequested IS a real slot (connected in main.cpp). Left in
+    // this section unchanged for now - worth revisiting whether
+    // saveProjectToFile belongs in "public slots" at all.
     QString saveProjectToFile(const std::filesystem::path &filePath);
     void onBoxUnloadRequested(int boxId);
 
@@ -60,39 +82,45 @@ private:
     QVector<QString> buildTerminalPrompts() const;
     int m_currentlySelectedBoxId = -1;
     int m_lastCreatedBoxId = -1;
+
+    // ================================================================
+    // SLICE: editor <-> box sync helpers
+    // ================================================================
     void flushEditorContentToBox(int boxId);
+
+    // ================================================================
+    // SLICE: type conversion helpers (u32string <-> QString)
+    // ================================================================
     QString convertU32StringToQString(const std::u32string &text) const;
     std::u32string convertQStringToU32String(const QString &text) const;
     std::vector<std::u32string> convertBodyLinesToU32(const QVector<QString> &bodyLines) const;
+
     void printModel() const;
-
     IModelAccessRead &m_modelAccess;
-
     EditorService &m_editorService;
     TerminalService &m_terminalService;
     GridService &m_gridService;
-
     WindowControl m_windowControl;
     EditorControl m_editorControl;
     TerminalControl m_terminalControl;
     GridControl m_gridControl;
-
     // Avoids redundant grid refreshes when the Editor reports the same scroll
     // position it already reported last time. Reset to -1 on box switch, since
     // a cached value from a different box must not suppress the first sync for
     // the newly selected one.
     int m_lastSyncedBoxScrollOffset = -1;
 
+    // ================================================================
+    // SLICE: hornet command system (load, save, scripting, metadata commands)
+    // ================================================================
     bool loadFileIntoNewBox(const std::filesystem::path &filePath);
     QString dispatchHornetCommand(const HornetCommandDTO &command);
     QString executeScriptFile(const std::filesystem::path &filePath,
                               const std::filesystem::path &workingDir,
                               int depth);
     void createCommandOutputBox(const QString &commandText, const QString &outputText);
-
-    bool m_isRestoringBoxState = false;
-
     bool resolveBoxIdToken(const QString &token, int &outBoxId) const;
 
+    bool m_isRestoringBoxState = false;
     mutable int debugPrintCounter = 0;
 };
