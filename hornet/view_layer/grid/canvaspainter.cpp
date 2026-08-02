@@ -117,6 +117,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const float textPadding = static_cast<float>(gridGap * 0.2);
 
     for (const BoxViewDTO &box : boxes) {
+        // ============================================================
+        // SLICE: per-box geometry setup (screen rects for body/header/
+        // border/clip, derived from grid position + live drag offset)
+        // ============================================================
         const QPoint liveOffset = (box.id == draggedBoxId) ? draggedBoxLiveOffset : QPoint(0, 0);
         const double buttonSize = gridGap * 1.9;
         const double buttonMargin = gridGap * 0.1;
@@ -141,6 +145,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const bool isSelected = (box.id == selectedBoxId);
         const bool isHovered = (box.id == hoveredBoxId) && !isSelected;
 
+        // ============================================================
+        // SLICE: body / header / border backgrounds
+        // ============================================================
         painter.setPen(Qt::NoPen);
         painter.setBrush(isHovered ? Theme::darkerGray() : Theme::almostBlack());
         painter.drawRect(bodyRect);
@@ -165,6 +172,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.setClipRect(clipRect);
         painter.setClipping(true);
 
+        // ============================================================
+        // SLICE: header text (filename, with ellipsis truncation) + box ID label
+        // ============================================================
         float scaleFactor = 2.5f;
         const float buttonAreaWidth = static_cast<float>(buttonSize + buttonMargin);
         const float oneCharWidth = fontAtlas.textWidth(1, textScale) * scaleFactor;
@@ -206,8 +216,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               Theme::darkAmber(),
                               textScale);
 
-        // line number gutter, sized to the box's total line count (not just the visible slice)
-        // so it doesn't resize as the box is scrolled:
+        // ============================================================
+        // SLICE: line number gutter setup (width sized to total line
+        // count, not just the visible slice, so it doesn't resize on scroll)
+        // ============================================================
         const int digits = std::max(1,
                                     static_cast<int>(
                                         QString::number(box.totalBodyLineCount).length()));
@@ -215,9 +227,12 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const float gutterX = static_cast<float>(screenX + textPadding);
         const float bodyTextX = gutterX + gutterWidth;
 
-        // body text + line numbers:
         const QVector<QString> &bodyLines = box.bodyLines;
 
+        // ============================================================
+        // SLICE: empty-box case (0 lines) - still show a "line 1" gutter
+        // number, its separator segment, and a caret
+        // ============================================================
         if (bodyLines.isEmpty()) { // if empty, still draw caret
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset;
             const float textX = bodyTextX + (textPadding * 2);
@@ -238,6 +253,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
             painter.restore();
         }
 
+        // ============================================================
+        // SLICE: body text, per-line numbers (with cursor-line highlight),
+        // and the caret (blinking if selected, solid otherwise)
+        // ============================================================
         for (int i = 0; i < bodyLines.size(); ++i) {
             const float lineY = static_cast<float>(screenY + headerH) + lineOffset
                                 + i * static_cast<float>(gridGap);
@@ -282,7 +301,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
             }
         }
 
-        // gutter separator line:
+        // ============================================================
+        // SLICE: gutter separator lines (one short segment per visible
+        // text line, not one continuous line)
+        // ============================================================
         painter.save();
         painter.setPen(QPen(Theme::darkGray(), 1));
         for (int i = 0; i < bodyLines.size(); ++i) {
@@ -292,7 +314,10 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         }
         painter.restore();
 
-        // closing X  button
+        // ============================================================
+        // SLICE: close (X) button - hidden for the terminal box, color
+        // depends on whether Ctrl is currently held
+        // ============================================================
         if (box.contentType != BoxContentType::Terminal) {
             const double margin = buttonMargin;
             const double buttonX = screenX + screenW - buttonSize - margin;
