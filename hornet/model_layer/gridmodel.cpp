@@ -10,7 +10,7 @@ int GridModel::getZoomLevel() const
     return m_zoomLevel;
 }
 
-void GridModel::setZoomLevel(int zoomLevel)
+void GridModel::storeZoomLevel(int zoomLevel)
 {
     m_zoomLevel = std::clamp(zoomLevel, m_minZoom, m_maxZoom);
 }
@@ -78,7 +78,7 @@ int GridModel::getSelectedBoxId() const
     return m_selectedBoxId;
 }
 
-void GridModel::setSelectedBoxId(int boxId)
+void GridModel::storeSelectedBoxId(int boxId)
 {
     m_selectedBoxId = boxId;
 }

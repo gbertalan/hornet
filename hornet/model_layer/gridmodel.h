@@ -11,7 +11,7 @@ public:
     GridModel();
 
     int getZoomLevel() const;
-    void setZoomLevel(int zoomLevel);
+    void storeZoomLevel(int zoomLevel);
 
     double getGridGap() const;
 
@@ -30,7 +30,7 @@ public:
                const QString &originFilePath);
     void removeBox(int id);
     int getSelectedBoxId() const;
-    void setSelectedBoxId(int boxId);
+    void storeSelectedBoxId(int boxId);
 
 private:
     int m_zoomLevel = 22;

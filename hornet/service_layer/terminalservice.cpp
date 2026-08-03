@@ -10,7 +10,7 @@ TerminalService::TerminalService(IModelAccessReadWrite &modelAccess, EditorServi
 void TerminalService::init()
 {
     m_modelAccess.getTerminalModel().addTerminalPromptAndDir(
-        {getCurrentPrompt(), m_modelAccess.getTerminalModel().getCurrentDirectory()});
+        {retrieveCurrentPrompt(), m_modelAccess.getTerminalModel().retrieveCurrentDirectory()});
 }
 
 void TerminalService::addTerminalPromptAndDir(const TerminalPromptAndDir &promptAndDir)
@@ -18,14 +18,14 @@ void TerminalService::addTerminalPromptAndDir(const TerminalPromptAndDir &prompt
     m_modelAccess.getTerminalModel().addTerminalPromptAndDir(promptAndDir);
 }
 
-const std::vector<TerminalPromptAndDir> &TerminalService::getTerminalPromptAndDirs() const
+const std::vector<TerminalPromptAndDir> &TerminalService::retrieveTerminalPromptAndDirs() const
 {
-    return m_modelAccess.getTerminalModel().getTerminalPromptAndDirs();
+    return m_modelAccess.getTerminalModel().retrieveTerminalPromptAndDirs();
 }
 
-std::u32string TerminalService::getCurrentPrompt() const
+std::u32string TerminalService::retrieveCurrentPrompt() const
 {
-    std::filesystem::path dir = m_modelAccess.getTerminalModel().getCurrentDirectory();
+    std::filesystem::path dir = m_modelAccess.getTerminalModel().retrieveCurrentDirectory();
     std::string result;
     std::filesystem::path homeDir;
 #ifdef _WIN32
@@ -42,19 +42,19 @@ std::u32string TerminalService::getCurrentPrompt() const
     return std::u32string(result.begin(), result.end());
 }
 
-const std::filesystem::path &TerminalService::getCurrentDirectory() const
+const std::filesystem::path &TerminalService::retrieveCurrentDirectory() const
 {
-    return m_modelAccess.getTerminalModel().getCurrentDirectory();
+    return m_modelAccess.getTerminalModel().retrieveCurrentDirectory();
 }
 
-void TerminalService::setCurrentDirectory(const std::filesystem::path &path)
+void TerminalService::storeCurrentDirectory(const std::filesystem::path &path)
 {
-    m_modelAccess.getTerminalModel().setCurrentDirectory(path);
+    m_modelAccess.getTerminalModel().storeCurrentDirectory(path);
 }
 
-void TerminalService::updateTerminalLineDirectory(int index, const std::filesystem::path &directory)
+void TerminalService::storeTerminalLineDirectory(int index, const std::filesystem::path &directory)
 {
-    m_modelAccess.getTerminalModel().updateLineDirectory(index, directory, getCurrentPrompt());
+    m_modelAccess.getTerminalModel().updateLineDirectory(index, directory, retrieveCurrentPrompt());
 }
 
 void TerminalService::removeTerminalPromptAndDir(int index)

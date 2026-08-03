@@ -69,8 +69,8 @@ public:
     void adjustZoom(const GridZoomDTO &dto);
     GridViewStateDTO retrieveGridViewState() const;
     void adjustOffset(const GridDragDTO &dto);
-    void setZoomLevel(int zoomLevel);
-    void setGridOffset(int offsetX, int offsetY);
+    void storeZoomLevel(int zoomLevel);
+    void storeGridOffset(int offsetX, int offsetY);
 
     // ================================================================
     // SLICE: box lifecycle (create, remove, lookup)
@@ -84,24 +84,24 @@ public:
                bool isFileBacked,
                const QString &originFilePath);
     void removeBox(int boxId);
-    int findFirstBoxIdOfType(BoxContentType contentType) const;
+    int retrieveFirstBoxIdOfType(BoxContentType contentType) const;
 
     // ================================================================
     // SLICE: box position/size/drag/resize
     // ================================================================
     void moveBoxes(const BoxDragDTO &dto);
     void resizeBox(const BoxResizeDTO &dto);
-    void setBoxPosition(int boxId, int posX, int posY);
-    void setBoxSize(int boxId, int width, int height);
+    void storeBoxPosition(int boxId, int posX, int posY);
+    void storeBoxSize(int boxId, int width, int height);
 
     // ================================================================
     // SLICE: box content, cursor, scroll, selection
     // ================================================================
     BoxContentDTO retrieveBoxContent(int boxId) const;
-    void updateBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
-    void setSelectedBox(int boxId);
-    void setBoxScrollOffset(int boxId, int scrollOffset);
-    void setCursorPosition(int boxId, int cursorX, int cursorY);
+    void storeBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
+    void storeSelectedBox(int boxId);
+    void storeBoxScrollOffset(int boxId, int scrollOffset);
+    void storeCursorPosition(int boxId, int cursorX, int cursorY);
 
     // ================================================================
     // SLICE: hornet save

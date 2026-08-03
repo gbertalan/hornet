@@ -15,7 +15,7 @@ GridControl::GridControl(IModelAccessRead &modelAccess, GridService &gridService
 
 void GridControl::init()
 {
-    m_gridService.addBox(3, 3, 20, 15, ".terminal", {}, false, QString());
+    m_gridService.addBox(3, 3, 26, 14, ".terminal", {}, false, QString());
     sendViewStateToGrid();
 }
 

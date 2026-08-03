@@ -20,7 +20,7 @@ void GridService::adjustZoom(const GridZoomDTO &dto)
     const QPoint oldOffset = gridModel.getOffset();
     const int current = gridModel.getZoomLevel();
     const int adjusted = dto.scrollDirection == ScrollDirection::Up ? current + 1 : current - 1;
-    gridModel.setZoomLevel(adjusted);
+    gridModel.storeZoomLevel(adjusted);
     const double newGap = gridModel.getGridGap();
     const double ratio = newGap / oldGap;
     const QPoint cursor = dto.cursorPosition;
@@ -74,12 +74,12 @@ void GridService::adjustOffset(const GridDragDTO &dto)
     gridModel.setOffset(gridModel.getOffset() + dto.delta);
 }
 
-void GridService::setZoomLevel(int zoomLevel)
+void GridService::storeZoomLevel(int zoomLevel)
 {
-    m_modelAccess.getGridModel().setZoomLevel(zoomLevel);
+    m_modelAccess.getGridModel().storeZoomLevel(zoomLevel);
 }
 
-void GridService::setGridOffset(int offsetX, int offsetY)
+void GridService::storeGridOffset(int offsetX, int offsetY)
 {
     m_modelAccess.getGridModel().setOffset(QPoint(offsetX, offsetY));
 }
@@ -107,7 +107,7 @@ void GridService::removeBox(int boxId)
     m_modelAccess.getGridModel().removeBox(boxId);
 }
 
-int GridService::findFirstBoxIdOfType(BoxContentType contentType) const
+int GridService::retrieveFirstBoxIdOfType(BoxContentType contentType) const
 {
     for (const BoxModel &box : m_modelAccess.getGridModel().getBoxes())
         if (box.getContentType() == contentType)
@@ -180,14 +180,14 @@ void GridService::resizeBox(const BoxResizeDTO &dto)
     }
 }
 
-void GridService::setBoxPosition(int boxId, int posX, int posY)
+void GridService::storeBoxPosition(int boxId, int posX, int posY)
 {
     BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
     box.setPosX(posX);
     box.setPosY(posY);
 }
 
-void GridService::setBoxSize(int boxId, int width, int height)
+void GridService::storeBoxSize(int boxId, int width, int height)
 {
     BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
     box.setWidth(width);
@@ -208,7 +208,7 @@ BoxContentDTO GridService::retrieveBoxContent(int boxId) const
                          box.getCursorY()};
 }
 
-void GridService::updateBoxContent(int boxId,
+void GridService::storeBoxContent(int boxId,
                                    const QVector<QString> &bodyLines,
                                    int cursorX,
                                    int cursorY)
@@ -218,17 +218,17 @@ void GridService::updateBoxContent(int boxId,
     box.setCursorPos(cursorX, cursorY);
 }
 
-void GridService::setSelectedBox(int boxId)
+void GridService::storeSelectedBox(int boxId)
 {
-    m_modelAccess.getGridModel().setSelectedBoxId(boxId);
+    m_modelAccess.getGridModel().storeSelectedBoxId(boxId);
 }
 
-void GridService::setBoxScrollOffset(int boxId, int scrollOffset)
+void GridService::storeBoxScrollOffset(int boxId, int scrollOffset)
 {
     m_modelAccess.getGridModel().getBox(boxId).setBodyScrollOffset(scrollOffset);
 }
 
-void GridService::setCursorPosition(int boxId, int cursorX, int cursorY)
+void GridService::storeCursorPosition(int boxId, int cursorX, int cursorY)
 {
     BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
     box.setCursorPos(cursorX, cursorY);

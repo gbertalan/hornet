@@ -48,13 +48,13 @@ void Control::init()
     m_terminalControl.init();
     m_gridControl.init();
 
-    const int terminalBoxId = m_gridService.findFirstBoxIdOfType(BoxContentType::Terminal);
+    const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(BoxContentType::Terminal);
     if (terminalBoxId != -1) {
         m_editorService.setIsTerminal(true);
         m_editorControl.sendStateToEditor(buildTerminalPrompts());
         m_editorControl.sendSettingsToEditor();
         m_currentlySelectedBoxId = terminalBoxId;
-        m_gridService.setSelectedBox(terminalBoxId);
+        m_gridService.storeSelectedBox(terminalBoxId);
         m_gridControl.sendViewStateToGrid();
     }
 }
@@ -79,7 +79,7 @@ void Control::onEditorStateChanged(const EditorVisibleLinesDTO &dto)
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
 
     if (m_currentlySelectedBoxId != -1 && dto.topLineIndex != m_lastSyncedBoxScrollOffset) {
-        m_gridService.setBoxScrollOffset(m_currentlySelectedBoxId, dto.topLineIndex);
+        m_gridService.storeBoxScrollOffset(m_currentlySelectedBoxId, dto.topLineIndex);
         m_lastSyncedBoxScrollOffset = dto.topLineIndex;
         m_gridControl.sendViewStateToGrid();
     }
@@ -175,7 +175,7 @@ QVector<QString> Control::buildTerminalPrompts() const
 {
     QVector<QString> terminalPrompts;
     const std::vector<TerminalPromptAndDir> &terminalPromptAndDirs
-        = m_modelAccess.getTerminalModel().getTerminalPromptAndDirs();
+        = m_modelAccess.getTerminalModel().retrieveTerminalPromptAndDirs();
     for (const TerminalPromptAndDir &line : terminalPromptAndDirs)
         terminalPrompts.push_back(
             QString::fromUcs4(reinterpret_cast<const char32_t *>(line.prompt.c_str()),
@@ -217,7 +217,7 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
 
     m_isRestoringBoxState = false;
 
-    m_gridService.setSelectedBox(dto.boxId);
+    m_gridService.storeSelectedBox(dto.boxId);
     m_gridControl.sendViewStateToGrid();
 }
 
@@ -244,7 +244,7 @@ void Control::flushEditorContentToBox(int boxId)
 
     const int cursorX = m_modelAccess.getEditorModel().getCursorX();
     const int cursorY = m_modelAccess.getEditorModel().getCursorY();
-    m_gridService.updateBoxContent(boxId, linesAsQString, cursorX, cursorY);
+    m_gridService.storeBoxContent(boxId, linesAsQString, cursorX, cursorY);
 }
 
 // ================================================================
@@ -355,7 +355,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             return "usage: hornet setpos <boxId|last> <x> <y>";
 
         try {
-            m_gridService.setBoxPosition(boxId, x, y);
+            m_gridService.storeBoxPosition(boxId, x, y);
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
@@ -377,7 +377,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             return "usage: hornet setsize <boxId|last> <width> <height>";
 
         try {
-            m_gridService.setBoxSize(boxId, width, height);
+            m_gridService.storeBoxSize(boxId, width, height);
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
@@ -396,7 +396,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         if (!boxIdOk || !offsetOk)
             return "usage: hornet setscroll <boxId|last> <offset>";
         try {
-            m_gridService.setBoxScrollOffset(boxId, offset);
+            m_gridService.storeBoxScrollOffset(boxId, offset);
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
@@ -417,7 +417,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             return "usage: hornet setcursor <boxId|last> <x> <y>";
 
         try {
-            m_gridService.setCursorPosition(boxId, x, y);
+            m_gridService.storeCursorPosition(boxId, x, y);
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);
         }
@@ -433,7 +433,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         const int zoomLevel = parts.at(0).toInt(&zoomOk);
         if (!zoomOk)
             return "usage: hornet setzoom <zoomLevel> (must be an integer)";
-        m_gridService.setZoomLevel(zoomLevel);
+        m_gridService.storeZoomLevel(zoomLevel);
         m_gridControl.sendViewStateToGrid();
         return "";
     }
@@ -447,7 +447,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         const int y = parts.at(1).toInt(&yOk);
         if (!xOk || !yOk)
             return "usage: hornet setoffset <x> <y> (all must be integers)";
-        m_gridService.setGridOffset(x, y);
+        m_gridService.storeGridOffset(x, y);
         m_gridControl.sendViewStateToGrid();
         return "";
     }
@@ -672,7 +672,7 @@ void Control::onBoxUnloadRequested(int boxId)
         return;
 
     if (boxId == m_currentlySelectedBoxId) {
-        const int terminalBoxId = m_gridService.findFirstBoxIdOfType(BoxContentType::Terminal);
+        const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(BoxContentType::Terminal);
         if (terminalBoxId != -1)
             onBoxSelected(BoxSelectedDTO(terminalBoxId));
     }

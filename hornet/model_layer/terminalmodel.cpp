@@ -1,16 +1,16 @@
 #include "terminalmodel.h"
 
-const std::filesystem::path &TerminalModel::getCurrentDirectory() const
+const std::filesystem::path &TerminalModel::retrieveCurrentDirectory() const
 {
     return m_currentDirectory;
 }
 
-void TerminalModel::setCurrentDirectory(const std::filesystem::path &path)
+void TerminalModel::storeCurrentDirectory(const std::filesystem::path &path)
 {
     m_currentDirectory = path;
 }
 
-const std::vector<TerminalPromptAndDir> &TerminalModel::getTerminalPromptAndDirs() const
+const std::vector<TerminalPromptAndDir> &TerminalModel::retrieveTerminalPromptAndDirs() const
 {
     return m_terminalPromptAndDirs;
 }
