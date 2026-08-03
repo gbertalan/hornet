@@ -162,4 +162,6 @@ Control — View-triggered entry points: onXxx(...). Sub-control calls: dispatch
 
 View — signals reporting something happened: past tense (boxSelected, boxResized). Signals requesting an action: [what]Requested. Methods receiving pushed state: update[What].
 
+(The update[What] rule applies only to methods receiving Control-pushed Model state (e.g. updateGridViewState). Plain set[Field] is used for View-internal parent→child widget configuration with no Control/Model involvement (e.g. OverlayWidget::setFullscreen, TitlebarButton::setHoverColor).)
+
 DTOs — folder by direction (dto_view_to_model, dto_model_to_view, dto_bidirectional); non-View-crossing structs live in their producing class's header instead.
