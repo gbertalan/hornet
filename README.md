@@ -158,6 +158,8 @@ Service — Reads from Model: retrieve.... Writes to Model: store.... Other logi
 
 Control — View-triggered entry points: onXxx(...). Sub-control calls: dispatchXxx(...). Pushing state to View: send[What]To[Widget].
 
+(Sub-control methods that are plain computation/parsing/execution logic, not orchestration of an incoming View action, use plain verbs instead of dispatch... — e.g. TerminalControl::parseHornetCommand, runShellCommandInDirectory, removePromptForDeletedLine.)
+
 View — signals reporting something happened: past tense (boxSelected, boxResized). Signals requesting an action: [what]Requested. Methods receiving pushed state: update[What].
 
 DTOs — folder by direction (dto_view_to_model, dto_model_to_view, dto_bidirectional); non-View-crossing structs live in their producing class's header instead.
