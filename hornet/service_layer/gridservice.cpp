@@ -71,7 +71,7 @@ GridViewStateDTO GridService::retrieveGridViewState() const
 void GridService::adjustOffset(const GridDragDTO &dto)
 {
     GridModel &gridModel = m_modelAccess.getGridModel();
-    gridModel.setOffset(gridModel.getOffset() + dto.delta);
+    gridModel.setOffset(dto.offset);
 }
 
 void GridService::storeZoomLevel(int zoomLevel)

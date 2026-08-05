@@ -169,10 +169,11 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
             emit boxResized(BoxResizeDTO(m_resizedBoxId, m_resizeEdge, incrementalCellDelta));
         }
     } else if (m_isDraggingGrid) {
-        // --- grid pan ---
+        // --- grid pan: update local offset immediately, commit to Model only on release ---
         const QPoint delta = event->pos() - m_lastMousePos;
         m_lastMousePos = event->pos();
-        emit gridDragged(GridDragDTO(delta, event->pos()));
+        offset += delta;
+        update();
     } else if (m_isDraggingBox) {
         // --- box drag: continuous, live pixel offset, snapped to cells only on release ---
         const BoxViewDTO *draggedBox = nullptr;
@@ -238,6 +239,8 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
                 emit boxSelected(BoxSelectedDTO(m_draggedBoxId));
             } else
                 emit boxDragged(BoxDragDTO({m_draggedBoxId}, totalDisplacement));
+        } else if (m_isDraggingGrid) {
+            emit gridDragged(GridDragDTO(offset, event->pos()));
         }
         m_isDraggingGrid = false;
         m_isDraggingBox = false;
