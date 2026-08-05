@@ -22,7 +22,8 @@ public:
                           FontRenderer &fontRenderer,
                           FontAtlas &fontAtlas,
                           bool selectedBoxCursorVisible,
-                          bool isCtrlPressed);
+                          bool isCtrlPressed,
+                          QSize viewportSize);
     static int findBoxAtPosition(QPoint mousePosition,
                                  double gridGap,
                                  QPoint offset,

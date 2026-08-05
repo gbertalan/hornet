@@ -102,7 +102,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               FontRenderer &fontRenderer,
                               FontAtlas &fontAtlas,
                               bool selectedBoxCursorVisible,
-                              bool isCtrlPressed)
+                              bool isCtrlPressed,
+                              QSize viewportSize)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -116,6 +117,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const float lineOffset = (static_cast<float>(gridGap) - textHeight) / 2.0f;
     const float textPadding = static_cast<float>(gridGap * 0.2);
 
+    const QRectF viewportRect(0, 0, viewportSize.width(), viewportSize.height());
+
     for (const BoxViewDTO &box : boxes) {
         // ============================================================
         // SLICE: per-box geometry setup (screen rects for body/header/
@@ -125,6 +128,14 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const double buttonSize = gridGap * 1.9;
         const double buttonMargin = gridGap * 0.1;
         const QRectF fullRect = getBoxScreenRect(box, gridGap, offset, liveOffset);
+
+        // ============================================================
+        // SLICE: visibility culling - skip all further work for boxes
+        // entirely outside the visible viewport
+        // ============================================================
+        if (!fullRect.intersects(viewportRect))
+            continue;
+
         const double screenX = fullRect.x();
         const double screenY = fullRect.y();
         const double screenW = fullRect.width();

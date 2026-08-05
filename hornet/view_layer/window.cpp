@@ -179,24 +179,23 @@ void Window::moveEvent(QMoveEvent* event) {
 void Window::changeEvent(QEvent* event) {
     QWidget::changeEvent(event);
     if (event->type() == QEvent::WindowStateChange) {
-        bool fullscreen = isFullScreen();
-        m_overlayWidget->setFullscreen(fullscreen);
-        m_titleBar->setFullscreen(fullscreen);
+        bool isFullscreen = isFullScreen();
+        m_overlayWidget->setFullscreen(isFullscreen);
+        m_titleBar->setFullscreen(isFullscreen);
 
-        m_handleLeft->setVisible(!fullscreen);
-        m_handleRight->setVisible(!fullscreen);
-        m_handleTop->setVisible(!fullscreen);
-        m_handleBottom->setVisible(!fullscreen);
-        m_handleTopLeft->setVisible(!fullscreen);
-        m_handleTopRight->setVisible(!fullscreen);
-        m_handleBottomLeft->setVisible(!fullscreen);
-        m_handleBottomRight->setVisible(!fullscreen);
+        m_handleLeft->setVisible(!isFullscreen);
+        m_handleRight->setVisible(!isFullscreen);
+        m_handleTop->setVisible(!isFullscreen);
+        m_handleBottom->setVisible(!isFullscreen);
+        m_handleTopLeft->setVisible(!isFullscreen);
+        m_handleTopRight->setVisible(!isFullscreen);
+        m_handleBottomLeft->setVisible(!isFullscreen);
+        m_handleBottomRight->setVisible(!isFullscreen);
 
         int x = this->x();
         int y = this->y();
         int width = m_windowedWidth;
         int height = m_windowedHeight;
-        bool isFullscreen = fullscreen;
         WindowDTO dto{x, y, width, height, isFullscreen};
 
         emit windowStateChanged(dto);

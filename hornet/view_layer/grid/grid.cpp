@@ -80,7 +80,8 @@ void Grid::paintEvent(QPaintEvent *)
                              *m_fontRenderer,
                              m_fontAtlas,
                              m_cursorBlinkVisible,
-                             m_isCtrlPressed);
+                             m_isCtrlPressed,
+                             size());
 }
 
 // ================================================================

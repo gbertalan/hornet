@@ -586,7 +586,7 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
         for (const QString &line : outputText.split('\n'))
             bodyLines.push_back(line);
     }
-    m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines, false, QString());
+    m_gridService.addBox(0, 0, 26, 14, commandText, bodyLines, false, QString());
 }
 
 // ================================================================
