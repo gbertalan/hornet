@@ -5,9 +5,7 @@
 struct GridDragDTO
 {
     QPoint offset;
-    QPoint position;
-    explicit GridDragDTO(QPoint offset, QPoint position)
+    explicit GridDragDTO(QPoint offset)
         : offset(offset)
-        , position(position)
     {}
 };

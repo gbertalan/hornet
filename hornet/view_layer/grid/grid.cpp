@@ -240,7 +240,7 @@ void Grid::mouseReleaseEvent(QMouseEvent *event)
             } else
                 emit boxDragged(BoxDragDTO({m_draggedBoxId}, totalDisplacement));
         } else if (m_isDraggingGrid) {
-            emit gridDragged(GridDragDTO(offset, event->pos()));
+            emit gridDragged(GridDragDTO(offset));
         }
         m_isDraggingGrid = false;
         m_isDraggingBox = false;
