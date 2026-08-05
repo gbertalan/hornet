@@ -52,6 +52,13 @@ void Grid::updateGridViewState(const GridViewStateDTO &dto)
 void Grid::setCursorBlinkVisible(bool visible)
 {
     m_cursorBlinkVisible = visible;
+    for (const BoxViewDTO &box : boxes) {
+        if (box.id == m_selectedBoxId) {
+            const QRectF boxRect = CanvasPainter::getBoxScreenRect(box, gridGap, offset);
+            update(boxRect.toAlignedRect());
+            return;
+        }
+    }
     update();
 }
 
