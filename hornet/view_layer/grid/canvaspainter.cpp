@@ -9,24 +9,24 @@ void CanvasPainter::drawGrid(QPainter &painter, double gridGap, QPoint offset, Q
     constexpr double minVisibleGap
         = 7.18; // precomputed from the formula baseGap * pow(zoomFactor, zoomLevel - defaultZoom).
     constexpr double maxGap = 48.31;
+
+    if (gridGap <= minVisibleGap)
+        return;
+
     const int alpha = static_cast<int>(
         std::clamp((gridGap - minVisibleGap) / (maxGap - minVisibleGap), 0.0, 1.0) * 255);
-
     painter.setRenderHint(QPainter::Antialiasing, false);
     QColor gridColor = Theme::darkerAmber();
     gridColor.setAlpha(alpha);
     painter.setPen(QPen(gridColor, 1));
-
     const double startX = std::fmod(offset.x(), gridGap);
     const double startY = std::fmod(offset.y(), gridGap);
-
     const int noOfVerticalLines = static_cast<int>(std::ceil((size.width() - startX) / gridGap))
                                   + 1;
     for (int i = 0; i < noOfVerticalLines; ++i) {
         const double x = startX + i * gridGap;
         painter.drawLine(QPointF(x, 0), QPointF(x, size.height()));
     }
-
     const int noOfHorizontalLines = static_cast<int>(std::ceil((size.height() - startY) / gridGap))
                                     + 1;
     for (int i = 0; i < noOfHorizontalLines; ++i) {
