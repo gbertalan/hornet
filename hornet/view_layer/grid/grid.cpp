@@ -217,8 +217,18 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                       offset,
                                                                       boxes);
         if (boxIdUnderCursor != m_hoveredBoxId) {
+            QRectF dirtyRect;
+            for (const BoxViewDTO &box : boxes) {
+                if (box.id == m_hoveredBoxId || box.id == boxIdUnderCursor) {
+                    const QRectF boxRect = CanvasPainter::getBoxScreenRect(box, gridGap, offset);
+                    dirtyRect = dirtyRect.isNull() ? boxRect : dirtyRect.united(boxRect);
+                }
+            }
             m_hoveredBoxId = boxIdUnderCursor;
-            update();
+            if (!dirtyRect.isNull())
+                update(dirtyRect.toAlignedRect());
+            else
+                update();
         }
     }
     event->accept();
