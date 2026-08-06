@@ -47,6 +47,16 @@ QRectF CanvasPainter::getBoxScreenRect(const BoxViewDTO &box,
     return QRectF(screenX, screenY, screenW, screenH);
 }
 
+QRectF CanvasPainter::getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset)
+{
+    const QRectF fullRect = getBoxScreenRect(box, gridGap, offset);
+    const double buttonSize = gridGap * 1.9;
+    const double buttonMargin = gridGap * 0.1;
+    const double buttonX = fullRect.right() - buttonSize - buttonMargin;
+    const double buttonY = fullRect.top() + buttonMargin;
+    return QRectF(buttonX, buttonY, buttonSize, buttonSize);
+}
+
 BoxResizeEdge CanvasPainter::findResizeEdgeAtPosition(QPoint mousePosition,
                                                       double gridGap,
                                                       QPoint offset,
@@ -168,7 +178,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         if (isSelected)
             headerColor = Theme::almostBlack();
         else if (isHovered)
-            headerColor = Theme::darkerAmber();
+            headerColor = Theme::darkerGray();
         else
             headerColor = Theme::almostBlack();
         painter.setBrush(headerColor);
@@ -326,10 +336,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         painter.restore();
 
         // ============================================================
-        // SLICE: close (X) button - hidden for the terminal box, color
-        // depends on whether Ctrl is currently held
+        // SLICE: close (X) button - hidden for the terminal box, only drawn while Ctrl is held AND this box is hovered
         // ============================================================
-        if (box.contentType != BoxContentType::Terminal) {
+        if (box.contentType != BoxContentType::Terminal && isCtrlPressed && box.id == hoveredBoxId) {
             const double margin = buttonMargin;
             const double buttonX = screenX + screenW - buttonSize - margin;
             const double buttonY = screenY + margin;

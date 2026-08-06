@@ -65,7 +65,13 @@ void Grid::setCursorBlinkVisible(bool visible)
 void Grid::setCtrlPressed(bool isCtrlPressed)
 {
     m_isCtrlPressed = isCtrlPressed;
-    update();
+    for (const BoxViewDTO &box : boxes) {
+        if (box.id == m_hoveredBoxId) {
+            const QRectF buttonRect = CanvasPainter::getBoxCloseButtonRect(box, gridGap, offset);
+            update(buttonRect.toAlignedRect());
+            return;
+        }
+    }
 }
 
 // ================================================================

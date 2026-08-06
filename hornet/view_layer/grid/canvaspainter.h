@@ -40,6 +40,8 @@ public:
                                    double gridGap,
                                    QPoint offset,
                                    QPoint liveOffset = QPoint(0, 0));
+    static QRectF getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset);
+
     static BoxResizeEdge findResizeEdgeAtPosition(QPoint mousePosition,
                                                   double gridGap,
                                                   QPoint offset,
