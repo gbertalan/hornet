@@ -20,10 +20,19 @@ private:
     // pair every frame - tinting was previously done from scratch per
     // character, per repaint, and was the actual rendering bottleneck)
     // ================================================================
+    struct CachedTile
+    {
+        QImage image;
+        uint64_t lastUsed;
+    };
     const QImage &getOrCreateTintedTile(const FontAtlas::GlyphInfo &glyphInfo,
                                         const QImage &atlasPage,
                                         const QColor &color);
-    std::unordered_map<uint64_t, QImage> m_tintedTileCache;
+    void evictLeastRecentlyUsedTiles();
+    std::unordered_map<uint64_t, CachedTile> m_tintedTileCache;
+    uint64_t m_tileUseCounter = 0;
+    uint64_t m_tileUseCounterAtLastEviction = 0;
+    static constexpr size_t m_maxCachedTiles = 5000;
 
     FontAtlas &m_atlas;
 };
