@@ -5,6 +5,8 @@
 #include "shared/dto_view_to_model/boxresizedto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
 
+#include "renderscriptparser.h"
+
 GridService::GridService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
 {}
@@ -47,6 +49,10 @@ GridViewStateDTO GridService::retrieveGridViewState() const
         const QVector<QString> visibleBodyLines = allBodyLines.mid(scrollStart,
                                                                    scrollEnd - scrollStart);
 
+        std::vector<RenderLineDTO> renderLines;
+        if (box.getContentType() == BoxContentType::RenderScript)
+            renderLines = RenderScriptParser::parse(allBodyLines);
+
         boxViewDTOs.push_back(BoxViewDTO{box.getId(),
                                          box.getPosX(),
                                          box.getPosY(),
@@ -58,7 +64,8 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                                          scrollStart,
                                          box.getCursorX(),
                                          box.getCursorY(),
-                                         box.getContentType()});
+                                         box.getContentType(),
+                                         renderLines});
     }
 
     return GridViewStateDTO{gridModel.getZoomLevel(),

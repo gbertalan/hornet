@@ -6,7 +6,6 @@
 #include "shared/dto_view_to_model/boxresizeedge.h"
 #include <vector>
 #include <view_layer/font_renderer/FontRenderer.h>
-
 class CanvasPainter
 {
 public:
@@ -28,30 +27,68 @@ public:
                                  double gridGap,
                                  QPoint offset,
                                  const std::vector<BoxViewDTO> &boxes);
-    /**
-     * @brief getBoxScreenRect Gives us the rect where the box is, for efficient repaint
-     * @param box
-     * @param gridGap
-     * @param offset
-     * @param liveOffset
-     * @return 
-     */
     static QRectF getBoxScreenRect(const BoxViewDTO &box,
                                    double gridGap,
                                    QPoint offset,
                                    QPoint liveOffset = QPoint(0, 0));
-    static QRectF getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset);
-
     static BoxResizeEdge findResizeEdgeAtPosition(QPoint mousePosition,
                                                   double gridGap,
                                                   QPoint offset,
                                                   const std::vector<BoxViewDTO> &boxes,
                                                   int &outBoxId);
-
     static int findBoxCloseButtonAtPosition(QPoint mousePosition,
                                             double gridGap,
                                             QPoint offset,
                                             int hoveredBoxId,
                                             const std::vector<BoxViewDTO> &boxes);
+    static QRectF getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset);
+
+private:
+    struct BoxScreenGeometry
+    {
+        double screenX;
+        double screenY;
+        double screenW;
+        double screenH;
+        double headerH;
+    };
+    static void drawBoxBackgroundAndBorder(QPainter &painter,
+                                           const BoxScreenGeometry &geom,
+                                           double edgeThickness,
+                                           bool isSelected,
+                                           bool isHovered);
+    static void drawBoxHeaderText(QPainter &painter,
+                                  const BoxViewDTO &box,
+                                  const BoxScreenGeometry &geom,
+                                  FontRenderer &fontRenderer,
+                                  FontAtlas &fontAtlas,
+                                  float textScale,
+                                  float lineOffset,
+                                  float textPadding,
+                                  double buttonSize,
+                                  double buttonMargin);
+    static void drawRenderScriptLines(QPainter &painter,
+                                      const BoxViewDTO &box,
+                                      const BoxScreenGeometry &geom,
+                                      double gridGap);
+    static void drawBoxTextContent(QPainter &painter,
+                                   const BoxViewDTO &box,
+                                   const BoxScreenGeometry &geom,
+                                   FontRenderer &fontRenderer,
+                                   FontAtlas &fontAtlas,
+                                   double gridGap,
+                                   float textScale,
+                                   float lineOffset,
+                                   float textPadding,
+                                   bool isSelected,
+                                   bool selectedBoxCursorVisible);
+    static void drawBoxCloseButton(QPainter &painter,
+                                   const BoxViewDTO &box,
+                                   const BoxScreenGeometry &geom,
+                                   double buttonSize,
+                                   double buttonMargin,
+                                   double gridGap,
+                                   bool isCtrlPressed,
+                                   int hoveredBoxId);
 };
 #endif // CANVASPAINTER_H

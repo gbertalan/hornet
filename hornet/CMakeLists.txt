@@ -111,6 +111,8 @@ qt_add_executable(hornet
     model_layer/boxcontenttype.h
     shared/dto_view_to_model/boxresizeedge.h
     shared/dto_view_to_model/boxresizedto.h
+    shared/dto_model_to_view/renderlinedto.h
+    service_layer/renderscriptparser.h service_layer/renderscriptparser.cpp
 
 
 

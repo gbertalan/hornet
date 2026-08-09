@@ -4,6 +4,7 @@
 #include <QVector>
 
 #include "model_layer/boxcontenttype.h"
+#include "shared/dto_model_to_view/renderlinedto.h"
 
 struct BoxViewDTO
 {
@@ -19,6 +20,7 @@ struct BoxViewDTO
     int cursorX;
     int cursorY;
     BoxContentType contentType;
+    std::vector<RenderLineDTO> renderLines;
     BoxViewDTO(int id,
                int posX,
                int posY,
@@ -30,7 +32,8 @@ struct BoxViewDTO
                int bodyScrollOffset,
                int cursorX,
                int cursorY,
-               BoxContentType contentType)
+               BoxContentType contentType,
+               const std::vector<RenderLineDTO> &renderLines)
         : id(id)
         , posX(posX)
         , posY(posY)
@@ -43,6 +46,7 @@ struct BoxViewDTO
         , cursorX(cursorX)
         , cursorY(cursorY)
         , contentType(contentType)
+        , renderLines(renderLines)
     {}
 };
 #endif // BOXVIEWDTO_H
