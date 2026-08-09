@@ -1,6 +1,83 @@
 #include "renderscriptparser.h"
+#include <QRegularExpression>
 
-RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines)
+// ================================================================
+// SLICE: $name token/text substitution helpers
+// ================================================================
+
+static bool resolveNumericToken(const QString &token,
+                                const QHash<QString, QString> &sourceValues,
+                                double &outValue)
+{
+    if (token.startsWith('$')) {
+        const auto it = sourceValues.constFind(token.mid(1));
+        if (it == sourceValues.constEnd()) {
+            outValue = 0.0; // no value fetched yet - render as 0, per design
+            return true;
+        }
+        bool ok = false;
+        outValue = it.value().toDouble(&ok);
+        if (!ok)
+            outValue = 0.0;
+        return true;
+    }
+    bool ok = false;
+    outValue = token.toDouble(&ok);
+    return ok;
+}
+
+static QString substituteSourceValuesInText(const QString &text,
+                                            const QHash<QString, QString> &sourceValues)
+{
+    static const QRegularExpression pattern("\\$([A-Za-z_][A-Za-z0-9_]*)");
+    QString result = text;
+    QRegularExpressionMatchIterator it = pattern.globalMatch(result);
+
+    QVector<QPair<int, int>> spans;
+    QVector<QString> replacements;
+    while (it.hasNext()) {
+        const QRegularExpressionMatch match = it.next();
+        const auto found = sourceValues.constFind(match.captured(1));
+        if (found != sourceValues.constEnd()) {
+            spans.push_back({match.capturedStart(0), match.capturedLength(0)});
+            replacements.push_back(found.value());
+        }
+    }
+    for (int i = spans.size() - 1; i >= 0; --i)
+        result.replace(spans[i].first, spans[i].second, replacements[i]);
+    return result;
+}
+
+// ================================================================
+// SLICE: source declaration parsing
+// ================================================================
+
+std::vector<RenderSourceDTO> RenderScriptParser::parseSources(const QVector<QString> &bodyLines)
+{
+    std::vector<RenderSourceDTO> sources;
+    for (const QString &rawLine : bodyLines) {
+        const QString line = rawLine.trimmed();
+        if (!line.startsWith("source "))
+            continue;
+        const QString remainder = line.mid(7).trimmed();
+        const int colonIndex = remainder.indexOf(':');
+        if (colonIndex == -1)
+            continue;
+        const QString name = remainder.left(colonIndex).trimmed();
+        const QString command = remainder.mid(colonIndex + 1).trimmed();
+        if (name.isEmpty() || command.isEmpty())
+            continue;
+        sources.push_back(RenderSourceDTO(name, command));
+    }
+    return sources;
+}
+
+// ================================================================
+// SLICE: primitive parsing (line, rect, circle, text)
+// ================================================================
+
+RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines,
+                                          const QHash<QString, QString> &sourceValues)
 {
     std::vector<RenderLineDTO> lines;
     std::vector<RenderRectDTO> rects;
@@ -14,35 +91,32 @@ RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines)
             const QStringList parts = line.mid(5).trimmed().split(' ', Qt::SkipEmptyParts);
             if (parts.size() != 4)
                 continue;
-            bool x1Ok = false, y1Ok = false, x2Ok = false, y2Ok = false;
-            const double x1 = parts.at(0).toDouble(&x1Ok);
-            const double y1 = parts.at(1).toDouble(&y1Ok);
-            const double x2 = parts.at(2).toDouble(&x2Ok);
-            const double y2 = parts.at(3).toDouble(&y2Ok);
-            if (x1Ok && y1Ok && x2Ok && y2Ok)
+            double x1, y1, x2, y2;
+            if (resolveNumericToken(parts.at(0), sourceValues, x1)
+                && resolveNumericToken(parts.at(1), sourceValues, y1)
+                && resolveNumericToken(parts.at(2), sourceValues, x2)
+                && resolveNumericToken(parts.at(3), sourceValues, y2))
                 lines.push_back(RenderLineDTO(x1, y1, x2, y2));
 
         } else if (line.startsWith("rect ")) {
             const QStringList parts = line.mid(5).trimmed().split(' ', Qt::SkipEmptyParts);
             if (parts.size() != 4)
                 continue;
-            bool xOk = false, yOk = false, wOk = false, hOk = false;
-            const double x = parts.at(0).toDouble(&xOk);
-            const double y = parts.at(1).toDouble(&yOk);
-            const double w = parts.at(2).toDouble(&wOk);
-            const double h = parts.at(3).toDouble(&hOk);
-            if (xOk && yOk && wOk && hOk)
+            double x, y, w, h;
+            if (resolveNumericToken(parts.at(0), sourceValues, x)
+                && resolveNumericToken(parts.at(1), sourceValues, y)
+                && resolveNumericToken(parts.at(2), sourceValues, w)
+                && resolveNumericToken(parts.at(3), sourceValues, h))
                 rects.push_back(RenderRectDTO(x, y, w, h));
 
         } else if (line.startsWith("circle ")) {
             const QStringList parts = line.mid(7).trimmed().split(' ', Qt::SkipEmptyParts);
             if (parts.size() != 3)
                 continue;
-            bool xOk = false, yOk = false, rOk = false;
-            const double x = parts.at(0).toDouble(&xOk);
-            const double y = parts.at(1).toDouble(&yOk);
-            const double r = parts.at(2).toDouble(&rOk);
-            if (xOk && yOk && rOk)
+            double x, y, r;
+            if (resolveNumericToken(parts.at(0), sourceValues, x)
+                && resolveNumericToken(parts.at(1), sourceValues, y)
+                && resolveNumericToken(parts.at(2), sourceValues, r))
                 circles.push_back(RenderCircleDTO(x, y, r));
 
         } else if (line.startsWith("text ")) {
@@ -53,13 +127,16 @@ RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines)
             const int secondSpace = argsText.indexOf(' ', firstSpace + 1);
             if (secondSpace == -1)
                 continue;
-            bool xOk = false, yOk = false;
-            const double x = argsText.left(firstSpace).toDouble(&xOk);
-            const double y = argsText.mid(firstSpace + 1, secondSpace - firstSpace - 1)
-                                 .toDouble(&yOk);
+            double x, y;
+            const bool xOk = resolveNumericToken(argsText.left(firstSpace), sourceValues, x);
+            const bool yOk = resolveNumericToken(argsText.mid(firstSpace + 1,
+                                                              secondSpace - firstSpace - 1),
+                                                 sourceValues,
+                                                 y);
             if (!xOk || !yOk)
                 continue;
-            const QString text = argsText.mid(secondSpace + 1);
+            QString text = argsText.mid(secondSpace + 1);
+            text = substituteSourceValuesInText(text, sourceValues);
             if (!text.isEmpty())
                 texts.push_back(RenderTextDTO(x, y, text));
         }

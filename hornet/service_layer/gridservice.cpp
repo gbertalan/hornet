@@ -1,6 +1,7 @@
 #include "gridservice.h"
 #include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
+#include "renderscriptparser.h"
 #include "shared/dto_view_to_model/boxdragdto.h"
 #include "shared/dto_view_to_model/boxresizedto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
@@ -50,8 +51,10 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                                                                    scrollEnd - scrollStart);
 
         RenderScriptDTO renderScript;
-        if (box.getContentType() == BoxContentType::RenderScript)
-            renderScript = RenderScriptParser::parse(allBodyLines);
+        if (box.getContentType() == BoxContentType::RenderScript) {
+            const QHash<QString, QString> sourceValues = m_renderSourceValues.value(box.getId());
+            renderScript = RenderScriptParser::parse(allBodyLines, sourceValues);
+        }
 
         boxViewDTOs.push_back(BoxViewDTO{box.getId(),
                                          box.getPosX(),
@@ -263,4 +266,19 @@ GridSaveDataDTO GridService::retrieveGridSaveData() const
                                        box.getOriginFilePath()});
     }
     return GridSaveDataDTO{gridModel.getZoomLevel(), gridModel.getOffset(), boxes};
+}
+
+std::vector<RenderSourceDTO> GridService::retrieveRenderSources(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return RenderScriptParser::parseSources(box.getBodyLines());
+}
+
+// ================================================================
+// SLICE: render
+// ================================================================
+
+void GridService::storeRenderSourceValue(int boxId, const QString &sourceName, const QString &value)
+{
+    m_renderSourceValues[boxId][sourceName] = value;
 }

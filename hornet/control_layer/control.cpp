@@ -39,7 +39,12 @@ Control::Control(IModelAccessRead &modelAccess,
     , m_editorControl(modelAccess, editorService, view)
     , m_terminalControl(modelAccess, editorService, terminalService)
     , m_gridControl(modelAccess, gridService, view)
-{}
+    , m_renderControl(gridService)
+{
+    connect(&m_renderControl, &RenderControl::sourceValueUpdated, this, [this]() {
+        m_gridControl.sendViewStateToGrid();
+    });
+}
 
 void Control::init()
 {
@@ -515,6 +520,26 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         const std::filesystem::path saveFilePath = command.workingDirectory
                                                    / command.argument.toStdString();
         return saveProjectToFile(saveFilePath);
+    }
+
+    if (command.subcommand == "render") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.isEmpty())
+            return "usage: hornet render <boxId|last>";
+        int boxId = -1;
+        if (!resolveBoxIdToken(parts.at(0), boxId))
+            return "usage: hornet render <boxId|last>";
+        return m_renderControl.dispatchRenderCommand(boxId, command.workingDirectory);
+    }
+
+    if (command.subcommand == "trust") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 2)
+            return "usage: hornet trust <boxId|last> <sourceName>";
+        int boxId = -1;
+        if (!resolveBoxIdToken(parts.at(0), boxId))
+            return "usage: hornet trust <boxId|last> <sourceName>";
+        return m_renderControl.dispatchTrustCommand(boxId, parts.at(1), command.workingDirectory);
     }
 
     return "unknown hornet command: " + command.subcommand;

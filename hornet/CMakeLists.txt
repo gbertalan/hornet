@@ -117,6 +117,8 @@ qt_add_executable(hornet
     shared/dto_model_to_view/rendercircledto.h
     shared/dto_model_to_view/rendertextdto.h
     shared/dto_model_to_view/renderscriptdto.h
+    shared/dto_model_to_view/rendersourcedto.h
+    control_layer/rendercontrol.h control_layer/rendercontrol.cpp
 
 
 

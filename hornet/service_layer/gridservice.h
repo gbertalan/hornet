@@ -1,8 +1,11 @@
 #ifndef GRIDSERVICE_H
 #define GRIDSERVICE_H
+#include <QHash>
+#include "shared/dto_model_to_view/rendersourcedto.h"
 #include <shared/dto_model_to_view/boxcontentdto.h>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/gridzoomdto.h>
+
 struct GridDragDTO;
 class IModelAccessReadWrite;
 struct BoxDragDTO;
@@ -108,7 +111,14 @@ public:
     // ================================================================
     GridSaveDataDTO retrieveGridSaveData() const;
 
+    // ================================================================
+    // SLICE: render
+    // ================================================================
+    std::vector<RenderSourceDTO> retrieveRenderSources(int boxId) const;
+    void storeRenderSourceValue(int boxId, const QString &sourceName, const QString &value);
+
 private:
+    QHash<int, QHash<QString, QString>> m_renderSourceValues;
     IModelAccessReadWrite &m_modelAccess;
 };
 #endif // GRIDSERVICE_H
