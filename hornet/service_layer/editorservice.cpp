@@ -37,6 +37,8 @@ std::vector<std::u32string> EditorService::retrieveActiveLines()
 
 void EditorService::storeTextLines(std::vector<std::u32string> textLines, std::string fileType)
 {
+    if (textLines.empty())
+        textLines.push_back(U"");
     m_modelAccess.getEditorModel().setTextLines(std::move(textLines));
     m_modelAccess.getEditorModel().setFileType(fileType);
 }
