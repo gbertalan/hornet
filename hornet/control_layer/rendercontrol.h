@@ -39,5 +39,5 @@ private:
     QSet<QString> m_trustedCommands; // exact command strings, session-only
     QSet<QString> m_inFlightKeys;    // "boxId:name" - guards overlapping fetches per source
     QHash<QString, QTimer *> m_autoRepeatTimers; // "boxId:name" -> timer
-    static constexpr int m_autoRepeatIntervalMs = 1500;
+    static constexpr int m_autoRepeatIntervalMs = 1000;
 };

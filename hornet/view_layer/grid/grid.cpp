@@ -38,7 +38,8 @@ Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
 void Grid::updateGridViewState(const GridViewStateDTO &dto)
 {
     gridGap = dto.gridGap;
-    offset = dto.offset;
+    if (!m_isDraggingGrid)
+        offset = dto.offset;
     boxes = dto.boxes;
     m_selectedBoxId = dto.selectedBoxId;
 
