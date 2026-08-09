@@ -116,6 +116,7 @@ public:
     // ================================================================
     std::vector<RenderSourceDTO> retrieveRenderSources(int boxId) const;
     void storeRenderSourceValue(int boxId, const QString &sourceName, const QString &value);
+    bool hasRenderSourceValue(int boxId, const QString &sourceName) const;
 
 private:
     QHash<int, QHash<QString, QString>> m_renderSourceValues;

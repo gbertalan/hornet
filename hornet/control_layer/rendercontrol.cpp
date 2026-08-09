@@ -29,7 +29,9 @@ QString RenderControl::dispatchRenderCommand(int boxId, const std::filesystem::p
             untrusted.push_back(source.name);
             continue;
         }
-        fetchSource(boxId, source.name, source.command, workingDir);
+        if (source.intervalMs == 0 && m_gridService.hasRenderSourceValue(boxId, source.name))
+            continue;
+        fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
     }
 
     if (!untrusted.isEmpty())
@@ -46,21 +48,20 @@ QString RenderControl::dispatchTrustCommand(int boxId,
     for (const RenderSourceDTO &source : sources) {
         if (source.name == sourceName) {
             m_trustedCommands.insert(source.command);
-            fetchSource(boxId, source.name, source.command, workingDir);
+            if (source.intervalMs == 0 && m_gridService.hasRenderSourceValue(boxId, source.name))
+                return "'" + sourceName + "' is a run-once source and already has a value";
+            fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
             return "trusted and fetching '" + sourceName + "'";
         }
     }
     return "no data source named '" + sourceName + "' in this box";
 }
 
-// ================================================================
-// SLICE: async fetch + auto-repeat (once trusted and fetched once)
-// ================================================================
-
 void RenderControl::fetchSource(int boxId,
                                 const QString &sourceName,
                                 const QString &command,
-                                const std::filesystem::path &workingDir)
+                                const std::filesystem::path &workingDir,
+                                int intervalMs)
 {
     const QString key = makeKey(boxId, sourceName);
     if (m_inFlightKeys.contains(key))
@@ -72,15 +73,15 @@ void RenderControl::fetchSource(int boxId,
     connect(process,
             &QProcess::finished,
             this,
-            [this, process, boxId, sourceName, command, workingDir, key]() {
+            [this, process, boxId, sourceName, command, workingDir, key, intervalMs]() {
                 const QString output = QString::fromUtf8(process->readAllStandardOutput()).trimmed();
                 m_gridService.storeRenderSourceValue(boxId, sourceName, output);
                 m_inFlightKeys.remove(key);
                 process->deleteLater();
                 emit sourceValueUpdated();
 
-                if (!m_autoRepeatTimers.contains(key))
-                    startAutoRepeat(boxId, sourceName, command, workingDir);
+                if (intervalMs > 0 && !m_autoRepeatTimers.contains(key))
+                    startAutoRepeat(boxId, sourceName, command, workingDir, intervalMs);
             });
     process->start("/bin/sh", QStringList() << "-c" << command);
 }
@@ -88,13 +89,17 @@ void RenderControl::fetchSource(int boxId,
 void RenderControl::startAutoRepeat(int boxId,
                                     const QString &sourceName,
                                     const QString &command,
-                                    const std::filesystem::path &workingDir)
+                                    const std::filesystem::path &workingDir,
+                                    int intervalMs)
 {
     const QString key = makeKey(boxId, sourceName);
     QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, [this, boxId, sourceName, command, workingDir]() {
-        fetchSource(boxId, sourceName, command, workingDir);
-    });
-    timer->start(m_autoRepeatIntervalMs);
+    connect(timer,
+            &QTimer::timeout,
+            this,
+            [this, boxId, sourceName, command, workingDir, intervalMs]() {
+                fetchSource(boxId, sourceName, command, workingDir, intervalMs);
+            });
+    timer->start(intervalMs);
     m_autoRepeatTimers.insert(key, timer);
 }

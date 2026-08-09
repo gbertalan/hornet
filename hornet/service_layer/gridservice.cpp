@@ -282,3 +282,11 @@ void GridService::storeRenderSourceValue(int boxId, const QString &sourceName, c
 {
     m_renderSourceValues[boxId][sourceName] = value;
 }
+
+bool GridService::hasRenderSourceValue(int boxId, const QString &sourceName) const
+{
+    const auto boxIt = m_renderSourceValues.constFind(boxId);
+    if (boxIt == m_renderSourceValues.constEnd())
+        return false;
+    return boxIt.value().contains(sourceName);
+}

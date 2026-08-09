@@ -59,15 +59,39 @@ std::vector<RenderSourceDTO> RenderScriptParser::parseSources(const QVector<QStr
         const QString line = rawLine.trimmed();
         if (!line.startsWith("source "))
             continue;
-        const QString remainder = line.mid(7).trimmed();
-        const int colonIndex = remainder.indexOf(':');
+
+        const int colonIndex = line.indexOf(':');
         if (colonIndex == -1)
             continue;
-        const QString name = remainder.left(colonIndex).trimmed();
-        const QString command = remainder.mid(colonIndex + 1).trimmed();
-        if (name.isEmpty() || command.isEmpty())
+
+        const QString command = line.mid(colonIndex + 1).trimmed();
+        if (command.isEmpty())
             continue;
-        sources.push_back(RenderSourceDTO(name, command));
+
+        const QStringList tokensBeforeColon = line.left(colonIndex).split(' ', Qt::SkipEmptyParts);
+        // tokensBeforeColon.at(0) is always "source"
+
+        if (tokensBeforeColon.size() == 2) {
+            // source name: command  -> run once, no repeat
+            const QString name = tokensBeforeColon.at(1);
+            if (!name.isEmpty())
+                sources.push_back(RenderSourceDTO(name, command, 0));
+
+        } else if (tokensBeforeColon.size() == 3) {
+            // source <N>ms name: command  -> repeats every N ms once trusted
+            const QString intervalToken = tokensBeforeColon.at(1);
+            const QString name = tokensBeforeColon.at(2);
+            if (name.isEmpty() || !intervalToken.endsWith("ms"))
+                continue;
+            bool ok = false;
+            int intervalMs = intervalToken.left(intervalToken.length() - 2).toInt(&ok);
+            if (!ok)
+                continue;
+            constexpr int minIntervalMs = 100;
+            intervalMs = std::max(intervalMs, minIntervalMs);
+            sources.push_back(RenderSourceDTO(name, command, intervalMs));
+        }
+        // else: malformed, skip silently
     }
     return sources;
 }

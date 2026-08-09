@@ -28,16 +28,17 @@ private:
     void fetchSource(int boxId,
                      const QString &sourceName,
                      const QString &command,
-                     const std::filesystem::path &workingDir);
+                     const std::filesystem::path &workingDir,
+                     int intervalMs);
     void startAutoRepeat(int boxId,
                          const QString &sourceName,
                          const QString &command,
-                         const std::filesystem::path &workingDir);
+                         const std::filesystem::path &workingDir,
+                         int intervalMs);
     static QString makeKey(int boxId, const QString &sourceName);
 
     GridService &m_gridService;
     QSet<QString> m_trustedCommands; // exact command strings, session-only
     QSet<QString> m_inFlightKeys;    // "boxId:name" - guards overlapping fetches per source
     QHash<QString, QTimer *> m_autoRepeatTimers; // "boxId:name" -> timer
-    static constexpr int m_autoRepeatIntervalMs = 1000;
 };
