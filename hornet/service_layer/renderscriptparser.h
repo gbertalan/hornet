@@ -2,11 +2,10 @@
 #define RENDERSCRIPTPARSER_H
 #include <QString>
 #include <QVector>
-#include "shared/dto_model_to_view/renderlinedto.h"
-#include <vector>
+#include "shared/dto_model_to_view/renderscriptdto.h"
 class RenderScriptParser
 {
 public:
-    static std::vector<RenderLineDTO> parse(const QVector<QString> &bodyLines);
+    static RenderScriptDTO parse(const QVector<QString> &bodyLines);
 };
 #endif // RENDERSCRIPTPARSER_H

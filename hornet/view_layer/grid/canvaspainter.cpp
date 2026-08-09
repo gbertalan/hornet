@@ -192,22 +192,53 @@ void CanvasPainter::drawBoxHeaderText(QPainter &painter,
                           textScale);
 }
 
-void CanvasPainter::drawRenderScriptLines(QPainter &painter,
-                                          const BoxViewDTO &box,
-                                          const BoxScreenGeometry &geom,
-                                          double gridGap)
+void CanvasPainter::drawRenderScriptPrimitives(QPainter &painter,
+                                               const BoxViewDTO &box,
+                                               const BoxScreenGeometry &geom,
+                                               double gridGap,
+                                               FontRenderer &fontRenderer,
+                                               float textScale)
 {
-    // .render file handling:
+    const double lineThickness = std::max(1.0, gridGap * 0.1);
     painter.save();
-    painter.setPen(QPen(Theme::brightAmber(), std::max(1.0, gridGap * 0.05)));
-    for (const RenderLineDTO &renderLine : box.renderLines) {
+    painter.setPen(QPen(Theme::brightAmber(), lineThickness));
+    painter.setBrush(Qt::NoBrush);
+
+    for (const RenderLineDTO &renderLine : box.renderScript.lines) {
         const double lx1 = geom.screenX + renderLine.x1 * gridGap;
         const double ly1 = geom.screenY + geom.headerH + renderLine.y1 * gridGap;
         const double lx2 = geom.screenX + renderLine.x2 * gridGap;
         const double ly2 = geom.screenY + geom.headerH + renderLine.y2 * gridGap;
         painter.drawLine(QPointF(lx1, ly1), QPointF(lx2, ly2));
     }
+
+    for (const RenderRectDTO &renderRect : box.renderScript.rects) {
+        const double rx = geom.screenX + renderRect.x * gridGap;
+        const double ry = geom.screenY + geom.headerH + renderRect.y * gridGap;
+        const double rw = renderRect.width * gridGap;
+        const double rh = renderRect.height * gridGap;
+        painter.drawRect(QRectF(rx, ry, rw, rh));
+    }
+
+    for (const RenderCircleDTO &renderCircle : box.renderScript.circles) {
+        const double cx = geom.screenX + renderCircle.x * gridGap;
+        const double cy = geom.screenY + geom.headerH + renderCircle.y * gridGap;
+        const double r = renderCircle.radius * gridGap;
+        painter.drawEllipse(QPointF(cx, cy), r, r);
+    }
+
     painter.restore();
+
+    for (const RenderTextDTO &renderText : box.renderScript.texts) {
+        const double tx = geom.screenX + renderText.x * gridGap;
+        const double ty = geom.screenY + geom.headerH + renderText.y * gridGap;
+        fontRenderer.drawText(painter,
+                              static_cast<float>(tx),
+                              static_cast<float>(ty),
+                              renderText.text,
+                              Theme::brightAmber(),
+                              textScale);
+    }
 }
 
 void CanvasPainter::drawBoxTextContent(QPainter &painter,
@@ -391,7 +422,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                           buttonMargin);
 
         if (box.contentType == BoxContentType::RenderScript) {
-            drawRenderScriptLines(painter, box, geom, gridGap);
+            drawRenderScriptPrimitives(painter, box, geom, gridGap, fontRenderer, textScale);
         } else {
             drawBoxTextContent(painter,
                                box,

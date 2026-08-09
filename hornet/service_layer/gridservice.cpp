@@ -49,9 +49,9 @@ GridViewStateDTO GridService::retrieveGridViewState() const
         const QVector<QString> visibleBodyLines = allBodyLines.mid(scrollStart,
                                                                    scrollEnd - scrollStart);
 
-        std::vector<RenderLineDTO> renderLines;
+        RenderScriptDTO renderScript;
         if (box.getContentType() == BoxContentType::RenderScript)
-            renderLines = RenderScriptParser::parse(allBodyLines);
+            renderScript = RenderScriptParser::parse(allBodyLines);
 
         boxViewDTOs.push_back(BoxViewDTO{box.getId(),
                                          box.getPosX(),
@@ -65,7 +65,7 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                                          box.getCursorX(),
                                          box.getCursorY(),
                                          box.getContentType(),
-                                         renderLines});
+                                         renderScript});
     }
 
     return GridViewStateDTO{gridModel.getZoomLevel(),
