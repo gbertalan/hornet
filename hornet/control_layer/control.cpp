@@ -491,6 +491,12 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
                     protectedIds.push_back(QString::number(id));
                     continue;
                 }
+                if (id == m_currentlySelectedBoxId) {
+                    const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(
+                        BoxContentType::Terminal);
+                    if (terminalBoxId != -1)
+                        onBoxSelected(BoxSelectedDTO(terminalBoxId));
+                }
                 m_gridService.removeBox(id);
             } catch (const std::runtime_error &) {
                 notFound.push_back(QString::number(id));
@@ -687,27 +693,11 @@ QString Control::saveProjectToFile(const std::filesystem::path &filePath)
 
 void Control::onBoxUnloadRequested(int boxId)
 {
-    BoxContentDTO content;
-    try {
-        content = m_gridService.retrieveBoxContent(boxId);
-    } catch (const std::runtime_error &) {
-        return;
-    }
-    if (content.contentType == BoxContentType::Terminal)
-        return;
-
-    if (boxId == m_currentlySelectedBoxId) {
-        const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(BoxContentType::Terminal);
-        if (terminalBoxId != -1)
-            onBoxSelected(BoxSelectedDTO(terminalBoxId));
-    }
-
-    try {
-        m_gridService.removeBox(boxId);
-    } catch (const std::runtime_error &) {
-        return;
-    }
-    m_gridControl.sendViewStateToGrid();
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    const HornetCommandDTO command{true, "unload", QString::number(boxId), workingDir};
+    const QString message = dispatchHornetCommand(command);
+    if (!message.isEmpty())
+        createCommandOutputBox("unload " + QString::number(boxId), message);
 }
 
 // ================================================================
