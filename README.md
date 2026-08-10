@@ -165,3 +165,11 @@ View — signals reporting something happened: past tense (boxSelected, boxResiz
 (The update[What] rule applies only to methods receiving Control-pushed Model state (e.g. updateGridViewState). Plain set[Field] is used for View-internal parent→child widget configuration with no Control/Model involvement (e.g. OverlayWidget::setFullscreen, TitlebarButton::setHoverColor).)
 
 DTOs — folder by direction (dto_view_to_model, dto_model_to_view, dto_bidirectional); non-View-crossing structs live in their producing class's header instead.
+
+# License
+
+This project is licensed under the GNU General Public License v3.0 (GPLv3).
+
+I chose GPLv3 to keep the tool useful, auditable, and extensible within the reverse-engineering and security community while preserving the openness of distributed derivatives.
+
+See LICENSE.md for the complete terms.
