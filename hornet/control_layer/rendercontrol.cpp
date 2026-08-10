@@ -17,6 +17,16 @@ QString RenderControl::makeKey(int boxId, const QString &sourceName)
 // SLICE: hornet render / hornet trust entry points
 // ================================================================
 
+void RenderControl::attemptFetch(int boxId,
+                                 const RenderSourceDTO &source,
+                                 const std::filesystem::path &workingDir)
+{
+    const QString key = makeKey(boxId, source.name);
+    if (source.intervalMs > 0 && m_autoRepeatTimers.contains(key))
+        return; // already auto-repeating - no need to trigger an extra fetch
+    fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
+}
+
 QString RenderControl::dispatchRenderCommand(int boxId, const std::filesystem::path &workingDir)
 {
     const std::vector<RenderSourceDTO> sources = m_gridService.retrieveRenderSources(boxId);
@@ -29,9 +39,7 @@ QString RenderControl::dispatchRenderCommand(int boxId, const std::filesystem::p
             untrusted.push_back(source.name);
             continue;
         }
-        if (source.intervalMs == 0 && m_gridService.hasRenderSourceValue(boxId, source.name))
-            continue;
-        fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
+        attemptFetch(boxId, source, workingDir);
     }
 
     if (!untrusted.isEmpty())
@@ -48,9 +56,7 @@ QString RenderControl::dispatchTrustCommand(int boxId,
     for (const RenderSourceDTO &source : sources) {
         if (source.name == sourceName) {
             m_trustedCommands.insert(source.command);
-            if (source.intervalMs == 0 && m_gridService.hasRenderSourceValue(boxId, source.name))
-                return "'" + sourceName + "' is a run-once source and already has a value";
-            fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
+            attemptFetch(boxId, source, workingDir);
             return "trusted and fetching '" + sourceName + "'";
         }
     }

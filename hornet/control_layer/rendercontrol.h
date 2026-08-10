@@ -2,7 +2,9 @@
 #include <QHash>
 #include <QObject>
 #include <QSet>
+#include "shared/dto_model_to_view/rendersourcedto.h"
 #include <filesystem>
+
 class GridService;
 class QTimer;
 class RenderControl : public QObject
@@ -36,6 +38,9 @@ private:
                          const std::filesystem::path &workingDir,
                          int intervalMs);
     static QString makeKey(int boxId, const QString &sourceName);
+    void attemptFetch(int boxId,
+                      const RenderSourceDTO &source,
+                      const std::filesystem::path &workingDir);
 
     GridService &m_gridService;
     QSet<QString> m_trustedCommands; // exact command strings, session-only
