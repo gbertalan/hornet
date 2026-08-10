@@ -172,4 +172,4 @@ This project is licensed under the GNU General Public License v3.0 (GPLv3).
 
 I chose GPLv3 to keep the tool useful, auditable, and extensible within the reverse-engineering and security community while preserving the openness of distributed derivatives.
 
-See LICENSE.md for the complete terms.
+See the LICENSE file for the complete terms.
