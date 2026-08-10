@@ -42,3 +42,8 @@ void View::updateGridViewState(const GridViewStateDTO &dto)
 {
     m_window->updateGridViewState(dto);
 }
+
+void View::updateFileName(const QString &fileName)
+{
+    m_window->updateFileName(fileName);
+}

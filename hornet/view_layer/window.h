@@ -30,6 +30,7 @@ public:
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
+    void updateFileName(const QString &fileName);
 
 signals:
     void buttonClicked();

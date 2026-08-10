@@ -130,6 +130,11 @@ void Window::updateGridViewState(const GridViewStateDTO &dto)
     m_splitPane->updateGridViewState(dto);
 }
 
+void Window::updateFileName(const QString &fileName)
+{
+    m_titleBar->updateFileName(fileName);
+}
+
 void Window::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     m_splitPane->setGeometry(0, 0, width(), height());

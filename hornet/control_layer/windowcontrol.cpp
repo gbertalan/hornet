@@ -16,3 +16,8 @@ void WindowControl::dispatchWindowStateChanged(const WindowDTO &dto)
 {
     m_windowService.storeWindowState(dto);
 }
+
+void WindowControl::sendFileNameToTitlebar(const QString &fileName)
+{
+    m_view.updateFileName(fileName);
+}

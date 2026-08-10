@@ -6,6 +6,7 @@
 #include "view_layer/window.h"
 
 class TitlebarButton;
+class TitlebarFileNameButton;
 
 class TitleBar : public QWidget {
     Q_OBJECT
@@ -13,6 +14,7 @@ class TitleBar : public QWidget {
 public:
     explicit TitleBar(QWidget* parent = nullptr);
     void setFullscreen(bool fullscreen);
+    void updateFileName(const QString &fileName);
 
 signals:
     void windowCloseClicked();
@@ -35,4 +37,5 @@ private:
     TitlebarButton* m_closeButton;
     TitlebarButton* m_maxMinButton;
     TitlebarButton* m_trayButton;
+    TitlebarFileNameButton *m_fileNameButton;
 };

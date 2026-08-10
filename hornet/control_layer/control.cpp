@@ -61,6 +61,8 @@ void Control::init()
         m_currentlySelectedBoxId = terminalBoxId;
         m_gridService.storeSelectedBox(terminalBoxId);
         m_gridControl.sendViewStateToGrid();
+        m_windowControl.sendFileNameToTitlebar(
+            m_gridService.retrieveBoxContent(terminalBoxId).headerText);
     }
 }
 
@@ -219,6 +221,7 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
     m_editorControl.sendCursorPosToEditor();
     m_editorControl.sendSettingsToEditor();
+    m_windowControl.sendFileNameToTitlebar(boxContent.headerText);
 
     m_isRestoringBoxState = false;
 

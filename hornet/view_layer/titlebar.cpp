@@ -1,5 +1,6 @@
 #include "view_layer/titlebar.h"
 #include "view_layer/titlebarbutton.h"
+#include "view_layer/titlebarfilenamebutton.h"
 
 #include "theme.h"
 #include <QHBoxLayout>
@@ -9,21 +10,29 @@
 #include <QScreen>
 #include <QTimer>
 
-TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doubleclicked(false), m_grabRatio(0.0) {
-    m_window = qobject_cast<Window*>(parent);
+TitleBar::TitleBar(QWidget *parent)
+    : QWidget(parent)
+    , m_dragging(false)
+    , m_doubleclicked(false)
+    , m_grabRatio(0.0)
+{
+    m_window = qobject_cast<Window *>(parent);
     setFixedHeight(40);
     setAttribute(Qt::WA_TranslucentBackground);
 
-    m_trayButton     = new TitlebarButton(TitlebarButtonType::Tray, this);
+    m_fileNameButton = new TitlebarFileNameButton(this);
+
+    m_trayButton = new TitlebarButton(TitlebarButtonType::Tray, this);
     m_maxMinButton = new TitlebarButton(TitlebarButtonType::Maximize, this);
-    m_closeButton    = new TitlebarButton(TitlebarButtonType::Close, this);
+    m_closeButton = new TitlebarButton(TitlebarButtonType::Close, this);
     m_closeButton->setHoverColor(Theme::mediumRed());
     m_closeButton->setRightPadding(5);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->setAlignment(Qt::AlignTop);
+    layout->addWidget(m_fileNameButton);
     layout->addStretch();
     layout->addWidget(m_trayButton);
     layout->addWidget(m_maxMinButton);
@@ -31,13 +40,18 @@ TitleBar::TitleBar(QWidget* parent) : QWidget(parent), m_dragging(false), m_doub
     layout->setAlignment(m_closeButton, Qt::AlignTop);
     setLayout(layout);
 
-    connect(m_trayButton,   &TitlebarButton::clicked, this, &TitleBar::minimizeClicked);
+    connect(m_trayButton, &TitlebarButton::clicked, this, &TitleBar::minimizeClicked);
     connect(m_maxMinButton, &TitlebarButton::clicked, this, &TitleBar::maximizeClicked);
-    connect(m_closeButton,  &TitlebarButton::clicked, this, &TitleBar::windowCloseClicked);
+    connect(m_closeButton, &TitlebarButton::clicked, this, &TitleBar::windowCloseClicked);
 }
 
 void TitleBar::setFullscreen(bool fullscreen) {
     m_maxMinButton->setType(fullscreen ? TitlebarButtonType::Minimize : TitlebarButtonType::Maximize);
+}
+
+void TitleBar::updateFileName(const QString &fileName)
+{
+    m_fileNameButton->setFileName(fileName);
 }
 
 void TitleBar::paintEvent(QPaintEvent* event) {

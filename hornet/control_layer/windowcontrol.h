@@ -11,6 +11,7 @@ public:
     explicit WindowControl(IModelAccessRead &modelAccess, WindowService &windowService, View &view);
     void init();
     void dispatchWindowStateChanged(const WindowDTO &dto);
+    void sendFileNameToTitlebar(const QString &fileName);
 
 private:
     IModelAccessRead &m_modelAccess;
