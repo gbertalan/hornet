@@ -296,8 +296,8 @@ bool Control::loadFileIntoNewBox(const std::filesystem::path &filePath)
 
     const QString headerText = QString::fromStdString(filePath.filename().string());
     const QString originFilePath = QString::fromStdString(filePath.string());
-    m_lastCreatedBoxId = m_gridService
-                             .addBox(0, 0, 20, 15, headerText, bodyLines, true, originFilePath);
+    m_recentlyCreatedBoxIds.push_back(
+        m_gridService.addBox(0, 0, 20, 15, headerText, bodyLines, true, originFilePath));
     return true;
 }
 
@@ -498,6 +498,11 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
                         onBoxSelected(BoxSelectedDTO(terminalBoxId));
                 }
                 m_gridService.removeBox(id);
+                const auto recentIt = std::find(m_recentlyCreatedBoxIds.begin(),
+                                                m_recentlyCreatedBoxIds.end(),
+                                                id);
+                if (recentIt != m_recentlyCreatedBoxIds.end())
+                    m_recentlyCreatedBoxIds.erase(recentIt);
             } catch (const std::runtime_error &) {
                 notFound.push_back(QString::number(id));
             }
@@ -617,7 +622,8 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
         for (const QString &line : outputText.split('\n'))
             bodyLines.push_back(line);
     }
-    m_lastCreatedBoxId = m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines, false, QString());
+    m_recentlyCreatedBoxIds.push_back(
+        m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines, false, QString()));
 }
 
 // ================================================================
@@ -627,9 +633,9 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
 bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
 {
     if (token == "last") {
-        if (m_lastCreatedBoxId == -1)
+        if (m_recentlyCreatedBoxIds.empty())
             return false;
-        outBoxId = m_lastCreatedBoxId;
+        outBoxId = m_recentlyCreatedBoxIds.back();
         return true;
     }
     bool ok = false;

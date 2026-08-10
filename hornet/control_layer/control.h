@@ -83,7 +83,7 @@ private:
      */
     QVector<QString> buildTerminalPrompts() const;
     int m_currentlySelectedBoxId = -1;
-    int m_lastCreatedBoxId = -1;
+    std::vector<int> m_recentlyCreatedBoxIds;
 
     // ================================================================
     // SLICE: editor <-> box sync helpers
