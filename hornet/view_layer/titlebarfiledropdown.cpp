@@ -50,24 +50,35 @@ void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
 
     const float scale = 0.55f;
     const float idScale = 0.42f;
-    const float textPadding = 8.f;
+    const float textPaddingLeft = 14.f;
+    const float textPaddingTop = 6.f;
 
     for (int i = 0; i < static_cast<int>(m_entries.size()); ++i) {
         const BoxListEntryDTO &entry = m_entries.at(i);
         const int rowTop = (m_startIndex + i) * m_rowHeight;
 
-        if (entry.id == m_currentBoxId)
+        if (entry.id == m_currentBoxId) {
             painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::warmGray());
-        else if (m_startIndex + i == m_hoveredRowIndex)
+            painter.save();
+            painter.setPen(QPen(Theme::darkGray(), 1));
+            painter.drawLine(QPointF(0, rowTop), QPointF(width(), rowTop));
+            painter.drawLine(QPointF(0, rowTop + m_rowHeight),
+                             QPointF(width(), rowTop + m_rowHeight));
+            painter.restore();
+        } else if (m_startIndex + i == m_hoveredRowIndex) {
             painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::darkerGray());
+        }
 
-        const float y = rowTop + (m_rowHeight - m_fontAtlas.textHeight(scale)) / 2.f;
-        m_fontRenderer.drawText(painter, textPadding, y, entry.headerText, Theme::darkAmber(), scale);
+        const float y = rowTop + textPaddingTop;
+        const auto headerTextColor = (entry.id == m_currentBoxId) ? Theme::darkGray()
+                                                                  : Theme::darkAmber();
+        m_fontRenderer
+            .drawText(painter, textPaddingLeft, y, entry.headerText, headerTextColor, scale);
 
         const QString idLabel = "#" + QString::number(entry.id);
         const float idWidth = m_fontAtlas.textWidth(idLabel.length(), idScale);
-        const float idX = width() - idWidth - textPadding;
-        const float idY = rowTop + (m_rowHeight - m_fontAtlas.textHeight(idScale)) / 2.f;
+        const float idX = width() - idWidth - textPaddingLeft;
+        const float idY = rowTop + textPaddingTop;
         m_fontRenderer.drawText(painter, idX, idY, idLabel, Theme::darkGray(), idScale);
     }
 }

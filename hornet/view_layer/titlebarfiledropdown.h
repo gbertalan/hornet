@@ -58,7 +58,7 @@ private:
     static constexpr int m_topRowHeight = 38;
     static constexpr int m_visibleRows = 10;
     static constexpr int m_rowHeight = 34;
-    static constexpr int m_bottomPadding = 9;
+    static constexpr int m_bottomPadding = 10;
 
     QString m_currentFileName;
     int m_currentBoxId = -1;
