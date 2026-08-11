@@ -20,6 +20,9 @@ class TitleBar;
 class ResizeHandle;
 class SplitPane;
 class OverlayWidget;
+class TitlebarFileDropdown;
+struct BoxListPageDTO;
+struct BoxListPageRequestDTO;
 
 class Window : public QWidget {
     Q_OBJECT
@@ -33,6 +36,8 @@ public:
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
+    void updateBoxListPage(const BoxListPageDTO &dto);
+    void updateCurrentBoxId(int boxId);
 
 signals:
     void buttonClicked();
@@ -47,6 +52,7 @@ signals:
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(int boxId);
+    void boxListPageRequested(const BoxListPageRequestDTO &dto);
 
 private:
     TitleBar* m_titleBar;
@@ -73,6 +79,8 @@ private:
     void setupResizeHandles();
     // Places the resize handlers to the edges and corners
     void positionResizeHandles();
+
+    TitlebarFileDropdown *m_fileDropdown;
 
 protected:
     void resizeEvent(QResizeEvent* event) override;

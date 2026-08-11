@@ -16,6 +16,7 @@
 #include "view_layer/resizehandle.h"
 #include "view_layer/splitpane.h"
 #include "view_layer/titlebar.h"
+#include "view_layer/titlebarfiledropdown.h"
 
 static constexpr int HANDLE_THICKNESS = 6;
 static constexpr int CORNER_SIZE = 12;
@@ -45,6 +46,16 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
 
     m_titleBar = new TitleBar(m_fontAtlas, *m_fontRenderer, this);
     m_titleBar->raise();
+
+    m_fileDropdown = new TitlebarFileDropdown(m_fontAtlas, *m_fontRenderer, this);
+    connect(m_titleBar, &TitleBar::fileNameButtonClicked, this, [this]() {
+        const QPoint anchor = m_titleBar->fileNameDropdownAnchor();
+        m_fileDropdown->openAt(anchor.x(), anchor.y(), m_titleBar->currentFileName());
+    });
+    connect(m_fileDropdown,
+            &TitlebarFileDropdown::boxListPageRequested,
+            this,
+            &Window::boxListPageRequested);
 
     connect(m_splitPane,
             &SplitPane::leftPaneWidthChanged,
@@ -147,6 +158,17 @@ void Window::updateGridViewState(const GridViewStateDTO &dto)
 void Window::updateFileName(const QString &fileName)
 {
     m_titleBar->updateFileName(fileName);
+}
+
+void Window::updateBoxListPage(const BoxListPageDTO &dto)
+{
+    m_fileDropdown->updateBoxListPage(dto);
+}
+
+void Window::updateCurrentBoxId(int boxId)
+{
+    m_titleBar->updateCurrentBoxId(boxId);
+    m_fileDropdown->setCurrentBoxId(boxId);
 }
 
 void Window::resizeEvent(QResizeEvent* event) {

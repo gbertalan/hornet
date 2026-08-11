@@ -1,6 +1,7 @@
 #ifndef GRIDSERVICE_H
 #define GRIDSERVICE_H
 #include <QHash>
+#include "shared/dto_model_to_view/boxlistentrydto.h"
 #include "shared/dto_model_to_view/rendersourcedto.h"
 #include <shared/dto_model_to_view/boxcontentdto.h>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
@@ -116,6 +117,12 @@ public:
     // ================================================================
     std::vector<RenderSourceDTO> retrieveRenderSources(int boxId) const;
     void storeRenderSourceValue(int boxId, const QString &sourceName, const QString &value);
+
+    // ================================================================
+    // SLICE: box list (titlebar dropdown)
+    // ================================================================
+    int retrieveBoxCount() const;
+    std::vector<BoxListEntryDTO> retrieveBoxHeaderListPage(int startIndex, int count) const;
 
 private:
     QHash<int, QHash<QString, QString>> m_renderSourceValues;

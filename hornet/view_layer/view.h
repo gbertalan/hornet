@@ -14,6 +14,8 @@ struct EditorViewStateDTO;
 struct EditorSettingsDTO;
 struct WindowDTO;
 struct GridZoomDTO;
+struct BoxListPageDTO;
+struct BoxListPageRequestDTO;
 
 class Window;
 
@@ -29,6 +31,8 @@ public:
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
+    void updateBoxListPage(const BoxListPageDTO &dto);
+    void updateCurrentBoxId(int boxId);
 
 signals:
     void buttonClicked();
@@ -43,6 +47,7 @@ signals:
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(int boxId);
+    void boxListPageRequested(const BoxListPageRequestDTO &dto);
 
 private:
     Window* m_window;

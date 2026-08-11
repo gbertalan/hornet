@@ -23,6 +23,11 @@ TitleBar::TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *pa
     m_fileNameButton = new TitlebarFileNameButton(fontAtlas, fontRenderer, this);
     m_fileNameButton->setFixedSize(220, 38);
 
+    connect(m_fileNameButton,
+            &TitlebarFileNameButton::clicked,
+            this,
+            &TitleBar::fileNameButtonClicked);
+
     m_trayButton = new TitlebarButton(TitlebarButtonType::Tray, this);
     m_maxMinButton = new TitlebarButton(TitlebarButtonType::Maximize, this);
     m_closeButton = new TitlebarButton(TitlebarButtonType::Close, this);
@@ -51,6 +56,7 @@ void TitleBar::setFullscreen(bool fullscreen) {
 
 void TitleBar::updateFileName(const QString &fileName)
 {
+    m_currentFileName = fileName;
     m_fileNameButton->setFileName(fileName);
 }
 
@@ -59,6 +65,21 @@ void TitleBar::updateFileNameButtonPosition(int leftPaneWidth)
     int centerX = leftPaneWidth / 2;
     int x = std::max(0, centerX - m_fileNameButton->width() / 2);
     m_fileNameButton->setGeometry(x, 0, m_fileNameButton->width(), m_fileNameButton->height());
+}
+
+QString TitleBar::currentFileName() const
+{
+    return m_currentFileName;
+}
+
+QPoint TitleBar::fileNameDropdownAnchor() const
+{
+    return m_fileNameButton->mapTo(parentWidget(), QPoint(0, m_fileNameButton->height()));
+}
+
+void TitleBar::updateCurrentBoxId(int boxId)
+{
+    m_currentBoxId = boxId;
 }
 
 void TitleBar::paintEvent(QPaintEvent* event) {

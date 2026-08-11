@@ -1,5 +1,7 @@
 #pragma once
 #include <QObject>
+
+class BoxListPageDTO;
 class IModelAccessRead;
 class WindowService;
 class View;
@@ -12,6 +14,8 @@ public:
     void init();
     void dispatchWindowStateChanged(const WindowDTO &dto);
     void sendFileNameToTitlebar(const QString &fileName);
+    void sendBoxListPageToTitlebar(const BoxListPageDTO &dto);
+    void sendCurrentBoxIdToTitlebar(int boxId);
 
 private:
     IModelAccessRead &m_modelAccess;

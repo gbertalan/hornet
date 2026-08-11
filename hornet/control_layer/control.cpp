@@ -21,6 +21,9 @@
 #include <fstream>
 #include <iostream>
 
+#include "shared/dto_model_to_view//boxlistpagerequestdto.h"
+#include "shared/dto_model_to_view/boxlistpagedto.h"
+
 // ================================================================
 // SLICE: construction & initialization
 // ================================================================
@@ -63,6 +66,7 @@ void Control::init()
         m_gridControl.sendViewStateToGrid();
         m_windowControl.sendFileNameToTitlebar(
             m_gridService.retrieveBoxContent(terminalBoxId).headerText);
+        m_windowControl.sendCurrentBoxIdToTitlebar(terminalBoxId);
     }
 }
 
@@ -707,6 +711,18 @@ void Control::onBoxUnloadRequested(int boxId)
     const QString message = dispatchHornetCommand(command);
     if (!message.isEmpty())
         createCommandOutputBox("unload " + QString::number(boxId), message);
+}
+
+// ================================================================
+// SLICE: dropdown
+// ================================================================
+
+void Control::onBoxListPageRequested(const BoxListPageRequestDTO &dto)
+{
+    const int totalCount = m_gridService.retrieveBoxCount();
+    const std::vector<BoxListEntryDTO> entries
+        = m_gridService.retrieveBoxHeaderListPage(dto.startIndex, dto.count);
+    m_windowControl.sendBoxListPageToTitlebar(BoxListPageDTO{dto.startIndex, totalCount, entries});
 }
 
 // ================================================================

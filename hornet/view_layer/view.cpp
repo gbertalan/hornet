@@ -17,6 +17,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::boxSelected, this, &View::boxSelected);
     connect(m_window, &Window::boxResized, this, &View::boxResized);
     connect(m_window, &Window::boxUnloadRequested, this, &View::boxUnloadRequested);
+    connect(m_window, &Window::boxListPageRequested, this, &View::boxListPageRequested);
 }
 
 void View::show() {
@@ -46,4 +47,14 @@ void View::updateGridViewState(const GridViewStateDTO &dto)
 void View::updateFileName(const QString &fileName)
 {
     m_window->updateFileName(fileName);
+}
+
+void View::updateBoxListPage(const BoxListPageDTO &dto)
+{
+    m_window->updateBoxListPage(dto);
+}
+
+void View::updateCurrentBoxId(int boxId)
+{
+    m_window->updateCurrentBoxId(boxId);
 }

@@ -22,6 +22,8 @@ struct GridDragDTO;
 struct BoxDragDTO;
 struct BoxSelectedDTO;
 struct BoxResizeDTO;
+struct BoxListPageRequestDTO;
+
 class Control : public QObject
 {
     Q_OBJECT
@@ -63,18 +65,27 @@ public slots:
     void onBoxSelected(const BoxSelectedDTO &dto);
     void onBoxResized(const BoxResizeDTO &dto);
 
-    // ================================================================
-    // SLICE: debug
-    // ================================================================
-    void onDebugRequested();
-
     // Note: the two below are not actually connected as Qt slots today -
     // saveProjectToFile is called directly from dispatchHornetCommand, and
     // onBoxUnloadRequested IS a real slot (connected in main.cpp). Left in
     // this section unchanged for now - worth revisiting whether
     // saveProjectToFile belongs in "public slots" at all.
     QString saveProjectToFile(const std::filesystem::path &filePath);
+
+    // ================================================================
+    // SLICE: box unload (close button - separate from "hornet unload")
+    // ================================================================
     void onBoxUnloadRequested(int boxId);
+
+    // ================================================================
+    // SLICE: dropdown
+    // ================================================================
+    void onBoxListPageRequested(const BoxListPageRequestDTO &dto);
+
+    // ================================================================
+    // SLICE: debug
+    // ================================================================
+    void onDebugRequested();
 
 private:
     /**

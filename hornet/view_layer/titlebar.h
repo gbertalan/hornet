@@ -9,6 +9,7 @@ class TitlebarButton;
 class TitlebarFileNameButton;
 class FontAtlas;
 class FontRenderer;
+struct BoxListPageDTO;
 
 class TitleBar : public QWidget {
     Q_OBJECT
@@ -18,11 +19,15 @@ public:
     void setFullscreen(bool fullscreen);
     void updateFileName(const QString &fileName);
     void updateFileNameButtonPosition(int leftPaneWidth);
+    QString currentFileName() const;
+    QPoint fileNameDropdownAnchor() const;
+    void updateCurrentBoxId(int boxId);
 
 signals:
     void windowCloseClicked();
     void minimizeClicked();
     void maximizeClicked();
+    void fileNameButtonClicked();
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -41,4 +46,6 @@ private:
     TitlebarButton* m_maxMinButton;
     TitlebarButton* m_trayButton;
     TitlebarFileNameButton *m_fileNameButton;
+    QString m_currentFileName;
+    int m_currentBoxId = -1;
 };

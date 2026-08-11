@@ -21,3 +21,13 @@ void WindowControl::sendFileNameToTitlebar(const QString &fileName)
 {
     m_view.updateFileName(fileName);
 }
+
+void WindowControl::sendBoxListPageToTitlebar(const BoxListPageDTO &dto)
+{
+    m_view.updateBoxListPage(dto);
+}
+
+void WindowControl::sendCurrentBoxIdToTitlebar(int boxId)
+{
+    m_view.updateCurrentBoxId(boxId);
+}

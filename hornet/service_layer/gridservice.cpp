@@ -282,3 +282,29 @@ void GridService::storeRenderSourceValue(int boxId, const QString &sourceName, c
 {
     m_renderSourceValues[boxId][sourceName] = value;
 }
+
+int GridService::retrieveBoxCount() const
+{
+    return static_cast<int>(m_modelAccess.getGridModel().getBoxes().size());
+}
+
+std::vector<BoxListEntryDTO> GridService::retrieveBoxHeaderListPage(int startIndex, int count) const
+{
+    std::vector<BoxListEntryDTO> allEntries;
+    const std::vector<BoxModel> &boxes = m_modelAccess.getGridModel().getBoxes();
+    allEntries.reserve(boxes.size());
+    for (const BoxModel &box : boxes)
+        allEntries.push_back(BoxListEntryDTO{box.getId(), box.getHeaderText()});
+
+    std::sort(allEntries.begin(),
+              allEntries.end(),
+              [](const BoxListEntryDTO &a, const BoxListEntryDTO &b) {
+                  return a.headerText.localeAwareCompare(b.headerText) < 0;
+              });
+
+    const int total = static_cast<int>(allEntries.size());
+    const int clampedStart = std::clamp(startIndex, 0, total);
+    const int clampedEnd = std::min(clampedStart + count, total);
+    return std::vector<BoxListEntryDTO>(allEntries.begin() + clampedStart,
+                                        allEntries.begin() + clampedEnd);
+}
