@@ -15,7 +15,6 @@ TitlebarFileNameButton::TitlebarFileNameButton(FontAtlas &fontAtlas,
     , m_pressed(false)
 {
     setAttribute(Qt::WA_TranslucentBackground);
-    setCursor(Qt::PointingHandCursor);
 }
 void TitlebarFileNameButton::setFileName(const QString &fileName)
 {

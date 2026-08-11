@@ -41,8 +41,9 @@ void TitlebarFileDropdownContent::setCurrentBoxId(int boxId)
 void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    const float scale = 0.45f;
-    const float idScale = 0.35f;
+
+    const float scale = 0.55f;
+    const float idScale = 0.42f;
     const float textPadding = 8.f;
 
     for (int i = 0; i < static_cast<int>(m_entries.size()); ++i) {
@@ -79,10 +80,10 @@ TitlebarFileDropdown::TitlebarFileDropdown(FontAtlas &fontAtlas,
     hide();
 
     m_content = new TitlebarFileDropdownContent(fontAtlas, fontRenderer, this);
-    m_content->setFixedWidth(m_width);
+    m_content->setFixedWidth(m_width - 2);
 
     m_scrollArea = new QScrollArea(this);
-    m_scrollArea->setGeometry(0, m_topRowHeight, m_width, m_visibleRows * m_rowHeight);
+    m_scrollArea->setGeometry(1, m_topRowHeight, m_width - 2, m_visibleRows * m_rowHeight);
     m_scrollArea->setWidgetResizable(false);
     m_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_scrollArea->setWidget(m_content);
@@ -103,6 +104,7 @@ void TitlebarFileDropdown::openAt(int x, int y, const QString &currentFileName)
 {
     m_currentFileName = currentFileName;
     move(x, y);
+    m_scrollArea->verticalScrollBar()->setValue(0);
     show();
     raise();
     emit boxListPageRequested(BoxListPageRequestDTO{0, m_visibleRows});
@@ -123,10 +125,12 @@ void TitlebarFileDropdown::setCurrentBoxId(int boxId)
 void TitlebarFileDropdown::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(QRect(0, 0, m_width, m_topRowHeight), Theme::warmGray());
+    painter.fillRect(rect(), Theme::almostBlack());
+    painter.fillRect(QRect(0, 0, m_width, m_topRowHeight), Theme::darkGray());
 
-    const float scale = 0.5f;
-    const float y = m_topRowHeight - m_fontAtlas.textHeight(scale) - 6.f;
+    const float scale = 0.7f;
+    const float y = static_cast<float>(m_topRowHeight) - m_fontAtlas.textHeight(scale)
+                    - static_cast<float>(m_bottomPadding);
     m_fontRenderer.drawText(painter, 10.f, y, m_currentFileName, Theme::darkAmber(), scale);
 
     painter.setPen(QPen(Theme::darkAmber(), 1));

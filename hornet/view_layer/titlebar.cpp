@@ -74,7 +74,7 @@ QString TitleBar::currentFileName() const
 
 QPoint TitleBar::fileNameDropdownAnchor() const
 {
-    return m_fileNameButton->mapTo(parentWidget(), QPoint(0, m_fileNameButton->height()));
+    return m_fileNameButton->mapTo(parentWidget(), QPoint(0, 0));
 }
 
 void TitleBar::updateCurrentBoxId(int boxId)

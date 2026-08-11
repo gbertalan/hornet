@@ -28,7 +28,7 @@ private:
     std::vector<BoxListEntryDTO> m_entries;
     int m_startIndex = 0;
     int m_currentBoxId = -1;
-    static constexpr int m_rowHeight = 24;
+    static constexpr int m_rowHeight = 34;
 };
 
 class TitlebarFileDropdown : public QWidget
@@ -50,10 +50,11 @@ protected:
     void leaveEvent(QEvent *event) override;
 
 private:
-    static constexpr int m_width = 260;
-    static constexpr int m_topRowHeight = 28;
+    static constexpr int m_width = 320;
+    static constexpr int m_topRowHeight = 38;
     static constexpr int m_visibleRows = 10;
-    static constexpr int m_rowHeight = 24;
+    static constexpr int m_rowHeight = 34;
+    static constexpr int m_bottomPadding = 9;
 
     QString m_currentFileName;
     int m_currentBoxId = -1;
