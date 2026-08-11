@@ -226,6 +226,7 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     m_editorControl.sendCursorPosToEditor();
     m_editorControl.sendSettingsToEditor();
     m_windowControl.sendFileNameToTitlebar(boxContent.headerText);
+    m_windowControl.sendCurrentBoxIdToTitlebar(dto.boxId);
 
     m_isRestoringBoxState = false;
 
