@@ -1,7 +1,9 @@
 #pragma once
 #include <QWidget>
 #include "shared/dto_model_to_view/boxlistentrydto.h"
+#include "shared/dto_view_to_model/boxselecteddto.h"
 #include <vector>
+
 class FontAtlas;
 class FontRenderer;
 class QScrollArea;
@@ -19,10 +21,14 @@ public:
     void setEntries(const std::vector<BoxListEntryDTO> &entries, int totalCount, int startIndex);
     void setCurrentBoxId(int boxId);
 
+signals:
+    void boxSelected(const BoxSelectedDTO &dto);
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void leaveEvent(QEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     FontAtlas &m_fontAtlas;
@@ -48,6 +54,7 @@ public:
 
 signals:
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
+    void boxSelected(const BoxSelectedDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

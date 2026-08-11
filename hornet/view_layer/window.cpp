@@ -56,6 +56,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
             &TitlebarFileDropdown::boxListPageRequested,
             this,
             &Window::boxListPageRequested);
+    connect(m_fileDropdown, &TitlebarFileDropdown::boxSelected, this, &Window::boxSelected);
 
     connect(m_splitPane,
             &SplitPane::leftPaneWidthChanged,

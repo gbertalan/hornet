@@ -9,7 +9,6 @@
 #include "view_layer/customscrollbar.h"
 #include "view_layer/font_renderer/FontAtlas.h"
 #include "view_layer/font_renderer/FontRenderer.h"
-#include <algorithm>
 
 // ================================================================
 // TitlebarFileDropdownContent - paints the scrollable rows
@@ -100,6 +99,16 @@ void TitlebarFileDropdownContent::leaveEvent(QEvent *event)
     }
 }
 
+void TitlebarFileDropdownContent::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton)
+        return;
+    const int rowIndex = event->pos().y() / m_rowHeight;
+    if (rowIndex < 0 || rowIndex >= static_cast<int>(m_entries.size()))
+        return;
+    emit boxSelected(BoxSelectedDTO(m_entries.at(rowIndex).id));
+}
+
 // ================================================================
 // TitlebarFileDropdown - fixed current-file row + scrollable list
 // ================================================================
@@ -117,6 +126,11 @@ TitlebarFileDropdown::TitlebarFileDropdown(FontAtlas &fontAtlas,
 
     m_content = new TitlebarFileDropdownContent(fontAtlas, fontRenderer, this);
     m_content->setFixedWidth(m_width - 2);
+
+    connect(m_content,
+            &TitlebarFileDropdownContent::boxSelected,
+            this,
+            &TitlebarFileDropdown::boxSelected);
 
     m_scrollArea = new QScrollArea(this);
     m_scrollArea->setGeometry(1, m_topRowHeight, m_width - 2, m_visibleRows * m_rowHeight);
