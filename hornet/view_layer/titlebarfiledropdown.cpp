@@ -116,6 +116,12 @@ TitlebarFileDropdown::TitlebarFileDropdown(FontAtlas &fontAtlas,
     m_scrollArea->viewport()->setStyleSheet("background: transparent;");
 
     m_verticalScrollBar = new CustomScrollBar(Qt::Vertical, m_scrollArea);
+    m_verticalScrollBar->setStyleSheet(
+        "QScrollBar:vertical { background: transparent; width: 6px; }"
+        "QScrollBar::handle:vertical { background: transparent; }"
+        "QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }"
+        "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; "
+        "}");
     m_scrollArea->setVerticalScrollBar(m_verticalScrollBar);
     m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
