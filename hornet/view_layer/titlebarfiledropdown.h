@@ -21,6 +21,8 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
 
 private:
     FontAtlas &m_fontAtlas;
@@ -29,6 +31,7 @@ private:
     int m_startIndex = 0;
     int m_currentBoxId = -1;
     static constexpr int m_rowHeight = 34;
+    int m_hoveredRowIndex = -1;
 };
 
 class TitlebarFileDropdown : public QWidget
@@ -52,7 +55,7 @@ protected:
 private:
     static constexpr int m_width = 320;
     static constexpr int m_topRowHeight = 38;
-    static constexpr int m_visibleRows = 10;
+    static constexpr int m_visibleRows = 9;
     static constexpr int m_rowHeight = 34;
     static constexpr int m_bottomPadding = 9;
 

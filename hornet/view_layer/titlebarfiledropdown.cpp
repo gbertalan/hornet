@@ -1,4 +1,5 @@
 #include "view_layer/titlebarfiledropdown.h"
+#include <QMouseEvent>
 #include <QPainter>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -20,7 +21,9 @@ TitlebarFileDropdownContent::TitlebarFileDropdownContent(FontAtlas &fontAtlas,
     : QWidget(parent)
     , m_fontAtlas(fontAtlas)
     , m_fontRenderer(fontRenderer)
-{}
+{
+    setMouseTracking(true);
+}
 
 void TitlebarFileDropdownContent::setEntries(const std::vector<BoxListEntryDTO> &entries,
                                              int totalCount,
@@ -52,6 +55,8 @@ void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
 
         if (entry.id == m_currentBoxId)
             painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::warmGray());
+        else if (m_startIndex + i == m_hoveredRowIndex)
+            painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::darkerGray());
 
         const float y = rowTop + (m_rowHeight - m_fontAtlas.textHeight(scale)) / 2.f;
         m_fontRenderer.drawText(painter, textPadding, y, entry.headerText, Theme::darkAmber(), scale);
@@ -61,6 +66,23 @@ void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
         const float idX = width() - idWidth - textPadding;
         const float idY = rowTop + (m_rowHeight - m_fontAtlas.textHeight(idScale)) / 2.f;
         m_fontRenderer.drawText(painter, idX, idY, idLabel, Theme::darkGray(), idScale);
+    }
+}
+
+void TitlebarFileDropdownContent::mouseMoveEvent(QMouseEvent *event)
+{
+    const int rowIndex = event->pos().y() / m_rowHeight;
+    if (rowIndex != m_hoveredRowIndex) {
+        m_hoveredRowIndex = rowIndex;
+        update();
+    }
+}
+
+void TitlebarFileDropdownContent::leaveEvent(QEvent *event)
+{
+    if (m_hoveredRowIndex != -1) {
+        m_hoveredRowIndex = -1;
+        update();
     }
 }
 
