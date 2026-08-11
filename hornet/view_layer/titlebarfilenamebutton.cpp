@@ -43,6 +43,7 @@ void TitlebarFileNameButton::leaveEvent(QEvent *event)
 
 void TitlebarFileNameButton::mousePressEvent(QMouseEvent *event)
 {
+    event->accept();
     if (event->button() == Qt::LeftButton) {
         m_pressed = true;
         update();
@@ -51,10 +52,21 @@ void TitlebarFileNameButton::mousePressEvent(QMouseEvent *event)
 
 void TitlebarFileNameButton::mouseReleaseEvent(QMouseEvent *event)
 {
+    event->accept();
     if (event->button() == Qt::LeftButton) {
         m_pressed = false;
         if (m_hovered)
             emit clicked();
         update();
     }
+}
+
+void TitlebarFileNameButton::mouseMoveEvent(QMouseEvent *event)
+{
+    bool inside = rect().contains(event->pos());
+    if (m_hovered != inside) {
+        m_hovered = inside;
+        update();
+    }
+    event->accept();
 }
