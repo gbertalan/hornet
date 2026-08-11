@@ -17,7 +17,10 @@ class Grid : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Grid(const GridViewStateDTO &initialState, QWidget *parent);
+    explicit Grid(const GridViewStateDTO &initialState,
+                  FontAtlas &fontAtlas,
+                  FontRenderer &fontRenderer,
+                  QWidget *parent);
     void updateGridViewState(const GridViewStateDTO &dto);
 
     // ================================================================
@@ -77,8 +80,8 @@ private:
     QPoint m_lastAppliedResizeCellDelta;
 
     // text rendering:
-    FontAtlas m_fontAtlas;
-    std::unique_ptr<FontRenderer> m_fontRenderer;
+    FontAtlas &m_fontAtlas;
+    FontRenderer &m_fontRenderer;
     Qt::CursorShape cursorForResizeEdge(BoxResizeEdge edge) const;
     bool m_isCtrlPressed = false;
 };

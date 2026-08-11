@@ -10,7 +10,7 @@
 #include <QScreen>
 #include <QTimer>
 
-TitleBar::TitleBar(QWidget *parent)
+TitleBar::TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *parent)
     : QWidget(parent)
     , m_dragging(false)
     , m_doubleclicked(false)
@@ -20,7 +20,7 @@ TitleBar::TitleBar(QWidget *parent)
     setFixedHeight(40);
     setAttribute(Qt::WA_TranslucentBackground);
 
-    m_fileNameButton = new TitlebarFileNameButton(this);
+    m_fileNameButton = new TitlebarFileNameButton(fontAtlas, fontRenderer, this);
 
     m_trayButton = new TitlebarButton(TitlebarButtonType::Tray, this);
     m_maxMinButton = new TitlebarButton(TitlebarButtonType::Maximize, this);

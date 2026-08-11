@@ -14,7 +14,10 @@ class Editor : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Editor(const EditorSettingsDTO &settings, QWidget *parent = nullptr);
+    explicit Editor(const EditorSettingsDTO &settings,
+                    FontAtlas &fontAtlas,
+                    FontRenderer &fontRenderer,
+                    QWidget *parent = nullptr);
 
     // ================================================================
     // SLICE: settings + sizing (public API called by SplitPane/Control)
@@ -92,8 +95,9 @@ private:
     float leftColumnWidth() const;
     float lineNumberSectionWidth() const;
 
-    FontAtlas m_fontAtlas;
-    std::unique_ptr<FontRenderer> m_fontRenderer;
+    FontAtlas &m_fontAtlas;
+    FontRenderer &m_fontRenderer;
+
     int m_lineHeight;
     float m_fontScale;
     int m_contentWidth = 0;

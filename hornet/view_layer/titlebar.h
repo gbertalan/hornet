@@ -7,12 +7,14 @@
 
 class TitlebarButton;
 class TitlebarFileNameButton;
+class FontAtlas;
+class FontRenderer;
 
 class TitleBar : public QWidget {
     Q_OBJECT
 
 public:
-    explicit TitleBar(QWidget* parent = nullptr);
+    explicit TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *parent = nullptr);
     void setFullscreen(bool fullscreen);
     void updateFileName(const QString &fileName);
 

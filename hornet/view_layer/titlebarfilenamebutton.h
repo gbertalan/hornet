@@ -1,12 +1,17 @@
 #pragma once
 #include <QWidget>
 
+class FontAtlas;
+class FontRenderer;
+
 class TitlebarFileNameButton : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TitlebarFileNameButton(QWidget *parent = nullptr);
+    explicit TitlebarFileNameButton(FontAtlas &fontAtlas,
+                                    FontRenderer &fontRenderer,
+                                    QWidget *parent = nullptr);
     void setFileName(const QString &fileName);
 
 signals:
@@ -24,4 +29,6 @@ private:
     QString m_fileName;
     bool m_hovered;
     bool m_pressed;
+    FontAtlas &m_fontAtlas;
+    FontRenderer &m_fontRenderer;
 };

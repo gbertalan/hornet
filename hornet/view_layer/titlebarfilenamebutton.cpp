@@ -2,9 +2,15 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include "theme.h"
+#include "view_layer/font_renderer/FontAtlas.h"
+#include "view_layer/font_renderer/FontRenderer.h"
 
-TitlebarFileNameButton::TitlebarFileNameButton(QWidget *parent)
+TitlebarFileNameButton::TitlebarFileNameButton(FontAtlas &fontAtlas,
+                                               FontRenderer &fontRenderer,
+                                               QWidget *parent)
     : QWidget(parent)
+    , m_fontAtlas(fontAtlas)
+    , m_fontRenderer(fontRenderer)
     , m_hovered(false)
     , m_pressed(false)
 {
@@ -12,7 +18,6 @@ TitlebarFileNameButton::TitlebarFileNameButton(QWidget *parent)
     setCursor(Qt::PointingHandCursor);
     setMinimumWidth(150);
 }
-
 void TitlebarFileNameButton::setFileName(const QString &fileName)
 {
     m_fileName = fileName;
@@ -24,8 +29,9 @@ void TitlebarFileNameButton::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     if (m_hovered)
         painter.fillRect(rect(), m_pressed ? Theme::darkGray() : Theme::warmGray());
-    painter.setPen(Theme::almostWhite());
-    painter.drawText(rect().adjusted(10, 0, -10, 0), Qt::AlignVCenter | Qt::AlignLeft, m_fileName);
+    float scale = 0.5f;
+    float y = (height() - m_fontAtlas.textHeight(scale)) / 2.f;
+    m_fontRenderer.drawText(painter, 10.f, y, m_fileName, Theme::darkAmber(), scale);
 }
 
 void TitlebarFileNameButton::enterEvent(QEnterEvent *event)

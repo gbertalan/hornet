@@ -16,6 +16,8 @@ struct EditorSettingsDTO;
 struct BoxResizeDTO;
 class CustomScrollBar;
 class Editor;
+class FontAtlas;
+class FontRenderer;
 
 class SplitPaneHandle : public QSplitterHandle {
     Q_OBJECT
@@ -37,7 +39,11 @@ class SplitPane : public QSplitter {
     Q_OBJECT
 
 public:
-    explicit SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent = nullptr);
+    explicit SplitPane(int leftWidth,
+                       int separatorTopPadding,
+                       FontAtlas &fontAtlas,
+                       FontRenderer &fontRenderer,
+                       QWidget *parent = nullptr);
     QWidget* leftPane() const;
     QWidget* rightPane() const;
     void updateEditorState(const EditorViewStateDTO &dto);

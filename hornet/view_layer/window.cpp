@@ -34,10 +34,15 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     setPalette(palette);
     setAutoFillBackground(true);
 
-    m_splitPane = new SplitPane(800, 0, this);
+    m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
+    m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
+    m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
+    m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
+
+    m_splitPane = new SplitPane(800, 0, m_fontAtlas, *m_fontRenderer, this);
     m_splitPane->setGeometry(0, 0, width(), height());
 
-    m_titleBar = new TitleBar(this);
+    m_titleBar = new TitleBar(m_fontAtlas, *m_fontRenderer, this);
     m_titleBar->raise();
 
     QVBoxLayout* layout = new QVBoxLayout(this);

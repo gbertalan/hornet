@@ -48,8 +48,14 @@ void SplitPaneHandle::leaveEvent(QEvent* event) {
 
 // SplitPane class
 
-SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
-    : QSplitter(Qt::Horizontal, parent), m_separatorTopPadding(separatorTopPadding) {
+SplitPane::SplitPane(int leftWidth,
+                     int separatorTopPadding,
+                     FontAtlas &fontAtlas,
+                     FontRenderer &fontRenderer,
+                     QWidget *parent)
+    : QSplitter(Qt::Horizontal, parent)
+    , m_separatorTopPadding(separatorTopPadding)
+{
     setHandleWidth(7);
     setChildrenCollapsible(false);
 
@@ -80,7 +86,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
 
     // Editor:
     EditorSettingsDTO editorSettingsDTO{20, 0.5, false};
-    m_editor = new Editor(editorSettingsDTO, this);
+    m_editor = new Editor(editorSettingsDTO, fontAtlas, fontRenderer, this);
 
     m_scrollArea->setWidgetResizable(false); // must be false - this is the default, just be explicit
     m_scrollArea->setWidget(m_editor);
@@ -97,7 +103,7 @@ SplitPane::SplitPane(int leftWidth, int separatorTopPadding, QWidget* parent)
 
     // Grid:
     GridViewStateDTO gridViewStateDTO{25, 30.0, QPoint(0, 0), {}, -1};
-    m_grid = new Grid(gridViewStateDTO, m_rightPane);
+    m_grid = new Grid(gridViewStateDTO, fontAtlas, fontRenderer, m_rightPane);
 
     QVBoxLayout *rightLayout = new QVBoxLayout(m_rightPane);
     rightLayout->setContentsMargins(0, 0, 0, 0);

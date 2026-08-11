@@ -15,13 +15,14 @@
 // SLICE: construction & settings
 // ================================================================
 
-Editor::Editor(const EditorSettingsDTO &settings, QWidget *parent)
+Editor::Editor(const EditorSettingsDTO &settings,
+               FontAtlas &fontAtlas,
+               FontRenderer &fontRenderer,
+               QWidget *parent)
     : QWidget(parent)
+    , m_fontAtlas(fontAtlas)
+    , m_fontRenderer(fontRenderer)
 {
-    m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
-    m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
-    m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
-    m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
     setSettings(settings);
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
@@ -230,9 +231,9 @@ void Editor::drawLineNumber(QPainter &painter, int index, int digits, float left
     float numberWidth = m_fontAtlas.textWidth(lineNumber.length(), m_fontScale);
     float numberX = (lineNumberWidth - numberWidth) / 2.f;
     if (m_topLineIndex + index == m_cursorY)
-        m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
+        m_fontRenderer.drawText(painter, numberX, y, lineNumber, Theme::brightYellow(), m_fontScale);
     else
-        m_fontRenderer->drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
+        m_fontRenderer.drawText(painter, numberX, y, lineNumber, Theme::darkGray(), m_fontScale);
     // gray separator line:
     painter.save();
     painter.setPen(QPen(Theme::darkGray(), 1));
@@ -249,23 +250,23 @@ void Editor::drawTerminalPrompt(QPainter &painter, int index, float x, float y)
     if (prompt.isEmpty())
         return;
     if (index == m_cursorY)
-        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
+        m_fontRenderer.drawText(painter, x, y, prompt, Theme::darkAmber(), m_fontScale);
     else
-        m_fontRenderer->drawText(painter, x, y, prompt, Theme::darkGray(), m_fontScale);
+        m_fontRenderer.drawText(painter, x, y, prompt, Theme::darkGray(), m_fontScale);
 }
 
 void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
 {
     if (m_isTerminal && index != m_cursorY)
-        m_fontRenderer->drawText(painter,
-                                 textX,
-                                 y,
-                                 m_textLinesToDisplay[index],
-                                 Theme::darkGray(),
-                                 m_fontScale);
+        m_fontRenderer.drawText(painter,
+                                textX,
+                                y,
+                                m_textLinesToDisplay[index],
+                                Theme::darkGray(),
+                                m_fontScale);
     else
         m_fontRenderer
-            ->drawText(painter, textX, y, m_textLinesToDisplay[index], m_textUniColor, m_fontScale);
+            .drawText(painter, textX, y, m_textLinesToDisplay[index], m_textUniColor, m_fontScale);
 }
 
 void Editor::drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding)
@@ -280,7 +281,7 @@ void Editor::drawCursor(QPainter &painter, int index, float textX, float y, floa
     if (m_cursorX < m_textLinesToDisplay[index].length()) {
         QString cursorChar = m_textLinesToDisplay[index][m_cursorX];
         m_fontRenderer
-            ->drawText(painter, cursorPixelX, y, cursorChar, Theme::almostBlack(), m_fontScale);
+            .drawText(painter, cursorPixelX, y, cursorChar, Theme::almostBlack(), m_fontScale);
     }
 }
 

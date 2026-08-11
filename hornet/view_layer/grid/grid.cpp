@@ -17,18 +17,18 @@
 // SLICE: construction & initialization
 // ================================================================
 
-Grid::Grid(const GridViewStateDTO &initialState, QWidget *parent)
+Grid::Grid(const GridViewStateDTO &initialState,
+           FontAtlas &fontAtlas,
+           FontRenderer &fontRenderer,
+           QWidget *parent)
     : QWidget(parent)
     , gridGap(initialState.gridGap)
     , offset(initialState.offset)
     , boxes(initialState.boxes)
+    , m_fontAtlas(fontAtlas)
+    , m_fontRenderer(fontRenderer)
 {
     setMouseTracking(true);
-
-    m_fontAtlas.addFont(":/fonts/JetBrainsMono-Bold.ttf");
-    m_fontAtlas.addFont(":/fonts/NotoSansMono-Bold.ttf");
-    m_fontAtlas.addFont(":/fonts/NotoSansCJK-Regular.ttc");
-    m_fontRenderer = std::make_unique<FontRenderer>(m_fontAtlas);
 }
 
 // ================================================================
@@ -91,7 +91,7 @@ void Grid::paintEvent(QPaintEvent *)
                              m_selectedBoxId,
                              m_isDraggingBox ? m_draggedBoxId : -1,
                              m_draggedBoxLiveOffset,
-                             *m_fontRenderer,
+                             m_fontRenderer,
                              m_fontAtlas,
                              m_cursorBlinkVisible,
                              m_isCtrlPressed,

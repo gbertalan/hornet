@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QWidget>
+#include <view_layer/font_renderer/FontAtlas.h>
+#include <view_layer/font_renderer/FontRenderer.h>
 
 struct BoxResizeDTO;
 struct BoxSelectedDTO;
@@ -58,6 +60,9 @@ private:
     ResizeHandle* m_handleTopRight;
     ResizeHandle* m_handleBottomLeft;
     ResizeHandle* m_handleBottomRight;
+
+    FontAtlas m_fontAtlas;
+    std::unique_ptr<FontRenderer> m_fontRenderer;
 
     int m_windowedWidth;
     int m_windowedHeight;
