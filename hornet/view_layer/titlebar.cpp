@@ -21,7 +21,7 @@ TitleBar::TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *pa
     setAttribute(Qt::WA_TranslucentBackground);
 
     m_fileNameButton = new TitlebarFileNameButton(fontAtlas, fontRenderer, this);
-    m_fileNameButton->setFixedWidth(220);
+    m_fileNameButton->setFixedSize(220, 38);
 
     m_trayButton = new TitlebarButton(TitlebarButtonType::Tray, this);
     m_maxMinButton = new TitlebarButton(TitlebarButtonType::Maximize, this);
@@ -58,7 +58,7 @@ void TitleBar::updateFileNameButtonPosition(int leftPaneWidth)
 {
     int centerX = leftPaneWidth / 2;
     int x = std::max(0, centerX - m_fileNameButton->width() / 2);
-    m_fileNameButton->setGeometry(x, 0, m_fileNameButton->width(), height());
+    m_fileNameButton->setGeometry(x, 0, m_fileNameButton->width(), m_fileNameButton->height());
 }
 
 void TitleBar::paintEvent(QPaintEvent* event) {
