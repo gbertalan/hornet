@@ -32,6 +32,7 @@ private:
     int m_currentBoxId = -1;
     static constexpr int m_rowHeight = 34;
     int m_hoveredRowIndex = -1;
+    static constexpr int m_visibleRows = 10;
 };
 
 class TitlebarFileDropdown : public QWidget
@@ -55,7 +56,7 @@ protected:
 private:
     static constexpr int m_width = 320;
     static constexpr int m_topRowHeight = 38;
-    static constexpr int m_visibleRows = 9;
+    static constexpr int m_visibleRows = 10;
     static constexpr int m_rowHeight = 34;
     static constexpr int m_bottomPadding = 9;
 

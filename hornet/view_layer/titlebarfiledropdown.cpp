@@ -31,7 +31,10 @@ void TitlebarFileDropdownContent::setEntries(const std::vector<BoxListEntryDTO> 
 {
     m_entries = entries;
     m_startIndex = startIndex;
-    setFixedHeight(std::max(totalCount, 1) * m_rowHeight);
+    const int viewportHeight = m_visibleRows * m_rowHeight;
+    const int contentHeight = totalCount > 0 ? (totalCount - 1) * m_rowHeight + viewportHeight
+                                             : viewportHeight;
+    setFixedHeight(contentHeight);
     update();
 }
 
@@ -118,7 +121,7 @@ TitlebarFileDropdown::TitlebarFileDropdown(FontAtlas &fontAtlas,
 
     connect(m_verticalScrollBar, &QScrollBar::valueChanged, this, [this](int value) {
         const int startIndex = value / m_rowHeight;
-        emit boxListPageRequested(BoxListPageRequestDTO{startIndex, m_visibleRows});
+        emit boxListPageRequested(BoxListPageRequestDTO{startIndex, m_visibleRows + 1});
     });
 }
 
@@ -129,7 +132,7 @@ void TitlebarFileDropdown::openAt(int x, int y, const QString &currentFileName)
     m_scrollArea->verticalScrollBar()->setValue(0);
     show();
     raise();
-    emit boxListPageRequested(BoxListPageRequestDTO{0, m_visibleRows});
+    emit boxListPageRequested(BoxListPageRequestDTO{0, m_visibleRows + 1});
     update();
 }
 
