@@ -103,10 +103,11 @@ void TitlebarFileDropdownContent::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() != Qt::LeftButton)
         return;
-    const int rowIndex = event->pos().y() / m_rowHeight;
-    if (rowIndex < 0 || rowIndex >= static_cast<int>(m_entries.size()))
+    const int absoluteRowIndex = event->pos().y() / m_rowHeight;
+    const int localIndex = absoluteRowIndex - m_startIndex;
+    if (localIndex < 0 || localIndex >= static_cast<int>(m_entries.size()))
         return;
-    emit boxSelected(BoxSelectedDTO(m_entries.at(rowIndex).id));
+    emit boxSelected(BoxSelectedDTO(m_entries.at(localIndex).id));
 }
 
 // ================================================================
