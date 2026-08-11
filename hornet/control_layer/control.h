@@ -135,6 +135,7 @@ private:
                               int depth);
     void createCommandOutputBox(const QString &commandText, const QString &outputText);
     bool resolveBoxIdToken(const QString &token, int &outBoxId) const;
+    void selectBox(int boxId);
 
     bool m_isRestoringBoxState = false;
     mutable int debugPrintCounter = 0;

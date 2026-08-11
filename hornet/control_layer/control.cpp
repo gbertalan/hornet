@@ -200,38 +200,11 @@ QVector<QString> Control::buildTerminalPrompts() const
 
 void Control::onBoxSelected(const BoxSelectedDTO &dto)
 {
-    const int previouslySelectedBoxId = m_currentlySelectedBoxId;
-    if (previouslySelectedBoxId != -1)
-        flushEditorContentToBox(previouslySelectedBoxId);
-
-    m_currentlySelectedBoxId = dto.boxId;
-    m_lastSyncedBoxScrollOffset = -1;
-
-    m_isRestoringBoxState = true;
-
-    const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(dto.boxId);
-    const std::vector<std::u32string> bodyLinesAsU32 = convertBodyLinesToU32(boxContent.bodyLines);
-
-    if (boxContent.contentType == BoxContentType::Terminal) {
-        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
-        m_editorService.setIsTerminal(true);
-        m_editorControl.sendStateToEditor(buildTerminalPrompts());
-    } else {
-        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
-        m_editorService.setIsTerminal(false);
-        m_editorControl.sendStateToEditor();
-    }
-
-    m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
-    m_editorControl.sendCursorPosToEditor();
-    m_editorControl.sendSettingsToEditor();
-    m_windowControl.sendFileNameToTitlebar(boxContent.headerText);
-    m_windowControl.sendCurrentBoxIdToTitlebar(dto.boxId);
-
-    m_isRestoringBoxState = false;
-
-    m_gridService.storeSelectedBox(dto.boxId);
-    m_gridControl.sendViewStateToGrid();
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    const HornetCommandDTO command{true, "select", QString::number(dto.boxId), workingDir};
+    const QString message = dispatchHornetCommand(command);
+    if (!message.isEmpty())
+        createCommandOutputBox("select " + QString::number(dto.boxId), message);
 }
 
 // ================================================================
@@ -503,7 +476,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
                     const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(
                         BoxContentType::Terminal);
                     if (terminalBoxId != -1)
-                        onBoxSelected(BoxSelectedDTO(terminalBoxId));
+                        selectBox(terminalBoxId);
                 }
                 m_gridService.removeBox(id);
                 const auto recentIt = std::find(m_recentlyCreatedBoxIds.begin(),
@@ -559,6 +532,21 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         if (!resolveBoxIdToken(parts.at(0), boxId))
             return "usage: hornet trust <boxId|last> <sourceName>";
         return m_renderControl.dispatchTrustCommand(boxId, parts.at(1), command.workingDirectory);
+    }
+
+    if (command.subcommand == "select") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.isEmpty())
+            return "usage: hornet select <boxId|last>";
+        int boxId = -1;
+        if (!resolveBoxIdToken(parts.at(0), boxId))
+            return "usage: hornet select <boxId|last>";
+        try {
+            selectBox(boxId);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+        return "";
     }
 
     return "unknown hornet command: " + command.subcommand;
@@ -652,6 +640,35 @@ bool Control::resolveBoxIdToken(const QString &token, int &outBoxId) const
         return false;
     outBoxId = parsed;
     return true;
+}
+
+void Control::selectBox(int boxId)
+{
+    const int previouslySelectedBoxId = m_currentlySelectedBoxId;
+    if (previouslySelectedBoxId != -1)
+        flushEditorContentToBox(previouslySelectedBoxId);
+    m_currentlySelectedBoxId = boxId;
+    m_lastSyncedBoxScrollOffset = -1;
+    m_isRestoringBoxState = true;
+    const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(boxId);
+    const std::vector<std::u32string> bodyLinesAsU32 = convertBodyLinesToU32(boxContent.bodyLines);
+    if (boxContent.contentType == BoxContentType::Terminal) {
+        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
+        m_editorService.setIsTerminal(true);
+        m_editorControl.sendStateToEditor(buildTerminalPrompts());
+    } else {
+        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
+        m_editorService.setIsTerminal(false);
+        m_editorControl.sendStateToEditor();
+    }
+    m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
+    m_editorControl.sendCursorPosToEditor();
+    m_editorControl.sendSettingsToEditor();
+    m_windowControl.sendFileNameToTitlebar(boxContent.headerText);
+    m_windowControl.sendCurrentBoxIdToTitlebar(boxId);
+    m_isRestoringBoxState = false;
+    m_gridService.storeSelectedBox(boxId);
+    m_gridControl.sendViewStateToGrid();
 }
 
 // ================================================================
