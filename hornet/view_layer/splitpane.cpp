@@ -165,6 +165,9 @@ SplitPane::SplitPane(int leftWidth,
     connect(m_grid, &Grid::boxSelected, this, &SplitPane::boxSelected);
     connect(m_grid, &Grid::boxResized, this, &SplitPane::boxResized);
     connect(m_grid, &Grid::boxUnloadRequested, this, &SplitPane::boxUnloadRequested);
+    connect(this, &QSplitter::splitterMoved, this, [this](int, int) {
+        emit leftPaneWidthChanged(m_leftPane->width());
+    });
 }
 
 QSplitterHandle* SplitPane::createHandle() {
@@ -197,6 +200,11 @@ void SplitPane::updateEditorSettings(const EditorSettingsDTO &dto)
 void SplitPane::updateGridViewState(const GridViewStateDTO &dto)
 {
     m_grid->updateGridViewState(dto);
+}
+
+int SplitPane::leftPaneWidth() const
+{
+    return m_leftPane->width();
 }
 
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {

@@ -17,6 +17,7 @@ public:
     explicit TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *parent = nullptr);
     void setFullscreen(bool fullscreen);
     void updateFileName(const QString &fileName);
+    void updateFileNameButtonPosition(int leftPaneWidth);
 
 signals:
     void windowCloseClicked();

@@ -50,6 +50,7 @@ public:
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
+    int leftPaneWidth() const;
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
@@ -61,6 +62,7 @@ signals:
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(int boxId);
+    void leftPaneWidthChanged(int width);
 
 protected:
     QSplitterHandle* createHandle() override;

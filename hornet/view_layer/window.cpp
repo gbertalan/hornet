@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QResizeEvent>
+#include <QTimer>
 #include <QVBoxLayout>
 #include "shared/dto_view_to_model/windowdto.h"
 #include "theme.h"
@@ -44,6 +45,14 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
 
     m_titleBar = new TitleBar(m_fontAtlas, *m_fontRenderer, this);
     m_titleBar->raise();
+
+    connect(m_splitPane,
+            &SplitPane::leftPaneWidthChanged,
+            m_titleBar,
+            &TitleBar::updateFileNameButtonPosition);
+    QTimer::singleShot(0, this, [this]() {
+        m_titleBar->updateFileNameButtonPosition(m_splitPane->leftPaneWidth());
+    });
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

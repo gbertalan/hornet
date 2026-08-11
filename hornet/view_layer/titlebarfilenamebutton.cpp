@@ -16,7 +16,6 @@ TitlebarFileNameButton::TitlebarFileNameButton(FontAtlas &fontAtlas,
 {
     setAttribute(Qt::WA_TranslucentBackground);
     setCursor(Qt::PointingHandCursor);
-    setMinimumWidth(150);
 }
 void TitlebarFileNameButton::setFileName(const QString &fileName)
 {
@@ -29,9 +28,32 @@ void TitlebarFileNameButton::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     if (m_hovered)
         painter.fillRect(rect(), m_pressed ? Theme::darkGray() : Theme::warmGray());
-    float scale = 0.5f;
-    float y = (height() - m_fontAtlas.textHeight(scale)) / 2.f;
-    m_fontRenderer.drawText(painter, 10.f, y, m_fileName, Theme::darkAmber(), scale);
+
+    const float scale = 0.7f;
+    const float textPadding = 10.f;
+    const float availableWidth = static_cast<float>(width()) - (textPadding * 2.0f);
+
+    QString displayText = m_fileName;
+    float displayTextWidth = m_fontAtlas.textWidth(displayText.length(), scale);
+
+    float textX;
+    if (displayTextWidth > availableWidth) {
+        const float ellipsisWidth = m_fontAtlas.textWidth(3, scale);
+        const float maxTextWidth = availableWidth - ellipsisWidth;
+        while (displayText.length() > 0) {
+            displayTextWidth = m_fontAtlas.textWidth(displayText.length(), scale);
+            if (displayTextWidth <= maxTextWidth)
+                break;
+            displayText = displayText.left(displayText.length() - 1);
+        }
+        displayText += "...";
+        textX = textPadding;
+    } else {
+        textX = (static_cast<float>(width()) - displayTextWidth) / 2.0f;
+    }
+
+    const float y = (static_cast<float>(height()) - m_fontAtlas.textHeight(scale)) / 2.f;
+    m_fontRenderer.drawText(painter, textX, y, displayText, Theme::darkAmber(), scale);
 }
 
 void TitlebarFileNameButton::enterEvent(QEnterEvent *event)
