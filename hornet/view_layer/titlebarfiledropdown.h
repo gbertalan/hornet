@@ -26,6 +26,7 @@ public:
 
 signals:
     void boxSelected(const BoxSelectedDTO &dto);
+    void fileNameSelected(const QString &fileName);
 
 protected:
     void paintEvent(QPaintEvent *event) override;

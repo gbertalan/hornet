@@ -108,6 +108,7 @@ void TitlebarFileDropdownContent::mouseReleaseEvent(QMouseEvent *event)
     if (localIndex < 0 || localIndex >= static_cast<int>(m_entries.size()))
         return;
     emit boxSelected(BoxSelectedDTO(m_entries.at(localIndex).id));
+    emit fileNameSelected(m_entries.at(localIndex).headerText);
 }
 
 // ================================================================
@@ -155,6 +156,13 @@ TitlebarFileDropdown::TitlebarFileDropdown(FontAtlas &fontAtlas,
         const int startIndex = value / m_rowHeight;
         emit boxListPageRequested(BoxListPageRequestDTO{startIndex, m_visibleRows + 1});
     });
+    connect(m_content,
+            &TitlebarFileDropdownContent::fileNameSelected,
+            this,
+            [this](const QString &fileName) {
+                m_currentFileName = fileName;
+                update();
+            });
 }
 
 void TitlebarFileDropdown::openAt(int x, int y, const QString &currentFileName)
