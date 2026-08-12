@@ -11,9 +11,13 @@ public:
     void setFocused(bool focused);
     void setDimmed(bool dimmed);
 
+signals:
+    void clickedWhileDimmed();
+
 protected:
     void paintEvent(QPaintEvent* event) override;
     void resizeEvent(QResizeEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     bool m_fullscreen;

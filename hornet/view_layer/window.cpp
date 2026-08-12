@@ -85,6 +85,8 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_titleBar, &TitleBar::scriptRunButtonClicked, this, &Window::openMainPopup);
     positionMainPopup();
 
+    connect(m_overlayWidget, &OverlayWidget::clickedWhileDimmed, this, &Window::closeMainPopup);
+
     setupResizeHandles();
     positionResizeHandles();
 

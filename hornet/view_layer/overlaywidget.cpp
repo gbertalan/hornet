@@ -1,13 +1,13 @@
 #include "view_layer/overlaywidget.h"
-#include "theme.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QPen>
+#include "theme.h"
 
 OverlayWidget::OverlayWidget(QWidget* parent) : QWidget(parent), m_fullscreen(false), m_focused(true) {
-    setAttribute(Qt::WA_TransparentForMouseEvents);
     setAttribute(Qt::WA_NoSystemBackground);
     setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
 void OverlayWidget::setFullscreen(bool fullscreen) {
@@ -81,6 +81,12 @@ void OverlayWidget::resizeEvent(QResizeEvent* event) {
     raise();
 }
 
+void OverlayWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (m_dimmed)
+        emit clickedWhileDimmed();
+}
+
 void OverlayWidget::setFocused(bool focused) {
     m_focused = focused;
     update();
@@ -89,5 +95,6 @@ void OverlayWidget::setFocused(bool focused) {
 void OverlayWidget::setDimmed(bool dimmed)
 {
     m_dimmed = dimmed;
+    setAttribute(Qt::WA_TransparentForMouseEvents, !dimmed);
     update();
 }
