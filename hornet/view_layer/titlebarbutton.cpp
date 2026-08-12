@@ -14,11 +14,12 @@ TitlebarButton::TitlebarButton(TitlebarButtonType type, QWidget* parent)
 QString TitlebarButton::iconPath() const {
     switch (m_type) {
     case TitlebarButtonType::Close:    return ":/icons/close.png";
-    case TitlebarButtonType::Minimize: return ":/icons/minimize.png";
+    case TitlebarButtonType::Minimize:
+        return ":/icons/minimize.png";
     case TitlebarButtonType::Maximize: return ":/icons/maximize.png";
     case TitlebarButtonType::Tray:     return ":/icons/tray.png";
     case TitlebarButtonType::FileLoad:
-        return ":/icons/tray.png";
+        return ":/icons/load.png";
     case TitlebarButtonType::ProjectSave:
         return ":/icons/minimize.png";
     case TitlebarButtonType::ScriptRun:

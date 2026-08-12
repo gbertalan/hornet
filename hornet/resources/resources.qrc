@@ -5,6 +5,7 @@
         <file>icons/maximize.png</file>
         <file>icons/tray.png</file>
         <file>icons/titlebar_button_background.png</file>
+        <file>icons/load.png</file>
     </qresource>
 
     <qresource prefix="/">
