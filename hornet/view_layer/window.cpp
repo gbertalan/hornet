@@ -78,7 +78,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     m_overlayWidget->setGeometry(0, 0, width(), height());
     m_overlayWidget->raise();
 
-    m_mainPopup = new MainPopup(this);
+    m_mainPopup = new MainPopup(m_fontAtlas, *m_fontRenderer, this);
     connect(m_mainPopup, &MainPopup::closeRequested, this, &Window::closeMainPopup);
     connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openMainPopup);
     connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openMainPopup);
