@@ -71,6 +71,9 @@ void OverlayWidget::paintEvent(QPaintEvent* event) {
     painter.setPen(pen);
     painter.setBrush(Qt::NoBrush);
     painter.drawRoundedRect(1, 1, width() - 2, height() - 2, 15, 15);
+
+    if (m_dimmed)
+        painter.fillRect(rect(), Theme::darkGrayTranslucent());
 }
 
 void OverlayWidget::resizeEvent(QResizeEvent* event) {
@@ -80,5 +83,11 @@ void OverlayWidget::resizeEvent(QResizeEvent* event) {
 
 void OverlayWidget::setFocused(bool focused) {
     m_focused = focused;
+    update();
+}
+
+void OverlayWidget::setDimmed(bool dimmed)
+{
+    m_dimmed = dimmed;
     update();
 }

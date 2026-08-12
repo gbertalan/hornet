@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 #include "shared/dto_view_to_model/windowdto.h"
 #include "theme.h"
+#include "view_layer/mainpopup.h"
 #include "view_layer/overlaywidget.h"
 #include "view_layer/resizehandle.h"
 #include "view_layer/splitpane.h"
@@ -77,6 +78,13 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     m_overlayWidget->setGeometry(0, 0, width(), height());
     m_overlayWidget->raise();
 
+    m_mainPopup = new MainPopup(this);
+    connect(m_mainPopup, &MainPopup::closeRequested, this, &Window::closeMainPopup);
+    connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openMainPopup);
+    connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openMainPopup);
+    connect(m_titleBar, &TitleBar::scriptRunButtonClicked, this, &Window::openMainPopup);
+    positionMainPopup();
+
     setupResizeHandles();
     positionResizeHandles();
 
@@ -136,6 +144,32 @@ void Window::positionResizeHandles() {
     m_handleBottomRight->setGeometry(w - c, h - c, c, c);
 }
 
+void Window::positionMainPopup()
+{
+    int x = (width() - m_mainPopup->width()) / 2;
+    int y = (height() - m_mainPopup->height()) / 2;
+    m_mainPopup->move(x, y);
+}
+
+void Window::openMainPopup()
+{
+    m_titleBar->setEnabled(false);
+    m_splitPane->setEnabled(false);
+    m_overlayWidget->setDimmed(true);
+    positionMainPopup();
+    m_mainPopup->raise();
+    m_mainPopup->show();
+    m_mainPopup->setFocus();
+}
+
+void Window::closeMainPopup()
+{
+    m_mainPopup->hide();
+    m_overlayWidget->setDimmed(false);
+    m_titleBar->setEnabled(true);
+    m_splitPane->setEnabled(true);
+}
+
 void Window::updateEditorState(const EditorViewStateDTO &dto)
 {
     m_splitPane->updateEditorState(dto);
@@ -176,7 +210,10 @@ void Window::resizeEvent(QResizeEvent* event) {
     QWidget::resizeEvent(event);
     m_splitPane->setGeometry(0, 0, width(), height());
     m_overlayWidget->setGeometry(0, 0, width(), height());
+
     positionResizeHandles();
+    positionMainPopup();
+
     if(!isFullScreen()){
         m_windowedWidth = width();
         m_windowedHeight = height();

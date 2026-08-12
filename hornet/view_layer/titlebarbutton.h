@@ -4,12 +4,7 @@
 #include <QPixmap>
 #include <QEnterEvent>
 
-enum class TitlebarButtonType {
-    Close,
-    Minimize,
-    Maximize,
-    Tray
-};
+enum class TitlebarButtonType { Close, Minimize, Maximize, Tray, FileLoad, ProjectSave, ScriptRun };
 
 class TitlebarButton : public QWidget {
     Q_OBJECT

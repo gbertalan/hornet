@@ -34,16 +34,34 @@ TitleBar::TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *pa
     m_closeButton->setHoverColor(Theme::mediumRed());
     m_closeButton->setRightPadding(5);
 
+    m_fileLoadButton = new TitlebarButton(TitlebarButtonType::FileLoad, this);
+    m_projectSaveButton = new TitlebarButton(TitlebarButtonType::ProjectSave, this);
+    m_scriptRunButton = new TitlebarButton(TitlebarButtonType::ScriptRun, this);
+
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->setAlignment(Qt::AlignTop);
+
+    layout->addWidget(m_fileLoadButton);
+    layout->addWidget(m_projectSaveButton);
+    layout->addWidget(m_scriptRunButton);
+
     layout->addStretch();
+
     layout->addWidget(m_trayButton);
     layout->addWidget(m_maxMinButton);
     layout->addWidget(m_closeButton);
+
     layout->setAlignment(m_closeButton, Qt::AlignTop);
     setLayout(layout);
+
+    connect(m_fileLoadButton, &TitlebarButton::clicked, this, &TitleBar::fileLoadButtonClicked);
+    connect(m_projectSaveButton,
+            &TitlebarButton::clicked,
+            this,
+            &TitleBar::projectSaveButtonClicked);
+    connect(m_scriptRunButton, &TitlebarButton::clicked, this, &TitleBar::scriptRunButtonClicked);
 
     connect(m_trayButton, &TitlebarButton::clicked, this, &TitleBar::minimizeClicked);
     connect(m_maxMinButton, &TitlebarButton::clicked, this, &TitleBar::maximizeClicked);

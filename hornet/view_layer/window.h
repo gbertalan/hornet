@@ -21,6 +21,7 @@ class ResizeHandle;
 class SplitPane;
 class OverlayWidget;
 class TitlebarFileDropdown;
+class MainPopup;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
 
@@ -81,6 +82,11 @@ private:
     void positionResizeHandles();
 
     TitlebarFileDropdown *m_fileDropdown;
+
+    MainPopup *m_mainPopup;
+    void positionMainPopup();
+    void openMainPopup();
+    void closeMainPopup();
 
 protected:
     void resizeEvent(QResizeEvent* event) override;

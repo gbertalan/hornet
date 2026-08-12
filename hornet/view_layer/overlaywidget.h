@@ -9,6 +9,7 @@ public:
     explicit OverlayWidget(QWidget* parent = nullptr);
     void setFullscreen(bool fullscreen);
     void setFocused(bool focused);
+    void setDimmed(bool dimmed);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -17,4 +18,5 @@ protected:
 private:
     bool m_fullscreen;
     bool m_focused;
+    bool m_dimmed = false;
 };

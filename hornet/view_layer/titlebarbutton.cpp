@@ -17,6 +17,12 @@ QString TitlebarButton::iconPath() const {
     case TitlebarButtonType::Minimize: return ":/icons/minimize.png";
     case TitlebarButtonType::Maximize: return ":/icons/maximize.png";
     case TitlebarButtonType::Tray:     return ":/icons/tray.png";
+    case TitlebarButtonType::FileLoad:
+        return ":/icons/tray.png";
+    case TitlebarButtonType::ProjectSave:
+        return ":/icons/minimize.png";
+    case TitlebarButtonType::ScriptRun:
+        return ":/icons/maximize.png";
     }
     return "";
 }

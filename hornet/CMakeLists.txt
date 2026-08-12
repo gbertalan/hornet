@@ -124,6 +124,7 @@ qt_add_executable(hornet
     shared/dto_model_to_view/boxlistpagedto.h
     shared/dto_model_to_view/boxlistpagerequestdto.h
     view_layer/titlebarfiledropdown.h view_layer/titlebarfiledropdown.cpp
+    view_layer/mainpopup.h view_layer/mainpopup.cpp
 
 
 

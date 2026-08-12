@@ -28,6 +28,9 @@ signals:
     void minimizeClicked();
     void maximizeClicked();
     void fileNameButtonClicked();
+    void fileLoadButtonClicked();
+    void projectSaveButtonClicked();
+    void scriptRunButtonClicked();
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -48,4 +51,8 @@ private:
     TitlebarFileNameButton *m_fileNameButton;
     QString m_currentFileName;
     int m_currentBoxId = -1;
+
+    TitlebarButton *m_fileLoadButton;
+    TitlebarButton *m_projectSaveButton;
+    TitlebarButton *m_scriptRunButton;
 };
