@@ -144,6 +144,15 @@ void Window::positionResizeHandles() {
     m_handleTopRight->setGeometry(w - c, 0, c, c);
     m_handleBottomLeft->setGeometry(0, h - c, c, c);
     m_handleBottomRight->setGeometry(w - c, h - c, c, c);
+
+    m_handleLeft->raise();
+    m_handleRight->raise();
+    m_handleTop->raise();
+    m_handleBottom->raise();
+    m_handleTopLeft->raise();
+    m_handleTopRight->raise();
+    m_handleBottomLeft->raise();
+    m_handleBottomRight->raise();
 }
 
 void Window::positionMainPopup()
@@ -215,9 +224,10 @@ void Window::resizeEvent(QResizeEvent* event) {
     m_overlayWidget->setGeometry(0, 0, width(), height());
 
     positionResizeHandles();
-    positionMainPopup();
     if (m_mainPopup->isVisible())
         m_mainPopup->raise();
+
+    positionMainPopup();
 
     if (!isFullScreen()) {
         m_windowedWidth = width();
