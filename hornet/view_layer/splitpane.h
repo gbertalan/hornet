@@ -51,6 +51,7 @@ public:
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
     int leftPaneWidth() const;
+    void focusEditor();
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);

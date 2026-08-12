@@ -168,6 +168,7 @@ void Window::closeMainPopup()
     m_overlayWidget->setDimmed(false);
     m_titleBar->setEnabled(true);
     m_splitPane->setEnabled(true);
+    m_splitPane->focusEditor();
 }
 
 void Window::updateEditorState(const EditorViewStateDTO &dto)
@@ -213,8 +214,10 @@ void Window::resizeEvent(QResizeEvent* event) {
 
     positionResizeHandles();
     positionMainPopup();
+    if (m_mainPopup->isVisible())
+        m_mainPopup->raise();
 
-    if(!isFullScreen()){
+    if (!isFullScreen()) {
         m_windowedWidth = width();
         m_windowedHeight = height();
 

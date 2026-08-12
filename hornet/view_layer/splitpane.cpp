@@ -207,6 +207,11 @@ int SplitPane::leftPaneWidth() const
     return m_leftPane->width();
 }
 
+void SplitPane::focusEditor()
+{
+    m_editor->setFocus();
+}
+
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {
     if (event->type() == QEvent::Enter) {
         m_scrollBarHideTimer->stop();
