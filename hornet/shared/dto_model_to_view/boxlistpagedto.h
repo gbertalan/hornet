@@ -6,6 +6,7 @@ struct BoxListPageDTO
 {
     int startIndex;
     int totalCount;
+    int highestBoxId;
     std::vector<BoxListEntryDTO> entries;
 };
 #endif // BOXLISTPAGEDTO_H

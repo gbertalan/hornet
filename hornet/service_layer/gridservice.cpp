@@ -308,3 +308,11 @@ std::vector<BoxListEntryDTO> GridService::retrieveBoxHeaderListPage(int startInd
     return std::vector<BoxListEntryDTO>(allEntries.begin() + clampedStart,
                                         allEntries.begin() + clampedEnd);
 }
+
+int GridService::retrieveHighestBoxId() const
+{
+    int highest = 0;
+    for (const BoxModel &box : m_modelAccess.getGridModel().getBoxes())
+        highest = std::max(highest, box.getId());
+    return highest;
+}

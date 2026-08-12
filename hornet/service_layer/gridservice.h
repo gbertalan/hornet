@@ -123,6 +123,7 @@ public:
     // ================================================================
     int retrieveBoxCount() const;
     std::vector<BoxListEntryDTO> retrieveBoxHeaderListPage(int startIndex, int count) const;
+    int retrieveHighestBoxId() const;
 
 private:
     QHash<int, QHash<QString, QString>> m_renderSourceValues;

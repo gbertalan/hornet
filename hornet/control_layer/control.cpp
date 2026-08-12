@@ -738,9 +738,11 @@ void Control::onBoxUnloadRequested(int boxId)
 void Control::onBoxListPageRequested(const BoxListPageRequestDTO &dto)
 {
     const int totalCount = m_gridService.retrieveBoxCount();
+    const int highestBoxId = m_gridService.retrieveHighestBoxId();
     const std::vector<BoxListEntryDTO> entries
         = m_gridService.retrieveBoxHeaderListPage(dto.startIndex, dto.count);
-    m_windowControl.sendBoxListPageToTitlebar(BoxListPageDTO{dto.startIndex, totalCount, entries});
+    m_windowControl.sendBoxListPageToTitlebar(
+        BoxListPageDTO{dto.startIndex, totalCount, highestBoxId, entries});
 }
 
 // ================================================================

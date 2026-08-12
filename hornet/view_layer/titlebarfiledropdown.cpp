@@ -9,6 +9,7 @@
 #include "view_layer/customscrollbar.h"
 #include "view_layer/font_renderer/FontAtlas.h"
 #include "view_layer/font_renderer/FontRenderer.h"
+#include <algorithm>
 
 // ================================================================
 // TitlebarFileDropdownContent - paints the scrollable rows
@@ -26,10 +27,12 @@ TitlebarFileDropdownContent::TitlebarFileDropdownContent(FontAtlas &fontAtlas,
 
 void TitlebarFileDropdownContent::setEntries(const std::vector<BoxListEntryDTO> &entries,
                                              int totalCount,
+                                             int highestBoxId,
                                              int startIndex)
 {
     m_entries = entries;
     m_startIndex = startIndex;
+    m_highestBoxId = highestBoxId;
     const int viewportHeight = m_visibleRows * m_rowHeight;
     const int contentHeight = totalCount > 0 ? (totalCount - 1) * m_rowHeight + viewportHeight
                                              : viewportHeight;
@@ -46,16 +49,16 @@ void TitlebarFileDropdownContent::setCurrentBoxId(int boxId)
 void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-
     const float scale = 0.55f;
     const float idScale = 0.42f;
-    const float textPaddingLeft = 14.f;
     const float textPaddingTop = 6.f;
+
+    const qsizetype maxIdDigits = std::max(qsizetype(1), QString::number(m_highestBoxId).length());
+    const float idColumnWidth = m_fontAtlas.textWidth(maxIdDigits + 1, idScale);
 
     for (int i = 0; i < static_cast<int>(m_entries.size()); ++i) {
         const BoxListEntryDTO &entry = m_entries.at(i);
         const int rowTop = (m_startIndex + i) * m_rowHeight;
-
         if (entry.id == m_currentBoxId) {
             painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::warmGray());
             painter.save();
@@ -67,18 +70,15 @@ void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
         } else if (m_startIndex + i == m_hoveredRowIndex) {
             painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::darkerGray());
         }
+        const QString idLabel = "#" + QString::number(entry.id);
+        const float idY = rowTop + textPaddingTop - 5.f;
+        m_fontRenderer.drawText(painter, 2.f, idY, idLabel, Theme::darkGray(), idScale);
 
         const float y = rowTop + textPaddingTop;
         const auto headerTextColor = (entry.id == m_currentBoxId) ? Theme::darkGray()
                                                                   : Theme::darkAmber();
         m_fontRenderer
-            .drawText(painter, textPaddingLeft, y, entry.headerText, headerTextColor, scale);
-
-        const QString idLabel = "#" + QString::number(entry.id);
-        const float idWidth = m_fontAtlas.textWidth(idLabel.length(), idScale);
-        const float idX = width() - idWidth - textPaddingLeft;
-        const float idY = rowTop + textPaddingTop;
-        m_fontRenderer.drawText(painter, idX, idY, idLabel, Theme::darkGray(), idScale);
+            .drawText(painter, idColumnWidth + 10.f, y, entry.headerText, headerTextColor, scale);
     }
 }
 
@@ -170,7 +170,7 @@ void TitlebarFileDropdown::openAt(int x, int y, const QString &currentFileName)
 
 void TitlebarFileDropdown::updateBoxListPage(const BoxListPageDTO &dto)
 {
-    m_content->setEntries(dto.entries, dto.totalCount, dto.startIndex);
+    m_content->setEntries(dto.entries, dto.totalCount, dto.highestBoxId, dto.startIndex);
 }
 
 void TitlebarFileDropdown::setCurrentBoxId(int boxId)

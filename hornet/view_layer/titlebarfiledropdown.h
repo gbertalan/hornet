@@ -18,7 +18,10 @@ public:
     explicit TitlebarFileDropdownContent(FontAtlas &fontAtlas,
                                          FontRenderer &fontRenderer,
                                          QWidget *parent = nullptr);
-    void setEntries(const std::vector<BoxListEntryDTO> &entries, int totalCount, int startIndex);
+    void setEntries(const std::vector<BoxListEntryDTO> &entries,
+                    int totalCount,
+                    int highestBoxId,
+                    int startIndex);
     void setCurrentBoxId(int boxId);
 
 signals:
@@ -39,6 +42,7 @@ private:
     static constexpr int m_rowHeight = 34;
     int m_hoveredRowIndex = -1;
     static constexpr int m_visibleRows = 10;
+    int m_highestBoxId = 0;
 };
 
 class TitlebarFileDropdown : public QWidget
