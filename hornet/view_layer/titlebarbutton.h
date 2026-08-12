@@ -14,6 +14,7 @@ public:
     void setType(TitlebarButtonType type);
     void setHoverColor(const QColor& color);
     void setRightPadding(int padding);
+    void setLeftPadding(int padding);
 
 signals:
     void clicked();
@@ -33,6 +34,7 @@ private:
     bool m_pressed;
     QColor m_hoverColor;
     int m_rightPadding;
+    int m_leftPadding;
 
     QString iconPath() const;
 };

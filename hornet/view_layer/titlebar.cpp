@@ -37,6 +37,7 @@ TitleBar::TitleBar(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *pa
     m_fileLoadButton = new TitlebarButton(TitlebarButtonType::FileLoad, this);
     m_projectSaveButton = new TitlebarButton(TitlebarButtonType::ProjectSave, this);
     m_scriptRunButton = new TitlebarButton(TitlebarButtonType::ScriptRun, this);
+    m_fileLoadButton->setLeftPadding(5);
 
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);

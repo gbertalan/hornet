@@ -4,8 +4,15 @@
 #include <QPainter>
 #include <QMouseEvent>
 
-TitlebarButton::TitlebarButton(TitlebarButtonType type, QWidget* parent)
-    : QWidget(parent), m_type(type), m_hovered(false), m_pressed(false), m_hoverColor(Theme::warmGray()), m_rightPadding(0) {
+TitlebarButton::TitlebarButton(TitlebarButtonType type, QWidget *parent)
+    : QWidget(parent)
+    , m_type(type)
+    , m_hovered(false)
+    , m_pressed(false)
+    , m_hoverColor(Theme::warmGray())
+    , m_rightPadding(0)
+    , m_leftPadding(0)
+{
     setFixedSize(38, 38);
     setAttribute(Qt::WA_TranslucentBackground);
     m_pixmap = QPixmap(iconPath());
@@ -43,6 +50,12 @@ void TitlebarButton::setRightPadding(int padding) {
     setFixedSize(width()+m_rightPadding, height());
 }
 
+void TitlebarButton::setLeftPadding(int padding)
+{
+    m_leftPadding = padding;
+    setFixedSize(width() + m_leftPadding, height());
+}
+
 void TitlebarButton::paintEvent(QPaintEvent* event) {
     QPainter painter(this);
 
@@ -57,7 +70,7 @@ void TitlebarButton::paintEvent(QPaintEvent* event) {
         int bgSize = 32;
         QPixmap bg(":/icons/titlebar_button_background.png");
         if (!bg.isNull()) {
-            int bgX = ((width() - bgSize) / 2) - (m_rightPadding / 2);
+            int bgX = ((width() - bgSize) / 2) - (m_rightPadding - m_leftPadding) / 2;
             int bgY = (height() - bgSize) / 2;
             painter.drawPixmap(bgX, bgY, bgSize, bgSize, bg);
         }
@@ -67,7 +80,7 @@ void TitlebarButton::paintEvent(QPaintEvent* event) {
         int bgSize = 32;
         QPixmap bg(":/icons/titlebar_button_glow.png");
         if (!bg.isNull()) {
-            int bgX = ((width() - bgSize) / 2) - (m_rightPadding / 2);
+            int bgX = ((width() - bgSize) / 2) - (m_rightPadding - m_leftPadding) / 2;
             int bgY = (height() - bgSize) / 2;
             painter.drawPixmap(bgX, bgY, bgSize, bgSize, bg);
         }
@@ -76,7 +89,7 @@ void TitlebarButton::paintEvent(QPaintEvent* event) {
     // icon:
     int imageSize = 8;
     if (!m_pixmap.isNull()) {
-        int x = ((width() - imageSize) / 2) - (m_rightPadding / 2);
+        int x = ((width() - imageSize) / 2) - (m_rightPadding - m_leftPadding) / 2;
         int y = ((height() - imageSize) / 2) + 1;
         if (m_hovered) {
             QPixmap recolored(m_pixmap.size());
