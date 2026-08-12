@@ -64,7 +64,7 @@ void TitlebarFileDropdownContent::paintEvent(QPaintEvent *event)
             painter.save();
             painter.setPen(QPen(Theme::darkGray(), 1));
             painter.drawLine(QPointF(0, rowTop), QPointF(width(), rowTop));
-            painter.drawLine(QPointF(0, rowTop + m_rowHeight),
+            painter.drawLine(QPointF(0, rowTop + m_rowHeight - 1),
                              QPointF(width(), rowTop + m_rowHeight));
             painter.restore();
         } else if (m_startIndex + i == m_hoveredRowIndex) {
