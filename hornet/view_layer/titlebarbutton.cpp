@@ -21,9 +21,9 @@ QString TitlebarButton::iconPath() const {
     case TitlebarButtonType::FileLoad:
         return ":/icons/load.png";
     case TitlebarButtonType::ProjectSave:
-        return ":/icons/minimize.png";
+        return ":/icons/proj_save.png";
     case TitlebarButtonType::ScriptRun:
-        return ":/icons/maximize.png";
+        return ":/icons/script.png";
     }
     return "";
 }
@@ -56,6 +56,16 @@ void TitlebarButton::paintEvent(QPaintEvent* event) {
     if (!m_hovered) {
         int bgSize = 32;
         QPixmap bg(":/icons/titlebar_button_background.png");
+        if (!bg.isNull()) {
+            int bgX = ((width() - bgSize) / 2) - (m_rightPadding / 2);
+            int bgY = (height() - bgSize) / 2;
+            painter.drawPixmap(bgX, bgY, bgSize, bgSize, bg);
+        }
+    }
+    // background glow:
+    else {
+        int bgSize = 32;
+        QPixmap bg(":/icons/titlebar_button_glow.png");
         if (!bg.isNull()) {
             int bgX = ((width() - bgSize) / 2) - (m_rightPadding / 2);
             int bgY = (height() - bgSize) / 2;

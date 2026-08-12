@@ -6,6 +6,9 @@
         <file>icons/tray.png</file>
         <file>icons/titlebar_button_background.png</file>
         <file>icons/load.png</file>
+        <file>icons/proj_save.png</file>
+        <file>icons/script.png</file>
+        <file>icons/titlebar_button_glow.png</file>
     </qresource>
 
     <qresource prefix="/">
