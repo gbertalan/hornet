@@ -111,7 +111,7 @@ void BoxModel::setBodyScrollOffset(int offset)
     m_bodyScrollOffset = std::max(0, offset);
 }
 
-bool BoxModel::getIsFileBacked() const
+bool BoxModel::isFileBacked() const
 {
     return m_isFileBacked;
 }

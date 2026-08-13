@@ -34,7 +34,7 @@ public:
     void setCursorPos(int cursorX, int cursorY);
     int getBodyScrollOffset() const;
     void setBodyScrollOffset(int offset);
-    bool getIsFileBacked() const;
+    bool isFileBacked() const;
     QString getOriginFilePath() const;
 
 private:

@@ -262,7 +262,7 @@ GridSaveDataDTO GridService::retrieveGridSaveData() const
                                        box.getBodyScrollOffset(),
                                        box.getCursorX(),
                                        box.getCursorY(),
-                                       box.getIsFileBacked(),
+                                       box.isFileBacked(),
                                        box.getOriginFilePath()});
     }
     return GridSaveDataDTO{gridModel.getZoomLevel(), gridModel.getOffset(), boxes};
