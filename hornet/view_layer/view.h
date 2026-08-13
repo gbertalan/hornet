@@ -16,6 +16,7 @@ struct WindowDTO;
 struct GridZoomDTO;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
+struct FileLoadRequestDTO;
 
 class Window;
 
@@ -50,6 +51,7 @@ signals:
     void boxUnloadRequested(int boxId);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
     void fileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
+    void fileLoaderLoadRequested(const FileLoadRequestDTO &dto);
 
 private:
     Window* m_window;

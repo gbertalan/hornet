@@ -23,6 +23,7 @@ struct BoxDragDTO;
 struct BoxSelectedDTO;
 struct BoxResizeDTO;
 struct BoxListPageRequestDTO;
+struct FileLoadRequestDTO;
 
 class Control : public QObject
 {
@@ -82,6 +83,7 @@ public slots:
     // ================================================================
     void onBoxListPageRequested(const BoxListPageRequestDTO &dto);
     void onFileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
+    void onFileLoaderLoadRequested(const FileLoadRequestDTO &dto);
 
     // ================================================================
     // SLICE: debug

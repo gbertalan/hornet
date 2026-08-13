@@ -25,6 +25,7 @@ class MainPopup;
 class FileLoaderPanel;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
+struct FileLoadRequestDTO;
 
 class Window : public QWidget {
     Q_OBJECT
@@ -57,6 +58,7 @@ signals:
     void boxUnloadRequested(int boxId);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
     void fileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
+    void fileLoaderLoadRequested(const FileLoadRequestDTO &dto);
 
 private:
     TitleBar* m_titleBar;

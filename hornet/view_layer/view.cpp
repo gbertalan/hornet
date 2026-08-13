@@ -22,6 +22,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
             &Window::fileLoaderBoxListPageRequested,
             this,
             &View::fileLoaderBoxListPageRequested);
+    connect(m_window, &Window::fileLoaderLoadRequested, this, &View::fileLoaderLoadRequested);
 }
 
 void View::show() {

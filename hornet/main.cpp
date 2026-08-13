@@ -65,6 +65,10 @@ int main(int argc, char* argv[]) {
                      &View::fileLoaderBoxListPageRequested,
                      &control,
                      &Control::onFileLoaderBoxListPageRequested);
+    QObject::connect(&view,
+                     &View::fileLoaderLoadRequested,
+                     &control,
+                     &Control::onFileLoaderLoadRequested);
 
     control.init();
 

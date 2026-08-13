@@ -8,8 +8,10 @@ class BoxListPanel;
 class QLineEdit;
 class QCheckBox;
 class QPushButton;
+class QListWidget;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
+struct FileLoadRequestDTO;
 
 class BorderedPanel : public QWidget
 {
@@ -34,6 +36,7 @@ public:
 
 signals:
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
+    void loadRequested(const FileLoadRequestDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -50,7 +53,7 @@ private:
 
     BorderedPanel *m_loadMoreContainer;
     QPushButton *m_browseButton;
-    QLineEdit *m_pathField;
+    QListWidget *m_pendingFilesList;
     QLineEdit *m_extensionField;
     QCheckBox *m_recursiveCheckBox;
     QPushButton *m_loadButton;
@@ -69,5 +72,5 @@ private:
     static constexpr int m_readoutHeight = 14;
     static constexpr int m_gapReadoutToLabel = 30;
     static constexpr int m_gapLabelToLoadMore = 14;
-    static constexpr int m_loadMoreHeight = 190;
+    static constexpr int m_loadMoreHeight = 240;
 };

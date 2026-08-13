@@ -1,10 +1,13 @@
 #include "view_layer/fileloaderpanel.h"
 #include <QCheckBox>
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QListWidget>
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include "shared/dto_view_to_model/fileloadrequestdto.h"
 #include "theme.h"
 #include "view_layer/boxlistpanel.h"
 #include "view_layer/font_renderer/FontAtlas.h"
@@ -58,30 +61,28 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     m_loadMoreContainer = new BorderedPanel(this);
 
     m_browseButton = new QPushButton("Browse...", m_loadMoreContainer);
-    m_pathField = new QLineEdit(m_loadMoreContainer);
-    m_pathField->setPlaceholderText("path");
+    m_pendingFilesList = new QListWidget(m_loadMoreContainer);
     m_extensionField = new QLineEdit(m_loadMoreContainer);
     m_extensionField->setPlaceholderText("cpp");
     m_recursiveCheckBox = new QCheckBox("Recursive", m_loadMoreContainer);
     m_loadButton = new QPushButton("Load", m_loadMoreContainer);
 
-    const QString fieldStyle
-        = "QLineEdit, QPushButton, QCheckBox { color: #d0d0d0; background-color: #1a1a1a; "
-          "border: 1px solid #4e4c4a; }";
+    const QString fieldStyle = "QLineEdit, QPushButton, QCheckBox, QListWidget { color: #d0d0d0; "
+                               "background-color: #1a1a1a; "
+                               "border: 1px solid #4e4c4a; }";
     m_browseButton->setStyleSheet(fieldStyle);
-    m_pathField->setStyleSheet(fieldStyle);
+    m_pendingFilesList->setStyleSheet(fieldStyle);
     m_extensionField->setStyleSheet(fieldStyle);
     m_recursiveCheckBox->setStyleSheet(fieldStyle);
     m_loadButton->setStyleSheet(fieldStyle);
+    m_pendingFilesList->setMinimumHeight(90);
 
     QVBoxLayout *loadMoreLayout = new QVBoxLayout(m_loadMoreContainer);
     loadMoreLayout->setContentsMargins(14, 14, 14, 14);
     loadMoreLayout->setSpacing(16);
 
-    QHBoxLayout *pathRow = new QHBoxLayout();
-    pathRow->addWidget(m_browseButton);
-    pathRow->addWidget(m_pathField);
-    loadMoreLayout->addLayout(pathRow);
+    loadMoreLayout->addWidget(m_browseButton);
+    loadMoreLayout->addWidget(m_pendingFilesList);
 
     QHBoxLayout *filterRow = new QHBoxLayout();
     filterRow->addWidget(m_extensionField);
@@ -90,7 +91,21 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     filterRow->addWidget(m_loadButton);
     loadMoreLayout->addLayout(filterRow);
 
-    loadMoreLayout->addStretch();
+    connect(m_browseButton, &QPushButton::clicked, this, [this]() {
+        const QStringList selected = QFileDialog::getOpenFileNames(this, "Select files to load");
+        for (const QString &path : selected)
+            m_pendingFilesList->addItem(path);
+    });
+
+    connect(m_loadButton, &QPushButton::clicked, this, [this]() {
+        QStringList paths;
+        for (int i = 0; i < m_pendingFilesList->count(); ++i)
+            paths.push_back(m_pendingFilesList->item(i)->text());
+        if (paths.isEmpty())
+            return;
+        emit loadRequested(FileLoadRequestDTO(paths));
+        m_pendingFilesList->clear();
+    });
 }
 
 void FileLoaderPanel::updateBoxListPage(const BoxListPageDTO &dto)

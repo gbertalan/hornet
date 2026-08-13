@@ -125,6 +125,11 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_splitPane, &SplitPane::boxSelected, this, &Window::boxSelected);
     connect(m_splitPane, &SplitPane::boxResized, this, &Window::boxResized);
     connect(m_splitPane, &SplitPane::boxUnloadRequested, this, &Window::boxUnloadRequested);
+
+    connect(m_fileLoaderPanel,
+            &FileLoaderPanel::loadRequested,
+            this,
+            &Window::fileLoaderLoadRequested);
 }
 
 void Window::setupResizeHandles() {

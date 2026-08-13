@@ -24,6 +24,8 @@
 #include "shared/dto_model_to_view//boxlistpagerequestdto.h"
 #include "shared/dto_model_to_view/boxlistpagedto.h"
 
+#include "shared/dto_view_to_model/fileloadrequestdto.h"
+
 // ================================================================
 // SLICE: construction & initialization
 // ================================================================
@@ -753,6 +755,17 @@ void Control::onFileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto)
         = m_gridService.retrieveBoxHeaderListPage(dto.startIndex, dto.count);
     m_windowControl.sendFileLoaderBoxListPageToPopup(
         BoxListPageDTO{dto.startIndex, totalCount, highestBoxId, entries});
+}
+
+void Control::onFileLoaderLoadRequested(const FileLoadRequestDTO &dto)
+{
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    for (const QString &filePath : dto.filePaths) {
+        const HornetCommandDTO command{true, "load", filePath, workingDir};
+        const QString message = dispatchHornetCommand(command);
+        if (!message.isEmpty())
+            createCommandOutputBox("load " + filePath, message);
+    }
 }
 
 // ================================================================
