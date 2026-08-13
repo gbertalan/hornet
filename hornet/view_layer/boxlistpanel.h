@@ -16,6 +16,7 @@ class BoxListPanelContent : public QWidget
 public:
     explicit BoxListPanelContent(FontAtlas &fontAtlas,
                                  FontRenderer &fontRenderer,
+                                 int visibleRows,
                                  QWidget *parent = nullptr);
     void setEntries(const std::vector<BoxListEntryDTO> &entries,
                     int totalCount,
@@ -40,7 +41,7 @@ private:
     int m_highlightedBoxId = -1;
     static constexpr int m_rowHeight = 34;
     int m_hoveredRowIndex = -1;
-    static constexpr int m_visibleRows = 10;
+    int m_visibleRows;
     int m_highestBoxId = 0;
 };
 
@@ -50,6 +51,7 @@ class BoxListPanel : public QWidget
 public:
     explicit BoxListPanel(FontAtlas &fontAtlas,
                           FontRenderer &fontRenderer,
+                          int visibleRows = 10,
                           QWidget *parent = nullptr);
     void updateBoxListPage(const BoxListPageDTO &dto);
     void setHighlightedBoxId(int boxId);
@@ -63,7 +65,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    static constexpr int m_visibleRows = 10;
+    int m_visibleRows;
     static constexpr int m_rowHeight = 34;
 
     QScrollArea *m_scrollArea;

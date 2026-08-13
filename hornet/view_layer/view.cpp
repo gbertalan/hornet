@@ -18,6 +18,10 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::boxResized, this, &View::boxResized);
     connect(m_window, &Window::boxUnloadRequested, this, &View::boxUnloadRequested);
     connect(m_window, &Window::boxListPageRequested, this, &View::boxListPageRequested);
+    connect(m_window,
+            &Window::fileLoaderBoxListPageRequested,
+            this,
+            &View::fileLoaderBoxListPageRequested);
 }
 
 void View::show() {
@@ -52,6 +56,11 @@ void View::updateFileName(const QString &fileName)
 void View::updateBoxListPage(const BoxListPageDTO &dto)
 {
     m_window->updateBoxListPage(dto);
+}
+
+void View::updateFileLoaderBoxListPage(const BoxListPageDTO &dto)
+{
+    m_window->updateFileLoaderBoxListPage(dto);
 }
 
 void View::updateCurrentBoxId(int boxId)

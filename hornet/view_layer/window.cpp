@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 #include "shared/dto_view_to_model/windowdto.h"
 #include "theme.h"
+#include "view_layer/fileloaderpanel.h"
 #include "view_layer/mainpopup.h"
 #include "view_layer/overlaywidget.h"
 #include "view_layer/resizehandle.h"
@@ -80,9 +81,17 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
 
     m_mainPopup = new MainPopup(m_fontAtlas, *m_fontRenderer, this);
     connect(m_mainPopup, &MainPopup::closeRequested, this, &Window::closeMainPopup);
-    connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openMainPopup);
-    connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openMainPopup);
-    connect(m_titleBar, &TitleBar::scriptRunButtonClicked, this, &Window::openMainPopup);
+
+    m_fileLoaderPanel = new FileLoaderPanel(m_fontAtlas, *m_fontRenderer, m_mainPopup->bodyWidget());
+    m_fileLoaderPanel->hide();
+    connect(m_fileLoaderPanel,
+            &FileLoaderPanel::boxListPageRequested,
+            this,
+            &Window::fileLoaderBoxListPageRequested);
+
+    connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openFileLoadPopup);
+    connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openProjectSavePopup);
+    connect(m_titleBar, &TitleBar::scriptRunButtonClicked, this, &Window::openScriptRunPopup);
     positionMainPopup();
 
     connect(m_overlayWidget, &OverlayWidget::clickedWhileDimmed, this, &Window::closeMainPopup);
@@ -162,7 +171,34 @@ void Window::positionMainPopup()
     m_mainPopup->move(x, y);
 }
 
-void Window::openMainPopup()
+void Window::openFileLoadPopup()
+{
+    m_mainPopup->setHeaderText("FILE LOADER");
+    const int contentHeight = m_fileLoaderPanel->preferredHeight();
+    m_mainPopup->setBodyContentHeight(contentHeight);
+    m_fileLoaderPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
+    m_fileLoaderPanel->show();
+    m_fileLoaderPanel->refreshLoadedBoxes();
+    openMainPopupShared();
+}
+
+void Window::openProjectSavePopup()
+{
+    m_mainPopup->setHeaderText("PROJECT SAVER");
+    m_fileLoaderPanel->hide();
+    m_mainPopup->resetBodyContentHeight();
+    openMainPopupShared();
+}
+
+void Window::openScriptRunPopup()
+{
+    m_mainPopup->setHeaderText("SCRIPT RUNNER");
+    m_fileLoaderPanel->hide();
+    m_mainPopup->resetBodyContentHeight();
+    openMainPopupShared();
+}
+
+void Window::openMainPopupShared()
 {
     m_titleBar->setEnabled(false);
     m_splitPane->setEnabled(false);
@@ -210,6 +246,11 @@ void Window::updateFileName(const QString &fileName)
 void Window::updateBoxListPage(const BoxListPageDTO &dto)
 {
     m_fileDropdown->updateBoxListPage(dto);
+}
+
+void Window::updateFileLoaderBoxListPage(const BoxListPageDTO &dto)
+{
+    m_fileLoaderPanel->updateBoxListPage(dto);
 }
 
 void Window::updateCurrentBoxId(int boxId)

@@ -732,7 +732,7 @@ void Control::onBoxUnloadRequested(int boxId)
 }
 
 // ================================================================
-// SLICE: dropdown
+// SLICE: box list paging (titlebar dropdown, file loader popup)
 // ================================================================
 
 void Control::onBoxListPageRequested(const BoxListPageRequestDTO &dto)
@@ -742,6 +742,16 @@ void Control::onBoxListPageRequested(const BoxListPageRequestDTO &dto)
     const std::vector<BoxListEntryDTO> entries
         = m_gridService.retrieveBoxHeaderListPage(dto.startIndex, dto.count);
     m_windowControl.sendBoxListPageToTitlebar(
+        BoxListPageDTO{dto.startIndex, totalCount, highestBoxId, entries});
+}
+
+void Control::onFileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto)
+{
+    const int totalCount = m_gridService.retrieveBoxCount();
+    const int highestBoxId = m_gridService.retrieveHighestBoxId();
+    const std::vector<BoxListEntryDTO> entries
+        = m_gridService.retrieveBoxHeaderListPage(dto.startIndex, dto.count);
+    m_windowControl.sendFileLoaderBoxListPageToPopup(
         BoxListPageDTO{dto.startIndex, totalCount, highestBoxId, entries});
 }
 

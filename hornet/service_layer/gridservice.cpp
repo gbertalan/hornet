@@ -294,7 +294,7 @@ std::vector<BoxListEntryDTO> GridService::retrieveBoxHeaderListPage(int startInd
     const std::vector<BoxModel> &boxes = m_modelAccess.getGridModel().getBoxes();
     allEntries.reserve(boxes.size());
     for (const BoxModel &box : boxes)
-        allEntries.push_back(BoxListEntryDTO{box.getId(), box.getHeaderText()});
+        allEntries.push_back(BoxListEntryDTO{box.getId(), box.getHeaderText(), box.isFileBacked()});
 
     std::sort(allEntries.begin(),
               allEntries.end(),

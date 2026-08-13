@@ -17,7 +17,7 @@ TitlebarFileDropdown::TitlebarFileDropdown(FontAtlas &fontAtlas,
 {
     setFixedWidth(m_width);
 
-    m_listPanel = new BoxListPanel(fontAtlas, fontRenderer, this);
+    m_listPanel = new BoxListPanel(fontAtlas, fontRenderer, 10, this);
     m_listPanel->setGeometry(1, m_topRowHeight, m_width - 2, m_listPanel->height());
     setFixedHeight(m_topRowHeight + m_listPanel->height());
     hide();

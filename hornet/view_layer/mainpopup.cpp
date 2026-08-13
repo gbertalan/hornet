@@ -7,6 +7,7 @@
 #include "view_layer/customscrollbar.h"
 #include "view_layer/font_renderer/FontAtlas.h"
 #include "view_layer/font_renderer/FontRenderer.h"
+#include <algorithm>
 
 MainPopup::MainPopup(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *parent)
     : QWidget(parent)
@@ -48,6 +49,16 @@ void MainPopup::setHeaderText(const QString &text)
 QWidget *MainPopup::bodyWidget() const
 {
     return m_bodyContent;
+}
+
+void MainPopup::setBodyContentHeight(int height)
+{
+    m_bodyContent->setFixedHeight(std::max(height, m_height - m_headerHeight - 2));
+}
+
+void MainPopup::resetBodyContentHeight()
+{
+    m_bodyContent->setFixedHeight(m_height - m_headerHeight - 2);
 }
 
 void MainPopup::paintEvent(QPaintEvent *event)

@@ -61,6 +61,10 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::boxResized, &control, &Control::onBoxResized);
     QObject::connect(&view, &View::boxUnloadRequested, &control, &Control::onBoxUnloadRequested);
     QObject::connect(&view, &View::boxListPageRequested, &control, &Control::onBoxListPageRequested);
+    QObject::connect(&view,
+                     &View::fileLoaderBoxListPageRequested,
+                     &control,
+                     &Control::onFileLoaderBoxListPageRequested);
 
     control.init();
 

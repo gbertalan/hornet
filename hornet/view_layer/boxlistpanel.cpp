@@ -17,10 +17,12 @@
 
 BoxListPanelContent::BoxListPanelContent(FontAtlas &fontAtlas,
                                          FontRenderer &fontRenderer,
+                                         int visibleRows,
                                          QWidget *parent)
     : QWidget(parent)
     , m_fontAtlas(fontAtlas)
     , m_fontRenderer(fontRenderer)
+    , m_visibleRows(visibleRows)
 {
     setMouseTracking(true);
 }
@@ -75,8 +77,10 @@ void BoxListPanelContent::paintEvent(QPaintEvent *event)
         m_fontRenderer.drawText(painter, 2.f, idY, idLabel, Theme::darkGray(), idScale);
 
         const float y = rowTop + textPaddingTop;
-        const auto headerTextColor = (entry.id == m_highlightedBoxId) ? Theme::darkGray()
-                                                                      : Theme::darkAmber();
+        const auto headerTextColor = (entry.id == m_highlightedBoxId)
+                                         ? Theme::darkGray()
+                                         : (entry.isFileBacked ? Theme::darkAmber()
+                                                               : Theme::desaturatedTeal());
         m_fontRenderer
             .drawText(painter, idColumnWidth + 10.f, y, entry.headerText, headerTextColor, scale);
     }
@@ -116,14 +120,18 @@ void BoxListPanelContent::mouseReleaseEvent(QMouseEvent *event)
 // widget fills whatever rect it's given.
 // ================================================================
 
-BoxListPanel::BoxListPanel(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *parent)
+BoxListPanel::BoxListPanel(FontAtlas &fontAtlas,
+                           FontRenderer &fontRenderer,
+                           int visibleRows,
+                           QWidget *parent)
     : QWidget(parent)
     , m_fontAtlas(fontAtlas)
     , m_fontRenderer(fontRenderer)
+    , m_visibleRows(visibleRows)
 {
     setFixedHeight(m_visibleRows * m_rowHeight);
 
-    m_content = new BoxListPanelContent(fontAtlas, fontRenderer, this);
+    m_content = new BoxListPanelContent(fontAtlas, fontRenderer, visibleRows, this);
     connect(m_content, &BoxListPanelContent::entryClicked, this, &BoxListPanel::entryClicked);
 
     m_scrollArea = new QScrollArea(this);

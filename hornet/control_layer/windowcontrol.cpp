@@ -27,6 +27,11 @@ void WindowControl::sendBoxListPageToTitlebar(const BoxListPageDTO &dto)
     m_view.updateBoxListPage(dto);
 }
 
+void WindowControl::sendFileLoaderBoxListPageToPopup(const BoxListPageDTO &dto)
+{
+    m_view.updateFileLoaderBoxListPage(dto);
+}
+
 void WindowControl::sendCurrentBoxIdToTitlebar(int boxId)
 {
     m_view.updateCurrentBoxId(boxId);

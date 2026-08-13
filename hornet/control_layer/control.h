@@ -78,9 +78,10 @@ public slots:
     void onBoxUnloadRequested(int boxId);
 
     // ================================================================
-    // SLICE: dropdown
+    // SLICE: box list paging (titlebar dropdown, file loader popup)
     // ================================================================
     void onBoxListPageRequested(const BoxListPageRequestDTO &dto);
+    void onFileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
 
     // ================================================================
     // SLICE: debug

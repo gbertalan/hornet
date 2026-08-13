@@ -126,6 +126,7 @@ qt_add_executable(hornet
     view_layer/titlebarfiledropdown.h view_layer/titlebarfiledropdown.cpp
     view_layer/mainpopup.h view_layer/mainpopup.cpp
     view_layer/boxlistpanel.h view_layer/boxlistpanel.cpp
+    view_layer/fileloaderpanel.h view_layer/fileloaderpanel.cpp
 
 
 

@@ -13,6 +13,8 @@ public:
     explicit MainPopup(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *parent = nullptr);
     void setHeaderText(const QString &text);
     QWidget *bodyWidget() const;
+    void setBodyContentHeight(int height);
+    void resetBodyContentHeight();
 
 signals:
     void closeRequested();

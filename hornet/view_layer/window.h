@@ -22,6 +22,7 @@ class SplitPane;
 class OverlayWidget;
 class TitlebarFileDropdown;
 class MainPopup;
+class FileLoaderPanel;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
 
@@ -38,6 +39,7 @@ public:
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
     void updateBoxListPage(const BoxListPageDTO &dto);
+    void updateFileLoaderBoxListPage(const BoxListPageDTO &dto);
     void updateCurrentBoxId(int boxId);
 
 signals:
@@ -54,6 +56,7 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(int boxId);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
+    void fileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
 
 private:
     TitleBar* m_titleBar;
@@ -84,8 +87,12 @@ private:
     TitlebarFileDropdown *m_fileDropdown;
 
     MainPopup *m_mainPopup;
+    FileLoaderPanel *m_fileLoaderPanel;
     void positionMainPopup();
-    void openMainPopup();
+    void openFileLoadPopup();
+    void openProjectSavePopup();
+    void openScriptRunPopup();
+    void openMainPopupShared();
     void closeMainPopup();
 
 protected:

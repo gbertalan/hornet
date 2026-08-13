@@ -32,6 +32,7 @@ public:
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
     void updateBoxListPage(const BoxListPageDTO &dto);
+    void updateFileLoaderBoxListPage(const BoxListPageDTO &dto);
     void updateCurrentBoxId(int boxId);
 
 signals:
@@ -48,6 +49,7 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(int boxId);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
+    void fileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
 
 private:
     Window* m_window;

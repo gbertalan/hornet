@@ -5,5 +5,6 @@ struct BoxListEntryDTO
 {
     int id;
     QString headerText;
+    bool isFileBacked;
 };
 #endif // BOXLISTENTRYDTO_H
