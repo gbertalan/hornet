@@ -94,6 +94,10 @@ private:
     MainPopup *m_mainPopup;
     FileLoaderPanel *m_fileLoaderPanel;
     ScriptRunnerPanel *m_scriptRunnerPanel;
+
+    enum class PopupListTarget { FileLoader, ScriptRunner };
+    PopupListTarget m_activePopupListTarget = PopupListTarget::FileLoader;
+
     void positionMainPopup();
     void openFileLoadPopup();
     void openProjectSavePopup();

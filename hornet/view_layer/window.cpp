@@ -196,6 +196,7 @@ void Window::positionMainPopup()
 
 void Window::openFileLoadPopup()
 {
+    m_activePopupListTarget = PopupListTarget::FileLoader;
     m_mainPopup->setHeaderText("FILE LOADER");
     m_scriptRunnerPanel->hide();
     const int contentHeight = m_fileLoaderPanel->preferredHeight();
@@ -217,6 +218,7 @@ void Window::openProjectSavePopup()
 
 void Window::openScriptRunPopup()
 {
+    m_activePopupListTarget = PopupListTarget::ScriptRunner;
     m_mainPopup->setHeaderText("SCRIPT RUNNER");
     m_fileLoaderPanel->hide();
     const int contentHeight = m_scriptRunnerPanel->preferredHeight();
@@ -279,7 +281,7 @@ void Window::updateBoxListPage(const BoxListPageDTO &dto)
 
 void Window::updatePopupBoxListPage(const BoxListPageDTO &dto)
 {
-    if (m_scriptRunnerPanel->isVisible())
+    if (m_activePopupListTarget == PopupListTarget::ScriptRunner)
         m_scriptRunnerPanel->updateBoxListPage(dto);
     else
         m_fileLoaderPanel->updateBoxListPage(dto);
