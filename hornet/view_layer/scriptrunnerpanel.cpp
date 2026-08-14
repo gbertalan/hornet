@@ -104,7 +104,11 @@ void ScriptRunnerPanel::layoutChildren()
 {
     const int listHeight = m_listVisibleRows * 34 + 4;
 
-    m_runnableLabelY = m_margin;
+    m_runMoreLabelY = m_margin;
+    const int runMoreY = m_runMoreLabelY + m_labelHeight + m_gapLabelToRunMore;
+    m_runMoreContainer->setGeometry(m_margin, runMoreY, width() - 2 * m_margin, m_runMoreHeight);
+
+    m_runnableLabelY = runMoreY + m_runMoreHeight + m_gapReadoutToLabel;
     const int listY = m_runnableLabelY + m_labelHeight + m_gapLabelToList;
     const int listX = m_margin + m_listShiftRight;
     const int listW = width() - listX - m_margin;
@@ -112,10 +116,6 @@ void ScriptRunnerPanel::layoutChildren()
     m_runnableBoxesList->setGeometry(2, 2, listW - 4, listHeight - 4);
 
     m_lastRunReadoutY = listY + listHeight + m_gapListToReadout;
-
-    m_runMoreLabelY = m_lastRunReadoutY + m_readoutHeight + m_gapReadoutToLabel;
-    const int runMoreY = m_runMoreLabelY + m_labelHeight + m_gapLabelToRunMore;
-    m_runMoreContainer->setGeometry(m_margin, runMoreY, width() - 2 * m_margin, m_runMoreHeight);
 }
 
 void ScriptRunnerPanel::paintEvent(QPaintEvent *event)

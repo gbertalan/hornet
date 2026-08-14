@@ -89,7 +89,11 @@ void ProjectSaverPanel::layoutChildren()
 {
     const int listHeight = m_listVisibleRows * 34 + 4;
 
-    m_boxesLabelY = m_margin;
+    m_saveLabelY = m_margin;
+    const int saveY = m_saveLabelY + m_labelHeight + m_gapLabelToSave;
+    m_saveContainer->setGeometry(m_margin, saveY, width() - 2 * m_margin, m_saveHeight);
+
+    m_boxesLabelY = saveY + m_saveHeight + m_gapReadoutToLabel;
     const int listY = m_boxesLabelY + m_labelHeight + m_gapLabelToList;
     const int listX = m_margin + m_listShiftRight;
     const int listW = width() - listX - m_margin;
@@ -97,10 +101,6 @@ void ProjectSaverPanel::layoutChildren()
     m_boxesList->setGeometry(2, 2, listW - 4, listHeight - 4);
 
     m_lastSaveReadoutY = listY + listHeight + m_gapListToReadout;
-
-    m_saveLabelY = m_lastSaveReadoutY + m_readoutHeight + m_gapReadoutToLabel;
-    const int saveY = m_saveLabelY + m_labelHeight + m_gapLabelToSave;
-    m_saveContainer->setGeometry(m_margin, saveY, width() - 2 * m_margin, m_saveHeight);
 }
 
 void ProjectSaverPanel::paintEvent(QPaintEvent *event)

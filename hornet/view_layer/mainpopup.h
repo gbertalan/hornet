@@ -24,8 +24,8 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    static constexpr int m_width = 500;
-    static constexpr int m_height = 350;
+    static constexpr int m_width = 640;
+    static constexpr int m_height = 460;
     static constexpr int m_headerHeight = 40;
 
     FontAtlas &m_fontAtlas;

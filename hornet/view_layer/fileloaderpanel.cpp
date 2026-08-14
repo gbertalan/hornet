@@ -130,7 +130,11 @@ void FileLoaderPanel::layoutChildren()
 {
     const int listHeight = m_listVisibleRows * 34 + 4;
 
-    m_loadedLabelY = m_margin;
+    m_loadMoreLabelY = m_margin;
+    const int loadMoreY = m_loadMoreLabelY + m_labelHeight + m_gapLabelToLoadMore;
+    m_loadMoreContainer->setGeometry(m_margin, loadMoreY, width() - 2 * m_margin, m_loadMoreHeight);
+
+    m_loadedLabelY = loadMoreY + m_loadMoreHeight + m_gapReadoutToLabel;
     const int listY = m_loadedLabelY + m_labelHeight + m_gapLabelToList;
     const int listX = m_margin + m_listShiftRight;
     const int listW = width() - listX - m_margin;
@@ -138,10 +142,6 @@ void FileLoaderPanel::layoutChildren()
     m_loadedBoxesList->setGeometry(2, 2, listW - 4, listHeight - 4);
 
     m_selectedReadoutY = listY + listHeight + m_gapListToReadout;
-
-    m_loadMoreLabelY = m_selectedReadoutY + m_readoutHeight + m_gapReadoutToLabel;
-    const int loadMoreY = m_loadMoreLabelY + m_labelHeight + m_gapLabelToLoadMore;
-    m_loadMoreContainer->setGeometry(m_margin, loadMoreY, width() - 2 * m_margin, m_loadMoreHeight);
 }
 
 void FileLoaderPanel::paintEvent(QPaintEvent *event)

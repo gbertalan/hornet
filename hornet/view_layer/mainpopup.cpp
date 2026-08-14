@@ -69,7 +69,7 @@ void MainPopup::paintEvent(QPaintEvent *event)
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(rect().adjusted(1, 1, -1, -1));
 
-    painter.setPen(QPen(Theme::darkerGray(), 1));
+    painter.setPen(QPen(Theme::darkAmber(), 2));
     painter.drawLine(QPointF(2, m_headerHeight), QPointF(m_width - 2, m_headerHeight));
 
     const float scale = 0.7f;
