@@ -15,7 +15,7 @@ public:
     void dispatchWindowStateChanged(const WindowDTO &dto);
     void sendFileNameToTitlebar(const QString &fileName);
     void sendBoxListPageToTitlebar(const BoxListPageDTO &dto);
-    void sendFileLoaderBoxListPageToPopup(const BoxListPageDTO &dto);
+    void sendBoxListPageToPopup(const BoxListPageDTO &dto);
     void sendCurrentBoxIdToTitlebar(int boxId);
 
 private:

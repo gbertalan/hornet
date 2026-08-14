@@ -102,6 +102,7 @@ public:
     // SLICE: box content, cursor, scroll, selection
     // ================================================================
     BoxContentDTO retrieveBoxContent(int boxId) const;
+    QString retrieveBoxOriginFilePath(int boxId) const;
     void storeBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
     void storeSelectedBox(int boxId);
     void storeBoxScrollOffset(int boxId, int scrollOffset);

@@ -1,11 +1,9 @@
 #pragma once
 #include <QStringList>
-
-struct FileLoadRequestDTO
+struct FilePathListDTO
 {
     QStringList filePaths;
-
-    explicit FileLoadRequestDTO(QStringList filePaths)
+    explicit FilePathListDTO(QStringList filePaths)
         : filePaths(std::move(filePaths))
     {}
 };

@@ -218,6 +218,12 @@ BoxContentDTO GridService::retrieveBoxContent(int boxId) const
                          box.getCursorY()};
 }
 
+QString GridService::retrieveBoxOriginFilePath(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return box.getOriginFilePath();
+}
+
 void GridService::storeBoxContent(int boxId,
                                    const QVector<QString> &bodyLines,
                                    int cursorX,

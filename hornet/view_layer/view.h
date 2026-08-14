@@ -16,7 +16,7 @@ struct WindowDTO;
 struct GridZoomDTO;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
-struct FileLoadRequestDTO;
+struct FilePathListDTO;
 
 class Window;
 
@@ -33,7 +33,7 @@ public:
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
     void updateBoxListPage(const BoxListPageDTO &dto);
-    void updateFileLoaderBoxListPage(const BoxListPageDTO &dto);
+    void updatePopupBoxListPage(const BoxListPageDTO &dto);
     void updateCurrentBoxId(int boxId);
 
 signals:
@@ -50,8 +50,10 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(int boxId);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
-    void fileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto);
-    void fileLoaderLoadRequested(const FileLoadRequestDTO &dto);
+    void popupBoxListPageRequested(const BoxListPageRequestDTO &dto);
+    void fileLoaderLoadRequested(const FilePathListDTO &dto);
+    void scriptRunnerBoxRunRequested(int boxId);
+    void scriptRunnerRunRequested(const FilePathListDTO &dto);
 
 private:
     Window* m_window;

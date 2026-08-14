@@ -16,6 +16,7 @@
 #include "view_layer/mainpopup.h"
 #include "view_layer/overlaywidget.h"
 #include "view_layer/resizehandle.h"
+#include "view_layer/scriptrunnerpanel.h"
 #include "view_layer/splitpane.h"
 #include "view_layer/titlebar.h"
 #include "view_layer/titlebarfiledropdown.h"
@@ -87,7 +88,24 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_fileLoaderPanel,
             &FileLoaderPanel::boxListPageRequested,
             this,
-            &Window::fileLoaderBoxListPageRequested);
+            &Window::popupBoxListPageRequested);
+
+    m_scriptRunnerPanel = new ScriptRunnerPanel(m_fontAtlas,
+                                                *m_fontRenderer,
+                                                m_mainPopup->bodyWidget());
+    m_scriptRunnerPanel->hide();
+    connect(m_scriptRunnerPanel,
+            &ScriptRunnerPanel::boxListPageRequested,
+            this,
+            &Window::popupBoxListPageRequested);
+    connect(m_scriptRunnerPanel,
+            &ScriptRunnerPanel::boxRunRequested,
+            this,
+            &Window::scriptRunnerBoxRunRequested);
+    connect(m_scriptRunnerPanel,
+            &ScriptRunnerPanel::runRequested,
+            this,
+            &Window::scriptRunnerRunRequested);
 
     connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openFileLoadPopup);
     connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openProjectSavePopup);
@@ -179,6 +197,7 @@ void Window::positionMainPopup()
 void Window::openFileLoadPopup()
 {
     m_mainPopup->setHeaderText("FILE LOADER");
+    m_scriptRunnerPanel->hide();
     const int contentHeight = m_fileLoaderPanel->preferredHeight();
     m_mainPopup->setBodyContentHeight(contentHeight);
     m_fileLoaderPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
@@ -191,6 +210,7 @@ void Window::openProjectSavePopup()
 {
     m_mainPopup->setHeaderText("PROJECT SAVER");
     m_fileLoaderPanel->hide();
+    m_scriptRunnerPanel->hide();
     m_mainPopup->resetBodyContentHeight();
     openMainPopupShared();
 }
@@ -199,7 +219,11 @@ void Window::openScriptRunPopup()
 {
     m_mainPopup->setHeaderText("SCRIPT RUNNER");
     m_fileLoaderPanel->hide();
-    m_mainPopup->resetBodyContentHeight();
+    const int contentHeight = m_scriptRunnerPanel->preferredHeight();
+    m_mainPopup->setBodyContentHeight(contentHeight);
+    m_scriptRunnerPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
+    m_scriptRunnerPanel->show();
+    m_scriptRunnerPanel->refreshRunnableBoxes();
     openMainPopupShared();
 }
 
@@ -253,9 +277,12 @@ void Window::updateBoxListPage(const BoxListPageDTO &dto)
     m_fileDropdown->updateBoxListPage(dto);
 }
 
-void Window::updateFileLoaderBoxListPage(const BoxListPageDTO &dto)
+void Window::updatePopupBoxListPage(const BoxListPageDTO &dto)
 {
-    m_fileLoaderPanel->updateBoxListPage(dto);
+    if (m_scriptRunnerPanel->isVisible())
+        m_scriptRunnerPanel->updateBoxListPage(dto);
+    else
+        m_fileLoaderPanel->updateBoxListPage(dto);
 }
 
 void Window::updateCurrentBoxId(int boxId)

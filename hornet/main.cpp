@@ -62,13 +62,21 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::boxUnloadRequested, &control, &Control::onBoxUnloadRequested);
     QObject::connect(&view, &View::boxListPageRequested, &control, &Control::onBoxListPageRequested);
     QObject::connect(&view,
-                     &View::fileLoaderBoxListPageRequested,
+                     &View::popupBoxListPageRequested,
                      &control,
-                     &Control::onFileLoaderBoxListPageRequested);
+                     &Control::onPopupBoxListPageRequested);
     QObject::connect(&view,
                      &View::fileLoaderLoadRequested,
                      &control,
                      &Control::onFileLoaderLoadRequested);
+    QObject::connect(&view,
+                     &View::scriptRunnerBoxRunRequested,
+                     &control,
+                     &Control::onScriptRunnerBoxRunRequested);
+    QObject::connect(&view,
+                     &View::scriptRunnerRunRequested,
+                     &control,
+                     &Control::onScriptRunnerRunRequested);
 
     control.init();
 

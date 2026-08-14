@@ -7,7 +7,7 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "shared/dto_view_to_model/fileloadrequestdto.h"
+#include "shared/dto_view_to_model/filepathlistdto.h"
 #include "theme.h"
 #include "view_layer/boxlistpanel.h"
 #include "view_layer/font_renderer/FontAtlas.h"
@@ -103,7 +103,7 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
             paths.push_back(m_pendingFilesList->item(i)->text());
         if (paths.isEmpty())
             return;
-        emit loadRequested(FileLoadRequestDTO(paths));
+        emit loadRequested(FilePathListDTO(paths));
         m_pendingFilesList->clear();
     });
 }

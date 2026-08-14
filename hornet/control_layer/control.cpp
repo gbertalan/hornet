@@ -24,7 +24,7 @@
 #include "shared/dto_model_to_view//boxlistpagerequestdto.h"
 #include "shared/dto_model_to_view/boxlistpagedto.h"
 
-#include "shared/dto_view_to_model/fileloadrequestdto.h"
+#include "shared/dto_view_to_model/filepathlistdto.h"
 
 // ================================================================
 // SLICE: construction & initialization
@@ -747,17 +747,17 @@ void Control::onBoxListPageRequested(const BoxListPageRequestDTO &dto)
         BoxListPageDTO{dto.startIndex, totalCount, highestBoxId, entries});
 }
 
-void Control::onFileLoaderBoxListPageRequested(const BoxListPageRequestDTO &dto)
+void Control::onPopupBoxListPageRequested(const BoxListPageRequestDTO &dto)
 {
     const int totalCount = m_gridService.retrieveBoxCount();
     const int highestBoxId = m_gridService.retrieveHighestBoxId();
     const std::vector<BoxListEntryDTO> entries
         = m_gridService.retrieveBoxHeaderListPage(dto.startIndex, dto.count);
-    m_windowControl.sendFileLoaderBoxListPageToPopup(
+    m_windowControl.sendBoxListPageToPopup(
         BoxListPageDTO{dto.startIndex, totalCount, highestBoxId, entries});
 }
 
-void Control::onFileLoaderLoadRequested(const FileLoadRequestDTO &dto)
+void Control::onFileLoaderLoadRequested(const FilePathListDTO &dto)
 {
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
     for (const QString &filePath : dto.filePaths) {
@@ -765,6 +765,42 @@ void Control::onFileLoaderLoadRequested(const FileLoadRequestDTO &dto)
         const QString message = dispatchHornetCommand(command);
         if (!message.isEmpty())
             createCommandOutputBox("load " + filePath, message);
+    }
+}
+
+// ================================================================
+// SLICE: script runner (box-list run, browse-and-run)
+// ================================================================
+
+void Control::onScriptRunnerBoxRunRequested(int boxId)
+{
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    QString originFilePath;
+    try {
+        originFilePath = m_gridService.retrieveBoxOriginFilePath(boxId);
+    } catch (const std::runtime_error &) {
+        createCommandOutputBox("run #" + QString::number(boxId),
+                               "no box with id " + QString::number(boxId));
+        return;
+    }
+    if (originFilePath.isEmpty()) {
+        createCommandOutputBox("run #" + QString::number(boxId), "box is not file-backed");
+        return;
+    }
+    const HornetCommandDTO command{true, "run", originFilePath, workingDir};
+    const QString message = dispatchHornetCommand(command);
+    if (!message.isEmpty())
+        createCommandOutputBox("run " + originFilePath, message);
+}
+
+void Control::onScriptRunnerRunRequested(const FilePathListDTO &dto)
+{
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    for (const QString &filePath : dto.filePaths) {
+        const HornetCommandDTO command{true, "run", filePath, workingDir};
+        const QString message = dispatchHornetCommand(command);
+        if (!message.isEmpty())
+            createCommandOutputBox("run " + filePath, message);
     }
 }
 
