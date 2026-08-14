@@ -84,6 +84,7 @@ public slots:
     void onBoxListPageRequested(const BoxListPageRequestDTO &dto);
     void onPopupBoxListPageRequested(const BoxListPageRequestDTO &dto);
     void onFileLoaderLoadRequested(const FilePathListDTO &dto);
+    void onProjectSaverSaveRequested(const QString &baseName);
     void onScriptRunnerBoxRunRequested(int boxId);
     void onScriptRunnerRunRequested(const FilePathListDTO &dto);
 

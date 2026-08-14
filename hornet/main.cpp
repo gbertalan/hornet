@@ -77,6 +77,10 @@ int main(int argc, char* argv[]) {
                      &View::scriptRunnerRunRequested,
                      &control,
                      &Control::onScriptRunnerRunRequested);
+    QObject::connect(&view,
+                     &View::projectSaverSaveRequested,
+                     &control,
+                     &Control::onProjectSaverSaveRequested);
 
     control.init();
 

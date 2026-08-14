@@ -129,6 +129,7 @@ qt_add_executable(hornet
     view_layer/fileloaderpanel.h view_layer/fileloaderpanel.cpp
     shared/dto_view_to_model/filepathlistdto.h
     view_layer/scriptrunnerpanel.h view_layer/scriptrunnerpanel.cpp
+    view_layer/projectsaverpanel.h view_layer/projectsaverpanel.cpp
 
 
 

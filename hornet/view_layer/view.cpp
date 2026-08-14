@@ -25,6 +25,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
             this,
             &View::scriptRunnerBoxRunRequested);
     connect(m_window, &Window::scriptRunnerRunRequested, this, &View::scriptRunnerRunRequested);
+    connect(m_window, &Window::projectSaverSaveRequested, this, &View::projectSaverSaveRequested);
 }
 
 void View::show() {
@@ -64,6 +65,11 @@ void View::updateBoxListPage(const BoxListPageDTO &dto)
 void View::updatePopupBoxListPage(const BoxListPageDTO &dto)
 {
     m_window->updatePopupBoxListPage(dto);
+}
+
+void View::updateProjectSaverSaveResult(const QString &message)
+{
+    m_window->updateProjectSaverSaveResult(message);
 }
 
 void View::updateCurrentBoxId(int boxId)

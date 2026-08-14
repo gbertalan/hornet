@@ -32,6 +32,11 @@ void WindowControl::sendBoxListPageToPopup(const BoxListPageDTO &dto)
     m_view.updatePopupBoxListPage(dto);
 }
 
+void WindowControl::sendProjectSaveResultToPopup(const QString &message)
+{
+    m_view.updateProjectSaverSaveResult(message);
+}
+
 void WindowControl::sendCurrentBoxIdToTitlebar(int boxId)
 {
     m_view.updateCurrentBoxId(boxId);

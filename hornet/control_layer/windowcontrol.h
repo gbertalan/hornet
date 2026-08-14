@@ -16,6 +16,7 @@ public:
     void sendFileNameToTitlebar(const QString &fileName);
     void sendBoxListPageToTitlebar(const BoxListPageDTO &dto);
     void sendBoxListPageToPopup(const BoxListPageDTO &dto);
+    void sendProjectSaveResultToPopup(const QString &message);
     void sendCurrentBoxIdToTitlebar(int boxId);
 
 private:

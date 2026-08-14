@@ -768,6 +768,17 @@ void Control::onFileLoaderLoadRequested(const FilePathListDTO &dto)
     }
 }
 
+void Control::onProjectSaverSaveRequested(const QString &baseName)
+{
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    const QString fileName = baseName + ".script";
+    const HornetCommandDTO command{true, "save", fileName, workingDir};
+    const QString message = dispatchHornetCommand(command);
+    if (!message.isEmpty())
+        createCommandOutputBox("save " + fileName, message);
+    m_windowControl.sendProjectSaveResultToPopup(message);
+}
+
 // ================================================================
 // SLICE: script runner (box-list run, browse-and-run)
 // ================================================================

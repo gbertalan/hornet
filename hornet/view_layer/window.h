@@ -24,6 +24,7 @@ class TitlebarFileDropdown;
 class MainPopup;
 class FileLoaderPanel;
 class ScriptRunnerPanel;
+class ProjectSaverPanel;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
 struct FilePathListDTO;
@@ -42,6 +43,7 @@ public:
     void updateFileName(const QString &fileName);
     void updateBoxListPage(const BoxListPageDTO &dto);
     void updatePopupBoxListPage(const BoxListPageDTO &dto);
+    void updateProjectSaverSaveResult(const QString &message);
     void updateCurrentBoxId(int boxId);
 
 signals:
@@ -62,6 +64,7 @@ signals:
     void fileLoaderLoadRequested(const FilePathListDTO &dto);
     void scriptRunnerBoxRunRequested(int boxId);
     void scriptRunnerRunRequested(const FilePathListDTO &dto);
+    void projectSaverSaveRequested(const QString &baseName);
 
 private:
     TitleBar* m_titleBar;
@@ -94,8 +97,9 @@ private:
     MainPopup *m_mainPopup;
     FileLoaderPanel *m_fileLoaderPanel;
     ScriptRunnerPanel *m_scriptRunnerPanel;
+    ProjectSaverPanel *m_projectSaverPanel;
 
-    enum class PopupListTarget { FileLoader, ScriptRunner };
+    enum class PopupListTarget { FileLoader, ScriptRunner, ProjectSaver };
     PopupListTarget m_activePopupListTarget = PopupListTarget::FileLoader;
 
     void positionMainPopup();
