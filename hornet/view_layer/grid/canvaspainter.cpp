@@ -229,7 +229,7 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                                              FontRenderer &fontRenderer,
                                              float textScale)
 {
-    const double lineThickness = std::max(1.0, gridGap * 0.1);
+    const double baseThickness = std::max(1.0, gridGap * 0.1);
     painter.save();
     painter.setBrush(Qt::NoBrush);
 
@@ -238,8 +238,8 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
         const double ly1 = geom.screenY + geom.headerH + toolLine.y1 * gridGap;
         const double lx2 = geom.screenX + toolLine.x2 * gridGap;
         const double ly2 = geom.screenY + geom.headerH + toolLine.y2 * gridGap;
-        painter.setPen(
-            QPen(resolveToolColor(toolLine.colorToken, Theme::brightAmber()), lineThickness));
+        painter.setPen(QPen(resolveToolColor(toolLine.colorToken, Theme::brightAmber()),
+                            baseThickness * toolLine.thicknessMultiplier));
         painter.drawLine(QPointF(lx1, ly1), QPointF(lx2, ly2));
     }
 
@@ -248,8 +248,8 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
         const double ry = geom.screenY + geom.headerH + toolRect.y * gridGap;
         const double rw = toolRect.width * gridGap;
         const double rh = toolRect.height * gridGap;
-        painter.setPen(
-            QPen(resolveToolColor(toolRect.colorToken, Theme::brightAmber()), lineThickness));
+        painter.setPen(QPen(resolveToolColor(toolRect.colorToken, Theme::brightAmber()),
+                            baseThickness * toolRect.thicknessMultiplier));
         painter.drawRect(QRectF(rx, ry, rw, rh));
     }
 
@@ -257,8 +257,8 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
         const double cx = geom.screenX + toolCircle.x * gridGap;
         const double cy = geom.screenY + geom.headerH + toolCircle.y * gridGap;
         const double r = toolCircle.radius * gridGap;
-        painter.setPen(
-            QPen(resolveToolColor(toolCircle.colorToken, Theme::brightAmber()), lineThickness));
+        painter.setPen(QPen(resolveToolColor(toolCircle.colorToken, Theme::brightAmber()),
+                            baseThickness * toolCircle.thicknessMultiplier));
         painter.drawEllipse(QPointF(cx, cy), r, r);
     }
 
@@ -272,7 +272,7 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                               static_cast<float>(ty),
                               toolText.text,
                               resolveToolColor(toolText.colorToken, Theme::brightAmber()),
-                              textScale);
+                              textScale * static_cast<float>(toolText.fontSizeMultiplier));
     }
 }
 

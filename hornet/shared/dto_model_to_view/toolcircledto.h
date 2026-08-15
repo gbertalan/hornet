@@ -7,11 +7,17 @@ struct ToolCircleDTO
     double y;
     double radius;
     QString colorToken;
-    ToolCircleDTO(double x, double y, double radius, const QString &colorToken = QString())
+    double thicknessMultiplier;
+    ToolCircleDTO(double x,
+                  double y,
+                  double radius,
+                  const QString &colorToken = QString(),
+                  double thicknessMultiplier = 1.0)
         : x(x)
         , y(y)
         , radius(radius)
         , colorToken(colorToken)
+        , thicknessMultiplier(thicknessMultiplier)
     {}
 };
 #endif // RENDERCIRCLEDTO_H
