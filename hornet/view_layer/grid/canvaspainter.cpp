@@ -227,7 +227,9 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                                              const BoxScreenGeometry &geom,
                                              double gridGap,
                                              FontRenderer &fontRenderer,
-                                             float textScale)
+                                             FontAtlas &fontAtlas,
+                                             float textScale,
+                                             bool isCtrlPressed)
 {
     painter.save();
     painter.setBrush(Qt::NoBrush);
@@ -274,6 +276,65 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                               resolveToolColor(toolText.colorToken, Theme::brightAmber()),
                               textScale * static_cast<float>(toolText.fontSizeMultiplier));
     }
+
+    drawToolButtons(painter, box, geom, gridGap, fontRenderer, fontAtlas, textScale, isCtrlPressed);
+}
+
+void CanvasPainter::drawToolButtons(QPainter &painter,
+                                    const BoxViewDTO &box,
+                                    const BoxScreenGeometry &geom,
+                                    double gridGap,
+                                    FontRenderer &fontRenderer,
+                                    FontAtlas &fontAtlas,
+                                    float textScale,
+                                    bool isCtrlPressed)
+{
+    if (box.toolScript.buttons.empty())
+        return;
+
+    painter.save();
+    painter.setOpacity(isCtrlPressed ? 1.0 : 0.4);
+
+    for (const ToolButtonDTO &toolButton : box.toolScript.buttons) {
+        const double bx = geom.screenX + toolButton.x * gridGap;
+        const double by = geom.screenY + geom.headerH + toolButton.y * gridGap;
+        const double bw = toolButton.width * gridGap;
+        const double bh = toolButton.height * gridGap;
+        const QRectF buttonRect(bx, by, bw, bh);
+
+        const QColor buttonColor = resolveToolColor(toolButton.colorToken, Theme::brightAmber());
+        const double borderThickness = std::max(1.0, gridGap * 0.08);
+
+        painter.setPen(QPen(buttonColor, borderThickness));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRect(buttonRect);
+
+        const QPixmap backgroundImage(":/icons/titlebar_button_background.png");
+        if (!backgroundImage.isNull())
+            painter.drawPixmap(buttonRect.toRect(), backgroundImage);
+
+        QString displayLabel = toolButton.label;
+        float labelWidth = fontAtlas.textWidth(displayLabel.length(), textScale);
+        if (labelWidth > static_cast<float>(bw)) {
+            const float ellipsisWidth = fontAtlas.textWidth(3, textScale);
+            const float maxTextWidth = static_cast<float>(bw) - ellipsisWidth;
+            while (!displayLabel.isEmpty()) {
+                labelWidth = fontAtlas.textWidth(displayLabel.length(), textScale);
+                if (labelWidth <= maxTextWidth)
+                    break;
+                displayLabel.chop(1);
+            }
+            displayLabel += "...";
+            labelWidth = fontAtlas.textWidth(displayLabel.length(), textScale);
+        }
+
+        const float textHeight = fontAtlas.textHeight(textScale);
+        const float textX = static_cast<float>(bx + bw / 2.0) - labelWidth / 2.0f;
+        const float textY = static_cast<float>(by + bh / 2.0) - textHeight / 2.0f;
+        fontRenderer.drawText(painter, textX, textY, displayLabel, buttonColor, textScale);
+    }
+
+    painter.restore();
 }
 
 void CanvasPainter::drawBoxTextContent(QPainter &painter,
@@ -457,7 +518,14 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                           buttonMargin);
 
         if (box.contentType == BoxContentType::Tool) {
-            drawToolScriptPrimitives(painter, box, geom, gridGap, fontRenderer, textScale);
+            drawToolScriptPrimitives(painter,
+                                     box,
+                                     geom,
+                                     gridGap,
+                                     fontRenderer,
+                                     fontAtlas,
+                                     textScale,
+                                     isCtrlPressed);
         } else {
             drawBoxTextContent(painter,
                                box,

@@ -72,7 +72,17 @@ private:
                                          const BoxScreenGeometry &geom,
                                          double gridGap,
                                          FontRenderer &fontRenderer,
-                                         float textScale);
+                                         FontAtlas &fontAtlas,
+                                         float textScale,
+                                         bool isCtrlPressed);
+    static void drawToolButtons(QPainter &painter,
+                                const BoxViewDTO &box,
+                                const BoxScreenGeometry &geom,
+                                double gridGap,
+                                FontRenderer &fontRenderer,
+                                FontAtlas &fontAtlas,
+                                float textScale,
+                                bool isCtrlPressed);
     static void drawBoxTextContent(QPainter &painter,
                                    const BoxViewDTO &box,
                                    const BoxScreenGeometry &geom,

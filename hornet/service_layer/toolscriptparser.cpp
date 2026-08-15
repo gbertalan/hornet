@@ -107,6 +107,7 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
     std::vector<ToolRectDTO> rects;
     std::vector<ToolCircleDTO> circles;
     std::vector<ToolTextDTO> texts;
+    std::vector<ToolButtonDTO> buttons;
 
     const auto resolveColorArg = [](const QString &token) {
         return (token.isEmpty() || token == "-1") ? QString() : token;
@@ -206,7 +207,48 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
             if (!text.isEmpty())
                 texts.push_back(ToolTextDTO(x, y, text, colorToken, fontSize));
         }
+
+        else if (line.startsWith("button ")) {
+            QString remainder = line.mid(7).trimmed();
+            double x, y, w, h;
+            bool numbersOk = true;
+            for (double *outValue : {&x, &y, &w, &h}) {
+                const int spaceIndex = remainder.indexOf(' ');
+                if (spaceIndex == -1) {
+                    numbersOk = false;
+                    break;
+                }
+                const QString token = remainder.left(spaceIndex);
+                remainder = remainder.mid(spaceIndex + 1).trimmed();
+                if (!resolveNumericToken(token, sourceValues, *outValue)) {
+                    numbersOk = false;
+                    break;
+                }
+            }
+            if (!numbersOk)
+                continue;
+
+            if (!remainder.startsWith('"'))
+                continue;
+            const int labelEndQuote = remainder.indexOf('"', 1);
+            if (labelEndQuote == -1)
+                continue;
+            const QString label = substituteSourceValuesInText(remainder.mid(1, labelEndQuote - 1),
+                                                               sourceValues);
+            remainder = remainder.mid(labelEndQuote + 1).trimmed();
+
+            if (!remainder.startsWith('"'))
+                continue;
+            const int commandEndQuote = remainder.indexOf('"', 1);
+            if (commandEndQuote == -1)
+                continue;
+            const QString hornetCommand = remainder.mid(1, commandEndQuote - 1);
+            const QString colorToken = resolveColorArg(remainder.mid(commandEndQuote + 1).trimmed());
+
+            if (!label.isEmpty() && !hornetCommand.isEmpty())
+                buttons.push_back(ToolButtonDTO(x, y, w, h, label, hornetCommand, colorToken));
+        }
     }
 
-    return ToolScriptDTO(lines, rects, circles, texts);
+    return ToolScriptDTO(lines, rects, circles, texts, buttons);
 }

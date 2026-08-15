@@ -130,6 +130,7 @@ qt_add_executable(hornet
     shared/dto_view_to_model/filepathlistdto.h
     view_layer/scriptrunnerpanel.h view_layer/scriptrunnerpanel.cpp
     view_layer/projectsaverpanel.h view_layer/projectsaverpanel.cpp
+    shared/dto_model_to_view/toolbuttondto.h
 
 
 
