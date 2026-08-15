@@ -10,6 +10,7 @@
 #include <QListWidget>
 #include <QPainter>
 #include <QPushButton>
+#include <QScrollBar>
 #include <QVBoxLayout>
 #include "shared/dto_view_to_model/filepathlistdto.h"
 #include "theme.h"
@@ -50,6 +51,7 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
         const QStringList families = QFontDatabase::applicationFontFamilies(fontId);
         return families.isEmpty() ? QString() : families.first();
     }();
+    m_monoFamily = monoFamily;
     if (!monoFamily.isEmpty())
         setFont(QFont(monoFamily));
 
@@ -82,6 +84,8 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     m_modeFilesButton->setChecked(true);
     m_modeFilesButton->setStyleSheet(toggleStyle);
     m_modeDirectoryButton->setStyleSheet(toggleStyle);
+    m_modeFilesButton->setFixedWidth(110);
+    m_modeDirectoryButton->setFixedWidth(110);
     QButtonGroup *modeGroup = new QButtonGroup(this);
     modeGroup->setExclusive(true);
     modeGroup->addButton(m_modeFilesButton);
@@ -92,20 +96,22 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     m_browseButton->setStyleSheet(fieldStyle);
     m_pendingFilesList->setStyleSheet(fieldStyle);
     m_pendingFilesList->setMinimumHeight(110);
+    m_pendingFilesList->setTextElideMode(Qt::ElideNone);
+    m_pendingFilesList->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    connect(m_pendingFilesList->horizontalScrollBar(),
+            &QScrollBar::rangeChanged,
+            this,
+            [this](int, int max) { m_pendingFilesList->horizontalScrollBar()->setValue(max); });
 
     m_directoryOptionsRow = new QWidget(m_loadSectionContainer);
     QLabel *extensionCaption = new QLabel("Extension:", m_directoryOptionsRow);
     m_extensionField = new QLineEdit(m_directoryOptionsRow);
     m_extensionField->setPlaceholderText("cpp");
     m_recursiveCheckBox = new QCheckBox("Include subdirectories", m_directoryOptionsRow);
-    m_directoryNoticeLabel
-        = new QLabel("Directory browsing isn't wired up yet — this previews the layout.",
-                     m_directoryOptionsRow);
     extensionCaption->setStyleSheet("QLabel { color: #9a9a9a; }");
     m_extensionField->setStyleSheet(fieldStyle);
     m_recursiveCheckBox->setStyleSheet(fieldStyle);
-    m_directoryNoticeLabel->setStyleSheet(noticeStyle);
-    m_directoryNoticeLabel->setWordWrap(true);
 
     QVBoxLayout *directoryOptionsLayout = new QVBoxLayout(m_directoryOptionsRow);
     directoryOptionsLayout->setContentsMargins(0, 0, 0, 0);
@@ -115,11 +121,21 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     extensionRow->addWidget(m_extensionField);
     extensionRow->addWidget(m_recursiveCheckBox);
     directoryOptionsLayout->addLayout(extensionRow);
-    directoryOptionsLayout->addWidget(m_directoryNoticeLabel);
     m_directoryOptionsRow->hide();
 
+    const QString actionButtonStyle
+        = QString(
+              "QPushButton { color: #d0d0d0; background-color: #1a1a1a; border: 1px solid #4e4c4a; "
+              "padding: 8px 24px; font-weight: bold; }"
+              "QPushButton:hover { background-color: #262626; border: 1px solid %1; }")
+              .arg(amber.name());
+
+    m_clearButton = new QPushButton("Clear", m_loadSectionContainer);
     m_loadButton = new QPushButton("Load ▸", m_loadSectionContainer);
-    m_loadButton->setStyleSheet(fieldStyle);
+    m_clearButton->setStyleSheet(actionButtonStyle);
+    m_loadButton->setStyleSheet(actionButtonStyle);
+    m_clearButton->setFixedWidth(110);
+    m_loadButton->setFixedWidth(110);
 
     QVBoxLayout *loadLayout = new QVBoxLayout(m_loadSectionContainer);
     loadLayout->setContentsMargins(16, 16, 16, 16);
@@ -137,18 +153,83 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
 
     QHBoxLayout *loadRow = new QHBoxLayout();
     loadRow->addStretch();
+    loadRow->addWidget(m_clearButton);
     loadRow->addWidget(m_loadButton);
     loadLayout->addLayout(loadRow);
 
     connect(m_modeDirectoryButton, &QPushButton::toggled, this, [this](bool checked) {
         m_directoryOptionsRow->setVisible(checked);
+        m_browseButton->setText(checked ? "Choose Directories…" : "Choose Files…");
     });
 
-    connect(m_browseButton, &QPushButton::clicked, this, [this]() {
-        const QStringList selected = QFileDialog::getOpenFileNames(this, "Select files to load");
-        for (const QString &path : selected)
-            m_pendingFilesList->addItem(path);
+    connect(m_browseButton, &QPushButton::clicked, this, [this, amber]() {
+        const QString fontRule = m_monoFamily.isEmpty()
+                                     ? QString()
+                                     : QString("font-family: '%1';").arg(m_monoFamily);
+        const QString dialogStyle
+            = QString("QDialog, QFileDialog { background-color: %1; color: %2; border: 2px solid "
+                      "%2; %5 }"
+                      "QListView, QTreeView { background-color: %6; color: %2; border: 1px solid "
+                      "%3; %5 }"
+                      "QListView::item:selected, QTreeView::item:selected { background-color: %2; "
+                      "color: %1; }"
+                      "QLineEdit, QComboBox { background-color: %1; color: %2; border: 1px solid "
+                      "%3; %5 }"
+                      "QPushButton { background-color: %1; color: %2; border: 1px solid %3; "
+                      "padding: 4px 12px; %5 }"
+                      "QPushButton:hover { border: 1px solid %2; }"
+                      "QToolButton { background-color: %1; color: %2; border: none; }"
+                      "QHeaderView::section { background-color: %1; color: %2; border: 1px solid "
+                      "%3; %5 }"
+                      "QMenu { background-color: %1; color: %2; border: 1px solid %3; %5 }"
+                      "QLabel { color: %4; %5 }"
+                      "QToolTip { background-color: %1; color: %4; border: 1px solid %3; %5 }")
+                  .arg(Theme::darkerGray().name())
+                  .arg(amber.name())
+                  .arg("#4e4c4a")
+                  .arg(Theme::desaturatedTeal().name())
+                  .arg(fontRule)
+                  .arg(Theme::almostBlack().name());
+
+        if (m_modeDirectoryButton->isChecked()) {
+            QFileDialog dialog(this, "Select directory to load");
+            dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+            dialog.setFileMode(QFileDialog::Directory);
+            dialog.setOption(QFileDialog::ShowDirsOnly, true);
+            dialog.setLabelText(QFileDialog::Accept, "Select Directory");
+            dialog.setWindowFlags(dialog.windowFlags() | Qt::FramelessWindowHint);
+            for (QPushButton *dialogButton : dialog.findChildren<QPushButton *>())
+                dialogButton->setIcon(QIcon());
+            if (!m_monoFamily.isEmpty())
+                dialog.setFont(QFont(m_monoFamily));
+            dialog.resize(800, 600);
+            dialog.setStyleSheet(dialogStyle);
+            if (dialog.exec() == QDialog::Accepted) {
+                const QStringList selected = dialog.selectedFiles();
+                if (!selected.isEmpty())
+                    m_pendingFilesList->addItem(selected.first());
+            }
+        } else {
+            QFileDialog dialog(this, "Select files to load");
+            dialog.setOption(QFileDialog::DontUseNativeDialog, true);
+            dialog.setFileMode(QFileDialog::ExistingFiles);
+            dialog.setLabelText(QFileDialog::Accept, "Select File(s)");
+            dialog.setWindowFlags(dialog.windowFlags() | Qt::FramelessWindowHint);
+            for (QPushButton *dialogButton : dialog.findChildren<QPushButton *>())
+                dialogButton->setIcon(QIcon());
+            if (!m_monoFamily.isEmpty())
+                dialog.setFont(QFont(m_monoFamily));
+            dialog.resize(800, 600);
+            dialog.setStyleSheet(dialogStyle);
+            if (dialog.exec() == QDialog::Accepted) {
+                const QStringList selected = dialog.selectedFiles();
+                for (const QString &path : selected)
+                    m_pendingFilesList->addItem(path);
+            }
+        }
     });
+
+    connect(m_clearButton, &QPushButton::clicked, this, [this]() { m_pendingFilesList->clear(); });
 
     connect(m_loadButton, &QPushButton::clicked, this, [this]() {
         QStringList paths;

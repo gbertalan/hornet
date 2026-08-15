@@ -41,6 +41,7 @@ protected:
 
 private:
     void layoutChildren();
+    QString m_monoFamily;
     FontAtlas &m_fontAtlas;
     FontRenderer &m_fontRenderer;
 
@@ -52,8 +53,8 @@ private:
     QWidget *m_directoryOptionsRow;
     QLineEdit *m_extensionField;
     QCheckBox *m_recursiveCheckBox;
-    QLabel *m_directoryNoticeLabel;
     QPushButton *m_loadButton;
+    QPushButton *m_clearButton;
 
     BorderedPanel *m_loadedSectionContainer;
     BoxListPanel *m_loadedBoxesList;

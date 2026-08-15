@@ -12,6 +12,7 @@ private:
     static const QColor m_brightYellow;
     static const QColor m_darkAmber;
     static const QColor m_darkerAmber;
+    static const QColor m_mediumGray;
     static const QColor m_darkGray;
     static const QColor m_darkerGray;
     static const QColor m_desaturatedTeal;
@@ -40,6 +41,9 @@ public:
 
     // Grid
     static const QColor &darkerAmber();
+
+    // Popup, browser window
+    static const QColor &mediumGray();
 
     // Main border
     static const QColor& darkGray();

@@ -64,15 +64,12 @@ void MainPopup::resetBodyContentHeight()
 void MainPopup::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Theme::almostBlack().lighter(155));
+    painter.fillRect(rect(), Theme::darkerGray());
     painter.fillRect(QRectF(0, 0, m_width, m_headerHeight), Theme::darkAmber());
 
     painter.setPen(QPen(Theme::darkAmber(), 2));
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(rect().adjusted(1, 1, -1, -1));
-
-    // painter.setPen(QPen(Theme::darkAmber(), 2));
-    // painter.drawLine(QPointF(2, m_headerHeight), QPointF(m_width - 2, m_headerHeight));
 
     const float scale = 0.7f;
     const float textPadding = 10.f;
