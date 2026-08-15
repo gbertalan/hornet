@@ -200,20 +200,26 @@ QColor CanvasPainter::resolveToolColor(const QString &colorToken, const QColor &
         const QColor parsed(colorToken);
         return parsed.isValid() ? parsed : fallback;
     }
-    const QString name = colorToken.toLower();
-    if (name == "amber")
+    bool ok = false;
+    const int index = colorToken.toInt(&ok);
+    if (!ok)
+        return fallback;
+    switch (index) {
+    case 0:
         return Theme::brightAmber();
-    if (name == "darkamber")
+    case 1:
         return Theme::darkAmber();
-    if (name == "teal")
+    case 2:
         return Theme::desaturatedTeal();
-    if (name == "white")
+    case 3:
         return Theme::almostWhite();
-    if (name == "gray" || name == "grey")
+    case 4:
         return Theme::darkGray();
-    if (name == "black")
+    case 5:
         return Theme::almostBlack();
-    return fallback;
+    default:
+        return fallback;
+    }
 }
 
 void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
