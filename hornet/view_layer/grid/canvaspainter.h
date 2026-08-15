@@ -92,5 +92,6 @@ private:
                                    double gridGap,
                                    bool isCtrlPressed,
                                    int hoveredBoxId);
+    static QColor resolveToolColor(const QString &colorToken, const QColor &fallback);
 };
 #endif // CANVASPAINTER_H

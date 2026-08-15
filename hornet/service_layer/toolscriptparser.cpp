@@ -108,40 +108,53 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
     std::vector<ToolCircleDTO> circles;
     std::vector<ToolTextDTO> texts;
 
+    const auto resolveColorArg = [](const QString &token) {
+        return (token.isEmpty() || token == "-1") ? QString() : token;
+    };
+
     for (const QString &rawLine : bodyLines) {
         const QString line = rawLine.trimmed();
 
         if (line.startsWith("line ")) {
             const QStringList parts = line.mid(5).trimmed().split(' ', Qt::SkipEmptyParts);
-            if (parts.size() != 4)
+            if (parts.size() != 4 && parts.size() != 5)
                 continue;
             double x1, y1, x2, y2;
             if (resolveNumericToken(parts.at(0), sourceValues, x1)
                 && resolveNumericToken(parts.at(1), sourceValues, y1)
                 && resolveNumericToken(parts.at(2), sourceValues, x2)
-                && resolveNumericToken(parts.at(3), sourceValues, y2))
-                lines.push_back(ToolLineDTO(x1, y1, x2, y2));
+                && resolveNumericToken(parts.at(3), sourceValues, y2)) {
+                const QString colorToken = resolveColorArg(parts.size() == 5 ? parts.at(4)
+                                                                             : QString());
+                lines.push_back(ToolLineDTO(x1, y1, x2, y2, colorToken));
+            }
 
         } else if (line.startsWith("rect ")) {
             const QStringList parts = line.mid(5).trimmed().split(' ', Qt::SkipEmptyParts);
-            if (parts.size() != 4)
+            if (parts.size() != 4 && parts.size() != 5)
                 continue;
             double x, y, w, h;
             if (resolveNumericToken(parts.at(0), sourceValues, x)
                 && resolveNumericToken(parts.at(1), sourceValues, y)
                 && resolveNumericToken(parts.at(2), sourceValues, w)
-                && resolveNumericToken(parts.at(3), sourceValues, h))
-                rects.push_back(ToolRectDTO(x, y, w, h));
+                && resolveNumericToken(parts.at(3), sourceValues, h)) {
+                const QString colorToken = resolveColorArg(parts.size() == 5 ? parts.at(4)
+                                                                             : QString());
+                rects.push_back(ToolRectDTO(x, y, w, h, colorToken));
+            }
 
         } else if (line.startsWith("circle ")) {
             const QStringList parts = line.mid(7).trimmed().split(' ', Qt::SkipEmptyParts);
-            if (parts.size() != 3)
+            if (parts.size() != 3 && parts.size() != 4)
                 continue;
             double x, y, r;
             if (resolveNumericToken(parts.at(0), sourceValues, x)
                 && resolveNumericToken(parts.at(1), sourceValues, y)
-                && resolveNumericToken(parts.at(2), sourceValues, r))
-                circles.push_back(ToolCircleDTO(x, y, r));
+                && resolveNumericToken(parts.at(2), sourceValues, r)) {
+                const QString colorToken = resolveColorArg(parts.size() == 4 ? parts.at(3)
+                                                                             : QString());
+                circles.push_back(ToolCircleDTO(x, y, r, colorToken));
+            }
 
         } else if (line.startsWith("text ")) {
             const QString argsText = line.mid(5).trimmed();
@@ -159,10 +172,20 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
                                                  y);
             if (!xOk || !yOk)
                 continue;
-            QString text = argsText.mid(secondSpace + 1);
+
+            const QString remainder = argsText.mid(secondSpace + 1).trimmed();
+            if (!remainder.startsWith('"'))
+                continue;
+            const int closingQuoteIndex = remainder.indexOf('"', 1);
+            if (closingQuoteIndex == -1)
+                continue;
+
+            QString text = remainder.mid(1, closingQuoteIndex - 1);
             text = substituteSourceValuesInText(text, sourceValues);
+            const QString colorToken = resolveColorArg(
+                remainder.mid(closingQuoteIndex + 1).trimmed());
             if (!text.isEmpty())
-                texts.push_back(ToolTextDTO(x, y, text));
+                texts.push_back(ToolTextDTO(x, y, text, colorToken));
         }
     }
 

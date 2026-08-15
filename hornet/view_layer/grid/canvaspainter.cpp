@@ -192,51 +192,80 @@ void CanvasPainter::drawBoxHeaderText(QPainter &painter,
                           textScale);
 }
 
+QColor CanvasPainter::resolveToolColor(const QString &colorToken, const QColor &fallback)
+{
+    if (colorToken.isEmpty())
+        return fallback;
+    if (colorToken.startsWith('#')) {
+        const QColor parsed(colorToken);
+        return parsed.isValid() ? parsed : fallback;
+    }
+    const QString name = colorToken.toLower();
+    if (name == "amber")
+        return Theme::brightAmber();
+    if (name == "darkamber")
+        return Theme::darkAmber();
+    if (name == "teal")
+        return Theme::desaturatedTeal();
+    if (name == "white")
+        return Theme::almostWhite();
+    if (name == "gray" || name == "grey")
+        return Theme::darkGray();
+    if (name == "black")
+        return Theme::almostBlack();
+    return fallback;
+}
+
 void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
-                                               const BoxViewDTO &box,
-                                               const BoxScreenGeometry &geom,
-                                               double gridGap,
-                                               FontRenderer &fontRenderer,
-                                               float textScale)
+                                             const BoxViewDTO &box,
+                                             const BoxScreenGeometry &geom,
+                                             double gridGap,
+                                             FontRenderer &fontRenderer,
+                                             float textScale)
 {
     const double lineThickness = std::max(1.0, gridGap * 0.1);
     painter.save();
-    painter.setPen(QPen(Theme::brightAmber(), lineThickness));
     painter.setBrush(Qt::NoBrush);
 
-    for (const ToolLineDTO &renderLine : box.toolScript.lines) {
-        const double lx1 = geom.screenX + renderLine.x1 * gridGap;
-        const double ly1 = geom.screenY + geom.headerH + renderLine.y1 * gridGap;
-        const double lx2 = geom.screenX + renderLine.x2 * gridGap;
-        const double ly2 = geom.screenY + geom.headerH + renderLine.y2 * gridGap;
+    for (const ToolLineDTO &toolLine : box.toolScript.lines) {
+        const double lx1 = geom.screenX + toolLine.x1 * gridGap;
+        const double ly1 = geom.screenY + geom.headerH + toolLine.y1 * gridGap;
+        const double lx2 = geom.screenX + toolLine.x2 * gridGap;
+        const double ly2 = geom.screenY + geom.headerH + toolLine.y2 * gridGap;
+        painter.setPen(
+            QPen(resolveToolColor(toolLine.colorToken, Theme::brightAmber()), lineThickness));
         painter.drawLine(QPointF(lx1, ly1), QPointF(lx2, ly2));
     }
 
-    for (const ToolRectDTO &renderRect : box.toolScript.rects) {
-        const double rx = geom.screenX + renderRect.x * gridGap;
-        const double ry = geom.screenY + geom.headerH + renderRect.y * gridGap;
-        const double rw = renderRect.width * gridGap;
-        const double rh = renderRect.height * gridGap;
+    for (const ToolRectDTO &toolRect : box.toolScript.rects) {
+        const double rx = geom.screenX + toolRect.x * gridGap;
+        const double ry = geom.screenY + geom.headerH + toolRect.y * gridGap;
+        const double rw = toolRect.width * gridGap;
+        const double rh = toolRect.height * gridGap;
+        painter.setPen(
+            QPen(resolveToolColor(toolRect.colorToken, Theme::brightAmber()), lineThickness));
         painter.drawRect(QRectF(rx, ry, rw, rh));
     }
 
-    for (const ToolCircleDTO &renderCircle : box.toolScript.circles) {
-        const double cx = geom.screenX + renderCircle.x * gridGap;
-        const double cy = geom.screenY + geom.headerH + renderCircle.y * gridGap;
-        const double r = renderCircle.radius * gridGap;
+    for (const ToolCircleDTO &toolCircle : box.toolScript.circles) {
+        const double cx = geom.screenX + toolCircle.x * gridGap;
+        const double cy = geom.screenY + geom.headerH + toolCircle.y * gridGap;
+        const double r = toolCircle.radius * gridGap;
+        painter.setPen(
+            QPen(resolveToolColor(toolCircle.colorToken, Theme::brightAmber()), lineThickness));
         painter.drawEllipse(QPointF(cx, cy), r, r);
     }
 
     painter.restore();
 
-    for (const ToolTextDTO &renderText : box.toolScript.texts) {
-        const double tx = geom.screenX + renderText.x * gridGap;
-        const double ty = geom.screenY + geom.headerH + renderText.y * gridGap;
+    for (const ToolTextDTO &toolText : box.toolScript.texts) {
+        const double tx = geom.screenX + toolText.x * gridGap;
+        const double ty = geom.screenY + geom.headerH + toolText.y * gridGap;
         fontRenderer.drawText(painter,
                               static_cast<float>(tx),
                               static_cast<float>(ty),
-                              renderText.text,
-                              Theme::brightAmber(),
+                              toolText.text,
+                              resolveToolColor(toolText.colorToken, Theme::brightAmber()),
                               textScale);
     }
 }
