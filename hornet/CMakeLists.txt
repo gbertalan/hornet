@@ -111,14 +111,14 @@ qt_add_executable(hornet
     model_layer/boxcontenttype.h
     shared/dto_view_to_model/boxresizeedge.h
     shared/dto_view_to_model/boxresizedto.h
-    shared/dto_model_to_view/renderlinedto.h
-    service_layer/renderscriptparser.h service_layer/renderscriptparser.cpp
-    shared/dto_model_to_view/renderrectdto.h
-    shared/dto_model_to_view/rendercircledto.h
-    shared/dto_model_to_view/rendertextdto.h
-    shared/dto_model_to_view/renderscriptdto.h
-    shared/dto_model_to_view/rendersourcedto.h
-    control_layer/rendercontrol.h control_layer/rendercontrol.cpp
+    shared/dto_model_to_view/toollinedto.h
+    service_layer/toolscriptparser.h service_layer/toolscriptparser.cpp
+    shared/dto_model_to_view/toolrectdto.h
+    shared/dto_model_to_view/toolcircledto.h
+    shared/dto_model_to_view/tooltextdto.h
+    shared/dto_model_to_view/toolscriptdto.h
+    shared/dto_model_to_view/toolsourcedto.h
+    control_layer/toolcontrol.h control_layer/toolcontrol.cpp
     view_layer/titlebarfilenamebutton.h view_layer/titlebarfilenamebutton.cpp
     shared/dto_model_to_view/boxlistentrydto.h
     shared/dto_model_to_view/boxlistpagedto.h

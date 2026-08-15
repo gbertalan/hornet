@@ -2,21 +2,21 @@
 #include <QHash>
 #include <QObject>
 #include <QSet>
-#include "shared/dto_model_to_view/rendersourcedto.h"
+#include "shared/dto_model_to_view/toolsourcedto.h"
 #include <filesystem>
 
 class GridService;
 class QTimer;
-class RenderControl : public QObject
+class ToolControl : public QObject
 {
     Q_OBJECT
 public:
-    explicit RenderControl(GridService &gridService);
+    explicit ToolControl(GridService &gridService);
 
     // ================================================================
     // SLICE: hornet render / hornet trust entry points
     // ================================================================
-    QString dispatchRenderCommand(int boxId, const std::filesystem::path &workingDir);
+    QString dispatchToolCommand(int boxId, const std::filesystem::path &workingDir);
     QString dispatchTrustCommand(int boxId,
                                  const QString &sourceName,
                                  const std::filesystem::path &workingDir);
@@ -39,7 +39,7 @@ private:
                          int intervalMs);
     static QString makeKey(int boxId, const QString &sourceName);
     void attemptFetch(int boxId,
-                      const RenderSourceDTO &source,
+                      const ToolSourceDTO &source,
                       const std::filesystem::path &workingDir);
 
     GridService &m_gridService;

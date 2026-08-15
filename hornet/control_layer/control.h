@@ -3,8 +3,8 @@
 #include <QObject>
 #include "control_layer/editorcontrol.h"
 #include "control_layer/gridcontrol.h"
-#include "control_layer/rendercontrol.h"
 #include "control_layer/terminalcontrol.h"
+#include "control_layer/toolcontrol.h"
 #include "control_layer/windowcontrol.h"
 #include <filesystem>
 
@@ -123,7 +123,7 @@ private:
     EditorControl m_editorControl;
     TerminalControl m_terminalControl;
     GridControl m_gridControl;
-    RenderControl m_renderControl;
+    ToolControl m_toolControl;
 
     // Avoids redundant grid refreshes when the Editor reports the same scroll
     // position it already reported last time. Reset to -1 on box switch, since

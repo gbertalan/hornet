@@ -4,7 +4,7 @@
 #include <QVector>
 
 #include "model_layer/boxcontenttype.h"
-#include "shared/dto_model_to_view/renderscriptdto.h"
+#include "shared/dto_model_to_view/toolscriptdto.h"
 
 struct BoxViewDTO
 {
@@ -20,7 +20,7 @@ struct BoxViewDTO
     int cursorX;
     int cursorY;
     BoxContentType contentType;
-    RenderScriptDTO renderScript;
+    ToolScriptDTO toolScript;
     BoxViewDTO(int id,
                int posX,
                int posY,
@@ -33,7 +33,7 @@ struct BoxViewDTO
                int cursorX,
                int cursorY,
                BoxContentType contentType,
-               const RenderScriptDTO &renderScript)
+               const ToolScriptDTO &toolScript)
         : id(id)
         , posX(posX)
         , posY(posY)
@@ -46,7 +46,7 @@ struct BoxViewDTO
         , cursorX(cursorX)
         , cursorY(cursorY)
         , contentType(contentType)
-        , renderScript(renderScript)
+        , toolScript(toolScript)
     {}
 };
 #endif // BOXVIEWDTO_H

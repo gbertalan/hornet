@@ -67,12 +67,12 @@ private:
                                   float textPadding,
                                   double buttonSize,
                                   double buttonMargin);
-    static void drawRenderScriptPrimitives(QPainter &painter,
-                                           const BoxViewDTO &box,
-                                           const BoxScreenGeometry &geom,
-                                           double gridGap,
-                                           FontRenderer &fontRenderer,
-                                           float textScale);
+    static void drawToolScriptPrimitives(QPainter &painter,
+                                         const BoxViewDTO &box,
+                                         const BoxScreenGeometry &geom,
+                                         double gridGap,
+                                         FontRenderer &fontRenderer,
+                                         float textScale);
     static void drawBoxTextContent(QPainter &painter,
                                    const BoxViewDTO &box,
                                    const BoxScreenGeometry &geom,

@@ -1,14 +1,14 @@
-#include "rendercontrol.h"
+#include "toolcontrol.h"
 #include <QProcess>
 #include <QTimer>
 #include "service_layer/gridservice.h"
-#include "shared/dto_model_to_view/rendersourcedto.h"
+#include "shared/dto_model_to_view/toolsourcedto.h"
 
-RenderControl::RenderControl(GridService &gridService)
+ToolControl::ToolControl(GridService &gridService)
     : m_gridService(gridService)
 {}
 
-QString RenderControl::makeKey(int boxId, const QString &sourceName)
+QString ToolControl::makeKey(int boxId, const QString &sourceName)
 {
     return QString::number(boxId) + ":" + sourceName;
 }
@@ -17,8 +17,8 @@ QString RenderControl::makeKey(int boxId, const QString &sourceName)
 // SLICE: hornet render / hornet trust entry points
 // ================================================================
 
-void RenderControl::attemptFetch(int boxId,
-                                 const RenderSourceDTO &source,
+void ToolControl::attemptFetch(int boxId,
+                                 const ToolSourceDTO &source,
                                  const std::filesystem::path &workingDir)
 {
     const QString key = makeKey(boxId, source.name);
@@ -27,14 +27,14 @@ void RenderControl::attemptFetch(int boxId,
     fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
 }
 
-QString RenderControl::dispatchRenderCommand(int boxId, const std::filesystem::path &workingDir)
+QString ToolControl::dispatchToolCommand(int boxId, const std::filesystem::path &workingDir)
 {
-    const std::vector<RenderSourceDTO> sources = m_gridService.retrieveRenderSources(boxId);
+    const std::vector<ToolSourceDTO> sources = m_gridService.retrieveToolSources(boxId);
     if (sources.empty())
         return "no data sources declared in this box";
 
     QStringList untrusted;
-    for (const RenderSourceDTO &source : sources) {
+    for (const ToolSourceDTO &source : sources) {
         if (!m_trustedCommands.contains(source.command)) {
             untrusted.push_back(source.name);
             continue;
@@ -48,12 +48,12 @@ QString RenderControl::dispatchRenderCommand(int boxId, const std::filesystem::p
     return "";
 }
 
-QString RenderControl::dispatchTrustCommand(int boxId,
+QString ToolControl::dispatchTrustCommand(int boxId,
                                             const QString &sourceName,
                                             const std::filesystem::path &workingDir)
 {
-    const std::vector<RenderSourceDTO> sources = m_gridService.retrieveRenderSources(boxId);
-    for (const RenderSourceDTO &source : sources) {
+    const std::vector<ToolSourceDTO> sources = m_gridService.retrieveToolSources(boxId);
+    for (const ToolSourceDTO &source : sources) {
         if (source.name == sourceName) {
             m_trustedCommands.insert(source.command);
             attemptFetch(boxId, source, workingDir);
@@ -63,7 +63,7 @@ QString RenderControl::dispatchTrustCommand(int boxId,
     return "no data source named '" + sourceName + "' in this box";
 }
 
-void RenderControl::fetchSource(int boxId,
+void ToolControl::fetchSource(int boxId,
                                 const QString &sourceName,
                                 const QString &command,
                                 const std::filesystem::path &workingDir,
@@ -81,7 +81,7 @@ void RenderControl::fetchSource(int boxId,
             this,
             [this, process, boxId, sourceName, command, workingDir, key, intervalMs]() {
                 const QString output = QString::fromUtf8(process->readAllStandardOutput()).trimmed();
-                m_gridService.storeRenderSourceValue(boxId, sourceName, output);
+                m_gridService.storeToolSourceValue(boxId, sourceName, output);
                 m_inFlightKeys.remove(key);
                 process->deleteLater();
                 emit sourceValueUpdated();
@@ -92,7 +92,7 @@ void RenderControl::fetchSource(int boxId,
     process->start("/bin/sh", QStringList() << "-c" << command);
 }
 
-void RenderControl::startAutoRepeat(int boxId,
+void ToolControl::startAutoRepeat(int boxId,
                                     const QString &sourceName,
                                     const QString &command,
                                     const std::filesystem::path &workingDir,

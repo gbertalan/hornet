@@ -2,7 +2,7 @@
 #define GRIDSERVICE_H
 #include <QHash>
 #include "shared/dto_model_to_view/boxlistentrydto.h"
-#include "shared/dto_model_to_view/rendersourcedto.h"
+#include "shared/dto_model_to_view/toolsourcedto.h"
 #include <shared/dto_model_to_view/boxcontentdto.h>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/gridzoomdto.h>
@@ -116,8 +116,8 @@ public:
     // ================================================================
     // SLICE: render
     // ================================================================
-    std::vector<RenderSourceDTO> retrieveRenderSources(int boxId) const;
-    void storeRenderSourceValue(int boxId, const QString &sourceName, const QString &value);
+    std::vector<ToolSourceDTO> retrieveToolSources(int boxId) const;
+    void storeToolSourceValue(int boxId, const QString &sourceName, const QString &value);
 
     // ================================================================
     // SLICE: box list (titlebar dropdown)
@@ -127,7 +127,7 @@ public:
     int retrieveHighestBoxId() const;
 
 private:
-    QHash<int, QHash<QString, QString>> m_renderSourceValues;
+    QHash<int, QHash<QString, QString>> m_toolSourceValues;
     IModelAccessReadWrite &m_modelAccess;
 };
 #endif // GRIDSERVICE_H

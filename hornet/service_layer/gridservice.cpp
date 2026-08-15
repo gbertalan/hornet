@@ -1,12 +1,12 @@
 #include "gridservice.h"
 #include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
-#include "renderscriptparser.h"
 #include "shared/dto_view_to_model/boxdragdto.h"
 #include "shared/dto_view_to_model/boxresizedto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
+#include "toolscriptparser.h"
 
-#include "renderscriptparser.h"
+#include "toolscriptparser.h"
 
 GridService::GridService(IModelAccessReadWrite &modelAccess)
     : m_modelAccess(modelAccess)
@@ -50,10 +50,10 @@ GridViewStateDTO GridService::retrieveGridViewState() const
         const QVector<QString> visibleBodyLines = allBodyLines.mid(scrollStart,
                                                                    scrollEnd - scrollStart);
 
-        RenderScriptDTO renderScript;
-        if (box.getContentType() == BoxContentType::RenderScript) {
-            const QHash<QString, QString> sourceValues = m_renderSourceValues.value(box.getId());
-            renderScript = RenderScriptParser::parse(allBodyLines, sourceValues);
+        ToolScriptDTO renderScript;
+        if (box.getContentType() == BoxContentType::Tool) {
+            const QHash<QString, QString> sourceValues = m_toolSourceValues.value(box.getId());
+            renderScript = ToolScriptParser::parse(allBodyLines, sourceValues);
         }
 
         boxViewDTOs.push_back(BoxViewDTO{box.getId(),
@@ -274,19 +274,19 @@ GridSaveDataDTO GridService::retrieveGridSaveData() const
     return GridSaveDataDTO{gridModel.getZoomLevel(), gridModel.getOffset(), boxes};
 }
 
-std::vector<RenderSourceDTO> GridService::retrieveRenderSources(int boxId) const
+std::vector<ToolSourceDTO> GridService::retrieveToolSources(int boxId) const
 {
     const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
-    return RenderScriptParser::parseSources(box.getBodyLines());
+    return ToolScriptParser::parseSources(box.getBodyLines());
 }
 
 // ================================================================
 // SLICE: render
 // ================================================================
 
-void GridService::storeRenderSourceValue(int boxId, const QString &sourceName, const QString &value)
+void GridService::storeToolSourceValue(int boxId, const QString &sourceName, const QString &value)
 {
-    m_renderSourceValues[boxId][sourceName] = value;
+    m_toolSourceValues[boxId][sourceName] = value;
 }
 
 int GridService::retrieveBoxCount() const

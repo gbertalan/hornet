@@ -1,4 +1,4 @@
-#include "renderscriptparser.h"
+#include "toolscriptparser.h"
 #include <QRegularExpression>
 
 // ================================================================
@@ -52,9 +52,9 @@ static QString substituteSourceValuesInText(const QString &text,
 // SLICE: source declaration parsing
 // ================================================================
 
-std::vector<RenderSourceDTO> RenderScriptParser::parseSources(const QVector<QString> &bodyLines)
+std::vector<ToolSourceDTO> ToolScriptParser::parseSources(const QVector<QString> &bodyLines)
 {
-    std::vector<RenderSourceDTO> sources;
+    std::vector<ToolSourceDTO> sources;
     for (const QString &rawLine : bodyLines) {
         const QString line = rawLine.trimmed();
         if (!line.startsWith("source "))
@@ -75,7 +75,7 @@ std::vector<RenderSourceDTO> RenderScriptParser::parseSources(const QVector<QStr
             // source name: command  -> run once, no repeat
             const QString name = tokensBeforeColon.at(1);
             if (!name.isEmpty())
-                sources.push_back(RenderSourceDTO(name, command, 0));
+                sources.push_back(ToolSourceDTO(name, command, 0));
 
         } else if (tokensBeforeColon.size() == 3) {
             // source <N>ms name: command  -> repeats every N ms once trusted
@@ -89,7 +89,7 @@ std::vector<RenderSourceDTO> RenderScriptParser::parseSources(const QVector<QStr
                 continue;
             constexpr int minIntervalMs = 100;
             intervalMs = std::max(intervalMs, minIntervalMs);
-            sources.push_back(RenderSourceDTO(name, command, intervalMs));
+            sources.push_back(ToolSourceDTO(name, command, intervalMs));
         }
         // else: malformed, skip silently
     }
@@ -100,13 +100,13 @@ std::vector<RenderSourceDTO> RenderScriptParser::parseSources(const QVector<QStr
 // SLICE: primitive parsing (line, rect, circle, text)
 // ================================================================
 
-RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines,
-                                          const QHash<QString, QString> &sourceValues)
+ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
+                                      const QHash<QString, QString> &sourceValues)
 {
-    std::vector<RenderLineDTO> lines;
-    std::vector<RenderRectDTO> rects;
-    std::vector<RenderCircleDTO> circles;
-    std::vector<RenderTextDTO> texts;
+    std::vector<ToolLineDTO> lines;
+    std::vector<ToolRectDTO> rects;
+    std::vector<ToolCircleDTO> circles;
+    std::vector<ToolTextDTO> texts;
 
     for (const QString &rawLine : bodyLines) {
         const QString line = rawLine.trimmed();
@@ -120,7 +120,7 @@ RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines,
                 && resolveNumericToken(parts.at(1), sourceValues, y1)
                 && resolveNumericToken(parts.at(2), sourceValues, x2)
                 && resolveNumericToken(parts.at(3), sourceValues, y2))
-                lines.push_back(RenderLineDTO(x1, y1, x2, y2));
+                lines.push_back(ToolLineDTO(x1, y1, x2, y2));
 
         } else if (line.startsWith("rect ")) {
             const QStringList parts = line.mid(5).trimmed().split(' ', Qt::SkipEmptyParts);
@@ -131,7 +131,7 @@ RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines,
                 && resolveNumericToken(parts.at(1), sourceValues, y)
                 && resolveNumericToken(parts.at(2), sourceValues, w)
                 && resolveNumericToken(parts.at(3), sourceValues, h))
-                rects.push_back(RenderRectDTO(x, y, w, h));
+                rects.push_back(ToolRectDTO(x, y, w, h));
 
         } else if (line.startsWith("circle ")) {
             const QStringList parts = line.mid(7).trimmed().split(' ', Qt::SkipEmptyParts);
@@ -141,7 +141,7 @@ RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines,
             if (resolveNumericToken(parts.at(0), sourceValues, x)
                 && resolveNumericToken(parts.at(1), sourceValues, y)
                 && resolveNumericToken(parts.at(2), sourceValues, r))
-                circles.push_back(RenderCircleDTO(x, y, r));
+                circles.push_back(ToolCircleDTO(x, y, r));
 
         } else if (line.startsWith("text ")) {
             const QString argsText = line.mid(5).trimmed();
@@ -162,9 +162,9 @@ RenderScriptDTO RenderScriptParser::parse(const QVector<QString> &bodyLines,
             QString text = argsText.mid(secondSpace + 1);
             text = substituteSourceValuesInText(text, sourceValues);
             if (!text.isEmpty())
-                texts.push_back(RenderTextDTO(x, y, text));
+                texts.push_back(ToolTextDTO(x, y, text));
         }
     }
 
-    return RenderScriptDTO(lines, rects, circles, texts);
+    return ToolScriptDTO(lines, rects, circles, texts);
 }

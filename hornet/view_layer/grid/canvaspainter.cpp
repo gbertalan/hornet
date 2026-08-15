@@ -192,7 +192,7 @@ void CanvasPainter::drawBoxHeaderText(QPainter &painter,
                           textScale);
 }
 
-void CanvasPainter::drawRenderScriptPrimitives(QPainter &painter,
+void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                                                const BoxViewDTO &box,
                                                const BoxScreenGeometry &geom,
                                                double gridGap,
@@ -204,7 +204,7 @@ void CanvasPainter::drawRenderScriptPrimitives(QPainter &painter,
     painter.setPen(QPen(Theme::brightAmber(), lineThickness));
     painter.setBrush(Qt::NoBrush);
 
-    for (const RenderLineDTO &renderLine : box.renderScript.lines) {
+    for (const ToolLineDTO &renderLine : box.toolScript.lines) {
         const double lx1 = geom.screenX + renderLine.x1 * gridGap;
         const double ly1 = geom.screenY + geom.headerH + renderLine.y1 * gridGap;
         const double lx2 = geom.screenX + renderLine.x2 * gridGap;
@@ -212,7 +212,7 @@ void CanvasPainter::drawRenderScriptPrimitives(QPainter &painter,
         painter.drawLine(QPointF(lx1, ly1), QPointF(lx2, ly2));
     }
 
-    for (const RenderRectDTO &renderRect : box.renderScript.rects) {
+    for (const ToolRectDTO &renderRect : box.toolScript.rects) {
         const double rx = geom.screenX + renderRect.x * gridGap;
         const double ry = geom.screenY + geom.headerH + renderRect.y * gridGap;
         const double rw = renderRect.width * gridGap;
@@ -220,7 +220,7 @@ void CanvasPainter::drawRenderScriptPrimitives(QPainter &painter,
         painter.drawRect(QRectF(rx, ry, rw, rh));
     }
 
-    for (const RenderCircleDTO &renderCircle : box.renderScript.circles) {
+    for (const ToolCircleDTO &renderCircle : box.toolScript.circles) {
         const double cx = geom.screenX + renderCircle.x * gridGap;
         const double cy = geom.screenY + geom.headerH + renderCircle.y * gridGap;
         const double r = renderCircle.radius * gridGap;
@@ -229,7 +229,7 @@ void CanvasPainter::drawRenderScriptPrimitives(QPainter &painter,
 
     painter.restore();
 
-    for (const RenderTextDTO &renderText : box.renderScript.texts) {
+    for (const ToolTextDTO &renderText : box.toolScript.texts) {
         const double tx = geom.screenX + renderText.x * gridGap;
         const double ty = geom.screenY + geom.headerH + renderText.y * gridGap;
         fontRenderer.drawText(painter,
@@ -421,8 +421,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                           buttonSize,
                           buttonMargin);
 
-        if (box.contentType == BoxContentType::RenderScript) {
-            drawRenderScriptPrimitives(painter, box, geom, gridGap, fontRenderer, textScale);
+        if (box.contentType == BoxContentType::Tool) {
+            drawToolScriptPrimitives(painter, box, geom, gridGap, fontRenderer, textScale);
         } else {
             drawBoxTextContent(painter,
                                box,

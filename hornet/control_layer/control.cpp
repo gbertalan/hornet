@@ -44,9 +44,9 @@ Control::Control(IModelAccessRead &modelAccess,
     , m_editorControl(modelAccess, editorService, view)
     , m_terminalControl(modelAccess, editorService, terminalService)
     , m_gridControl(modelAccess, gridService, view)
-    , m_renderControl(gridService)
+    , m_toolControl(gridService)
 {
-    connect(&m_renderControl, &RenderControl::sourceValueUpdated, this, [this]() {
+    connect(&m_toolControl, &ToolControl::sourceValueUpdated, this, [this]() {
         m_gridControl.sendViewStateToGrid();
     });
 }
@@ -523,7 +523,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         int boxId = -1;
         if (!resolveBoxIdToken(parts.at(0), boxId))
             return "usage: hornet render <boxId|last>";
-        return m_renderControl.dispatchRenderCommand(boxId, command.workingDirectory);
+        return m_toolControl.dispatchToolCommand(boxId, command.workingDirectory);
     }
 
     if (command.subcommand == "trust") {
@@ -533,7 +533,7 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         int boxId = -1;
         if (!resolveBoxIdToken(parts.at(0), boxId))
             return "usage: hornet trust <boxId|last> <sourceName>";
-        return m_renderControl.dispatchTrustCommand(boxId, parts.at(1), command.workingDirectory);
+        return m_toolControl.dispatchTrustCommand(boxId, parts.at(1), command.workingDirectory);
     }
 
     if (command.subcommand == "select") {
