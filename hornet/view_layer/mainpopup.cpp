@@ -64,13 +64,15 @@ void MainPopup::resetBodyContentHeight()
 void MainPopup::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.fillRect(rect(), Theme::almostBlack());
+    painter.fillRect(rect(), Theme::almostBlack().lighter(155));
+    painter.fillRect(QRectF(0, 0, m_width, m_headerHeight), Theme::darkAmber());
+
     painter.setPen(QPen(Theme::darkAmber(), 2));
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(rect().adjusted(1, 1, -1, -1));
 
-    painter.setPen(QPen(Theme::darkAmber(), 2));
-    painter.drawLine(QPointF(2, m_headerHeight), QPointF(m_width - 2, m_headerHeight));
+    // painter.setPen(QPen(Theme::darkAmber(), 2));
+    // painter.drawLine(QPointF(2, m_headerHeight), QPointF(m_width - 2, m_headerHeight));
 
     const float scale = 0.7f;
     const float textPadding = 10.f;
@@ -79,8 +81,10 @@ void MainPopup::paintEvent(QPaintEvent *event)
     const float textX = (textWidth <= availableWidth)
                             ? (static_cast<float>(m_width) - textWidth) / 2.0f
                             : textPadding;
-    const float textY = (static_cast<float>(m_headerHeight) - m_fontAtlas.textHeight(scale)) / 2.0f;
-    m_fontRenderer.drawText(painter, textX, textY, m_headerText, Theme::darkAmber(), scale);
+    const int bottomPadding = 4;
+    const float textY = ((static_cast<float>(m_headerHeight) - m_fontAtlas.textHeight(scale)) / 2.0f)
+                        - bottomPadding;
+    m_fontRenderer.drawText(painter, textX, textY, m_headerText, Theme::almostBlack(), scale);
 }
 
 void MainPopup::keyPressEvent(QKeyEvent *event)

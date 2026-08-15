@@ -1,4 +1,5 @@
 #include "view_layer/boxlistpanel.h"
+#include <QCoreApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QScrollArea>
@@ -123,11 +124,13 @@ void BoxListPanelContent::mouseReleaseEvent(QMouseEvent *event)
 BoxListPanel::BoxListPanel(FontAtlas &fontAtlas,
                            FontRenderer &fontRenderer,
                            int visibleRows,
-                           QWidget *parent)
+                           QWidget *parent,
+                           bool disableWheelScroll)
     : QWidget(parent)
     , m_fontAtlas(fontAtlas)
     , m_fontRenderer(fontRenderer)
     , m_visibleRows(visibleRows)
+    , m_disableWheelScroll(disableWheelScroll)
 {
     setFixedHeight(m_visibleRows * m_rowHeight);
 
@@ -140,6 +143,7 @@ BoxListPanel::BoxListPanel(FontAtlas &fontAtlas,
     m_scrollArea->setWidget(m_content);
     m_scrollArea->setStyleSheet("QScrollArea { background: transparent; border: none; }");
     m_scrollArea->viewport()->setStyleSheet("background: transparent;");
+    m_scrollArea->viewport()->installEventFilter(this);
 
     m_verticalScrollBar = new CustomScrollBar(Qt::Vertical, m_scrollArea);
     m_verticalScrollBar->setStyleSheet(
@@ -178,4 +182,21 @@ void BoxListPanel::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
     m_scrollArea->setGeometry(0, 0, width(), height());
     m_content->setFixedWidth(width());
+}
+
+bool BoxListPanel::eventFilter(QObject *watched, QEvent *event)
+{
+    if (m_disableWheelScroll && watched == m_scrollArea->viewport()
+        && event->type() == QEvent::Wheel) {
+        QWidget *ancestor = parentWidget();
+        while (ancestor) {
+            if (auto *ancestorScrollArea = qobject_cast<QScrollArea *>(ancestor)) {
+                QCoreApplication::sendEvent(ancestorScrollArea->viewport(), event);
+                break;
+            }
+            ancestor = ancestor->parentWidget();
+        }
+        return true;
+    }
+    return QWidget::eventFilter(watched, event);
 }

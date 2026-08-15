@@ -2,6 +2,8 @@
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QFileDialog>
+#include <QFont>
+#include <QFontDatabase>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
@@ -43,19 +45,31 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     , m_fontAtlas(fontAtlas)
     , m_fontRenderer(fontRenderer)
 {
-    const QColor amber = Theme::darkAmber();
-    const QColor teal = Theme::desaturatedTeal();
+    static const QString monoFamily = [] {
+        const int fontId = QFontDatabase::addApplicationFont(":/fonts/JetBrainsMono-Bold.ttf");
+        const QStringList families = QFontDatabase::applicationFontFamilies(fontId);
+        return families.isEmpty() ? QString() : families.first();
+    }();
+    if (!monoFamily.isEmpty())
+        setFont(QFont(monoFamily));
 
-    const QString fieldStyle = "QLineEdit, QPushButton, QCheckBox, QListWidget { color: #d0d0d0; "
-                               "background-color: #1a1a1a; "
-                               "border: 1px solid #4e4c4a; }";
-    const QString toggleStyle = QString(
-                                    "QPushButton { color: #9a9a9a; background-color: #1a1a1a; "
-                                    "border: 1px solid #4e4c4a; padding: 4px 14px; }"
-                                    "QPushButton:checked { color: #1a1a1a; background-color: %1; "
-                                    "border: 1px solid %1; font-weight: bold; }")
-                                    .arg(amber.name());
-    const QString noticeStyle = QString("QLabel { color: %1; }").arg(teal.name());
+    const QColor amber = Theme::darkAmber();
+
+    const QString fieldStyle
+        = QString("QLineEdit, QPushButton, QCheckBox, QListWidget { color: #d0d0d0; "
+                  "background-color: #1a1a1a; border: 1px solid #4e4c4a; }"
+                  "QPushButton:hover { background-color: #262626; border: 1px solid %1; }"
+                  "QCheckBox:hover { border: 1px solid %1; }"
+                  "QListWidget::item:hover { background-color: #262626; }")
+              .arg(amber.name());
+    const QString toggleStyle
+        = QString("QPushButton { color: #9a9a9a; background-color: #1a1a1a; "
+                  "border: 1px solid #4e4c4a; padding: 4px 14px; }"
+                  "QPushButton:hover:!checked { border: 1px solid %1; color: #d0d0d0; }"
+                  "QPushButton:checked { color: #1a1a1a; background-color: %1; "
+                  "border: 1px solid %1; font-weight: bold; }")
+              .arg(amber.name());
+    const QString noticeStyle = QString("QLabel { color: %1; }").arg(Theme::darkGray().name());
 
     // ---- Load section (top): mode toggle, browse, pending list, load ----
 
@@ -152,7 +166,8 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     m_loadedBoxesList = new BoxListPanel(fontAtlas,
                                          fontRenderer,
                                          m_listVisibleRows,
-                                         m_loadedSectionContainer);
+                                         m_loadedSectionContainer,
+                                         true);
     connect(m_loadedBoxesList,
             &BoxListPanel::boxListPageRequested,
             this,
@@ -225,7 +240,7 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
     m_fontRenderer.drawText(painter,
                             m_margin,
                             m_loadEyebrowY,
-                            "> LOAD SOURCE",
+                            "> LOAD FILE(S)",
                             Theme::darkAmber(),
                             eyebrowScale);
     painter.drawLine(QPointF(m_margin, m_loadDividerY),
@@ -234,13 +249,13 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
                             m_margin,
                             m_loadCaptionY,
                             "Bring files onto the grid, individually or by extension.",
-                            Theme::desaturatedTeal(),
+                            Theme::darkGray(),
                             captionScale);
 
     m_fontRenderer.drawText(painter,
                             m_margin,
                             m_loadedEyebrowY,
-                            "> LOADED ON GRID",
+                            "> UNLOAD FILE(S)",
                             Theme::darkAmber(),
                             eyebrowScale);
     painter.drawLine(QPointF(m_margin, m_loadedDividerY),
@@ -248,8 +263,8 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
     m_fontRenderer.drawText(painter,
                             m_margin,
                             m_loadedCaptionY,
-                            "Boxes currently on the grid. Unloading from here is coming soon.",
-                            Theme::desaturatedTeal(),
+                            "Click to unload.",
+                            Theme::darkGray(),
                             captionScale);
 
     if (!m_statusReadoutText.isEmpty())
@@ -257,7 +272,7 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
                                 m_margin,
                                 m_statusReadoutY,
                                 m_statusReadoutText,
-                                Theme::desaturatedTeal(),
+                                Theme::darkGray(),
                                 readoutScale);
 }
 
