@@ -21,6 +21,17 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
 };
+
+class UnloadHistoryPanel : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit UnloadHistoryPanel(QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+};
+
 class FileLoaderPanel : public QWidget
 {
     Q_OBJECT
@@ -58,8 +69,12 @@ private:
 
     BorderedPanel *m_loadedSectionContainer;
     BoxListPanel *m_loadedBoxesList;
-
+    UnloadHistoryPanel *m_unloadHistoryContainer;
     QString m_statusReadoutText;
+    int m_loadedListX = 0;
+    int m_loadedListW = 0;
+    int m_unloadHistoryX = 0;
+    int m_unloadHistoryW = 0;
 
     int m_loadEyebrowY = 0;
     int m_loadDividerY = 0;
@@ -80,4 +95,5 @@ private:
     static constexpr int m_gapListToReadout = 14;
     static constexpr int m_readoutHeight = 16;
     static constexpr int m_loadContainerHeight = 300;
+    static constexpr int m_columnGap = 20;
 };

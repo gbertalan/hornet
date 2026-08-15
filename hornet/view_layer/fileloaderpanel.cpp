@@ -72,6 +72,10 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
                   "border: 1px solid %1; font-weight: bold; }")
               .arg(amber.name());
     const QString noticeStyle = QString("QLabel { color: %1; }").arg(Theme::darkGray().name());
+    const QString browseButtonStyle
+        = QString("QPushButton { color: %1; background-color: #1a1a1a; border: 1px solid #4e4c4a; }"
+                  "QPushButton:hover { background-color: #262626; border: 1px solid %1; }")
+              .arg(amber.name());
 
     // ---- Load section (top): mode toggle, browse, pending list, load ----
 
@@ -93,7 +97,7 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
 
     m_browseButton = new QPushButton("Choose Files…", m_loadSectionContainer);
     m_pendingFilesList = new QListWidget(m_loadSectionContainer);
-    m_browseButton->setStyleSheet(fieldStyle);
+    m_browseButton->setStyleSheet(browseButtonStyle);
     m_pendingFilesList->setStyleSheet(fieldStyle);
     m_pendingFilesList->setMinimumHeight(110);
     m_pendingFilesList->setTextElideMode(Qt::ElideNone);
@@ -123,17 +127,18 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     directoryOptionsLayout->addLayout(extensionRow);
     m_directoryOptionsRow->hide();
 
-    const QString actionButtonStyle
-        = QString(
-              "QPushButton { color: #d0d0d0; background-color: #1a1a1a; border: 1px solid #4e4c4a; "
-              "padding: 8px 24px; font-weight: bold; }"
-              "QPushButton:hover { background-color: #262626; border: 1px solid %1; }")
-              .arg(amber.name());
+    const QString actionButtonStyleTemplate = QString(
+        "QPushButton { color: %1; background-color: #1a1a1a; border: 1px solid #4e4c4a; "
+        "padding: 8px 24px; font-weight: bold; }"
+        "QPushButton:hover { background-color: #262626; border: 1px solid %2; }");
+    const QString loadButtonStyle = actionButtonStyleTemplate.arg(amber.name(), amber.name());
+    const QString clearButtonStyle = actionButtonStyleTemplate.arg(Theme::desaturatedTeal().name(),
+                                                                   amber.name());
 
     m_clearButton = new QPushButton("Clear", m_loadSectionContainer);
     m_loadButton = new QPushButton("Load ▸", m_loadSectionContainer);
-    m_clearButton->setStyleSheet(actionButtonStyle);
-    m_loadButton->setStyleSheet(actionButtonStyle);
+    m_clearButton->setStyleSheet(clearButtonStyle);
+    m_loadButton->setStyleSheet(loadButtonStyle);
     m_clearButton->setFixedWidth(110);
     m_loadButton->setFixedWidth(110);
 
@@ -191,6 +196,13 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
                   .arg(fontRule)
                   .arg(Theme::almostBlack().name());
 
+        const auto alreadyPending = [this](const QString &path) {
+            for (int i = 0; i < m_pendingFilesList->count(); ++i)
+                if (m_pendingFilesList->item(i)->text() == path)
+                    return true;
+            return false;
+        };
+
         if (m_modeDirectoryButton->isChecked()) {
             QFileDialog dialog(this, "Select directory to load");
             dialog.setOption(QFileDialog::DontUseNativeDialog, true);
@@ -206,7 +218,7 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
             dialog.setStyleSheet(dialogStyle);
             if (dialog.exec() == QDialog::Accepted) {
                 const QStringList selected = dialog.selectedFiles();
-                if (!selected.isEmpty())
+                if (!selected.isEmpty() && !alreadyPending(selected.first()))
                     m_pendingFilesList->addItem(selected.first());
             }
         } else {
@@ -224,7 +236,8 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
             if (dialog.exec() == QDialog::Accepted) {
                 const QStringList selected = dialog.selectedFiles();
                 for (const QString &path : selected)
-                    m_pendingFilesList->addItem(path);
+                    if (!alreadyPending(path))
+                        m_pendingFilesList->addItem(path);
             }
         }
     });
@@ -247,8 +260,7 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     m_loadedBoxesList = new BoxListPanel(fontAtlas,
                                          fontRenderer,
                                          m_listVisibleRows,
-                                         m_loadedSectionContainer,
-                                         true);
+                                         m_loadedSectionContainer);
     connect(m_loadedBoxesList,
             &BoxListPanel::boxListPageRequested,
             this,
@@ -261,6 +273,7 @@ FileLoaderPanel::FileLoaderPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
                                       + ")";
                 update();
             });
+    m_unloadHistoryContainer = new UnloadHistoryPanel(this);
 }
 
 void FileLoaderPanel::updateBoxListPage(const BoxListPageDTO &dto)
@@ -300,8 +313,22 @@ void FileLoaderPanel::layoutChildren()
     m_loadedDividerY = m_loadedEyebrowY + m_eyebrowHeight + m_gapEyebrowToDivider;
     m_loadedCaptionY = m_loadedDividerY + m_gapDividerToCaption;
     const int loadedContainerY = m_loadedCaptionY + m_captionHeight + m_gapCaptionToContainer;
-    m_loadedSectionContainer->setGeometry(m_margin, loadedContainerY, contentWidth, listHeight);
-    m_loadedBoxesList->setGeometry(2, 2, contentWidth - 4, listHeight - 4);
+
+    m_loadedListX = m_margin;
+    m_loadedListW = static_cast<int>((contentWidth - m_columnGap) * 0.42f);
+    m_unloadHistoryX = m_loadedListX + m_loadedListW + m_columnGap;
+    m_unloadHistoryW = width() - m_margin - m_unloadHistoryX;
+
+    m_loadedSectionContainer->setGeometry(m_loadedListX,
+                                          loadedContainerY,
+                                          m_loadedListW,
+                                          listHeight);
+    m_loadedBoxesList->setGeometry(2, 2, m_loadedListW - 4, listHeight - 4);
+
+    m_unloadHistoryContainer->setGeometry(m_unloadHistoryX,
+                                          loadedContainerY,
+                                          m_unloadHistoryW,
+                                          listHeight);
 
     m_statusReadoutY = loadedContainerY + listHeight + m_gapListToReadout;
 }
@@ -330,7 +357,7 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
                             m_margin,
                             m_loadCaptionY,
                             "Bring files onto the grid, individually or by extension.",
-                            Theme::darkGray(),
+                            Theme::desaturatedTeal(),
                             captionScale);
 
     m_fontRenderer.drawText(painter,
@@ -342,10 +369,16 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
     painter.drawLine(QPointF(m_margin, m_loadedDividerY),
                      QPointF(m_margin + contentWidth, m_loadedDividerY));
     m_fontRenderer.drawText(painter,
-                            m_margin,
+                            m_loadedListX,
                             m_loadedCaptionY,
                             "Click to unload.",
-                            Theme::darkGray(),
+                            Theme::desaturatedTeal(),
+                            captionScale);
+    m_fontRenderer.drawText(painter,
+                            m_unloadHistoryX,
+                            m_loadedCaptionY,
+                            "Last unloaded",
+                            Theme::desaturatedTeal(),
                             captionScale);
 
     if (!m_statusReadoutText.isEmpty())
@@ -355,6 +388,35 @@ void FileLoaderPanel::paintEvent(QPaintEvent *event)
                                 m_statusReadoutText,
                                 Theme::darkGray(),
                                 readoutScale);
+}
+
+// ================================================================
+// UnloadHistoryPanel - teal-bordered container previewing the
+// upcoming "last unloaded" list (FileLoaderPanel only, for now)
+// ================================================================
+
+UnloadHistoryPanel::UnloadHistoryPanel(QWidget *parent)
+    : QWidget(parent)
+{
+    QLabel *placeholder = new QLabel("No unloads yet.", this);
+    placeholder->setAlignment(Qt::AlignCenter);
+    placeholder->setWordWrap(true);
+    placeholder->setStyleSheet(
+        QString("QLabel { color: %1; border: none; background: transparent; }")
+            .arg(Theme::darkGray().name()));
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(10, 10, 10, 10);
+    layout->addWidget(placeholder);
+}
+
+void UnloadHistoryPanel::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.fillRect(rect(), Theme::almostBlack());
+    painter.setPen(QPen(Theme::desaturatedTeal(), 1));
+    painter.setBrush(Qt::NoBrush);
+    painter.drawRect(rect().adjusted(0, 0, -1, -1));
 }
 
 void FileLoaderPanel::resizeEvent(QResizeEvent *event)

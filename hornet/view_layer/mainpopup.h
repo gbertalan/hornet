@@ -1,10 +1,12 @@
 #pragma once
 #include <QWidget>
+class QTimer;
 
 class FontAtlas;
 class FontRenderer;
 class QScrollArea;
 class CustomScrollBar;
+class QPushButton;
 
 class MainPopup : public QWidget
 {
@@ -35,4 +37,8 @@ private:
     QScrollArea *m_scrollArea;
     CustomScrollBar *m_verticalScrollBar;
     QWidget *m_bodyContent;
+
+    QPushButton *m_closeButton;
+
+    QTimer *m_scrollSnapTimer;
 };

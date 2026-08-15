@@ -9,7 +9,6 @@ class QScrollArea;
 class CustomScrollBar;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
-class QEvent;
 
 class BoxListPanelContent : public QWidget
 {
@@ -53,8 +52,7 @@ public:
     explicit BoxListPanel(FontAtlas &fontAtlas,
                           FontRenderer &fontRenderer,
                           int visibleRows = 10,
-                          QWidget *parent = nullptr,
-                          bool disableWheelScroll = false);
+                          QWidget *parent = nullptr);
     void updateBoxListPage(const BoxListPageDTO &dto);
     void setHighlightedBoxId(int boxId);
     void refresh();
@@ -64,11 +62,9 @@ signals:
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
-    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     int m_visibleRows;
-    bool m_disableWheelScroll;
     static constexpr int m_rowHeight = 34;
     QScrollArea *m_scrollArea;
     CustomScrollBar *m_verticalScrollBar;

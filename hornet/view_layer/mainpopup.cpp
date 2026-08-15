@@ -1,8 +1,10 @@
 #include "mainpopup.h"
 #include <QKeyEvent>
 #include <QPainter>
+#include <QPushButton>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QTimer>
 #include "theme.h"
 #include "view_layer/customscrollbar.h"
 #include "view_layer/font_renderer/FontAtlas.h"
@@ -38,6 +40,34 @@ MainPopup::MainPopup(FontAtlas &fontAtlas, FontRenderer &fontRenderer, QWidget *
         "}");
     m_scrollArea->setVerticalScrollBar(m_verticalScrollBar);
     m_scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    m_scrollSnapTimer = new QTimer(this);
+    m_scrollSnapTimer->setSingleShot(true);
+    connect(m_scrollSnapTimer, &QTimer::timeout, this, [this]() {
+        constexpr int snapThreshold = 40;
+        const int value = m_verticalScrollBar->value();
+        const int minValue = m_verticalScrollBar->minimum();
+        const int maxValue = m_verticalScrollBar->maximum();
+        if (value != minValue && value - minValue <= snapThreshold)
+            m_verticalScrollBar->setValue(minValue);
+        else if (value != maxValue && maxValue - value <= snapThreshold)
+            m_verticalScrollBar->setValue(maxValue);
+    });
+    connect(m_verticalScrollBar, &QScrollBar::valueChanged, this, [this]() {
+        m_scrollSnapTimer->start(150);
+    });
+
+    const QString closeButtonStyle
+        = QString("QPushButton { color: %1; background-color: transparent; border: none; "
+                  "font-size: 26px; font-weight: bold; }"
+                  "QPushButton:hover { background-color: rgba(0, 0, 0, 40); }")
+              .arg(Theme::almostBlack().name());
+    m_closeButton = new QPushButton("×", this);
+    m_closeButton->setFixedSize(30, 30);
+    m_closeButton->setStyleSheet(closeButtonStyle);
+    m_closeButton->move(m_width - 30 - 8, (m_headerHeight - 30) / 2);
+    m_closeButton->raise();
+    connect(m_closeButton, &QPushButton::clicked, this, &MainPopup::closeRequested);
 }
 
 void MainPopup::setHeaderText(const QString &text)
