@@ -26,6 +26,9 @@
 
 #include "shared/dto_view_to_model/filepathlistdto.h"
 
+#include "shared/dto_view_to_model/boxunloadrequesteddto.h"
+#include "shared/dto_view_to_model/toolbuttonactivateddto.h"
+
 // ================================================================
 // SLICE: construction & initialization
 // ================================================================
@@ -724,13 +727,29 @@ QString Control::saveProjectToFile(const std::filesystem::path &filePath)
 // SLICE: box unload (close button - separate from "hornet unload")
 // ================================================================
 
-void Control::onBoxUnloadRequested(int boxId)
+void Control::onBoxUnloadRequested(const BoxUnloadRequestedDTO &dto)
 {
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
-    const HornetCommandDTO command{true, "unload", QString::number(boxId), workingDir};
+    const HornetCommandDTO command{true, "unload", QString::number(dto.boxId), workingDir};
     const QString message = dispatchHornetCommand(command);
     if (!message.isEmpty())
-        createCommandOutputBox("unload " + QString::number(boxId), message);
+        createCommandOutputBox("unload " + QString::number(dto.boxId), message);
+}
+
+// ================================================================
+// SLICE: tool button activation (Ctrl+click on a .tool box's button)
+// ================================================================
+
+void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
+{
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    const HornetCommandDTO hornetCommand
+        = m_terminalControl.parseHornetCommand("hornet " + dto.hornetCommand, workingDir);
+    if (!hornetCommand.wasHornetCommand)
+        return;
+    const QString message = dispatchHornetCommand(hornetCommand);
+    if (!message.isEmpty())
+        createCommandOutputBox(dto.hornetCommand, message);
 }
 
 // ================================================================

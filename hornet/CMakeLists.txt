@@ -131,6 +131,8 @@ qt_add_executable(hornet
     view_layer/scriptrunnerpanel.h view_layer/scriptrunnerpanel.cpp
     view_layer/projectsaverpanel.h view_layer/projectsaverpanel.cpp
     shared/dto_model_to_view/toolbuttondto.h
+    shared/dto_view_to_model/boxunloadrequesteddto.h
+    shared/dto_view_to_model/toolbuttonactivateddto.h
 
 
 

@@ -13,6 +13,9 @@ struct GridViewStateDTO;
 struct GridZoomDTO;
 struct BoxDragDTO;
 struct BoxSelectedDTO;
+struct BoxUnloadRequestedDTO;
+struct ToolButtonActivatedDTO;
+
 class Grid : public QWidget
 {
     Q_OBJECT
@@ -42,7 +45,8 @@ signals:
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
-    void boxUnloadRequested(int boxId);
+    void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
+    void toolButtonActivated(const ToolButtonActivatedDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -64,6 +68,8 @@ private:
     QPoint m_lastMousePos;
     bool m_isDragging = false;
     int m_hoveredBoxId = -1;
+    int m_hoveredButtonBoxId = -1;
+    int m_hoveredButtonIndex = -1;
     bool m_isDraggingGrid = false;
     bool m_isDraggingBox = false;
     int m_draggedBoxId = -1;

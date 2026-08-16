@@ -165,6 +165,7 @@ SplitPane::SplitPane(int leftWidth,
     connect(m_grid, &Grid::boxSelected, this, &SplitPane::boxSelected);
     connect(m_grid, &Grid::boxResized, this, &SplitPane::boxResized);
     connect(m_grid, &Grid::boxUnloadRequested, this, &SplitPane::boxUnloadRequested);
+    connect(m_grid, &Grid::toolButtonActivated, this, &SplitPane::toolButtonActivated);
     connect(this, &QSplitter::splitterMoved, this, [this](int, int) {
         emit leftPaneWidthChanged(m_leftPane->width());
     });

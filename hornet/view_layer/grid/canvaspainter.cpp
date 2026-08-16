@@ -229,7 +229,9 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                                              FontRenderer &fontRenderer,
                                              FontAtlas &fontAtlas,
                                              float textScale,
-                                             bool isCtrlPressed)
+                                             bool isCtrlPressed,
+                                             int hoveredButtonBoxId,
+                                             int hoveredButtonIndex)
 {
     painter.save();
     painter.setBrush(Qt::NoBrush);
@@ -277,7 +279,16 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                               textScale * static_cast<float>(toolText.fontSizeMultiplier));
     }
 
-    drawToolButtons(painter, box, geom, gridGap, fontRenderer, fontAtlas, textScale, isCtrlPressed);
+    drawToolButtons(painter,
+                    box,
+                    geom,
+                    gridGap,
+                    fontRenderer,
+                    fontAtlas,
+                    textScale,
+                    isCtrlPressed,
+                    hoveredButtonBoxId,
+                    hoveredButtonIndex);
 }
 
 void CanvasPainter::drawToolButtons(QPainter &painter,
@@ -287,7 +298,9 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
                                     FontRenderer &fontRenderer,
                                     FontAtlas &fontAtlas,
                                     float textScale,
-                                    bool isCtrlPressed)
+                                    bool isCtrlPressed,
+                                    int hoveredButtonBoxId,
+                                    int hoveredButtonIndex)
 {
     if (box.toolScript.buttons.empty())
         return;
@@ -295,23 +308,30 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
     painter.save();
     painter.setOpacity(isCtrlPressed ? 1.0 : 0.4);
 
-    for (const ToolButtonDTO &toolButton : box.toolScript.buttons) {
+    for (int i = 0; i < static_cast<int>(box.toolScript.buttons.size()); ++i) {
+        const ToolButtonDTO &toolButton = box.toolScript.buttons.at(i);
+        const bool isHovered = isCtrlPressed && box.id == hoveredButtonBoxId
+                               && i == hoveredButtonIndex;
+
         const double bx = geom.screenX + toolButton.x * gridGap;
         const double by = geom.screenY + geom.headerH + toolButton.y * gridGap;
         const double bw = toolButton.width * gridGap;
         const double bh = toolButton.height * gridGap;
         const QRectF buttonRect(bx, by, bw, bh);
 
-        const QColor buttonColor = resolveToolColor(toolButton.colorToken, Theme::brightAmber());
+        const QColor themeColor = resolveToolColor(toolButton.colorToken, Theme::brightAmber());
+        const QColor textColor = isHovered ? Theme::almostWhite() : themeColor;
         const double borderThickness = std::max(1.0, gridGap * 0.08);
 
-        painter.setPen(QPen(buttonColor, borderThickness));
+        if (isHovered) {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(Theme::darkGray());
+            painter.drawRect(buttonRect);
+        }
+
+        painter.setPen(QPen(themeColor, borderThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(buttonRect);
-
-        const QPixmap backgroundImage(":/icons/titlebar_button_background.png");
-        if (!backgroundImage.isNull())
-            painter.drawPixmap(buttonRect.toRect(), backgroundImage);
 
         QString displayLabel = toolButton.label;
         float labelWidth = fontAtlas.textWidth(displayLabel.length(), textScale);
@@ -328,10 +348,23 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
             labelWidth = fontAtlas.textWidth(displayLabel.length(), textScale);
         }
 
+        const float charWidth = fontAtlas.textWidth(1, textScale);
         const float textHeight = fontAtlas.textHeight(textScale);
         const float textX = static_cast<float>(bx + bw / 2.0) - labelWidth / 2.0f;
         const float textY = static_cast<float>(by + bh / 2.0) - textHeight / 2.0f;
-        fontRenderer.drawText(painter, textX, textY, displayLabel, buttonColor, textScale);
+
+        const QPixmap glyphBackground(isHovered ? ":/icons/titlebar_button_glow.png"
+                                                : ":/icons/titlebar_button_background.png");
+        if (!glyphBackground.isNull()) {
+            float glyphX = textX;
+            for (int charIndex = 0; charIndex < displayLabel.length(); ++charIndex) {
+                painter.drawPixmap(QRectF(glyphX, textY, charWidth, textHeight).toRect(),
+                                   glyphBackground);
+                glyphX += charWidth;
+            }
+        }
+
+        fontRenderer.drawText(painter, textX, textY, displayLabel, textColor, textScale);
     }
 
     painter.restore();
@@ -464,6 +497,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                               FontAtlas &fontAtlas,
                               bool selectedBoxCursorVisible,
                               bool isCtrlPressed,
+                              int hoveredButtonBoxId,
+                              int hoveredButtonIndex,
                               QSize viewportSize)
 {
     painter.setRenderHint(QPainter::Antialiasing, true);
@@ -525,7 +560,9 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                      fontRenderer,
                                      fontAtlas,
                                      textScale,
-                                     isCtrlPressed);
+                                     isCtrlPressed,
+                                     hoveredButtonBoxId,
+                                     hoveredButtonIndex);
         } else {
             drawBoxTextContent(painter,
                                box,
@@ -589,6 +626,42 @@ int CanvasPainter::findBoxCloseButtonAtPosition(QPoint mousePosition,
         if (buttonRect.contains(mousePosition))
             return box.id;
         break;
+    }
+    return -1;
+}
+
+int CanvasPainter::findToolButtonAtPosition(QPoint mousePosition,
+                                            double gridGap,
+                                            QPoint offset,
+                                            int hoveredBoxId,
+                                            const std::vector<BoxViewDTO> &boxes,
+                                            int &outButtonIndex)
+{
+    outButtonIndex = -1;
+    if (hoveredBoxId == -1)
+        return -1;
+
+    constexpr int headerHeightUnits = 3;
+    for (const BoxViewDTO &box : boxes) {
+        if (box.id != hoveredBoxId)
+            continue;
+        if (box.toolScript.buttons.empty())
+            return -1;
+
+        const QRectF fullRect = getBoxScreenRect(box, gridGap, offset);
+        const double headerH = headerHeightUnits * gridGap;
+        for (int i = 0; i < static_cast<int>(box.toolScript.buttons.size()); ++i) {
+            const ToolButtonDTO &toolButton = box.toolScript.buttons.at(i);
+            const double bx = fullRect.x() + toolButton.x * gridGap;
+            const double by = fullRect.y() + headerH + toolButton.y * gridGap;
+            const double bw = toolButton.width * gridGap;
+            const double bh = toolButton.height * gridGap;
+            if (QRectF(bx, by, bw, bh).contains(mousePosition)) {
+                outButtonIndex = i;
+                return box.id;
+            }
+        }
+        return -1;
     }
     return -1;
 }

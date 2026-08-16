@@ -24,6 +24,8 @@ struct BoxSelectedDTO;
 struct BoxResizeDTO;
 struct BoxListPageRequestDTO;
 struct FilePathListDTO;
+struct BoxUnloadRequestedDTO;
+struct ToolButtonActivatedDTO;
 
 class Control : public QObject
 {
@@ -76,7 +78,12 @@ public slots:
     // ================================================================
     // SLICE: box unload (close button - separate from "hornet unload")
     // ================================================================
-    void onBoxUnloadRequested(int boxId);
+    void onBoxUnloadRequested(const BoxUnloadRequestedDTO &dto);
+
+    // ================================================================
+    // SLICE: tool button activation (Ctrl+click on a .tool box's button)
+    // ================================================================
+    void onToolButtonActivated(const ToolButtonActivatedDTO &dto);
 
     // ================================================================
     // SLICE: box list paging (titlebar dropdown, file loader popup)

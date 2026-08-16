@@ -14,6 +14,8 @@ struct EditorVisibleLinesDTO;
 struct EditorViewStateDTO;
 struct EditorSettingsDTO;
 struct BoxResizeDTO;
+struct BoxUnloadRequestedDTO;
+struct ToolButtonActivatedDTO;
 class CustomScrollBar;
 class Editor;
 class FontAtlas;
@@ -62,7 +64,8 @@ signals:
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
-    void boxUnloadRequested(int boxId);
+    void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
+    void toolButtonActivated(const ToolButtonActivatedDTO &dto);
     void leftPaneWidthChanged(int width);
 
 protected:

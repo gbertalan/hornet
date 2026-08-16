@@ -7,7 +7,9 @@
 #include "shared/dto_view_to_model/boxdragdto.h"
 #include "shared/dto_view_to_model/boxresizeedge.h"
 #include "shared/dto_view_to_model/boxselecteddto.h"
+#include "shared/dto_view_to_model/boxunloadrequesteddto.h"
 #include "shared/dto_view_to_model/gridzoomdto.h"
+#include "shared/dto_view_to_model/toolbuttonactivateddto.h"
 #include <cmath>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/boxresizedto.h>
@@ -66,6 +68,10 @@ void Grid::setCursorBlinkVisible(bool visible)
 void Grid::setCtrlPressed(bool isCtrlPressed)
 {
     m_isCtrlPressed = isCtrlPressed;
+    if (!isCtrlPressed && m_hoveredButtonBoxId != -1) {
+        m_hoveredButtonBoxId = -1;
+        m_hoveredButtonIndex = -1;
+    }
     for (const BoxViewDTO &box : boxes) {
         if (box.id == m_hoveredBoxId) {
             const QRectF buttonRect = CanvasPainter::getBoxCloseButtonRect(box, gridGap, offset);
@@ -73,6 +79,7 @@ void Grid::setCtrlPressed(bool isCtrlPressed)
             return;
         }
     }
+    update();
 }
 
 // ================================================================
@@ -95,6 +102,8 @@ void Grid::paintEvent(QPaintEvent *)
                              m_fontAtlas,
                              m_cursorBlinkVisible,
                              m_isCtrlPressed,
+                             m_hoveredButtonBoxId,
+                             m_hoveredButtonIndex,
                              size());
 }
 
@@ -118,7 +127,8 @@ void Grid::wheelEvent(QWheelEvent *event)
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        // --- close (X) button, only active while Ctrl is held ---
+        // --- Ctrl held: only chrome (close-X, tool buttons) is interactive.
+        // No selection, drag, or resize starts while Ctrl is held. ---
         if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
             const int closeBoxId = CanvasPainter::findBoxCloseButtonAtPosition(event->pos(),
                                                                                gridGap,
@@ -126,10 +136,30 @@ void Grid::mousePressEvent(QMouseEvent *event)
                                                                                m_hoveredBoxId,
                                                                                boxes);
             if (closeBoxId != -1) {
-                emit boxUnloadRequested(closeBoxId);
+                emit boxUnloadRequested(BoxUnloadRequestedDTO(closeBoxId));
                 event->accept();
                 return;
             }
+
+            int buttonIndex = -1;
+            const int buttonBoxId = CanvasPainter::findToolButtonAtPosition(event->pos(),
+                                                                            gridGap,
+                                                                            offset,
+                                                                            m_hoveredBoxId,
+                                                                            boxes,
+                                                                            buttonIndex);
+            if (buttonBoxId != -1) {
+                for (const BoxViewDTO &box : boxes) {
+                    if (box.id != buttonBoxId)
+                        continue;
+                    const ToolButtonDTO &toolButton = box.toolScript.buttons.at(buttonIndex);
+                    emit toolButtonActivated(
+                        ToolButtonActivatedDTO(buttonBoxId, toolButton.hornetCommand));
+                    break;
+                }
+            }
+            event->accept();
+            return;
         }
 
         // --- resize edge/corner check ---
@@ -243,6 +273,26 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                 update(dirtyRect.toAlignedRect());
             else
                 update();
+        }
+
+        // --- tool button hover tracking (only meaningful while Ctrl is held) ---
+        if (m_isCtrlPressed) {
+            int buttonIndex = -1;
+            const int buttonBoxId = CanvasPainter::findToolButtonAtPosition(event->pos(),
+                                                                            gridGap,
+                                                                            offset,
+                                                                            m_hoveredBoxId,
+                                                                            boxes,
+                                                                            buttonIndex);
+            if (buttonBoxId != m_hoveredButtonBoxId || buttonIndex != m_hoveredButtonIndex) {
+                m_hoveredButtonBoxId = buttonBoxId;
+                m_hoveredButtonIndex = buttonIndex;
+                update();
+            }
+        } else if (m_hoveredButtonBoxId != -1) {
+            m_hoveredButtonBoxId = -1;
+            m_hoveredButtonIndex = -1;
+            update();
         }
     }
     event->accept();

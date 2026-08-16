@@ -21,6 +21,8 @@ class ProjectSaverPanel;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
 struct FilePathListDTO;
+struct BoxUnloadRequestedDTO;
+struct ToolButtonActivatedDTO;
 
 class Window;
 
@@ -53,7 +55,8 @@ signals:
     void boxDragged(const BoxDragDTO &dto);
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
-    void boxUnloadRequested(int boxId);
+    void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
+    void toolButtonActivated(const ToolButtonActivatedDTO &dto);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
     void popupBoxListPageRequested(const BoxListPageRequestDTO &dto);
     void fileLoaderLoadRequested(const FilePathListDTO &dto);

@@ -22,6 +22,8 @@ public:
                           FontAtlas &fontAtlas,
                           bool selectedBoxCursorVisible,
                           bool isCtrlPressed,
+                          int hoveredButtonBoxId,
+                          int hoveredButtonIndex,
                           QSize viewportSize);
     static int findBoxAtPosition(QPoint mousePosition,
                                  double gridGap,
@@ -41,6 +43,12 @@ public:
                                             QPoint offset,
                                             int hoveredBoxId,
                                             const std::vector<BoxViewDTO> &boxes);
+    static int findToolButtonAtPosition(QPoint mousePosition,
+                                        double gridGap,
+                                        QPoint offset,
+                                        int hoveredBoxId,
+                                        const std::vector<BoxViewDTO> &boxes,
+                                        int &outButtonIndex);
     static QRectF getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset);
 
 private:
@@ -74,7 +82,9 @@ private:
                                          FontRenderer &fontRenderer,
                                          FontAtlas &fontAtlas,
                                          float textScale,
-                                         bool isCtrlPressed);
+                                         bool isCtrlPressed,
+                                         int hoveredButtonBoxId,
+                                         int hoveredButtonIndex);
     static void drawToolButtons(QPainter &painter,
                                 const BoxViewDTO &box,
                                 const BoxScreenGeometry &geom,
@@ -82,7 +92,9 @@ private:
                                 FontRenderer &fontRenderer,
                                 FontAtlas &fontAtlas,
                                 float textScale,
-                                bool isCtrlPressed);
+                                bool isCtrlPressed,
+                                int hoveredButtonBoxId,
+                                int hoveredButtonIndex);
     static void drawBoxTextContent(QPainter &painter,
                                    const BoxViewDTO &box,
                                    const BoxScreenGeometry &geom,
