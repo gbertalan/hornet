@@ -230,6 +230,7 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                                              FontAtlas &fontAtlas,
                                              float textScale,
                                              bool isCtrlPressed,
+                                             int hoveredBoxId,
                                              int hoveredButtonBoxId,
                                              int hoveredButtonIndex)
 {
@@ -287,6 +288,7 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                     fontAtlas,
                     textScale,
                     isCtrlPressed,
+                    hoveredBoxId,
                     hoveredButtonBoxId,
                     hoveredButtonIndex);
 }
@@ -299,6 +301,7 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
                                     FontAtlas &fontAtlas,
                                     float textScale,
                                     bool isCtrlPressed,
+                                    int hoveredBoxId,
                                     int hoveredButtonBoxId,
                                     int hoveredButtonIndex)
 {
@@ -306,12 +309,11 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
         return;
 
     painter.save();
-    painter.setOpacity(isCtrlPressed ? 1.0 : 0.4);
 
     for (int i = 0; i < static_cast<int>(box.toolScript.buttons.size()); ++i) {
         const ToolButtonDTO &toolButton = box.toolScript.buttons.at(i);
-        const bool isHovered = isCtrlPressed && box.id == hoveredButtonBoxId
-                               && i == hoveredButtonIndex;
+        const bool isActive = isCtrlPressed && box.id == hoveredBoxId;
+        const bool isHovered = isActive && box.id == hoveredButtonBoxId && i == hoveredButtonIndex;
 
         const double bx = geom.screenX + toolButton.x * gridGap;
         const double by = geom.screenY + geom.headerH + toolButton.y * gridGap;
@@ -320,16 +322,34 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
         const QRectF buttonRect(bx, by, bw, bh);
 
         const QColor themeColor = resolveToolColor(toolButton.colorToken, Theme::brightAmber());
-        const QColor textColor = isHovered ? Theme::almostWhite() : themeColor;
         const double borderThickness = std::max(1.0, gridGap * 0.08);
 
-        if (isHovered) {
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(Theme::darkGray());
-            painter.drawRect(buttonRect);
+        QColor backgroundColor;
+        QColor borderColor;
+        QColor textColor;
+        QPixmap glyphBackground;
+
+        if (!isActive) {
+            backgroundColor = QColor("#1a1a1a");
+            borderColor = Theme::darkGray();
+            textColor = Theme::darkGray();
+        } else if (isHovered) {
+            backgroundColor = QColor("#262626");
+            borderColor = themeColor;
+            textColor = themeColor;
+            glyphBackground = QPixmap(":/icons/titlebar_button_glow.png");
+        } else {
+            backgroundColor = QColor("#1a1a1a");
+            borderColor = QColor("#4e4c4a");
+            textColor = themeColor;
+            glyphBackground = QPixmap(":/icons/titlebar_button_background.png");
         }
 
-        painter.setPen(QPen(themeColor, borderThickness));
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundColor);
+        painter.drawRect(buttonRect);
+
+        painter.setPen(QPen(borderColor, borderThickness));
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(buttonRect);
 
@@ -353,8 +373,6 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
         const float textX = static_cast<float>(bx + bw / 2.0) - labelWidth / 2.0f;
         const float textY = static_cast<float>(by + bh / 2.0) - textHeight / 2.0f;
 
-        const QPixmap glyphBackground(isHovered ? ":/icons/titlebar_button_glow.png"
-                                                : ":/icons/titlebar_button_background.png");
         if (!glyphBackground.isNull()) {
             float glyphX = textX;
             for (int charIndex = 0; charIndex < displayLabel.length(); ++charIndex) {
@@ -561,6 +579,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                      fontAtlas,
                                      textScale,
                                      isCtrlPressed,
+                                     hoveredBoxId,
                                      hoveredButtonBoxId,
                                      hoveredButtonIndex);
         } else {

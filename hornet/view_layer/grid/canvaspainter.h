@@ -83,6 +83,7 @@ private:
                                          FontAtlas &fontAtlas,
                                          float textScale,
                                          bool isCtrlPressed,
+                                         int hoveredBoxId,
                                          int hoveredButtonBoxId,
                                          int hoveredButtonIndex);
     static void drawToolButtons(QPainter &painter,
@@ -93,6 +94,7 @@ private:
                                 FontAtlas &fontAtlas,
                                 float textScale,
                                 bool isCtrlPressed,
+                                int hoveredBoxId,
                                 int hoveredButtonBoxId,
                                 int hoveredButtonIndex);
     static void drawBoxTextContent(QPainter &painter,

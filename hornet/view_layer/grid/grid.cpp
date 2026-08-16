@@ -74,8 +74,8 @@ void Grid::setCtrlPressed(bool isCtrlPressed)
     }
     for (const BoxViewDTO &box : boxes) {
         if (box.id == m_hoveredBoxId) {
-            const QRectF buttonRect = CanvasPainter::getBoxCloseButtonRect(box, gridGap, offset);
-            update(buttonRect.toAlignedRect());
+            const QRectF boxRect = CanvasPainter::getBoxScreenRect(box, gridGap, offset);
+            update(boxRect.toAlignedRect());
             return;
         }
     }
