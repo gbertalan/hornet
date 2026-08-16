@@ -17,6 +17,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::boxSelected, this, &View::boxSelected);
     connect(m_window, &Window::boxResized, this, &View::boxResized);
     connect(m_window, &Window::boxUnloadRequested, this, &View::boxUnloadRequested);
+    connect(m_window, &Window::toolButtonActivated, this, &View::toolButtonActivated);
     connect(m_window, &Window::boxListPageRequested, this, &View::boxListPageRequested);
     connect(m_window, &Window::popupBoxListPageRequested, this, &View::popupBoxListPageRequested);
     connect(m_window, &Window::fileLoaderLoadRequested, this, &View::fileLoaderLoadRequested);
