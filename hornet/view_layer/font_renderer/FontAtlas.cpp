@@ -66,6 +66,7 @@ void FontAtlas::recomputeCellMetrics()
         m_cellWidth = BakeSize / 2;
 
     m_ascenderPx = static_cast<int>(face->size->metrics.ascender >> 6);
+    m_descenderPx = static_cast<int>(-(face->size->metrics.descender >> 6));
 }
 
 std::pair<int, QRect> FontAtlas::allocRect(int w, int h)

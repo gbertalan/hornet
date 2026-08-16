@@ -75,6 +75,11 @@ public:
     int getAscenderPx() const {
         return m_ascenderPx;
     }
+    /**
+     * @brief getDescenderPx How many pixels below the baseline the lowest letter reaches.
+     * @return
+     */
+    int getDescenderPx() const { return m_descenderPx; }
 
     float textWidth(int numChars, float scale) const
     {
@@ -141,4 +146,5 @@ private:
 
     int m_cellWidth  = 0;
     int m_ascenderPx = 0;
+    int m_descenderPx = 0;
 };

@@ -369,14 +369,16 @@ void CanvasPainter::drawToolButtons(QPainter &painter,
         }
 
         const float charWidth = fontAtlas.textWidth(1, textScale);
-        const float textHeight = fontAtlas.textHeight(textScale);
+        const float textVisualHeight = static_cast<float>(fontAtlas.getAscenderPx()
+                                                          + fontAtlas.getDescenderPx())
+                                       * textScale;
         const float textX = static_cast<float>(bx + bw / 2.0) - labelWidth / 2.0f;
-        const float textY = static_cast<float>(by + bh / 2.0) - textHeight / 2.0f;
+        const float textY = static_cast<float>(by + bh / 2.0) - textVisualHeight / 2.0f;
 
         if (!glyphBackground.isNull()) {
             float glyphX = textX;
             for (int charIndex = 0; charIndex < displayLabel.length(); ++charIndex) {
-                painter.drawPixmap(QRectF(glyphX, textY, charWidth, textHeight).toRect(),
+                painter.drawPixmap(QRectF(glyphX, textY, charWidth, textVisualHeight).toRect(),
                                    glyphBackground);
                 glyphX += charWidth;
             }
