@@ -53,7 +53,8 @@ GridViewStateDTO GridService::retrieveGridViewState() const
         ToolScriptDTO renderScript;
         if (box.getContentType() == BoxContentType::Tool) {
             const QHash<QString, QString> sourceValues = m_toolSourceValues.value(box.getId());
-            renderScript = ToolScriptParser::parse(allBodyLines, sourceValues);
+            const QHash<QString, QString> fieldValues = box.getToolFieldValues();
+            renderScript = ToolScriptParser::parse(allBodyLines, sourceValues, fieldValues);
         }
 
         boxViewDTOs.push_back(BoxViewDTO{box.getId(),
@@ -287,6 +288,28 @@ std::vector<ToolSourceDTO> GridService::retrieveToolSources(int boxId) const
 void GridService::storeToolSourceValue(int boxId, const QString &sourceName, const QString &value)
 {
     m_toolSourceValues[boxId][sourceName] = value;
+}
+
+// ================================================================
+// SLICE: tool textfield values (persisted, unlike tool source cache above)
+// ================================================================
+
+QString GridService::retrieveToolFieldValue(int boxId, const QString &name) const
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return box.getToolFieldValue(name);
+}
+
+void GridService::storeToolFieldValue(int boxId, const QString &name, const QString &value)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setToolFieldValue(name, value);
+}
+
+QHash<QString, QString> GridService::retrieveToolFieldValues(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return box.getToolFieldValues();
 }
 
 int GridService::retrieveBoxCount() const

@@ -166,6 +166,7 @@ SplitPane::SplitPane(int leftWidth,
     connect(m_grid, &Grid::boxResized, this, &SplitPane::boxResized);
     connect(m_grid, &Grid::boxUnloadRequested, this, &SplitPane::boxUnloadRequested);
     connect(m_grid, &Grid::toolButtonActivated, this, &SplitPane::toolButtonActivated);
+    connect(m_grid, &Grid::toolTextFieldActivated, this, &SplitPane::toolTextFieldActivated);
     connect(this, &QSplitter::splitterMoved, this, [this](int, int) {
         emit leftPaneWidthChanged(m_leftPane->width());
     });
@@ -211,6 +212,11 @@ int SplitPane::leftPaneWidth() const
 void SplitPane::focusEditor()
 {
     m_editor->setFocus();
+}
+
+void SplitPane::resetGridCtrlState()
+{
+    m_grid->setCtrlPressed(false);
 }
 
 bool SplitPane::eventFilter(QObject* obj, QEvent* event) {

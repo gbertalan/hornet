@@ -26,6 +26,7 @@ struct BoxListPageRequestDTO;
 struct FilePathListDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
+struct ToolTextFieldCommitDTO;
 
 class Control : public QObject
 {
@@ -84,6 +85,7 @@ public slots:
     // SLICE: tool button activation (Ctrl+click on a .tool box's button)
     // ================================================================
     void onToolButtonActivated(const ToolButtonActivatedDTO &dto);
+    void onToolTextFieldCommitted(const ToolTextFieldCommitDTO &dto);
 
     // ================================================================
     // SLICE: box list paging (titlebar dropdown, file loader popup)

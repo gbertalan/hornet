@@ -134,6 +134,9 @@ qt_add_executable(hornet
     shared/dto_view_to_model/boxunloadrequesteddto.h
     shared/dto_view_to_model/toolbuttonactivateddto.h
     shared/dto_model_to_view/tooltextfielddto.h
+    shared/dto_view_to_model/tooltextfieldactivateddto.h
+    shared/dto_view_to_model/tooltextfieldcommitdto.h
+    view_layer/tooltextfieldentrypanel.h view_layer/tooltextfieldentrypanel.cpp
 
 
 

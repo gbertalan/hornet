@@ -23,6 +23,7 @@ struct BoxListPageRequestDTO;
 struct FilePathListDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
+struct ToolTextFieldCommitDTO;
 
 class Window;
 
@@ -57,6 +58,7 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
+    void toolTextFieldCommitted(const ToolTextFieldCommitDTO &dto);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
     void popupBoxListPageRequested(const BoxListPageRequestDTO &dto);
     void fileLoaderLoadRequested(const FilePathListDTO &dto);

@@ -6,6 +6,7 @@
 #include "shared/dto_view_to_model/boxresizeedge.h"
 #include <vector>
 #include <view_layer/font_renderer/FontRenderer.h>
+enum class ToolHoverKind { None, Button, TextField };
 class CanvasPainter
 {
 public:
@@ -24,6 +25,7 @@ public:
                           bool isCtrlPressed,
                           int hoveredButtonBoxId,
                           int hoveredButtonIndex,
+                          ToolHoverKind hoveredToolKind,
                           QSize viewportSize);
     static int findBoxAtPosition(QPoint mousePosition,
                                  double gridGap,
@@ -49,6 +51,12 @@ public:
                                         int hoveredBoxId,
                                         const std::vector<BoxViewDTO> &boxes,
                                         int &outButtonIndex);
+    static int findToolTextFieldAtPosition(QPoint mousePosition,
+                                           double gridGap,
+                                           QPoint offset,
+                                           int hoveredBoxId,
+                                           const std::vector<BoxViewDTO> &boxes,
+                                           int &outFieldIndex);
     static QRectF getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset);
 
 private:
@@ -89,7 +97,8 @@ private:
                                          bool isCtrlPressed,
                                          int hoveredBoxId,
                                          int hoveredButtonBoxId,
-                                         int hoveredButtonIndex);
+                                         int hoveredButtonIndex,
+                                         ToolHoverKind hoveredToolKind);
     static void drawToolButtons(QPainter &painter,
                                 const BoxViewDTO &box,
                                 const BoxScreenGeometry &geom,
@@ -100,7 +109,20 @@ private:
                                 bool isCtrlPressed,
                                 int hoveredBoxId,
                                 int hoveredButtonBoxId,
-                                int hoveredButtonIndex);
+                                int hoveredButtonIndex,
+                                ToolHoverKind hoveredToolKind);
+    static void drawToolTextFields(QPainter &painter,
+                                   const BoxViewDTO &box,
+                                   const BoxScreenGeometry &geom,
+                                   double gridGap,
+                                   FontRenderer &fontRenderer,
+                                   FontAtlas &fontAtlas,
+                                   float textScale,
+                                   bool isCtrlPressed,
+                                   int hoveredBoxId,
+                                   int hoveredButtonBoxId,
+                                   int hoveredButtonIndex,
+                                   ToolHoverKind hoveredToolKind);
     static void drawBoxTextContent(QPainter &painter,
                                    const BoxViewDTO &box,
                                    const BoxScreenGeometry &geom,

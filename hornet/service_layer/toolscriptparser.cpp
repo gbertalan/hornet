@@ -101,7 +101,8 @@ std::vector<ToolSourceDTO> ToolScriptParser::parseSources(const QVector<QString>
 // ================================================================
 
 ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
-                                      const QHash<QString, QString> &sourceValues)
+                                      const QHash<QString, QString> &sourceValues,
+                                      const QHash<QString, QString> &fieldValues)
 {
     std::vector<ToolLineDTO> lines;
     std::vector<ToolRectDTO> rects;
@@ -278,10 +279,42 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
             const QString name = remainder.mid(1, nameEndQuote - 1);
             if (name.isEmpty())
                 continue;
+            remainder = remainder.mid(nameEndQuote + 1).trimmed();
 
-            textFields.push_back(ToolTextFieldDTO(x, y, w, h, name, QString()));
+            QString defaultValue;
+            if (remainder.startsWith('"')) {
+                const int defaultEndQuote = remainder.indexOf('"', 1);
+                if (defaultEndQuote != -1)
+                    defaultValue = remainder.mid(1, defaultEndQuote - 1);
+            }
+
+            const QString resolvedValue = fieldValues.contains(name) ? fieldValues.value(name)
+                                                                     : defaultValue;
+            textFields.push_back(ToolTextFieldDTO(x, y, w, h, name, resolvedValue));
         }
     }
 
     return ToolScriptDTO(lines, rects, circles, texts, buttons, textFields);
+}
+
+QString ToolScriptParser::substituteValues(const QString &text,
+                                           const QHash<QString, QString> &values)
+{
+    static const QRegularExpression pattern("\\$([A-Za-z_][A-Za-z0-9_]*)");
+    QString result = text;
+    QRegularExpressionMatchIterator it = pattern.globalMatch(result);
+
+    QVector<QPair<int, int>> spans;
+    QVector<QString> replacements;
+    while (it.hasNext()) {
+        const QRegularExpressionMatch match = it.next();
+        const auto found = values.constFind(match.captured(1));
+        if (found != values.constEnd()) {
+            spans.push_back({match.capturedStart(0), match.capturedLength(0)});
+            replacements.push_back(found.value());
+        }
+    }
+    for (int i = spans.size() - 1; i >= 0; --i)
+        result.replace(spans[i].first, spans[i].second, replacements[i]);
+    return result;
 }

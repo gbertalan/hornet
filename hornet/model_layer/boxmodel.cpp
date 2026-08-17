@@ -119,3 +119,15 @@ QString BoxModel::getOriginFilePath() const
 {
     return m_originFilePath;
 }
+QString BoxModel::getToolFieldValue(const QString &name) const
+{
+    return m_toolFieldValues.value(name);
+}
+void BoxModel::setToolFieldValue(const QString &name, const QString &value)
+{
+    m_toolFieldValues[name] = value;
+}
+QHash<QString, QString> BoxModel::getToolFieldValues() const
+{
+    return m_toolFieldValues;
+}

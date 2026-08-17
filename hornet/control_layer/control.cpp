@@ -29,6 +29,9 @@
 #include "shared/dto_view_to_model/boxunloadrequesteddto.h"
 #include "shared/dto_view_to_model/toolbuttonactivateddto.h"
 
+#include "service_layer/toolscriptparser.h"
+#include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
+
 // ================================================================
 // SLICE: construction & initialization
 // ================================================================
@@ -61,6 +64,12 @@ void Control::init()
     m_terminalControl.init();
     m_gridControl.init();
 
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    dispatchHornetCommand(HornetCommandDTO{true, "load", "FILE_LOADER.tool", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 2 20", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 34 20", workingDir});
+    m_gridControl.sendViewStateToGrid();
+
     const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(BoxContentType::Terminal);
     if (terminalBoxId != -1) {
         m_editorService.setIsTerminal(true);
@@ -74,7 +83,6 @@ void Control::init()
         m_windowControl.sendCurrentBoxIdToTitlebar(terminalBoxId);
     }
 }
-
 // ================================================================
 // SLICE: window
 // ================================================================
@@ -747,13 +755,22 @@ void Control::onBoxUnloadRequested(const BoxUnloadRequestedDTO &dto)
 void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
 {
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    const QHash<QString, QString> fieldValues = m_gridService.retrieveToolFieldValues(dto.boxId);
+    const QString substitutedCommand = ToolScriptParser::substituteValues(dto.hornetCommand,
+                                                                          fieldValues);
     const HornetCommandDTO hornetCommand
-        = m_terminalControl.parseHornetCommand("hornet " + dto.hornetCommand, workingDir);
+        = m_terminalControl.parseHornetCommand("hornet " + substitutedCommand, workingDir);
     if (!hornetCommand.wasHornetCommand)
         return;
     const QString message = dispatchHornetCommand(hornetCommand);
     if (!message.isEmpty())
-        createCommandOutputBox(dto.hornetCommand, message);
+        createCommandOutputBox(substitutedCommand, message);
+}
+
+void Control::onToolTextFieldCommitted(const ToolTextFieldCommitDTO &dto)
+{
+    m_gridService.storeToolFieldValue(dto.boxId, dto.fieldName, dto.value);
+    m_gridControl.sendViewStateToGrid();
 }
 
 // ================================================================

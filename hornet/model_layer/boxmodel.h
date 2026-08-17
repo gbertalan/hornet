@@ -1,8 +1,10 @@
 #ifndef BOXMODEL_H
 #define BOXMODEL_H
+#include <QHash>
 #include <QString>
 #include <QVector>
 #include "model_layer/boxcontenttype.h"
+
 class BoxModel
 {
 public:
@@ -36,6 +38,9 @@ public:
     void setBodyScrollOffset(int offset);
     bool isFileBacked() const;
     QString getOriginFilePath() const;
+    QString getToolFieldValue(const QString &name) const;
+    void setToolFieldValue(const QString &name, const QString &value);
+    QHash<QString, QString> getToolFieldValues() const;
 
 private:
     int m_id;
@@ -54,5 +59,6 @@ private:
     int m_bodyScrollOffset = 0;
     bool m_isFileBacked;
     QString m_originFilePath;
+    QHash<QString, QString> m_toolFieldValues;
 };
 #endif // BOXMODEL_H

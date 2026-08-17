@@ -10,6 +10,7 @@
 #include "shared/dto_view_to_model/boxunloadrequesteddto.h"
 #include "shared/dto_view_to_model/gridzoomdto.h"
 #include "shared/dto_view_to_model/toolbuttonactivateddto.h"
+#include "shared/dto_view_to_model/tooltextfieldactivateddto.h"
 #include <cmath>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
 #include <shared/dto_view_to_model/boxresizedto.h>
@@ -71,6 +72,7 @@ void Grid::setCtrlPressed(bool isCtrlPressed)
     if (!isCtrlPressed && m_hoveredButtonBoxId != -1) {
         m_hoveredButtonBoxId = -1;
         m_hoveredButtonIndex = -1;
+        m_hoveredToolKind = ToolHoverKind::None;
     }
     for (const BoxViewDTO &box : boxes) {
         if (box.id == m_hoveredBoxId) {
@@ -104,6 +106,7 @@ void Grid::paintEvent(QPaintEvent *)
                              m_isCtrlPressed,
                              m_hoveredButtonBoxId,
                              m_hoveredButtonIndex,
+                             m_hoveredToolKind,
                              size());
 }
 
@@ -127,7 +130,7 @@ void Grid::wheelEvent(QWheelEvent *event)
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        // --- Ctrl held: only chrome (close-X, tool buttons) is interactive.
+        // --- Ctrl held: only chrome (close-X, tool buttons, textfields) is interactive.
         // No selection, drag, or resize starts while Ctrl is held. ---
         if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
             const int closeBoxId = CanvasPainter::findBoxCloseButtonAtPosition(event->pos(),
@@ -155,6 +158,27 @@ void Grid::mousePressEvent(QMouseEvent *event)
                     const ToolButtonDTO &toolButton = box.toolScript.buttons.at(buttonIndex);
                     emit toolButtonActivated(
                         ToolButtonActivatedDTO(buttonBoxId, toolButton.hornetCommand));
+                    break;
+                }
+                event->accept();
+                return;
+            }
+
+            int fieldIndex = -1;
+            const int fieldBoxId = CanvasPainter::findToolTextFieldAtPosition(event->pos(),
+                                                                              gridGap,
+                                                                              offset,
+                                                                              m_hoveredBoxId,
+                                                                              boxes,
+                                                                              fieldIndex);
+            if (fieldBoxId != -1) {
+                for (const BoxViewDTO &box : boxes) {
+                    if (box.id != fieldBoxId)
+                        continue;
+                    const ToolTextFieldDTO &toolTextField = box.toolScript.textFields.at(fieldIndex);
+                    emit toolTextFieldActivated(ToolTextFieldActivatedDTO(fieldBoxId,
+                                                                          toolTextField.name,
+                                                                          toolTextField.value));
                     break;
                 }
             }
@@ -278,7 +302,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                 update(dirtyRect.toAlignedRect());
         }
 
-        // --- tool button hover tracking (only meaningful while Ctrl is held) ---
+        // --- tool chrome hover tracking (only meaningful while Ctrl is held) ---
         if (m_isCtrlPressed) {
             int buttonIndex = -1;
             const int buttonBoxId = CanvasPainter::findToolButtonAtPosition(event->pos(),
@@ -287,14 +311,41 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                             m_hoveredBoxId,
                                                                             boxes,
                                                                             buttonIndex);
-            if (buttonBoxId != m_hoveredButtonBoxId || buttonIndex != m_hoveredButtonIndex) {
-                m_hoveredButtonBoxId = buttonBoxId;
-                m_hoveredButtonIndex = buttonIndex;
-                update();
+            if (buttonBoxId != -1) {
+                if (buttonBoxId != m_hoveredButtonBoxId || buttonIndex != m_hoveredButtonIndex
+                    || m_hoveredToolKind != ToolHoverKind::Button) {
+                    m_hoveredButtonBoxId = buttonBoxId;
+                    m_hoveredButtonIndex = buttonIndex;
+                    m_hoveredToolKind = ToolHoverKind::Button;
+                    update();
+                }
+            } else {
+                int fieldIndex = -1;
+                const int fieldBoxId = CanvasPainter::findToolTextFieldAtPosition(event->pos(),
+                                                                                  gridGap,
+                                                                                  offset,
+                                                                                  m_hoveredBoxId,
+                                                                                  boxes,
+                                                                                  fieldIndex);
+                if (fieldBoxId != -1) {
+                    if (fieldBoxId != m_hoveredButtonBoxId || fieldIndex != m_hoveredButtonIndex
+                        || m_hoveredToolKind != ToolHoverKind::TextField) {
+                        m_hoveredButtonBoxId = fieldBoxId;
+                        m_hoveredButtonIndex = fieldIndex;
+                        m_hoveredToolKind = ToolHoverKind::TextField;
+                        update();
+                    }
+                } else if (m_hoveredToolKind != ToolHoverKind::None) {
+                    m_hoveredButtonBoxId = -1;
+                    m_hoveredButtonIndex = -1;
+                    m_hoveredToolKind = ToolHoverKind::None;
+                    update();
+                }
             }
-        } else if (m_hoveredButtonBoxId != -1) {
+        } else if (m_hoveredToolKind != ToolHoverKind::None) {
             m_hoveredButtonBoxId = -1;
             m_hoveredButtonIndex = -1;
+            m_hoveredToolKind = ToolHoverKind::None;
             update();
         }
     }

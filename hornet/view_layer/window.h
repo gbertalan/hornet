@@ -1,9 +1,7 @@
 #pragma once
-
 #include <QWidget>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
-
 struct BoxResizeDTO;
 struct BoxSelectedDTO;
 struct BoxDragDTO;
@@ -25,17 +23,19 @@ class MainPopup;
 class FileLoaderPanel;
 class ScriptRunnerPanel;
 class ProjectSaverPanel;
+class TextFieldEntryPanel;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
 struct FilePathListDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
-
-class Window : public QWidget {
+struct ToolTextFieldActivatedDTO;
+struct ToolTextFieldCommitDTO;
+class Window : public QWidget
+{
     Q_OBJECT
-
 public:
-    explicit Window(const WindowDTO& initialState, QWidget* parent = nullptr);
+    explicit Window(const WindowDTO &initialState, QWidget *parent = nullptr);
     void restoreWindowedSize();
     void restoreWindowedLocation();
     void updateEditorState(const EditorViewStateDTO &dto);
@@ -47,10 +47,9 @@ public:
     void updatePopupBoxListPage(const BoxListPageDTO &dto);
     void updateProjectSaverSaveResult(const QString &message);
     void updateCurrentBoxId(int boxId);
-
 signals:
     void buttonClicked();
-    void windowStateChanged(const WindowDTO& dto);
+    void windowStateChanged(const WindowDTO &dto);
     void windowCloseClicked();
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
@@ -62,6 +61,7 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
+    void toolTextFieldCommitted(const ToolTextFieldCommitDTO &dto);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
     void popupBoxListPageRequested(const BoxListPageRequestDTO &dto);
     void fileLoaderLoadRequested(const FilePathListDTO &dto);
@@ -70,51 +70,48 @@ signals:
     void projectSaverSaveRequested(const QString &baseName);
 
 private:
-    TitleBar* m_titleBar;
-    SplitPane* m_splitPane;
-    OverlayWidget* m_overlayWidget;
-    ResizeHandle* m_handleLeft;
-    ResizeHandle* m_handleRight;
-    ResizeHandle* m_handleTop;
-    ResizeHandle* m_handleBottom;
-    ResizeHandle* m_handleTopLeft;
-    ResizeHandle* m_handleTopRight;
-    ResizeHandle* m_handleBottomLeft;
-    ResizeHandle* m_handleBottomRight;
-
+    TitleBar *m_titleBar;
+    SplitPane *m_splitPane;
+    OverlayWidget *m_overlayWidget;
+    ResizeHandle *m_handleLeft;
+    ResizeHandle *m_handleRight;
+    ResizeHandle *m_handleTop;
+    ResizeHandle *m_handleBottom;
+    ResizeHandle *m_handleTopLeft;
+    ResizeHandle *m_handleTopRight;
+    ResizeHandle *m_handleBottomLeft;
+    ResizeHandle *m_handleBottomRight;
     FontAtlas m_fontAtlas;
     std::unique_ptr<FontRenderer> m_fontRenderer;
-
     int m_windowedWidth;
     int m_windowedHeight;
     int m_windowedX;
     int m_windowedY;
-
     // Creates the resize handles, small, transparent panels to handle the edge/corner dragging
     void setupResizeHandles();
     // Places the resize handlers to the edges and corners
     void positionResizeHandles();
-
     TitlebarFileDropdown *m_fileDropdown;
-
     MainPopup *m_mainPopup;
     FileLoaderPanel *m_fileLoaderPanel;
     ScriptRunnerPanel *m_scriptRunnerPanel;
     ProjectSaverPanel *m_projectSaverPanel;
-
-    enum class PopupListTarget { FileLoader, ScriptRunner, ProjectSaver };
+    TextFieldEntryPanel *m_textFieldEntryPanel;
+    int m_activeTextFieldBoxId = -1;
+    QString m_activeTextFieldName;
+    enum class PopupListTarget { FileLoader, ScriptRunner, ProjectSaver, TextFieldEntry };
     PopupListTarget m_activePopupListTarget = PopupListTarget::FileLoader;
-
     void positionMainPopup();
     void openFileLoadPopup();
     void openProjectSavePopup();
     void openScriptRunPopup();
+    void openToolTextFieldPopup(const ToolTextFieldActivatedDTO &dto);
     void openMainPopupShared();
     void closeMainPopup();
 
 protected:
-    void resizeEvent(QResizeEvent* event) override;
-    void moveEvent(QMoveEvent* event) override;
+    void resizeEvent(QResizeEvent *event) override;
+    void moveEvent(QMoveEvent *event) override;
     // Disable resize when in fullscreen mode
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
 };

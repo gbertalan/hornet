@@ -16,6 +16,7 @@ struct EditorSettingsDTO;
 struct BoxResizeDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
+struct ToolTextFieldActivatedDTO;
 class CustomScrollBar;
 class Editor;
 class FontAtlas;
@@ -54,6 +55,7 @@ public:
     void updateGridViewState(const GridViewStateDTO &dto);
     int leftPaneWidth() const;
     void focusEditor();
+    void resetGridCtrlState();
 
 signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
@@ -66,6 +68,7 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
+    void toolTextFieldActivated(const ToolTextFieldActivatedDTO &dto);
     void leftPaneWidthChanged(int width);
 
 protected:

@@ -10,7 +10,9 @@ class ToolScriptParser
 {
 public:
     static ToolScriptDTO parse(const QVector<QString> &bodyLines,
-                               const QHash<QString, QString> &sourceValues);
+                               const QHash<QString, QString> &sourceValues,
+                               const QHash<QString, QString> &fieldValues);
     static std::vector<ToolSourceDTO> parseSources(const QVector<QString> &bodyLines);
+    static QString substituteValues(const QString &text, const QHash<QString, QString> &values);
 };
 #endif // TOOLSCRIPTPARSER_H

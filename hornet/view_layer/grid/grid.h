@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "shared/dto_model_to_view/boxviewdto.h"
 #include "shared/dto_view_to_model/boxresizeedge.h"
+#include "view_layer/grid/canvaspainter.h"
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
@@ -15,7 +16,7 @@ struct BoxDragDTO;
 struct BoxSelectedDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
-
+struct ToolTextFieldActivatedDTO;
 class Grid : public QWidget
 {
     Q_OBJECT
@@ -25,7 +26,6 @@ public:
                   FontRenderer &fontRenderer,
                   QWidget *parent);
     void updateGridViewState(const GridViewStateDTO &dto);
-
     // ================================================================
     // SLICE: caret / Ctrl-state sync (direct wiring from Editor, no Control)
     // ================================================================
@@ -38,7 +38,6 @@ signals:
     // ================================================================
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
-
     // ================================================================
     // SLICE: box manipulation (drag, select, resize, unload)
     // ================================================================
@@ -47,6 +46,7 @@ signals:
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
+    void toolTextFieldActivated(const ToolTextFieldActivatedDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;
@@ -60,7 +60,6 @@ private:
     double gridGap = 30.0;
     QPoint offset = {0, 0};
     std::vector<BoxViewDTO> boxes;
-
     // ================================================================
     // SLICE: drag / hover / resize interaction state (view-local only,
     // not part of GridModel)
@@ -70,6 +69,7 @@ private:
     int m_hoveredBoxId = -1;
     int m_hoveredButtonBoxId = -1;
     int m_hoveredButtonIndex = -1;
+    ToolHoverKind m_hoveredToolKind = ToolHoverKind::None;
     bool m_isDraggingGrid = false;
     bool m_isDraggingBox = false;
     int m_draggedBoxId = -1;
@@ -84,7 +84,6 @@ private:
     BoxResizeEdge m_resizeEdge = BoxResizeEdge::None;
     QPoint m_resizeDragStartMousePos;
     QPoint m_lastAppliedResizeCellDelta;
-
     // text rendering:
     FontAtlas &m_fontAtlas;
     FontRenderer &m_fontRenderer;

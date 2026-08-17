@@ -120,6 +120,13 @@ public:
     void storeToolSourceValue(int boxId, const QString &sourceName, const QString &value);
 
     // ================================================================
+    // SLICE: tool textfield values (persisted, unlike tool source cache above)
+    // ================================================================
+    QString retrieveToolFieldValue(int boxId, const QString &name) const;
+    void storeToolFieldValue(int boxId, const QString &name, const QString &value);
+    QHash<QString, QString> retrieveToolFieldValues(int boxId) const;
+
+    // ================================================================
     // SLICE: box list (titlebar dropdown)
     // ================================================================
     int retrieveBoxCount() const;
