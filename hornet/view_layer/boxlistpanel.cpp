@@ -72,11 +72,17 @@ void BoxListPanelContent::paintEvent(QPaintEvent *event)
         } else if (m_startIndex + i == m_hoveredRowIndex) {
             painter.fillRect(QRectF(0, rowTop, width(), m_rowHeight), Theme::darkerGray());
         }
+        const float idTextVisualHeight = static_cast<float>(m_fontAtlas.getAscenderPx()
+                                                            + m_fontAtlas.getDescenderPx())
+                                         * idScale;
+        const float textVisualHeight = static_cast<float>(m_fontAtlas.getAscenderPx()
+                                                          + m_fontAtlas.getDescenderPx())
+                                       * scale;
         const QString idLabel = "#" + QString::number(entry.id);
         const float idY = rowTop + textPaddingTop - 5.f;
         m_fontRenderer.drawText(painter, 2.f, idY, idLabel, Theme::darkGray(), idScale);
 
-        const float y = rowTop + textPaddingTop;
+        const float y = rowTop + m_rowHeight / 2.0f - textVisualHeight / 2.0f;
         const auto headerTextColor = (entry.id == m_highlightedBoxId)
                                          ? Theme::darkGray()
                                          : (entry.isFileBacked ? Theme::darkAmber()

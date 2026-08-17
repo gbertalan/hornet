@@ -30,7 +30,6 @@ protected:
 private:
     static constexpr int m_width = 320;
     static constexpr int m_topRowHeight = 38;
-    static constexpr int m_bottomPadding = 10;
 
     QString m_currentFileName;
     int m_currentBoxId = -1;
