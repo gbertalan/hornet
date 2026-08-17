@@ -263,7 +263,6 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
 {
     painter.save();
     painter.setBrush(Qt::NoBrush);
-
     for (const ToolLineDTO &toolLine : box.toolScript.lines) {
         const double lx1 = geom.screenX + toolLine.x1 * gridGap;
         const double ly1 = geom.screenY + geom.headerH + toolLine.y1 * gridGap;
@@ -273,29 +272,38 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
         painter.setPen(QPen(resolveToolColor(toolLine.colorToken, Theme::brightAmber()), thickness));
         painter.drawLine(QPointF(lx1, ly1), QPointF(lx2, ly2));
     }
-
     for (const ToolRectDTO &toolRect : box.toolScript.rects) {
         const double rx = geom.screenX + toolRect.x * gridGap;
         const double ry = geom.screenY + geom.headerH + toolRect.y * gridGap;
         const double rw = toolRect.width * gridGap;
         const double rh = toolRect.height * gridGap;
-        const double thickness = std::max(1.0, gridGap * 0.1 * toolRect.thicknessMultiplier);
-        painter.setPen(QPen(resolveToolColor(toolRect.colorToken, Theme::brightAmber()), thickness));
+        const QColor color = resolveToolColor(toolRect.colorToken, Theme::brightAmber());
+        if (toolRect.filled) {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(color);
+        } else {
+            const double thickness = std::max(1.0, gridGap * 0.1 * toolRect.thicknessMultiplier);
+            painter.setPen(QPen(color, thickness));
+            painter.setBrush(Qt::NoBrush);
+        }
         painter.drawRect(QRectF(rx, ry, rw, rh));
     }
-
     for (const ToolCircleDTO &toolCircle : box.toolScript.circles) {
         const double cx = geom.screenX + toolCircle.x * gridGap;
         const double cy = geom.screenY + geom.headerH + toolCircle.y * gridGap;
         const double r = toolCircle.radius * gridGap;
-        const double thickness = std::max(1.0, gridGap * 0.1 * toolCircle.thicknessMultiplier);
-        painter.setPen(
-            QPen(resolveToolColor(toolCircle.colorToken, Theme::brightAmber()), thickness));
+        const QColor color = resolveToolColor(toolCircle.colorToken, Theme::brightAmber());
+        if (toolCircle.filled) {
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(color);
+        } else {
+            const double thickness = std::max(1.0, gridGap * 0.1 * toolCircle.thicknessMultiplier);
+            painter.setPen(QPen(color, thickness));
+            painter.setBrush(Qt::NoBrush);
+        }
         painter.drawEllipse(QPointF(cx, cy), r, r);
     }
-
     painter.restore();
-
     for (const ToolTextDTO &toolText : box.toolScript.texts) {
         const double tx = geom.screenX + toolText.x * gridGap;
         const double ty = geom.screenY + geom.headerH + toolText.y * gridGap;
@@ -306,7 +314,6 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                               resolveToolColor(toolText.colorToken, Theme::brightAmber()),
                               textScale * static_cast<float>(toolText.fontSizeMultiplier));
     }
-
     drawToolButtons(painter,
                     box,
                     geom,

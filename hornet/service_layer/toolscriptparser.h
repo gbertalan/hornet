@@ -1,5 +1,5 @@
-#ifndef RENDERSCRIPTPARSER_H
-#define RENDERSCRIPTPARSER_H
+#ifndef TOOLSCRIPTPARSER_H
+#define TOOLSCRIPTPARSER_H
 #include <QHash>
 #include <QString>
 #include <QVector>
@@ -13,4 +13,4 @@ public:
                                const QHash<QString, QString> &sourceValues);
     static std::vector<ToolSourceDTO> parseSources(const QVector<QString> &bodyLines);
 };
-#endif // RENDERSCRIPTPARSER_H
+#endif // TOOLSCRIPTPARSER_H

@@ -554,6 +554,10 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return "";
     }
 
+    if (command.subcommand == "noop") {
+        return "";
+    }
+
     return "unknown hornet command: " + command.subcommand;
 }
 

@@ -1,10 +1,11 @@
-#ifndef RENDERSCRIPTDTO_H
-#define RENDERSCRIPTDTO_H
+#ifndef TOOLSCRIPTDTO_H
+#define TOOLSCRIPTDTO_H
 #include "shared/dto_model_to_view/toolbuttondto.h"
 #include "shared/dto_model_to_view/toolcircledto.h"
 #include "shared/dto_model_to_view/toollinedto.h"
 #include "shared/dto_model_to_view/toolrectdto.h"
 #include "shared/dto_model_to_view/tooltextdto.h"
+#include "shared/dto_model_to_view/tooltextfielddto.h"
 #include <vector>
 struct ToolScriptDTO
 {
@@ -13,17 +14,20 @@ struct ToolScriptDTO
     std::vector<ToolCircleDTO> circles;
     std::vector<ToolTextDTO> texts;
     std::vector<ToolButtonDTO> buttons;
+    std::vector<ToolTextFieldDTO> textFields;
     ToolScriptDTO() = default;
     ToolScriptDTO(const std::vector<ToolLineDTO> &lines,
                   const std::vector<ToolRectDTO> &rects,
                   const std::vector<ToolCircleDTO> &circles,
                   const std::vector<ToolTextDTO> &texts,
-                  const std::vector<ToolButtonDTO> &buttons)
+                  const std::vector<ToolButtonDTO> &buttons,
+                  const std::vector<ToolTextFieldDTO> &textFields)
         : lines(lines)
         , rects(rects)
         , circles(circles)
         , texts(texts)
         , buttons(buttons)
+        , textFields(textFields)
     {}
 };
-#endif // RENDERSCRIPTDTO_H
+#endif // TOOLSCRIPTDTO_H

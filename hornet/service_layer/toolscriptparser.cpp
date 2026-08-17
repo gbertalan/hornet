@@ -108,6 +108,7 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
     std::vector<ToolCircleDTO> circles;
     std::vector<ToolTextDTO> texts;
     std::vector<ToolButtonDTO> buttons;
+    std::vector<ToolTextFieldDTO> textFields;
 
     const auto resolveColorArg = [](const QString &token) {
         return (token.isEmpty() || token == "-1") ? QString() : token;
@@ -141,7 +142,7 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
 
         } else if (line.startsWith("rect ")) {
             const QStringList parts = line.mid(5).trimmed().split(' ', Qt::SkipEmptyParts);
-            if (parts.size() < 4 || parts.size() > 6)
+            if (parts.size() < 4 || parts.size() > 7)
                 continue;
             double x, y, w, h;
             if (resolveNumericToken(parts.at(0), sourceValues, x)
@@ -152,12 +153,13 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
                                                                              : QString());
                 const double thickness = resolveMultiplierArg(parts.size() >= 6 ? parts.at(5)
                                                                                 : QString());
-                rects.push_back(ToolRectDTO(x, y, w, h, colorToken, thickness));
+                const bool filled = parts.size() >= 7 && parts.at(6) == "fill";
+                rects.push_back(ToolRectDTO(x, y, w, h, colorToken, thickness, filled));
             }
 
         } else if (line.startsWith("circle ")) {
             const QStringList parts = line.mid(7).trimmed().split(' ', Qt::SkipEmptyParts);
-            if (parts.size() < 3 || parts.size() > 5)
+            if (parts.size() < 3 || parts.size() > 6)
                 continue;
             double x, y, r;
             if (resolveNumericToken(parts.at(0), sourceValues, x)
@@ -167,7 +169,8 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
                                                                              : QString());
                 const double thickness = resolveMultiplierArg(parts.size() >= 5 ? parts.at(4)
                                                                                 : QString());
-                circles.push_back(ToolCircleDTO(x, y, r, colorToken, thickness));
+                const bool filled = parts.size() >= 6 && parts.at(5) == "fill";
+                circles.push_back(ToolCircleDTO(x, y, r, colorToken, thickness, filled));
             }
 
         } else if (line.startsWith("text ")) {
@@ -247,8 +250,38 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
 
             if (!label.isEmpty() && !hornetCommand.isEmpty())
                 buttons.push_back(ToolButtonDTO(x, y, w, h, label, hornetCommand, colorToken));
+        } else if (line.startsWith("textfield ")) {
+            QString remainder = line.mid(10).trimmed();
+            double x, y, w, h;
+            bool numbersOk = true;
+            for (double *outValue : {&x, &y, &w, &h}) {
+                const int spaceIndex = remainder.indexOf(' ');
+                if (spaceIndex == -1) {
+                    numbersOk = false;
+                    break;
+                }
+                const QString token = remainder.left(spaceIndex);
+                remainder = remainder.mid(spaceIndex + 1).trimmed();
+                if (!resolveNumericToken(token, sourceValues, *outValue)) {
+                    numbersOk = false;
+                    break;
+                }
+            }
+            if (!numbersOk)
+                continue;
+
+            if (!remainder.startsWith('"'))
+                continue;
+            const int nameEndQuote = remainder.indexOf('"', 1);
+            if (nameEndQuote == -1)
+                continue;
+            const QString name = remainder.mid(1, nameEndQuote - 1);
+            if (name.isEmpty())
+                continue;
+
+            textFields.push_back(ToolTextFieldDTO(x, y, w, h, name, QString()));
         }
     }
 
-    return ToolScriptDTO(lines, rects, circles, texts, buttons);
+    return ToolScriptDTO(lines, rects, circles, texts, buttons, textFields);
 }
