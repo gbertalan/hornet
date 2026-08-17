@@ -414,15 +414,19 @@ void CanvasPainter::drawBoxTextContent(QPainter &painter,
     const float gutterWidth = fontAtlas.textWidth(digits + 2, textScale);
     const float gutterX = static_cast<float>(geom.screenX + textPadding);
     const float bodyTextX = gutterX + gutterWidth;
+    const float textVisualHeight = static_cast<float>(fontAtlas.getAscenderPx()
+                                                      + fontAtlas.getDescenderPx())
+                                   * textScale;
 
     const QVector<QString> &bodyLines = box.bodyLines;
 
     if (bodyLines.isEmpty()) { // if empty, still draw caret
-        const float lineY = static_cast<float>(geom.screenY + geom.headerH) + lineOffset;
+        const float rowTop = static_cast<float>(geom.screenY + geom.headerH);
+        const float lineY = rowTop + static_cast<float>(gridGap) / 2.0f - textVisualHeight / 2.0f;
         const float textX = bodyTextX + (textPadding * 2);
         const float charWidth = fontAtlas.textWidth(1, textScale);
         if (!isSelected || selectedBoxCursorVisible)
-            painter.fillRect(QRectF(textX, lineY + 2, charWidth, static_cast<float>(gridGap)),
+            painter.fillRect(QRectF(textX, rowTop, charWidth, static_cast<float>(gridGap)),
                              Theme::brightAmber());
 
         const QString lineNumber = QString::number(box.bodyScrollOffset + 1);
@@ -438,8 +442,9 @@ void CanvasPainter::drawBoxTextContent(QPainter &painter,
     }
 
     for (int i = 0; i < bodyLines.size(); ++i) {
-        const float lineY = static_cast<float>(geom.screenY + geom.headerH) + lineOffset
-                            + i * static_cast<float>(gridGap);
+        const float rowTop = static_cast<float>(geom.screenY + geom.headerH)
+                             + i * static_cast<float>(gridGap);
+        const float lineY = rowTop + static_cast<float>(gridGap) / 2.0f - textVisualHeight / 2.0f;
 
         const QString lineNumber = QString::number(box.bodyScrollOffset + i + 1);
         const float numberWidth = fontAtlas.textWidth(lineNumber.length(), textScale);
@@ -463,7 +468,7 @@ void CanvasPainter::drawBoxTextContent(QPainter &painter,
             const float charWidth = fontAtlas.textWidth(1, textScale);
             const float cursorPixelX = textX + fontAtlas.textWidth(box.cursorX, textScale);
 
-            painter.fillRect(QRectF(cursorPixelX, lineY + 2, charWidth, static_cast<float>(gridGap)),
+            painter.fillRect(QRectF(cursorPixelX, rowTop, charWidth, static_cast<float>(gridGap)),
                              Theme::brightAmber());
 
             if (box.cursorX < bodyLines[i].length()) {
