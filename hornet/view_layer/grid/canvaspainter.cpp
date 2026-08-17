@@ -109,10 +109,7 @@ void CanvasPainter::drawBoxBackgroundAndBorder(QPainter &painter,
 {
     const double halfEdge = edgeThickness / 2.0;
     const QRectF headerRect(geom.screenX, geom.screenY, geom.screenW, geom.headerH);
-    const QRectF bodyRect(geom.screenX,
-                          geom.screenY + geom.headerH,
-                          geom.screenW,
-                          geom.screenH - geom.headerH);
+    const QRectF bodyRect(geom.screenX, geom.screenY, geom.screenW, geom.screenH);
     const QRectF borderRect(geom.screenX + halfEdge,
                             geom.screenY + halfEdge,
                             geom.screenW - edgeThickness,
@@ -195,7 +192,7 @@ void CanvasPainter::drawBoxHeaderText(QPainter &painter,
                           static_cast<float>(geom.screenX) + textPadding,
                           static_cast<float>(geom.screenY) + idTopOffset,
                           boxIdLabel,
-                          Theme::darkAmber(),
+                          Theme::darkGray(),
                           textScale);
 }
 
@@ -539,8 +536,11 @@ void CanvasPainter::drawBoxes(QPainter &painter,
     const int headerHeightUnits = 3;
     const float textScale = static_cast<float>(gridGap * 0.8)
                             / static_cast<float>(fontAtlas.cellHeight());
-    const float textHeight = static_cast<float>(fontAtlas.cellHeight()) * textScale;
-    const float lineOffset = (static_cast<float>(gridGap) - textHeight) / 2.0f;
+
+    const float idTextVisualHeight = static_cast<float>(fontAtlas.getAscenderPx()
+                                                        + fontAtlas.getDescenderPx())
+                                     * textScale;
+    const float idTopOffset = (static_cast<float>(gridGap) - idTextVisualHeight) / 2.0f;
     const float textPadding = static_cast<float>(gridGap * 0.2);
 
     const QRectF viewportRect(0, 0, viewportSize.width(), viewportSize.height());
@@ -579,7 +579,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                           fontRenderer,
                           fontAtlas,
                           textScale,
-                          lineOffset,
+                          idTopOffset,
                           textPadding,
                           buttonSize,
                           buttonMargin);
@@ -604,7 +604,7 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                fontAtlas,
                                gridGap,
                                textScale,
-                               lineOffset,
+                               idTopOffset,
                                textPadding,
                                isSelected,
                                selectedBoxCursorVisible);
