@@ -191,18 +191,20 @@ void Editor::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     float leftMargin = 5.f;
     float textX = leftMargin + leftColumnWidth();
-    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
-    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-    float topMargin = verticalPadding / 2.f;
+
+    const float textVisualHeight = static_cast<float>(m_fontAtlas.getAscenderPx()
+                                                      + m_fontAtlas.getDescenderPx())
+                                   * m_fontScale;
+
     int digits = QString::number(m_noOfAllLines).length();
     for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
         float lineTop = (m_topLineIndex + i) * m_lineHeight;
-        float y = lineTop + verticalPadding - topMargin;
-        // drawLineDebugBackground(painter, i, y);
+        float y = lineTop + m_lineHeight / 2.f - textVisualHeight / 2.f;
+
         drawLineNumber(painter, i, digits, leftMargin, y);
         drawTerminalPrompt(painter, i, leftMargin + lineNumberSectionWidth(), y);
         drawLineText(painter, i, textX, y);
-        drawCursor(painter, i, textX, y, verticalPadding);
+        drawCursor(painter, i, textX, y, lineTop);
     }
 }
 
@@ -269,7 +271,7 @@ void Editor::drawLineText(QPainter &painter, int index, float textX, float y)
             .drawText(painter, textX, y, m_textLinesToDisplay[index], m_textUniColor, m_fontScale);
 }
 
-void Editor::drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding)
+void Editor::drawCursor(QPainter &painter, int index, float textX, float y, float lineTop)
 {
     if (!m_cursorVisible)
         return;
@@ -277,7 +279,7 @@ void Editor::drawCursor(QPainter &painter, int index, float textX, float y, floa
         return;
     float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
     float cursorPixelX = textX + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
-    painter.fillRect(QRectF(cursorPixelX, y + 2, charWidth, m_lineHeight), Theme::brightAmber());
+    painter.fillRect(QRectF(cursorPixelX, lineTop, charWidth, m_lineHeight), Theme::brightAmber());
     if (m_cursorX < m_textLinesToDisplay[index].length()) {
         QString cursorChar = m_textLinesToDisplay[index][m_cursorX];
         m_fontRenderer
@@ -405,12 +407,8 @@ QRect Editor::cursorRect(int cursorX, int cursorY) const
 {
     float cursorPixelX = 5.f + leftColumnWidth() + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
     float lineTop = m_cursorY * m_lineHeight;
-    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
-    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-    float topMargin = verticalPadding / 2.f;
-    float y = lineTop + verticalPadding - topMargin;
     float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
-    return QRectF(cursorPixelX, y + verticalPadding, charWidth, m_lineHeight).toRect();
+    return QRectF(cursorPixelX, lineTop, charWidth, m_lineHeight).toRect();
 }
 
 float Editor::lineNumberSectionWidth() const
