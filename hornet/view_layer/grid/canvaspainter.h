@@ -62,9 +62,13 @@ private:
     };
     static void drawBoxBackgroundAndBorder(QPainter &painter,
                                            const BoxScreenGeometry &geom,
-                                           double edgeThickness,
-                                           bool isSelected,
-                                           bool isHovered);
+                                           double edgeThickness);
+    static void drawBoxHoverSelectBorder(QPainter &painter,
+                                         const BoxScreenGeometry &geom,
+                                         double gridGap,
+                                         double edgeThickness,
+                                         bool isSelected,
+                                         bool isHovered);
     static void drawBoxHeaderText(QPainter &painter,
                                   const BoxViewDTO &box,
                                   const BoxScreenGeometry &geom,

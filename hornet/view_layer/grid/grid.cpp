@@ -236,7 +236,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                          offset,
                                                                          m_draggedBoxLiveOffset);
 
-            constexpr int repaintMarginPixels = 1;
+            const int repaintMarginPixels = static_cast<int>(std::ceil(gridGap)) + 1;
             const QRect dirtyRect = (rectBeforeMove | rectAfterMove)
                                         .toAlignedRect()
                                         .adjusted(-repaintMarginPixels,
@@ -261,18 +261,21 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                       offset,
                                                                       boxes);
         if (boxIdUnderCursor != m_hoveredBoxId) {
+            const int hoverMarginPixels = static_cast<int>(std::ceil(gridGap));
             QRectF dirtyRect;
             for (const BoxViewDTO &box : boxes) {
                 if (box.id == m_hoveredBoxId || box.id == boxIdUnderCursor) {
                     const QRectF boxRect = CanvasPainter::getBoxScreenRect(box, gridGap, offset);
-                    dirtyRect = dirtyRect.isNull() ? boxRect : dirtyRect.united(boxRect);
+                    const QRectF inflatedRect = boxRect.adjusted(-hoverMarginPixels,
+                                                                 -hoverMarginPixels,
+                                                                 hoverMarginPixels,
+                                                                 hoverMarginPixels);
+                    dirtyRect = dirtyRect.isNull() ? inflatedRect : dirtyRect.united(inflatedRect);
                 }
             }
             m_hoveredBoxId = boxIdUnderCursor;
             if (!dirtyRect.isNull())
                 update(dirtyRect.toAlignedRect());
-            else
-                update();
         }
 
         // --- tool button hover tracking (only meaningful while Ctrl is held) ---

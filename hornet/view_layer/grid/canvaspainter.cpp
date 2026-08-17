@@ -103,9 +103,7 @@ BoxResizeEdge CanvasPainter::findResizeEdgeAtPosition(QPoint mousePosition,
 
 void CanvasPainter::drawBoxBackgroundAndBorder(QPainter &painter,
                                                const BoxScreenGeometry &geom,
-                                               double edgeThickness,
-                                               bool isSelected,
-                                               bool isHovered)
+                                               double edgeThickness)
 {
     const double halfEdge = edgeThickness / 2.0;
     const QRectF headerRect(geom.screenX, geom.screenY, geom.screenW, geom.headerH);
@@ -116,25 +114,51 @@ void CanvasPainter::drawBoxBackgroundAndBorder(QPainter &painter,
                             geom.screenH - edgeThickness);
 
     painter.setPen(Qt::NoPen);
-    painter.setBrush(isHovered ? Theme::darkerGray() : Theme::almostBlack());
+    painter.setBrush(Theme::almostBlack());
     painter.drawRect(bodyRect);
 
-    // header background:
-    QColor headerColor;
-    if (isSelected)
-        headerColor = Theme::almostBlack();
-    else if (isHovered)
-        headerColor = Theme::darkerGray();
-    else
-        headerColor = Theme::almostBlack();
-    painter.setBrush(headerColor);
+    painter.setBrush(Theme::almostBlack());
     painter.drawRect(headerRect);
 
-    painter.setPen(QPen(isSelected ? Theme::almostWhite()
-                                   : (isHovered ? Theme::brightAmber() : Theme::darkAmber()),
-                        edgeThickness));
+    painter.setPen(QPen(Theme::darkAmber(), edgeThickness));
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(borderRect);
+}
+
+void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
+                                             const BoxScreenGeometry &geom,
+                                             double gridGap,
+                                             double edgeThickness,
+                                             bool isSelected,
+                                             bool isHovered)
+{
+    if (!isSelected && !isHovered)
+        return;
+
+    const QRectF outerRect(geom.screenX - gridGap,
+                           geom.screenY - gridGap,
+                           geom.screenW + gridGap * 2,
+                           geom.screenH + gridGap * 2);
+
+    // alpha scales linearly between these gridGap sizes:
+    constexpr double fadeStart = 6.0; // see drawGrid() for gridGap calc value
+    constexpr double fadeEnd = 15.0;  // arbitrary, eyeballed it
+
+    const double gapRatio = std::clamp((gridGap - fadeStart) / (fadeEnd - fadeStart), 0.0, 1.0);
+
+    constexpr double maxOpacity = 0.82;
+    const int alpha = static_cast<int>((1.0 - maxOpacity * gapRatio) * 255);
+
+    QColor brushColor = isSelected ? Theme::darkAmber() : Theme::almostWhite();
+    brushColor.setAlpha(alpha);
+
+    const QColor penColor = isSelected ? Theme::brightYellow() : Theme::almostWhite();
+
+    const double halfEdge = edgeThickness / 2.0;
+    const QRectF innerBorderRect = outerRect.adjusted(halfEdge, halfEdge, -halfEdge, -halfEdge);
+    painter.setPen(QPen(penColor, edgeThickness));
+    painter.setBrush(brushColor);
+    painter.drawRect(innerBorderRect);
 }
 
 void CanvasPainter::drawBoxHeaderText(QPainter &painter,
@@ -568,7 +592,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
         const bool isSelected = (box.id == selectedBoxId);
         const bool isHovered = (box.id == hoveredBoxId) && !isSelected;
 
-        drawBoxBackgroundAndBorder(painter, geom, edgeThickness, isSelected, isHovered);
+        drawBoxHoverSelectBorder(painter, geom, gridGap, edgeThickness, isSelected, isHovered);
+        drawBoxBackgroundAndBorder(painter, geom, edgeThickness);
 
         painter.setClipRect(clipRect);
         painter.setClipping(true);

@@ -3,6 +3,7 @@
 const QColor Theme::m_almostBlack(18, 18, 18);
 // const QColor Theme::m_almostBlack(42, 24, 9);
 const QColor Theme::m_almostWhite(208, 208, 208);
+const QColor Theme::m_almostWhiteTranslucent(158, 108, 0, 100);
 const QColor Theme::m_darkGrayTranslucent(22, 22, 22, 200);
 const QColor Theme::m_brightAmber(255, 196, 0);
 const QColor Theme::m_brightYellow(255, 225, 0);
@@ -22,6 +23,10 @@ const QColor Theme::m_warmGray(40, 33, 29);
 
 const QColor& Theme::almostBlack() { return m_almostBlack; }
 const QColor& Theme::almostWhite() { return m_almostWhite; }
+const QColor &Theme::almostWhiteTranslucent()
+{
+    return m_almostWhiteTranslucent;
+}
 const QColor& Theme::darkGrayTranslucent() { return m_darkGrayTranslucent; }
 const QColor& Theme::brightAmber() { return m_brightAmber; }
 const QColor& Theme::brightYellow() { return m_brightYellow; }

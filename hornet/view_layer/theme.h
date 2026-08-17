@@ -7,6 +7,7 @@ class Theme
 private:
     static const QColor m_almostBlack;
     static const QColor m_almostWhite;
+    static const QColor m_almostWhiteTranslucent;
     static const QColor m_darkGrayTranslucent;
     static const QColor m_brightAmber;
     static const QColor m_brightYellow;
@@ -26,6 +27,8 @@ public:
     static const QColor& almostBlack();
 
     static const QColor& almostWhite();
+
+    static const QColor &almostWhiteTranslucent();
 
     // Titlebar color
     static const QColor& darkGrayTranslucent();
