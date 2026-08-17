@@ -31,6 +31,4 @@ private:
     bool m_pressed;
     FontAtlas &m_fontAtlas;
     FontRenderer &m_fontRenderer;
-
-    int m_bottomPadding = 10;
 };

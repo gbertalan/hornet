@@ -51,8 +51,10 @@ void TitlebarFileNameButton::paintEvent(QPaintEvent *event)
         textX = (static_cast<float>(width()) - displayTextWidth) / 2.0f;
     }
 
-    const float y = static_cast<float>(height()) - m_fontAtlas.textHeight(scale)
-                    - static_cast<float>(m_bottomPadding);
+    const float textVisualHeight = static_cast<float>(m_fontAtlas.getAscenderPx()
+                                                      + m_fontAtlas.getDescenderPx())
+                                   * scale;
+    const float y = (static_cast<float>(height()) - textVisualHeight) / 2.0f;
     m_fontRenderer.drawText(painter, textX, y, displayText, Theme::darkAmber(), scale);
 }
 
