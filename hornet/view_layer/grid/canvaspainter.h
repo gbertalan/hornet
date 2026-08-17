@@ -71,7 +71,7 @@ private:
                                   FontRenderer &fontRenderer,
                                   FontAtlas &fontAtlas,
                                   float textScale,
-                                  float lineOffset,
+                                  float idTopOffset,
                                   float textPadding,
                                   double buttonSize,
                                   double buttonMargin);

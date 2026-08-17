@@ -146,7 +146,7 @@ void CanvasPainter::drawBoxHeaderText(QPainter &painter,
                                       FontRenderer &fontRenderer,
                                       FontAtlas &fontAtlas,
                                       float textScale,
-                                      float lineOffset,
+                                      float idTopOffset,
                                       float textPadding,
                                       double buttonSize,
                                       double buttonMargin)
@@ -174,19 +174,26 @@ void CanvasPainter::drawBoxHeaderText(QPainter &painter,
         displayText += "...";
     }
 
+    const float headerTextVisualHeight = static_cast<float>(fontAtlas.getAscenderPx()
+                                                            + fontAtlas.getDescenderPx())
+                                         * textScale * scaleFactor;
+    const float headerTextY = static_cast<float>(geom.screenY)
+                              + static_cast<float>(geom.headerH) / 2.0f
+                              - headerTextVisualHeight / 2.0f;
+
     float headerTextX = static_cast<float>(geom.screenX + geom.screenW / 2.0)
                         - displayTextWidth / 2.0f;
 
     fontRenderer.drawText(painter,
                           headerTextX,
-                          static_cast<float>(geom.screenY) + lineOffset,
+                          headerTextY,
                           displayText,
                           Theme::darkAmber(),
                           textScale * scaleFactor);
     const QString boxIdLabel = "#" + QString::number(box.id);
     fontRenderer.drawText(painter,
                           static_cast<float>(geom.screenX) + textPadding,
-                          static_cast<float>(geom.screenY) + lineOffset,
+                          static_cast<float>(geom.screenY) + idTopOffset,
                           boxIdLabel,
                           Theme::darkAmber(),
                           textScale);
