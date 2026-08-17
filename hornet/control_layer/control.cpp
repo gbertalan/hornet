@@ -744,8 +744,10 @@ void Control::onBoxUnloadRequested(const BoxUnloadRequestedDTO &dto)
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
     const HornetCommandDTO command{true, "unload", QString::number(dto.boxId), workingDir};
     const QString message = dispatchHornetCommand(command);
-    if (!message.isEmpty())
+    if (!message.isEmpty()) {
         createCommandOutputBox("unload " + QString::number(dto.boxId), message);
+        m_gridControl.sendViewStateToGrid();
+    }
 }
 
 // ================================================================
@@ -763,8 +765,10 @@ void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
     if (!hornetCommand.wasHornetCommand)
         return;
     const QString message = dispatchHornetCommand(hornetCommand);
-    if (!message.isEmpty())
+    if (!message.isEmpty()) {
         createCommandOutputBox(substitutedCommand, message);
+        m_gridControl.sendViewStateToGrid();
+    }
 }
 
 void Control::onToolTextFieldCommitted(const ToolTextFieldCommitDTO &dto)
