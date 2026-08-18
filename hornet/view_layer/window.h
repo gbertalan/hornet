@@ -31,6 +31,9 @@ struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
 struct ToolTextFieldActivatedDTO;
 struct ToolTextFieldCommitDTO;
+class DropdownEntryPanel;
+struct ToolDropdownActivatedDTO;
+
 class Window : public QWidget
 {
     Q_OBJECT
@@ -97,15 +100,23 @@ private:
     ScriptRunnerPanel *m_scriptRunnerPanel;
     ProjectSaverPanel *m_projectSaverPanel;
     TextFieldEntryPanel *m_textFieldEntryPanel;
+    DropdownEntryPanel *m_dropdownEntryPanel;
     int m_activeTextFieldBoxId = -1;
     QString m_activeTextFieldName;
-    enum class PopupListTarget { FileLoader, ScriptRunner, ProjectSaver, TextFieldEntry };
+    enum class PopupListTarget {
+        FileLoader,
+        ScriptRunner,
+        ProjectSaver,
+        TextFieldEntry,
+        DropdownEntry
+    };
     PopupListTarget m_activePopupListTarget = PopupListTarget::FileLoader;
     void positionMainPopup();
     void openFileLoadPopup();
     void openProjectSavePopup();
     void openScriptRunPopup();
     void openToolTextFieldPopup(const ToolTextFieldActivatedDTO &dto);
+    void openToolDropdownPopup(const ToolDropdownActivatedDTO &dto);
     void openMainPopupShared();
     void closeMainPopup();
 

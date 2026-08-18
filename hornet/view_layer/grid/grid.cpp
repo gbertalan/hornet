@@ -10,6 +10,7 @@
 #include "shared/dto_view_to_model/boxunloadrequesteddto.h"
 #include "shared/dto_view_to_model/gridzoomdto.h"
 #include "shared/dto_view_to_model/toolbuttonactivateddto.h"
+#include "shared/dto_view_to_model/tooldropdownactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldactivateddto.h"
 #include <cmath>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
@@ -130,7 +131,7 @@ void Grid::wheelEvent(QWheelEvent *event)
 void Grid::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        // --- Ctrl held: only chrome (close-X, tool buttons, textfields) is interactive.
+        // --- Ctrl held: only chrome (close-X, tool buttons, textfields, dropdown, ...) is interactive.
         // No selection, drag, or resize starts while Ctrl is held. ---
         if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
             const int closeBoxId = CanvasPainter::findBoxCloseButtonAtPosition(event->pos(),
@@ -179,6 +180,28 @@ void Grid::mousePressEvent(QMouseEvent *event)
                     emit toolTextFieldActivated(ToolTextFieldActivatedDTO(fieldBoxId,
                                                                           toolTextField.name,
                                                                           toolTextField.value));
+                    break;
+                }
+                event->accept();
+                return;
+            }
+
+            int dropdownIndex = -1;
+            const int dropdownBoxId = CanvasPainter::findToolDropdownAtPosition(event->pos(),
+                                                                                gridGap,
+                                                                                offset,
+                                                                                m_hoveredBoxId,
+                                                                                boxes,
+                                                                                dropdownIndex);
+            if (dropdownBoxId != -1) {
+                for (const BoxViewDTO &box : boxes) {
+                    if (box.id != dropdownBoxId)
+                        continue;
+                    const ToolDropdownDTO &toolDropdown = box.toolScript.dropdowns.at(dropdownIndex);
+                    emit toolDropdownActivated(ToolDropdownActivatedDTO(dropdownBoxId,
+                                                                        toolDropdown.name,
+                                                                        toolDropdown.options,
+                                                                        toolDropdown.value));
                     break;
                 }
             }
@@ -335,11 +358,25 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                         m_hoveredToolKind = ToolHoverKind::TextField;
                         update();
                     }
-                } else if (m_hoveredToolKind != ToolHoverKind::None) {
-                    m_hoveredButtonBoxId = -1;
-                    m_hoveredButtonIndex = -1;
-                    m_hoveredToolKind = ToolHoverKind::None;
-                    update();
+                } else {
+                    int dropdownIndex = -1;
+                    const int dropdownBoxId = CanvasPainter::findToolDropdownAtPosition(
+                        event->pos(), gridGap, offset, m_hoveredBoxId, boxes, dropdownIndex);
+                    if (dropdownBoxId != -1) {
+                        if (dropdownBoxId != m_hoveredButtonBoxId
+                            || dropdownIndex != m_hoveredButtonIndex
+                            || m_hoveredToolKind != ToolHoverKind::Dropdown) {
+                            m_hoveredButtonBoxId = dropdownBoxId;
+                            m_hoveredButtonIndex = dropdownIndex;
+                            m_hoveredToolKind = ToolHoverKind::Dropdown;
+                            update();
+                        }
+                    } else if (m_hoveredToolKind != ToolHoverKind::None) {
+                        m_hoveredButtonBoxId = -1;
+                        m_hoveredButtonIndex = -1;
+                        m_hoveredToolKind = ToolHoverKind::None;
+                        update();
+                    }
                 }
             }
         } else if (m_hoveredToolKind != ToolHoverKind::None) {

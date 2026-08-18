@@ -938,3 +938,39 @@ int CanvasPainter::findToolTextFieldAtPosition(QPoint mousePosition,
     }
     return -1;
 }
+
+int CanvasPainter::findToolDropdownAtPosition(QPoint mousePosition,
+                                              double gridGap,
+                                              QPoint offset,
+                                              int hoveredBoxId,
+                                              const std::vector<BoxViewDTO> &boxes,
+                                              int &outDropdownIndex)
+{
+    outDropdownIndex = -1;
+    if (hoveredBoxId == -1)
+        return -1;
+
+    constexpr int headerHeightUnits = 3;
+    for (const BoxViewDTO &box : boxes) {
+        if (box.id != hoveredBoxId)
+            continue;
+        if (box.toolScript.dropdowns.empty())
+            return -1;
+
+        const QRectF fullRect = getBoxScreenRect(box, gridGap, offset);
+        const double headerH = headerHeightUnits * gridGap;
+        for (int i = 0; i < static_cast<int>(box.toolScript.dropdowns.size()); ++i) {
+            const ToolDropdownDTO &toolDropdown = box.toolScript.dropdowns.at(i);
+            const double dx = fullRect.x() + toolDropdown.x * gridGap;
+            const double dy = fullRect.y() + headerH + toolDropdown.y * gridGap;
+            const double dw = toolDropdown.width * gridGap;
+            const double dh = toolDropdown.height * gridGap;
+            if (QRectF(dx, dy, dw, dh).contains(mousePosition)) {
+                outDropdownIndex = i;
+                return box.id;
+            }
+        }
+        return -1;
+    }
+    return -1;
+}

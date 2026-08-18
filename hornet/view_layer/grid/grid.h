@@ -17,6 +17,7 @@ struct BoxSelectedDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
 struct ToolTextFieldActivatedDTO;
+struct ToolDropdownActivatedDTO;
 class Grid : public QWidget
 {
     Q_OBJECT
@@ -47,6 +48,7 @@ signals:
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
     void toolTextFieldActivated(const ToolTextFieldActivatedDTO &dto);
+    void toolDropdownActivated(const ToolDropdownActivatedDTO &dto);
 
 protected:
     void paintEvent(QPaintEvent *) override;

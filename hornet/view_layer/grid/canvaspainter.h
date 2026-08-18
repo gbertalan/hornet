@@ -59,6 +59,12 @@ public:
                                            int hoveredBoxId,
                                            const std::vector<BoxViewDTO> &boxes,
                                            int &outFieldIndex);
+    static int findToolDropdownAtPosition(QPoint mousePosition,
+                                          double gridGap,
+                                          QPoint offset,
+                                          int hoveredBoxId,
+                                          const std::vector<BoxViewDTO> &boxes,
+                                          int &outDropdownIndex);
     static QRectF getBoxCloseButtonRect(const BoxViewDTO &box, double gridGap, QPoint offset);
 
 private:

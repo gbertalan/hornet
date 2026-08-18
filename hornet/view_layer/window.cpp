@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QTimer>
 #include <QVBoxLayout>
+#include "shared/dto_view_to_model/tooldropdownactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
 #include "shared/dto_view_to_model/windowdto.h"
@@ -23,6 +24,7 @@
 #include "view_layer/splitpane.h"
 #include "view_layer/titlebar.h"
 #include "view_layer/titlebarfiledropdown.h"
+#include "view_layer/tooldropdownentrypanel.h"
 #include "view_layer/tooltextfieldentrypanel.h"
 
 static constexpr int HANDLE_THICKNESS = 6;
@@ -137,6 +139,19 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
                 closeMainPopup();
             });
 
+    m_dropdownEntryPanel = new DropdownEntryPanel(m_fontAtlas,
+                                                  *m_fontRenderer,
+                                                  m_mainPopup->bodyWidget());
+    m_dropdownEntryPanel->hide();
+    connect(m_dropdownEntryPanel,
+            &DropdownEntryPanel::valueCommitted,
+            this,
+            [this](const QString &value) {
+                emit toolTextFieldCommitted(
+                    ToolTextFieldCommitDTO(m_activeTextFieldBoxId, m_activeTextFieldName, value));
+                closeMainPopup();
+            });
+
     connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openFileLoadPopup);
     connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openProjectSavePopup);
     connect(m_titleBar, &TitleBar::scriptRunButtonClicked, this, &Window::openScriptRunPopup);
@@ -175,6 +190,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_splitPane, &SplitPane::boxUnloadRequested, this, &Window::boxUnloadRequested);
     connect(m_splitPane, &SplitPane::toolButtonActivated, this, &Window::toolButtonActivated);
     connect(m_splitPane, &SplitPane::toolTextFieldActivated, this, &Window::openToolTextFieldPopup);
+    connect(m_splitPane, &SplitPane::toolDropdownActivated, this, &Window::openToolDropdownPopup);
 
     connect(m_fileLoaderPanel,
             &FileLoaderPanel::loadRequested,
@@ -283,6 +299,25 @@ void Window::openToolTextFieldPopup(const ToolTextFieldActivatedDTO &dto)
     m_mainPopup->setBodyContentHeight(contentHeight);
     m_textFieldEntryPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
     m_textFieldEntryPanel->show();
+    openMainPopupShared();
+}
+
+void Window::openToolDropdownPopup(const ToolDropdownActivatedDTO &dto)
+{
+    m_activePopupListTarget = PopupListTarget::DropdownEntry;
+    m_activeTextFieldBoxId = dto.boxId;
+    m_activeTextFieldName = dto.fieldName;
+    m_mainPopup->setHeaderText("SET FIELD");
+    m_fileLoaderPanel->hide();
+    m_scriptRunnerPanel->hide();
+    m_projectSaverPanel->hide();
+    m_textFieldEntryPanel->hide();
+    m_dropdownEntryPanel->setFieldName(dto.fieldName);
+    m_dropdownEntryPanel->setOptions(dto.options, dto.currentValue);
+    const int contentHeight = m_dropdownEntryPanel->preferredHeight();
+    m_mainPopup->setBodyContentHeight(contentHeight);
+    m_dropdownEntryPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
+    m_dropdownEntryPanel->show();
     openMainPopupShared();
 }
 
