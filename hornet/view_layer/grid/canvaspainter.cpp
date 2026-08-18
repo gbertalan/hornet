@@ -339,6 +339,18 @@ void CanvasPainter::drawToolScriptPrimitives(QPainter &painter,
                        hoveredButtonBoxId,
                        hoveredButtonIndex,
                        hoveredToolKind);
+    drawToolDropdowns(painter,
+                      box,
+                      geom,
+                      gridGap,
+                      fontRenderer,
+                      fontAtlas,
+                      textScale,
+                      isCtrlPressed,
+                      hoveredBoxId,
+                      hoveredButtonBoxId,
+                      hoveredButtonIndex,
+                      hoveredToolKind);
 }
 
 void CanvasPainter::drawToolButtons(QPainter &painter,
@@ -505,6 +517,77 @@ void CanvasPainter::drawToolTextFields(QPainter &painter,
                                        * textScale;
         const float textX = static_cast<float>(fx) + static_cast<float>(borderThickness) * 2.0f;
         const float textY = static_cast<float>(fy + fh / 2.0) - textVisualHeight / 2.0f;
+
+        fontRenderer.drawText(painter, textX, textY, displayText, textColor, textScale);
+    }
+
+    painter.restore();
+}
+
+void CanvasPainter::drawToolDropdowns(QPainter &painter,
+                                      const BoxViewDTO &box,
+                                      const BoxScreenGeometry &geom,
+                                      double gridGap,
+                                      FontRenderer &fontRenderer,
+                                      FontAtlas &fontAtlas,
+                                      float textScale,
+                                      bool isCtrlPressed,
+                                      int hoveredBoxId,
+                                      int hoveredButtonBoxId,
+                                      int hoveredButtonIndex,
+                                      ToolHoverKind hoveredToolKind)
+{
+    if (box.toolScript.dropdowns.empty())
+        return;
+
+    painter.save();
+
+    for (int i = 0; i < static_cast<int>(box.toolScript.dropdowns.size()); ++i) {
+        const ToolDropdownDTO &toolDropdown = box.toolScript.dropdowns.at(i);
+        const bool isActive = isCtrlPressed && box.id == hoveredBoxId;
+        const bool isHovered = isActive && hoveredToolKind == ToolHoverKind::Dropdown
+                               && box.id == hoveredButtonBoxId && i == hoveredButtonIndex;
+
+        const double dx = geom.screenX + toolDropdown.x * gridGap;
+        const double dy = geom.screenY + geom.headerH + toolDropdown.y * gridGap;
+        const double dw = toolDropdown.width * gridGap;
+        const double dh = toolDropdown.height * gridGap;
+        const QRectF dropdownRect(dx, dy, dw, dh);
+
+        const double borderThickness = std::max(1.0, gridGap * 0.08);
+
+        QColor backgroundColor;
+        QColor borderColor;
+        QColor textColor;
+
+        if (!isActive) {
+            backgroundColor = QColor("#1a1a1a");
+            borderColor = Theme::darkGray();
+            textColor = Theme::darkGray();
+        } else if (isHovered) {
+            backgroundColor = QColor("#262626");
+            borderColor = Theme::brightAmber();
+            textColor = Theme::almostWhite();
+        } else {
+            backgroundColor = QColor("#1a1a1a");
+            borderColor = QColor("#4e4c4a");
+            textColor = Theme::almostWhite();
+        }
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(backgroundColor);
+        painter.drawRect(dropdownRect);
+
+        painter.setPen(QPen(borderColor, borderThickness));
+        painter.setBrush(Qt::NoBrush);
+        painter.drawRect(dropdownRect);
+
+        const QString displayText = toolDropdown.value + "  ▾";
+        const float textVisualHeight = static_cast<float>(fontAtlas.getAscenderPx()
+                                                          + fontAtlas.getDescenderPx())
+                                       * textScale;
+        const float textX = static_cast<float>(dx) + static_cast<float>(borderThickness) * 2.0f;
+        const float textY = static_cast<float>(dy + dh / 2.0) - textVisualHeight / 2.0f;
 
         fontRenderer.drawText(painter, textX, textY, displayText, textColor, textScale);
     }

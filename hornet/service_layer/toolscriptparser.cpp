@@ -110,6 +110,7 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
     std::vector<ToolTextDTO> texts;
     std::vector<ToolButtonDTO> buttons;
     std::vector<ToolTextFieldDTO> textFields;
+    std::vector<ToolDropdownDTO> dropdowns;
 
     const auto resolveColorArg = [](const QString &token) {
         return (token.isEmpty() || token == "-1") ? QString() : token;
@@ -291,10 +292,58 @@ ToolScriptDTO ToolScriptParser::parse(const QVector<QString> &bodyLines,
             const QString resolvedValue = fieldValues.contains(name) ? fieldValues.value(name)
                                                                      : defaultValue;
             textFields.push_back(ToolTextFieldDTO(x, y, w, h, name, resolvedValue));
+        } else if (line.startsWith("dropdown ")) {
+            QString remainder = line.mid(9).trimmed();
+            double x, y, w, h;
+            bool numbersOk = true;
+            for (double *outValue : {&x, &y, &w, &h}) {
+                const int spaceIndex = remainder.indexOf(' ');
+                if (spaceIndex == -1) {
+                    numbersOk = false;
+                    break;
+                }
+                const QString token = remainder.left(spaceIndex);
+                remainder = remainder.mid(spaceIndex + 1).trimmed();
+                if (!resolveNumericToken(token, sourceValues, *outValue)) {
+                    numbersOk = false;
+                    break;
+                }
+            }
+            if (!numbersOk)
+                continue;
+
+            if (!remainder.startsWith('"'))
+                continue;
+            const int nameEndQuote = remainder.indexOf('"', 1);
+            if (nameEndQuote == -1)
+                continue;
+            const QString name = remainder.mid(1, nameEndQuote - 1);
+            if (name.isEmpty())
+                continue;
+            remainder = remainder.mid(nameEndQuote + 1).trimmed();
+
+            QStringList options;
+            while (remainder.startsWith('"')) {
+                const int optionEndQuote = remainder.indexOf('"', 1);
+                if (optionEndQuote == -1)
+                    break;
+                const QString option = remainder.mid(1, optionEndQuote - 1);
+                if (!option.isEmpty())
+                    options.push_back(option);
+                remainder = remainder.mid(optionEndQuote + 1).trimmed();
+            }
+            if (options.isEmpty())
+                continue;
+
+            const QString resolvedValue = (fieldValues.contains(name)
+                                           && options.contains(fieldValues.value(name)))
+                                              ? fieldValues.value(name)
+                                              : options.first();
+            dropdowns.push_back(ToolDropdownDTO(x, y, w, h, name, options, resolvedValue));
         }
     }
 
-    return ToolScriptDTO(lines, rects, circles, texts, buttons, textFields);
+    return ToolScriptDTO(lines, rects, circles, texts, buttons, textFields, dropdowns);
 }
 
 QString ToolScriptParser::substituteValues(const QString &text,
