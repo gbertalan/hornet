@@ -719,7 +719,14 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
 
 void Control::appendToLogBox(const QString &commandText, const QString &outputText)
 {
-    m_gridService.appendToLogBox(commandText, outputText);
+    const int logBoxId = m_gridService.appendToLogBox(commandText, outputText);
+    if (logBoxId == m_currentlySelectedBoxId) {
+        const BoxContentDTO boxContent = m_gridService.retrieveBoxContent(logBoxId);
+        const std::vector<std::u32string> bodyLinesAsU32 = convertBodyLinesToU32(
+            boxContent.bodyLines);
+        m_editorService.storeTextLines(bodyLinesAsU32, "txt");
+        m_editorControl.sendStateToEditor();
+    }
 }
 
 // ================================================================

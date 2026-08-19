@@ -290,9 +290,9 @@ void GridService::storeToolSourceValue(int boxId, const QString &sourceName, con
     m_toolSourceValues[boxId][sourceName] = value;
 }
 
-void GridService::appendToLogBox(const QString &commandText, const QString &outputText)
+int GridService::appendToLogBox(const QString &commandText, const QString &outputText)
 {
-    static const QString logBoxHeaderText = "hornet.log.txt";
+    static const QString logBoxHeaderText = "hornet.log";
     GridModel &gridModel = m_modelAccess.getGridModel();
 
     int logBoxId = -1;
@@ -316,6 +316,7 @@ void GridService::appendToLogBox(const QString &commandText, const QString &outp
             bodyLines.push_back(line);
     }
     logBox.setBodyLines(bodyLines);
+    return logBoxId;
 }
 
 // ================================================================

@@ -79,6 +79,8 @@ void BoxModel::setBodyLines(const QVector<QString> &bodyLines)
 }
 BoxContentType BoxModel::determineContentTypeFromHeaderText(const QString &headerText)
 {
+    if (headerText == "hornet.log")
+        return BoxContentType::PlainText;
     if (headerText.endsWith(".txt"))
         return BoxContentType::PlainText;
     if (headerText.endsWith(".terminal"))

@@ -118,7 +118,7 @@ public:
     // ================================================================
     std::vector<ToolSourceDTO> retrieveToolSources(int boxId) const;
     void storeToolSourceValue(int boxId, const QString &sourceName, const QString &value);
-    void appendToLogBox(const QString &commandText, const QString &outputText);
+    int appendToLogBox(const QString &commandText, const QString &outputText);
 
     // ================================================================
     // SLICE: tool textfield values (persisted, unlike tool source cache above)
