@@ -84,6 +84,15 @@ void Control::init()
     dispatchHornetCommand(HornetCommandDTO{true, "load", "FILE_LOADER.tool", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 20", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 26 20", workingDir});
+
+    dispatchHornetCommand(HornetCommandDTO{true, "load", "RESTORE_SESSION.tool", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 45", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 6", workingDir});
+    if (!m_recentlyCreatedBoxIds.empty())
+        m_gridService.storeToolFieldValue(m_recentlyCreatedBoxIds.back(),
+                                          "sessionpath",
+                                          QString::fromStdString(sessionScriptPath().string()));
+
     m_gridControl.sendViewStateToGrid();
 
     const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(BoxContentType::Terminal);
@@ -611,6 +620,16 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return "";
     }
 
+    if (command.subcommand == "exit") {
+        emit exitRequested();
+        return "";
+    }
+
+    if (command.subcommand == "autosave") {
+        std::filesystem::create_directories(sessionDataDirectory());
+        return saveProjectToFile(sessionScriptPath());
+    }
+
     return "unknown hornet command: " + command.subcommand;
 }
 
@@ -668,6 +687,17 @@ QString Control::executeScriptFile(const std::filesystem::path &filePath,
 
     m_gridControl.sendViewStateToGrid();
     return problems.join("; ");
+}
+
+std::filesystem::path Control::sessionDataDirectory() const
+{
+    return std::filesystem::path(
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString());
+}
+
+std::filesystem::path Control::sessionScriptPath() const
+{
+    return sessionDataDirectory() / "last_session.script";
 }
 
 // ================================================================

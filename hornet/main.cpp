@@ -26,6 +26,7 @@
  */
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
+    QApplication::setApplicationName("Hornet");
 
     ModelAccess modelAccess;
 
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]) {
                      &View::projectSaverSaveRequested,
                      &control,
                      &Control::onProjectSaverSaveRequested);
+    QObject::connect(&control, &Control::exitRequested, &app, &QApplication::quit);
 
     control.init();
 

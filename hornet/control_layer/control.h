@@ -1,6 +1,7 @@
 #pragma once
 #include <QDebug>
 #include <QObject>
+#include <QStandardPaths>
 #include "control_layer/editorcontrol.h"
 #include "control_layer/gdbcontrol.h"
 #include "control_layer/gridcontrol.h"
@@ -103,6 +104,9 @@ public slots:
     // ================================================================
     void onDebugRequested();
 
+signals:
+    void exitRequested();
+
 private:
     /**
      * @brief buildTerminalPrompts Reads ALL terminal prompt-lines from Model and converts them to QString,
@@ -150,6 +154,9 @@ private:
     QString executeScriptFile(const std::filesystem::path &filePath,
                               const std::filesystem::path &workingDir,
                               int depth);
+    std::filesystem::path sessionDataDirectory() const;
+    std::filesystem::path sessionScriptPath() const;
+
     void createCommandOutputBox(const QString &commandText, const QString &outputText);
     void appendToLogBox(const QString &commandText, const QString &outputText);
     bool resolveBoxIdToken(const QString &token, int &outBoxId) const;
