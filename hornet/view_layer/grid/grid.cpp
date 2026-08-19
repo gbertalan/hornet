@@ -308,7 +308,7 @@ void Grid::mouseMoveEvent(QMouseEvent *event)
                                                                       offset,
                                                                       boxes);
         if (boxIdUnderCursor != m_hoveredBoxId) {
-            const int hoverMarginPixels = static_cast<int>(std::ceil(gridGap));
+            const int hoverMarginPixels = static_cast<int>(std::ceil(gridGap)) + 1;
             QRectF dirtyRect;
             for (const BoxViewDTO &box : boxes) {
                 if (box.id == m_hoveredBoxId || box.id == boxIdUnderCursor) {

@@ -151,7 +151,9 @@ void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
                            geom.screenW + (gridGap * 2.0) - (adjustment2 * 2.0),
                            geom.screenH + (gridGap * 2.0) - (adjustment2 * 2.0));
 
-    QColor underColor = isSelected ? Theme::almostWhiteTranslucent() : Theme::darkGrayTranslucent();
+    // QColor underColor = isSelected ? Theme::almostWhiteTranslucent()
+    //                                : Theme::darkAmberTranslucent();
+    QColor underColor = Theme::almostWhiteTranslucent();
     painter.setPen(Theme::darkerAmber());
     painter.setBrush(underColor);
     painter.drawRect(underRect);
@@ -161,7 +163,7 @@ void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
                            geom.screenW + (gridGap * 2.0) - (adjustment2 * 2.0),
                            geom.screenH + (gridGap * 2.0) - (adjustment2 * 2.0));
 
-    constexpr double maxOpacity = 1.0; // 1.0=fully transparent
+    constexpr double maxOpacity = 0.8; // 1.0=fully transparent
     const int alpha = static_cast<int>((1.0 - maxOpacity * gapRatio) * 255);
 
     QColor brushColor = isSelected ? Theme::darkAmber() : Theme::almostWhite();
@@ -794,8 +796,16 @@ void CanvasPainter::drawBoxes(QPainter &painter,
 
         const bool isSelected = (box.id == selectedBoxId);
         const bool isHovered = (box.id == hoveredBoxId) && !isSelected;
+        const bool isDragged = (box.id == draggedBoxId);
 
-        drawBoxHoverSelectBorder(painter, geom, gridGap, edgeThickness, isSelected, isHovered);
+        if (!isDragged) {
+            CanvasPainter::drawBoxHoverSelectBorder(painter,
+                                                    geom,
+                                                    gridGap,
+                                                    edgeThickness,
+                                                    isSelected,
+                                                    isHovered);
+        }
         drawBoxBackgroundAndBorder(painter, geom, edgeThickness);
 
         painter.setClipRect(clipRect);
