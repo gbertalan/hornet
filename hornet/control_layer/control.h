@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QObject>
 #include "control_layer/editorcontrol.h"
+#include "control_layer/gdbcontrol.h"
 #include "control_layer/gridcontrol.h"
 #include "control_layer/terminalcontrol.h"
 #include "control_layer/toolcontrol.h"
@@ -132,6 +133,7 @@ private:
     EditorControl m_editorControl;
     TerminalControl m_terminalControl;
     GridControl m_gridControl;
+    GdbControl m_gdbControl;
     ToolControl m_toolControl;
 
     // Avoids redundant grid refreshes when the Editor reports the same scroll
@@ -149,6 +151,7 @@ private:
                               const std::filesystem::path &workingDir,
                               int depth);
     void createCommandOutputBox(const QString &commandText, const QString &outputText);
+    void appendToLogBox(const QString &commandText, const QString &outputText);
     bool resolveBoxIdToken(const QString &token, int &outBoxId) const;
     void selectBox(int boxId);
 

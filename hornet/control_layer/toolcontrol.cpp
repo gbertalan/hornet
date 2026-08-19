@@ -1,30 +1,36 @@
 #include "toolcontrol.h"
 #include <QProcess>
 #include <QTimer>
+#include "control_layer/gdbcontrol.h"
 #include "service_layer/gridservice.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 
-ToolControl::ToolControl(GridService &gridService)
+ToolControl::ToolControl(GridService &gridService, GdbControl &gdbControl)
     : m_gridService(gridService)
-{}
+    , m_gdbControl(gdbControl)
+{
+    connect(&m_gdbControl,
+            &GdbControl::sourceQueryCompleted,
+            this,
+            [this](int boxId, const QString &sourceName, const QString &value) {
+                m_gridService.storeToolSourceValue(boxId, sourceName, value);
+                emit sourceValueUpdated();
+            });
+}
 
 QString ToolControl::makeKey(int boxId, const QString &sourceName)
 {
     return QString::number(boxId) + ":" + sourceName;
 }
 
-// ================================================================
-// SLICE: hornet render / hornet trust entry points
-// ================================================================
-
 void ToolControl::attemptFetch(int boxId,
-                                 const ToolSourceDTO &source,
-                                 const std::filesystem::path &workingDir)
+                               const ToolSourceDTO &source,
+                               const std::filesystem::path &workingDir)
 {
     const QString key = makeKey(boxId, source.name);
     if (source.intervalMs > 0 && m_autoRepeatTimers.contains(key))
-        return; // already auto-repeating - no need to trigger an extra fetch
-    fetchSource(boxId, source.name, source.command, workingDir, source.intervalMs);
+        return;
+    performFetch(boxId, source.name, source.command, workingDir, source.intervalMs);
 }
 
 QString ToolControl::dispatchToolCommand(int boxId, const std::filesystem::path &workingDir)
@@ -49,8 +55,8 @@ QString ToolControl::dispatchToolCommand(int boxId, const std::filesystem::path 
 }
 
 QString ToolControl::dispatchTrustCommand(int boxId,
-                                            const QString &sourceName,
-                                            const std::filesystem::path &workingDir)
+                                          const QString &sourceName,
+                                          const std::filesystem::path &workingDir)
 {
     const std::vector<ToolSourceDTO> sources = m_gridService.retrieveToolSources(boxId);
     for (const ToolSourceDTO &source : sources) {
@@ -63,11 +69,28 @@ QString ToolControl::dispatchTrustCommand(int boxId,
     return "no data source named '" + sourceName + "' in this box";
 }
 
+void ToolControl::performFetch(int boxId,
+                               const QString &sourceName,
+                               const QString &command,
+                               const std::filesystem::path &workingDir,
+                               int intervalMs)
+{
+    static const QString gdbPrefix = "gdb ";
+    if (command.startsWith(gdbPrefix)) {
+        m_gdbControl.dispatchSourceQuery(boxId, sourceName, command.mid(gdbPrefix.length()));
+        const QString key = makeKey(boxId, sourceName);
+        if (intervalMs > 0 && !m_autoRepeatTimers.contains(key))
+            startAutoRepeat(boxId, sourceName, command, workingDir, intervalMs);
+        return;
+    }
+    fetchSource(boxId, sourceName, command, workingDir, intervalMs);
+}
+
 void ToolControl::fetchSource(int boxId,
-                                const QString &sourceName,
-                                const QString &command,
-                                const std::filesystem::path &workingDir,
-                                int intervalMs)
+                              const QString &sourceName,
+                              const QString &command,
+                              const std::filesystem::path &workingDir,
+                              int intervalMs)
 {
     const QString key = makeKey(boxId, sourceName);
     if (m_inFlightKeys.contains(key))
@@ -93,10 +116,10 @@ void ToolControl::fetchSource(int boxId,
 }
 
 void ToolControl::startAutoRepeat(int boxId,
-                                    const QString &sourceName,
-                                    const QString &command,
-                                    const std::filesystem::path &workingDir,
-                                    int intervalMs)
+                                  const QString &sourceName,
+                                  const QString &command,
+                                  const std::filesystem::path &workingDir,
+                                  int intervalMs)
 {
     const QString key = makeKey(boxId, sourceName);
     QTimer *timer = new QTimer(this);
@@ -104,7 +127,7 @@ void ToolControl::startAutoRepeat(int boxId,
             &QTimer::timeout,
             this,
             [this, boxId, sourceName, command, workingDir, intervalMs]() {
-                fetchSource(boxId, sourceName, command, workingDir, intervalMs);
+                performFetch(boxId, sourceName, command, workingDir, intervalMs);
             });
     timer->start(intervalMs);
     m_autoRepeatTimers.insert(key, timer);

@@ -290,6 +290,34 @@ void GridService::storeToolSourceValue(int boxId, const QString &sourceName, con
     m_toolSourceValues[boxId][sourceName] = value;
 }
 
+void GridService::appendToLogBox(const QString &commandText, const QString &outputText)
+{
+    static const QString logBoxHeaderText = "hornet.log.txt";
+    GridModel &gridModel = m_modelAccess.getGridModel();
+
+    int logBoxId = -1;
+    for (const BoxModel &box : gridModel.getBoxes()) {
+        if (box.getHeaderText() == logBoxHeaderText) {
+            logBoxId = box.getId();
+            break;
+        }
+    }
+    if (logBoxId == -1)
+        logBoxId = gridModel
+                       .addBox(0, 0, 30, 15, logBoxHeaderText, QVector<QString>{}, false, QString());
+
+    BoxModel &logBox = gridModel.getBox(logBoxId);
+    QVector<QString> bodyLines = logBox.getBodyLines();
+    bodyLines.push_back("$ " + commandText);
+    if (outputText.isEmpty()) {
+        bodyLines.push_back("(no output)");
+    } else {
+        for (const QString &line : outputText.split('\n'))
+            bodyLines.push_back(line);
+    }
+    logBox.setBodyLines(bodyLines);
+}
+
 // ================================================================
 // SLICE: tool textfield values (persisted, unlike tool source cache above)
 // ================================================================

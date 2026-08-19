@@ -141,18 +141,30 @@ void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
     const double gapRatio = std::clamp((gridGap - fadeStart) / (fadeEnd - fadeStart), 0.0, 1.0);
 
     double adjustment1, adjustment2;
-    adjustment1 = gridGap / 10.0;
-    adjustment2 = (gridGap - 1) / 10.0;
+    // adjustment1 = gridGap / 10.0;
+    // adjustment2 = (gridGap - 1) / 10.0;
+    adjustment1 = 0;
+    adjustment2 = 0;
+
+    const QRectF underRect(geom.screenX - gridGap + adjustment1,
+                           geom.screenY - gridGap + adjustment1,
+                           geom.screenW + (gridGap * 2.0) - (adjustment2 * 2.0),
+                           geom.screenH + (gridGap * 2.0) - (adjustment2 * 2.0));
+
+    QColor underColor = isSelected ? Theme::almostWhiteTranslucent() : Theme::darkGrayTranslucent();
+    painter.setPen(Theme::darkerAmber());
+    painter.setBrush(underColor);
+    painter.drawRect(underRect);
 
     const QRectF outerRect(geom.screenX - gridGap + adjustment1,
                            geom.screenY - gridGap + adjustment1,
                            geom.screenW + (gridGap * 2.0) - (adjustment2 * 2.0),
                            geom.screenH + (gridGap * 2.0) - (adjustment2 * 2.0));
 
-    constexpr double maxOpacity = 0.85;
+    constexpr double maxOpacity = 1.0; // 1.0=fully transparent
     const int alpha = static_cast<int>((1.0 - maxOpacity * gapRatio) * 255);
 
-    QColor brushColor = isSelected ? Theme::almostWhite() : Theme::darkAmber();
+    QColor brushColor = isSelected ? Theme::darkAmber() : Theme::almostWhite();
     brushColor.setAlpha(alpha);
 
     painter.setPen(Qt::NoPen);
@@ -582,14 +594,27 @@ void CanvasPainter::drawToolDropdowns(QPainter &painter,
         painter.setBrush(Qt::NoBrush);
         painter.drawRect(dropdownRect);
 
-        const QString displayText = toolDropdown.value + "  ▾";
+        const QString displayText = toolDropdown.value;
         const float textVisualHeight = static_cast<float>(fontAtlas.getAscenderPx()
                                                           + fontAtlas.getDescenderPx())
                                        * textScale;
         const float textX = static_cast<float>(dx) + static_cast<float>(borderThickness) * 2.0f;
         const float textY = static_cast<float>(dy + dh / 2.0) - textVisualHeight / 2.0f;
-
         fontRenderer.drawText(painter, textX, textY, displayText, textColor, textScale);
+
+        const double triangleSize = dh * 0.28;
+        const double triangleCenterX = dx + dw - static_cast<double>(borderThickness) * 2.0
+                                       - triangleSize / 2.0;
+        const double triangleCenterY = dy + dh / 2.0;
+        QPolygonF triangle;
+        triangle << QPointF(triangleCenterX - triangleSize / 2.0,
+                            triangleCenterY - triangleSize / 3.0)
+                 << QPointF(triangleCenterX + triangleSize / 2.0,
+                            triangleCenterY - triangleSize / 3.0)
+                 << QPointF(triangleCenterX, triangleCenterY + triangleSize / 2.0);
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(textColor);
+        painter.drawPolygon(triangle);
     }
 
     painter.restore();

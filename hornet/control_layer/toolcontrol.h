@@ -4,18 +4,14 @@
 #include <QSet>
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include <filesystem>
-
 class GridService;
+class GdbControl;
 class QTimer;
 class ToolControl : public QObject
 {
     Q_OBJECT
 public:
-    explicit ToolControl(GridService &gridService);
-
-    // ================================================================
-    // SLICE: hornet render / hornet trust entry points
-    // ================================================================
+    explicit ToolControl(GridService &gridService, GdbControl &gdbControl);
     QString dispatchToolCommand(int boxId, const std::filesystem::path &workingDir);
     QString dispatchTrustCommand(int boxId,
                                  const QString &sourceName,
@@ -24,9 +20,11 @@ signals:
     void sourceValueUpdated();
 
 private:
-    // ================================================================
-    // SLICE: async fetch + auto-repeat (once trusted and fetched once)
-    // ================================================================
+    void performFetch(int boxId,
+                      const QString &sourceName,
+                      const QString &command,
+                      const std::filesystem::path &workingDir,
+                      int intervalMs);
     void fetchSource(int boxId,
                      const QString &sourceName,
                      const QString &command,
@@ -41,9 +39,9 @@ private:
     void attemptFetch(int boxId,
                       const ToolSourceDTO &source,
                       const std::filesystem::path &workingDir);
-
     GridService &m_gridService;
-    QSet<QString> m_trustedCommands; // exact command strings, session-only
-    QSet<QString> m_inFlightKeys;    // "boxId:name" - guards overlapping fetches per source
-    QHash<QString, QTimer *> m_autoRepeatTimers; // "boxId:name" -> timer
+    GdbControl &m_gdbControl;
+    QSet<QString> m_trustedCommands;
+    QSet<QString> m_inFlightKeys;
+    QHash<QString, QTimer *> m_autoRepeatTimers;
 };

@@ -50,9 +50,25 @@ Control::Control(IModelAccessRead &modelAccess,
     , m_editorControl(modelAccess, editorService, view)
     , m_terminalControl(modelAccess, editorService, terminalService)
     , m_gridControl(modelAccess, gridService, view)
-    , m_toolControl(gridService)
+    , m_gdbControl()
+    , m_toolControl(gridService, m_gdbControl)
 {
     connect(&m_toolControl, &ToolControl::sourceValueUpdated, this, [this]() {
+        m_gridControl.sendViewStateToGrid();
+    });
+    connect(&m_gdbControl,
+            &GdbControl::commandCompleted,
+            this,
+            [this](const QString &commandText, const QString &resultText) {
+                appendToLogBox(commandText, resultText);
+                m_gridControl.sendViewStateToGrid();
+            });
+    connect(&m_gdbControl, &GdbControl::asyncNotificationReceived, this, [this](const QString &line) {
+        appendToLogBox("gdb (async)", line);
+        m_gridControl.sendViewStateToGrid();
+    });
+    connect(&m_gdbControl, &GdbControl::sessionEnded, this, [this](const QString &reason) {
+        appendToLogBox("gdb (session)", reason);
         m_gridControl.sendViewStateToGrid();
     });
 }
@@ -141,9 +157,13 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
                     const QString hornetMessage = dispatchHornetCommand(
                         executionResult.hornetCommand);
                     if (!hornetMessage.isEmpty())
-                        createCommandOutputBox(executionResult.commandText, hornetMessage);
+                        appendToLogBox(executionResult.commandText, hornetMessage);
                 } else {
-                    createCommandOutputBox(executionResult.commandText, executionResult.shellOutput);
+                    if (executionResult.shellOutput.isEmpty())
+                        appendToLogBox(executionResult.commandText, executionResult.shellOutput);
+                    else
+                        createCommandOutputBox(executionResult.commandText,
+                                               executionResult.shellOutput);
                 }
             }
             if (m_currentlySelectedBoxId != -1)
@@ -217,7 +237,7 @@ void Control::onBoxSelected(const BoxSelectedDTO &dto)
     const HornetCommandDTO command{true, "select", QString::number(dto.boxId), workingDir};
     const QString message = dispatchHornetCommand(command);
     if (!message.isEmpty())
-        createCommandOutputBox("select " + QString::number(dto.boxId), message);
+        appendToLogBox("select " + QString::number(dto.boxId), message);
 }
 
 // ================================================================
@@ -547,6 +567,31 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return m_toolControl.dispatchTrustCommand(boxId, parts.at(1), command.workingDirectory);
     }
 
+    if (command.subcommand == "gdb") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.isEmpty())
+            return "usage: hornet gdb <start <binary>|stop|raw <mi-command>>";
+        const QString action = parts.at(0);
+
+        if (action == "start") {
+            if (parts.size() < 2)
+                return "usage: hornet gdb start <binary>";
+            const QString binaryArg = command.argument.mid(action.length()).trimmed();
+            const std::filesystem::path binaryPath = command.workingDirectory
+                                                     / binaryArg.toStdString();
+            return m_gdbControl.dispatchStart(QString::fromStdString(binaryPath.string()),
+                                              command.workingDirectory);
+        }
+        if (action == "stop")
+            return m_gdbControl.dispatchStop();
+        if (action == "raw") {
+            if (parts.size() < 2)
+                return "usage: hornet gdb raw <mi-command>";
+            return m_gdbControl.dispatchRaw(command.argument.mid(action.length()).trimmed());
+        }
+        return "unknown gdb action: " + action;
+    }
+
     if (command.subcommand == "select") {
         const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
         if (parts.isEmpty())
@@ -614,7 +659,10 @@ QString Control::executeScriptFile(const std::filesystem::path &filePath,
                                                                                 currentDir,
                                                                                 resultingDir);
             currentDir = resultingDir;
-            createCommandOutputBox(line, output);
+            if (output.isEmpty())
+                appendToLogBox(line, output);
+            else
+                createCommandOutputBox(line, output);
         }
     }
 
@@ -637,6 +685,11 @@ void Control::createCommandOutputBox(const QString &commandText, const QString &
     }
     m_recentlyCreatedBoxIds.push_back(
         m_gridService.addBox(0, 0, 20, 15, commandText, bodyLines, false, QString()));
+}
+
+void Control::appendToLogBox(const QString &commandText, const QString &outputText)
+{
+    m_gridService.appendToLogBox(commandText, outputText);
 }
 
 // ================================================================
@@ -745,7 +798,7 @@ void Control::onBoxUnloadRequested(const BoxUnloadRequestedDTO &dto)
     const HornetCommandDTO command{true, "unload", QString::number(dto.boxId), workingDir};
     const QString message = dispatchHornetCommand(command);
     if (!message.isEmpty()) {
-        createCommandOutputBox("unload " + QString::number(dto.boxId), message);
+        appendToLogBox("unload " + QString::number(dto.boxId), message);
         m_gridControl.sendViewStateToGrid();
     }
 }
@@ -766,7 +819,7 @@ void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
         return;
     const QString message = dispatchHornetCommand(hornetCommand);
     if (!message.isEmpty()) {
-        createCommandOutputBox(substitutedCommand, message);
+        appendToLogBox(substitutedCommand, message);
         m_gridControl.sendViewStateToGrid();
     }
 }
@@ -808,7 +861,7 @@ void Control::onFileLoaderLoadRequested(const FilePathListDTO &dto)
         const HornetCommandDTO command{true, "load", filePath, workingDir};
         const QString message = dispatchHornetCommand(command);
         if (!message.isEmpty())
-            createCommandOutputBox("load " + filePath, message);
+            appendToLogBox("load " + filePath, message);
     }
 }
 
@@ -819,7 +872,7 @@ void Control::onProjectSaverSaveRequested(const QString &baseName)
     const HornetCommandDTO command{true, "save", fileName, workingDir};
     const QString message = dispatchHornetCommand(command);
     if (!message.isEmpty())
-        createCommandOutputBox("save " + fileName, message);
+        appendToLogBox("save " + fileName, message);
     m_windowControl.sendProjectSaveResultToPopup(message);
 }
 
@@ -834,18 +887,17 @@ void Control::onScriptRunnerBoxRunRequested(int boxId)
     try {
         originFilePath = m_gridService.retrieveBoxOriginFilePath(boxId);
     } catch (const std::runtime_error &) {
-        createCommandOutputBox("run #" + QString::number(boxId),
-                               "no box with id " + QString::number(boxId));
+        appendToLogBox("run #" + QString::number(boxId), "no box with id " + QString::number(boxId));
         return;
     }
     if (originFilePath.isEmpty()) {
-        createCommandOutputBox("run #" + QString::number(boxId), "box is not file-backed");
+        appendToLogBox("run #" + QString::number(boxId), "box is not file-backed");
         return;
     }
     const HornetCommandDTO command{true, "run", originFilePath, workingDir};
     const QString message = dispatchHornetCommand(command);
     if (!message.isEmpty())
-        createCommandOutputBox("run " + originFilePath, message);
+        appendToLogBox("run " + originFilePath, message);
 }
 
 void Control::onScriptRunnerRunRequested(const FilePathListDTO &dto)
@@ -855,7 +907,7 @@ void Control::onScriptRunnerRunRequested(const FilePathListDTO &dto)
         const HornetCommandDTO command{true, "run", filePath, workingDir};
         const QString message = dispatchHornetCommand(command);
         if (!message.isEmpty())
-            createCommandOutputBox("run " + filePath, message);
+            appendToLogBox("run " + filePath, message);
     }
 }
 

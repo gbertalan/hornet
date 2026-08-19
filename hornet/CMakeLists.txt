@@ -140,6 +140,7 @@ qt_add_executable(hornet
     shared/dto_model_to_view/tooldropdowndto.h
     shared/dto_view_to_model/tooldropdownactivateddto.h
     view_layer/tooldropdownentrypanel.h view_layer/tooldropdownentrypanel.cpp
+    control_layer/gdbcontrol.h control_layer/gdbcontrol.cpp
 
 
 
