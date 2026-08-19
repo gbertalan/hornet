@@ -30,6 +30,8 @@
 #include "shared/dto_view_to_model/toolbuttonactivateddto.h"
 
 #include "service_layer/toolscriptparser.h"
+#include "shared/dto_model_to_view/toolsourcedto.h"
+#include "shared/dto_model_to_view/tooltrustpromptdto.h"
 #include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
 
 // ================================================================
@@ -81,6 +83,7 @@ void Control::init()
     m_gridControl.init();
 
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+
     dispatchHornetCommand(HornetCommandDTO{true, "load", "FILE_LOADER.tool", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 20", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 26 20", workingDir});
@@ -88,6 +91,11 @@ void Control::init()
     dispatchHornetCommand(HornetCommandDTO{true, "load", "RESTORE_SESSION.tool", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 45", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 18", workingDir});
+
+    dispatchHornetCommand(HornetCommandDTO{true, "load", "gdbtest.tool", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 65", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 18", workingDir});
+
     if (!m_recentlyCreatedBoxIds.empty())
         m_gridService.storeToolFieldValue(m_recentlyCreatedBoxIds.back(),
                                           "sessionpath",
@@ -846,9 +854,28 @@ void Control::onBoxUnloadRequested(const BoxUnloadRequestedDTO &dto)
 
 void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
 {
+    if (!m_toolControl.isCommandTrusted(dto.hornetCommand)) {
+        m_pendingTrustButtonBoxId = dto.boxId;
+        m_pendingTrustButtonCommand = dto.hornetCommand;
+
+        const std::vector<QString> declaredCommands = m_gridService.retrieveToolButtonCommands(
+            dto.boxId);
+        QStringList untrusted;
+        for (const QString &command : declaredCommands)
+            if (!m_toolControl.isCommandTrusted(command))
+                untrusted.push_back(command);
+
+        m_windowControl.sendToolTrustPromptToWindow(ToolTrustPromptDTO(dto.boxId, untrusted));
+        return;
+    }
+    dispatchToolButtonCommand(dto.boxId, dto.hornetCommand);
+}
+
+void Control::dispatchToolButtonCommand(int boxId, const QString &literalCommand)
+{
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
-    const QHash<QString, QString> fieldValues = m_gridService.retrieveToolFieldValues(dto.boxId);
-    const QString substitutedCommand = ToolScriptParser::substituteValues(dto.hornetCommand,
+    const QHash<QString, QString> fieldValues = m_gridService.retrieveToolFieldValues(boxId);
+    const QString substitutedCommand = ToolScriptParser::substituteValues(literalCommand,
                                                                           fieldValues);
     const HornetCommandDTO hornetCommand
         = m_terminalControl.parseHornetCommand("hornet " + substitutedCommand, workingDir);
@@ -858,6 +885,34 @@ void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
     if (!message.isEmpty()) {
         appendToLogBox(substitutedCommand, message);
         m_gridControl.sendViewStateToGrid();
+    }
+}
+
+void Control::onToolTrustAllRequested(const BoxUnloadRequestedDTO &dto)
+{
+    QStringList toTrust;
+
+    const std::vector<QString> declaredButtonCommands = m_gridService.retrieveToolButtonCommands(
+        dto.boxId);
+    for (const QString &command : declaredButtonCommands)
+        if (!m_toolControl.isCommandTrusted(command))
+            toTrust.push_back(command);
+
+    const std::vector<ToolSourceDTO> declaredSources = m_gridService.retrieveToolSources(dto.boxId);
+    for (const ToolSourceDTO &source : declaredSources)
+        if (!m_toolControl.isCommandTrusted(source.command))
+            toTrust.push_back(source.command);
+
+    m_toolControl.trustCommands(toTrust);
+
+    const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
+    m_toolControl.dispatchToolCommand(dto.boxId, workingDir);
+
+    if (m_pendingTrustButtonBoxId == dto.boxId && !m_pendingTrustButtonCommand.isEmpty()) {
+        const QString commandToRun = m_pendingTrustButtonCommand;
+        m_pendingTrustButtonBoxId = -1;
+        m_pendingTrustButtonCommand.clear();
+        dispatchToolButtonCommand(dto.boxId, commandToRun);
     }
 }
 

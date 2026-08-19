@@ -97,6 +97,51 @@ std::vector<ToolSourceDTO> ToolScriptParser::parseSources(const QVector<QString>
 }
 
 // ================================================================
+// SLICE: button command declaration parsing (for trust gating - only
+// the literal command strings, coordinates/label are irrelevant here)
+// ================================================================
+
+std::vector<QString> ToolScriptParser::parseButtonCommands(const QVector<QString> &bodyLines)
+{
+    std::vector<QString> commands;
+    for (const QString &rawLine : bodyLines) {
+        const QString line = rawLine.trimmed();
+        if (!line.startsWith("button "))
+            continue;
+
+        QString remainder = line.mid(7).trimmed();
+        bool tokensOk = true;
+        for (int i = 0; i < 4; ++i) {
+            const int spaceIndex = remainder.indexOf(' ');
+            if (spaceIndex == -1) {
+                tokensOk = false;
+                break;
+            }
+            remainder = remainder.mid(spaceIndex + 1).trimmed();
+        }
+        if (!tokensOk)
+            continue;
+
+        if (!remainder.startsWith('"'))
+            continue;
+        const int labelEndQuote = remainder.indexOf('"', 1);
+        if (labelEndQuote == -1)
+            continue;
+        remainder = remainder.mid(labelEndQuote + 1).trimmed();
+
+        if (!remainder.startsWith('"'))
+            continue;
+        const int commandEndQuote = remainder.indexOf('"', 1);
+        if (commandEndQuote == -1)
+            continue;
+        const QString hornetCommand = remainder.mid(1, commandEndQuote - 1);
+        if (!hornetCommand.isEmpty())
+            commands.push_back(hornetCommand);
+    }
+    return commands;
+}
+
+// ================================================================
 // SLICE: primitive parsing (line, rect, circle, text)
 // ================================================================
 

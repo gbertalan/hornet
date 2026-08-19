@@ -6,6 +6,8 @@ class IModelAccessRead;
 class WindowService;
 class View;
 struct WindowDTO;
+struct ToolTrustPromptDTO;
+
 class WindowControl : public QObject
 {
     Q_OBJECT
@@ -18,6 +20,7 @@ public:
     void sendBoxListPageToPopup(const BoxListPageDTO &dto);
     void sendProjectSaveResultToPopup(const QString &message);
     void sendCurrentBoxIdToTitlebar(int boxId);
+    void sendToolTrustPromptToWindow(const ToolTrustPromptDTO &dto);
 
 private:
     IModelAccessRead &m_modelAccess;

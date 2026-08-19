@@ -61,6 +61,10 @@ int main(int argc, char* argv[]) {
     QObject::connect(&view, &View::boxSelected, &control, &Control::onBoxSelected);
     QObject::connect(&view, &View::boxResized, &control, &Control::onBoxResized);
     QObject::connect(&view, &View::boxUnloadRequested, &control, &Control::onBoxUnloadRequested);
+    QObject::connect(&view,
+                     &View::toolTrustAllRequested,
+                     &control,
+                     &Control::onToolTrustAllRequested);
     QObject::connect(&view, &View::toolButtonActivated, &control, &Control::onToolButtonActivated);
     QObject::connect(&view,
                      &View::toolTextFieldCommitted,

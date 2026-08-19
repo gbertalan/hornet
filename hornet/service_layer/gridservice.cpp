@@ -319,6 +319,12 @@ int GridService::appendToLogBox(const QString &commandText, const QString &outpu
     return logBoxId;
 }
 
+std::vector<QString> GridService::retrieveToolButtonCommands(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return ToolScriptParser::parseButtonCommands(box.getBodyLines());
+}
+
 // ================================================================
 // SLICE: tool textfield values (persisted, unlike tool source cache above)
 // ================================================================

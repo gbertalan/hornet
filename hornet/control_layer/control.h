@@ -29,6 +29,7 @@ struct FilePathListDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
 struct ToolTextFieldCommitDTO;
+struct ToolTrustPromptDTO;
 
 class Control : public QObject
 {
@@ -88,6 +89,7 @@ public slots:
     // ================================================================
     void onToolButtonActivated(const ToolButtonActivatedDTO &dto);
     void onToolTextFieldCommitted(const ToolTextFieldCommitDTO &dto);
+    void onToolTrustAllRequested(const BoxUnloadRequestedDTO &dto);
 
     // ================================================================
     // SLICE: box list paging (titlebar dropdown, file loader popup)
@@ -120,6 +122,7 @@ private:
     // SLICE: editor <-> box sync helpers
     // ================================================================
     void flushEditorContentToBox(int boxId);
+    void dispatchToolButtonCommand(int boxId, const QString &literalCommand);
 
     // ================================================================
     // SLICE: type conversion helpers (u32string <-> QString)
@@ -163,5 +166,8 @@ private:
     void selectBox(int boxId);
 
     bool m_isRestoringBoxState = false;
+    int m_pendingTrustButtonBoxId = -1;
+    QString m_pendingTrustButtonCommand;
+
     mutable int debugPrintCounter = 0;
 };

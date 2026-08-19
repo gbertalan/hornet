@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QTimer>
 #include <QVBoxLayout>
+#include "shared/dto_model_to_view/tooltrustpromptdto.h"
 #include "shared/dto_view_to_model/tooldropdownactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
@@ -26,6 +27,8 @@
 #include "view_layer/titlebarfiledropdown.h"
 #include "view_layer/tooldropdownentrypanel.h"
 #include "view_layer/tooltextfieldentrypanel.h"
+#include "view_layer/trustentrypanel.h"
+#include <shared/dto_view_to_model/boxunloadrequesteddto.h>
 
 static constexpr int HANDLE_THICKNESS = 6;
 static constexpr int CORNER_SIZE = 12;
@@ -151,6 +154,13 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
                     ToolTextFieldCommitDTO(m_activeTextFieldBoxId, m_activeTextFieldName, value));
                 closeMainPopup();
             });
+
+    m_trustEntryPanel = new TrustEntryPanel(m_fontAtlas, *m_fontRenderer, m_mainPopup->bodyWidget());
+    m_trustEntryPanel->hide();
+    connect(m_trustEntryPanel, &TrustEntryPanel::trustAllRequested, this, [this]() {
+        emit toolTrustAllRequested(BoxUnloadRequestedDTO(m_pendingTrustBoxId));
+        closeMainPopup();
+    });
 
     connect(m_titleBar, &TitleBar::fileLoadButtonClicked, this, &Window::openFileLoadPopup);
     connect(m_titleBar, &TitleBar::projectSaveButtonClicked, this, &Window::openProjectSavePopup);
@@ -318,6 +328,24 @@ void Window::openToolDropdownPopup(const ToolDropdownActivatedDTO &dto)
     m_mainPopup->setBodyContentHeight(contentHeight);
     m_dropdownEntryPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
     m_dropdownEntryPanel->show();
+    openMainPopupShared();
+}
+
+void Window::updateToolTrustPrompt(const ToolTrustPromptDTO &dto)
+{
+    m_activePopupListTarget = PopupListTarget::TrustEntry;
+    m_pendingTrustBoxId = dto.boxId;
+    m_mainPopup->setHeaderText("TRUST REQUIRED");
+    m_fileLoaderPanel->hide();
+    m_scriptRunnerPanel->hide();
+    m_projectSaverPanel->hide();
+    m_textFieldEntryPanel->hide();
+    m_dropdownEntryPanel->hide();
+    m_trustEntryPanel->setCommands(dto.untrustedCommands);
+    const int contentHeight = m_trustEntryPanel->preferredHeight();
+    m_mainPopup->setBodyContentHeight(contentHeight);
+    m_trustEntryPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
+    m_trustEntryPanel->show();
     openMainPopupShared();
 }
 

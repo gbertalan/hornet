@@ -41,3 +41,8 @@ void WindowControl::sendCurrentBoxIdToTitlebar(int boxId)
 {
     m_view.updateCurrentBoxId(boxId);
 }
+
+void WindowControl::sendToolTrustPromptToWindow(const ToolTrustPromptDTO &dto)
+{
+    m_view.updateToolTrustPrompt(dto);
+}

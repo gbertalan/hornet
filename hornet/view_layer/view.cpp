@@ -1,4 +1,5 @@
 #include "view_layer/view.h"
+#include "shared/dto_model_to_view/tooltrustpromptdto.h"
 #include "view_layer/window.h"
 
 #include <QMessageBox>
@@ -19,6 +20,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::boxUnloadRequested, this, &View::boxUnloadRequested);
     connect(m_window, &Window::toolButtonActivated, this, &View::toolButtonActivated);
     connect(m_window, &Window::toolTextFieldCommitted, this, &View::toolTextFieldCommitted);
+    connect(m_window, &Window::toolTrustAllRequested, this, &View::toolTrustAllRequested);
     connect(m_window, &Window::boxListPageRequested, this, &View::boxListPageRequested);
     connect(m_window, &Window::popupBoxListPageRequested, this, &View::popupBoxListPageRequested);
     connect(m_window, &Window::fileLoaderLoadRequested, this, &View::fileLoaderLoadRequested);
@@ -77,4 +79,9 @@ void View::updateProjectSaverSaveResult(const QString &message)
 void View::updateCurrentBoxId(int boxId)
 {
     m_window->updateCurrentBoxId(boxId);
+}
+
+void View::updateToolTrustPrompt(const ToolTrustPromptDTO &dto)
+{
+    m_window->updateToolTrustPrompt(dto);
 }

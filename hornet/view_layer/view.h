@@ -24,6 +24,7 @@ struct FilePathListDTO;
 struct BoxUnloadRequestedDTO;
 struct ToolButtonActivatedDTO;
 struct ToolTextFieldCommitDTO;
+struct ToolTrustPromptDTO;
 
 class Window;
 
@@ -43,6 +44,7 @@ public:
     void updatePopupBoxListPage(const BoxListPageDTO &dto);
     void updateProjectSaverSaveResult(const QString &message);
     void updateCurrentBoxId(int boxId);
+    void updateToolTrustPrompt(const ToolTrustPromptDTO &dto);
 
 signals:
     void buttonClicked();
@@ -57,6 +59,7 @@ signals:
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
+    void toolTrustAllRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
     void toolTextFieldCommitted(const ToolTextFieldCommitDTO &dto);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);

@@ -2,8 +2,10 @@
 #include <QHash>
 #include <QObject>
 #include <QSet>
+#include <QStringList>
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include <filesystem>
+
 class GridService;
 class GdbControl;
 class QTimer;
@@ -16,6 +18,9 @@ public:
     QString dispatchTrustCommand(int boxId,
                                  const QString &sourceName,
                                  const std::filesystem::path &workingDir);
+    bool isCommandTrusted(const QString &command) const;
+    void trustCommands(const QStringList &commands);
+
 signals:
     void sourceValueUpdated();
 

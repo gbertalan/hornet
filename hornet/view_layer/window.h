@@ -24,6 +24,8 @@ class FileLoaderPanel;
 class ScriptRunnerPanel;
 class ProjectSaverPanel;
 class TextFieldEntryPanel;
+class TrustEntryPanel;
+struct ToolTrustPromptDTO;
 struct BoxListPageDTO;
 struct BoxListPageRequestDTO;
 struct FilePathListDTO;
@@ -50,6 +52,8 @@ public:
     void updatePopupBoxListPage(const BoxListPageDTO &dto);
     void updateProjectSaverSaveResult(const QString &message);
     void updateCurrentBoxId(int boxId);
+    void updateToolTrustPrompt(const ToolTrustPromptDTO &dto);
+
 signals:
     void buttonClicked();
     void windowStateChanged(const WindowDTO &dto);
@@ -63,6 +67,7 @@ signals:
     void boxSelected(const BoxSelectedDTO &dto);
     void boxResized(const BoxResizeDTO &dto);
     void boxUnloadRequested(const BoxUnloadRequestedDTO &dto);
+    void toolTrustAllRequested(const BoxUnloadRequestedDTO &dto);
     void toolButtonActivated(const ToolButtonActivatedDTO &dto);
     void toolTextFieldCommitted(const ToolTextFieldCommitDTO &dto);
     void boxListPageRequested(const BoxListPageRequestDTO &dto);
@@ -101,6 +106,8 @@ private:
     ProjectSaverPanel *m_projectSaverPanel;
     TextFieldEntryPanel *m_textFieldEntryPanel;
     DropdownEntryPanel *m_dropdownEntryPanel;
+    TrustEntryPanel *m_trustEntryPanel;
+    int m_pendingTrustBoxId = -1;
     int m_activeTextFieldBoxId = -1;
     QString m_activeTextFieldName;
     enum class PopupListTarget {
@@ -108,7 +115,8 @@ private:
         ScriptRunner,
         ProjectSaver,
         TextFieldEntry,
-        DropdownEntry
+        DropdownEntry,
+        TrustEntry
     };
     PopupListTarget m_activePopupListTarget = PopupListTarget::FileLoader;
     void positionMainPopup();

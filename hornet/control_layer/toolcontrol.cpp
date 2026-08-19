@@ -69,6 +69,17 @@ QString ToolControl::dispatchTrustCommand(int boxId,
     return "no data source named '" + sourceName + "' in this box";
 }
 
+bool ToolControl::isCommandTrusted(const QString &command) const
+{
+    return m_trustedCommands.contains(command);
+}
+
+void ToolControl::trustCommands(const QStringList &commands)
+{
+    for (const QString &command : commands)
+        m_trustedCommands.insert(command);
+}
+
 void ToolControl::performFetch(int boxId,
                                const QString &sourceName,
                                const QString &command,
