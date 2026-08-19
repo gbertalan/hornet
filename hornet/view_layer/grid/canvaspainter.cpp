@@ -130,9 +130,12 @@ void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
                                              double gridGap,
                                              double edgeThickness,
                                              bool isSelected,
-                                             bool isHovered)
+                                             bool isHovered,
+                                             bool isCtrlPressed)
 {
     if (!isSelected && !isHovered)
+        return;
+    if (isCtrlPressed)
         return;
 
     // alpha scales linearly between these gridGap sizes:
@@ -786,7 +789,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                                     gridGap,
                                                     edgeThickness,
                                                     isSelected,
-                                                    isHovered);
+                                                    isHovered,
+                                                    isCtrlPressed);
         }
         drawBoxBackgroundAndBorder(painter, geom, edgeThickness);
 

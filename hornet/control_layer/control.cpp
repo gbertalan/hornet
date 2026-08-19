@@ -94,7 +94,7 @@ void Control::init()
 
     dispatchHornetCommand(HornetCommandDTO{true, "load", "gdbtest.tool", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 65", workingDir});
-    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 18", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 19", workingDir});
 
     if (!m_recentlyCreatedBoxIds.empty())
         m_gridService.storeToolFieldValue(m_recentlyCreatedBoxIds.back(),

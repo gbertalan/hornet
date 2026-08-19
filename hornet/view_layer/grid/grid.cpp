@@ -75,14 +75,27 @@ void Grid::setCtrlPressed(bool isCtrlPressed)
         m_hoveredButtonIndex = -1;
         m_hoveredToolKind = ToolHoverKind::None;
     }
+
+    const int marginPixels = static_cast<int>(std::ceil(gridGap)) + 1;
+    QRectF dirtyRect;
+
     for (const BoxViewDTO &box : boxes) {
-        if (box.id == m_hoveredBoxId) {
+        // Collect bounds for BOTH hovered and selected boxes
+        if (box.id == m_hoveredBoxId || box.id == m_selectedBoxId) {
             const QRectF boxRect = CanvasPainter::getBoxScreenRect(box, gridGap, offset);
-            update(boxRect.toAlignedRect());
-            return;
+            const QRectF inflatedRect = boxRect.adjusted(-marginPixels,
+                                                         -marginPixels,
+                                                         marginPixels,
+                                                         marginPixels);
+            dirtyRect = dirtyRect.isNull() ? inflatedRect : dirtyRect.united(inflatedRect);
         }
     }
-    update();
+
+    if (!dirtyRect.isNull()) {
+        update(dirtyRect.toAlignedRect());
+    } else {
+        update();
+    }
 }
 
 // ================================================================

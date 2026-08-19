@@ -84,7 +84,8 @@ private:
                                          double gridGap,
                                          double edgeThickness,
                                          bool isSelected,
-                                         bool isHovered);
+                                         bool isHovered,
+                                         bool isCtrlPressed);
     static void drawBoxHeaderText(QPainter &painter,
                                   const BoxViewDTO &box,
                                   const BoxScreenGeometry &geom,
