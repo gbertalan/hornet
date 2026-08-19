@@ -11,7 +11,7 @@ public:
     explicit TrustEntryPanel(FontAtlas &fontAtlas,
                              FontRenderer &fontRenderer,
                              QWidget *parent = nullptr);
-    void setCommands(const QStringList &commands);
+    void setCommands(const QStringList &buttonCommands, const QStringList &sourceCommands);
     int preferredHeight() const;
 signals:
     void trustAllRequested();
@@ -34,4 +34,7 @@ private:
     static constexpr int m_lineHeight = 22;
     static constexpr int m_gapListToButton = 16;
     static constexpr int m_buttonHeight = 34;
+
+    QStringList m_buttonCommands;
+    QStringList m_sourceCommands;
 };

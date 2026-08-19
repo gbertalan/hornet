@@ -86,9 +86,10 @@ void GdbControl::processLine(const QString &line)
 
         if (m_pendingSourceQueries.contains(token)) {
             const PendingSourceQuery pending = m_pendingSourceQueries.take(token);
-            emit sourceQueryCompleted(pending.boxId,
-                                      pending.sourceName,
-                                      extractMiValueField(resultText));
+            const QString value = extractMiValueField(resultText);
+            if (!value.isNull())
+                emit sourceQueryCompleted(pending.boxId, pending.sourceName, value);
+            // else: no "value=" field (e.g. process not running), keep showing last value
             return;
         }
 

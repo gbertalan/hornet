@@ -858,14 +858,22 @@ void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
         m_pendingTrustButtonBoxId = dto.boxId;
         m_pendingTrustButtonCommand = dto.hornetCommand;
 
-        const std::vector<QString> declaredCommands = m_gridService.retrieveToolButtonCommands(
+        const std::vector<QString> declaredButtonCommands = m_gridService.retrieveToolButtonCommands(
             dto.boxId);
-        QStringList untrusted;
-        for (const QString &command : declaredCommands)
+        QStringList untrustedButtons;
+        for (const QString &command : declaredButtonCommands)
             if (!m_toolControl.isCommandTrusted(command))
-                untrusted.push_back(command);
+                untrustedButtons.push_back(command);
 
-        m_windowControl.sendToolTrustPromptToWindow(ToolTrustPromptDTO(dto.boxId, untrusted));
+        const std::vector<ToolSourceDTO> declaredSources = m_gridService.retrieveToolSources(
+            dto.boxId);
+        QStringList untrustedSources;
+        for (const ToolSourceDTO &source : declaredSources)
+            if (!m_toolControl.isCommandTrusted(source.command))
+                untrustedSources.push_back(source.command);
+
+        m_windowControl.sendToolTrustPromptToWindow(
+            ToolTrustPromptDTO(dto.boxId, untrustedButtons, untrustedSources));
         return;
     }
     dispatchToolButtonCommand(dto.boxId, dto.hornetCommand);

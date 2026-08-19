@@ -31,16 +31,18 @@ TrustEntryPanel::TrustEntryPanel(FontAtlas &fontAtlas, FontRenderer &fontRendere
     connect(m_trustAllButton, &QPushButton::clicked, this, &TrustEntryPanel::trustAllRequested);
 }
 
-void TrustEntryPanel::setCommands(const QStringList &commands)
+void TrustEntryPanel::setCommands(const QStringList &buttonCommands,
+                                  const QStringList &sourceCommands)
 {
-    m_commands = commands;
+    m_buttonCommands = buttonCommands;
+    m_sourceCommands = sourceCommands;
     update();
 }
 
 int TrustEntryPanel::preferredHeight() const
 {
-    const int commandCount = m_commands.isEmpty() ? 1 : m_commands.size();
-    return m_margin + m_eyebrowHeight + m_gapEyebrowToList + (commandCount * m_lineHeight)
+    const int totalLines = std::max<int>(1, m_buttonCommands.size() + m_sourceCommands.size());
+    return m_margin + m_eyebrowHeight + m_gapEyebrowToList + (totalLines * m_lineHeight)
            + m_gapListToButton + m_buttonHeight + m_margin;
 }
 
@@ -49,8 +51,8 @@ void TrustEntryPanel::layoutChildren()
     const int contentWidth = width() - 2 * m_margin;
     m_eyebrowY = m_margin;
     m_listY = m_eyebrowY + m_eyebrowHeight + m_gapEyebrowToList;
-    const int commandCount = m_commands.isEmpty() ? 1 : m_commands.size();
-    const int listHeight = commandCount * m_lineHeight;
+    const int totalLines = std::max<int>(1, m_buttonCommands.size() + m_sourceCommands.size());
+    const int listHeight = totalLines * m_lineHeight;
     const int buttonY = m_listY + listHeight + m_gapListToButton;
     m_trustAllButton->setGeometry(m_margin + contentWidth - m_trustAllButton->width(),
                                   buttonY,
@@ -71,18 +73,30 @@ void TrustEntryPanel::paintEvent(QPaintEvent *event)
                             eyebrowScale);
 
     constexpr float listScale = 0.55f;
-    if (m_commands.isEmpty()) {
+    if (m_buttonCommands.isEmpty() && m_sourceCommands.isEmpty()) {
         m_fontRenderer
             .drawText(painter, m_margin, m_listY, "  (none)", Theme::almostWhite(), listScale);
         return;
     }
-    for (int i = 0; i < m_commands.size(); ++i)
+    int lineIndex = 0;
+    for (const QString &command : m_buttonCommands) {
         m_fontRenderer.drawText(painter,
                                 m_margin,
-                                m_listY + i * m_lineHeight,
-                                "  " + m_commands.at(i),
+                                m_listY + lineIndex * m_lineHeight,
+                                "  " + command,
                                 Theme::almostWhite(),
                                 listScale);
+        ++lineIndex;
+    }
+    for (const QString &command : m_sourceCommands) {
+        m_fontRenderer.drawText(painter,
+                                m_margin,
+                                m_listY + lineIndex * m_lineHeight,
+                                "  " + command,
+                                Theme::desaturatedTeal(),
+                                listScale);
+        ++lineIndex;
+    }
 }
 
 void TrustEntryPanel::resizeEvent(QResizeEvent *event)

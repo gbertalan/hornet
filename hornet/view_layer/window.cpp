@@ -341,7 +341,7 @@ void Window::updateToolTrustPrompt(const ToolTrustPromptDTO &dto)
     m_projectSaverPanel->hide();
     m_textFieldEntryPanel->hide();
     m_dropdownEntryPanel->hide();
-    m_trustEntryPanel->setCommands(dto.untrustedCommands);
+    m_trustEntryPanel->setCommands(dto.untrustedCommands, dto.untrustedSourceCommands);
     const int contentHeight = m_trustEntryPanel->preferredHeight();
     m_mainPopup->setBodyContentHeight(contentHeight);
     m_trustEntryPanel->setGeometry(0, 0, m_mainPopup->bodyWidget()->width(), contentHeight);
