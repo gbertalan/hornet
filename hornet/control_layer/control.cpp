@@ -87,7 +87,7 @@ void Control::init()
 
     dispatchHornetCommand(HornetCommandDTO{true, "load", "RESTORE_SESSION.tool", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 45", workingDir});
-    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 6", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 18", workingDir});
     if (!m_recentlyCreatedBoxIds.empty())
         m_gridService.storeToolFieldValue(m_recentlyCreatedBoxIds.back(),
                                           "sessionpath",
