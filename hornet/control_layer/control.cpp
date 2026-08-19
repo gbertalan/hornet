@@ -82,8 +82,8 @@ void Control::init()
 
     const std::filesystem::path workingDir = m_terminalService.retrieveCurrentDirectory();
     dispatchHornetCommand(HornetCommandDTO{true, "load", "FILE_LOADER.tool", workingDir});
-    dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 2 20", workingDir});
-    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 34 20", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 20", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 26 20", workingDir});
     m_gridControl.sendViewStateToGrid();
 
     const int terminalBoxId = m_gridService.retrieveFirstBoxIdOfType(BoxContentType::Terminal);

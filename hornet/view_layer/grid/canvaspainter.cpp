@@ -140,28 +140,10 @@ void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
     constexpr double fadeEnd = 15.0;  // arbitrary, eyeballed it
     const double gapRatio = std::clamp((gridGap - fadeStart) / (fadeEnd - fadeStart), 0.0, 1.0);
 
-    double adjustment1, adjustment2;
-    // adjustment1 = gridGap / 10.0;
-    // adjustment2 = (gridGap - 1) / 10.0;
-    adjustment1 = 0;
-    adjustment2 = 0;
-
-    const QRectF underRect(geom.screenX - gridGap + adjustment1,
-                           geom.screenY - gridGap + adjustment1,
-                           geom.screenW + (gridGap * 2.0) - (adjustment2 * 2.0),
-                           geom.screenH + (gridGap * 2.0) - (adjustment2 * 2.0));
-
-    // QColor underColor = isSelected ? Theme::almostWhiteTranslucent()
-    //                                : Theme::darkAmberTranslucent();
-    QColor underColor = Theme::almostWhiteTranslucent();
-    painter.setPen(Theme::darkerAmber());
-    painter.setBrush(underColor);
-    painter.drawRect(underRect);
-
-    const QRectF outerRect(geom.screenX - gridGap + adjustment1,
-                           geom.screenY - gridGap + adjustment1,
-                           geom.screenW + (gridGap * 2.0) - (adjustment2 * 2.0),
-                           geom.screenH + (gridGap * 2.0) - (adjustment2 * 2.0));
+    const QRectF rect(geom.screenX - gridGap,
+                      geom.screenY - gridGap,
+                      geom.screenW + (gridGap * 2.0),
+                      geom.screenH + (gridGap * 2.0));
 
     constexpr double maxOpacity = 0.8; // 1.0=fully transparent
     const int alpha = static_cast<int>((1.0 - maxOpacity * gapRatio) * 255);
@@ -169,9 +151,9 @@ void CanvasPainter::drawBoxHoverSelectBorder(QPainter &painter,
     QColor brushColor = isSelected ? Theme::darkAmber() : Theme::almostWhite();
     brushColor.setAlpha(alpha);
 
-    painter.setPen(Qt::NoPen);
+    painter.setPen(Theme::darkerAmber());
     painter.setBrush(brushColor);
-    painter.drawRect(outerRect);
+    painter.drawRect(rect);
 }
 
 void CanvasPainter::drawBoxHeaderText(QPainter &painter,
