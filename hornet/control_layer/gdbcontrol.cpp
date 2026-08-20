@@ -1,6 +1,7 @@
 #include "gdbcontrol.h"
 #include <QDebug>
 #include <QRegularExpression>
+#include "service_layer/miresultparser.h"
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -11,10 +12,20 @@ GdbControl::GdbControl(QObject *parent)
     connect(&m_process, &QProcess::finished, this, &GdbControl::onProcessFinished);
 }
 
+void GdbControl::resetRegisterNameState()
+{
+    m_registerNames.clear();
+    m_registerNamesRequested = false;
+    m_pendingRegisterNamesToken = -1;
+    m_pendingRegisterValuesRequests.clear();
+}
+
 QString GdbControl::dispatchStart(const QString &binaryPath, const std::filesystem::path &workingDir)
 {
     if (m_sessionActive)
         return "gdb session already active - run 'hornet gdb stop' first";
+
+    resetRegisterNameState();
 
     m_process.setWorkingDirectory(QString::fromStdString(workingDir.string()));
     m_process.start("gdb", QStringList() << "--interpreter=mi4" << "-nx" << "-q" << binaryPath);
@@ -53,7 +64,7 @@ QString GdbControl::dispatchRaw(const QString &miCommand)
 void GdbControl::dispatchSourceQuery(int boxId, const QString &sourceName, const QString &miCommand)
 {
     if (!m_sessionActive)
-        return; // no session - source stays unresolved, same as "not fetched" in the parser
+        return;
 
     const int token = m_nextToken++;
     m_pendingSourceQueries.insert(token, {boxId, sourceName});
@@ -76,8 +87,22 @@ QString GdbControl::dispatchRawToList(const QString &listName, const QString &mi
     if (!m_sessionActive)
         return "no active gdb session - run 'hornet gdb start <binary>' first";
 
+    static const QString registerValuesPrefix = "-data-list-register-values";
+    const bool isRegisterValues = miCommand.startsWith(registerValuesPrefix);
+
+    if (isRegisterValues && m_registerNames.isEmpty()) {
+        m_pendingRegisterValuesRequests.push_back({listName, miCommand});
+        if (!m_registerNamesRequested) {
+            m_registerNamesRequested = true;
+            m_pendingRegisterNamesToken = m_nextToken++;
+            m_process.write(QString::number(m_pendingRegisterNamesToken).toUtf8()
+                            + "-data-list-register-names\n");
+        }
+        return "";
+    }
+
     const int token = m_nextToken++;
-    m_pendingListQueries.insert(token, listName);
+    m_pendingListQueries.insert(token, {listName, isRegisterValues});
     m_process.write(QString::number(token).toUtf8() + miCommand.toUtf8() + "\n");
     return "";
 }
@@ -121,9 +146,21 @@ void GdbControl::processLine(const QString &line)
             return;
         }
 
+        if (token == m_pendingRegisterNamesToken) {
+            m_pendingRegisterNamesToken = -1;
+            m_registerNames = MiResultParser::parseStringArray(resultText, "register-names");
+            const std::vector<PendingRegisterValuesRequest> pending = m_pendingRegisterValuesRequests;
+            m_pendingRegisterValuesRequests.clear();
+            for (const PendingRegisterValuesRequest &request : pending)
+                dispatchRawToList(request.listName, request.miCommand);
+            return;
+        }
+
         if (m_pendingListQueries.contains(token)) {
-            const QString listName = m_pendingListQueries.take(token);
-            emit rawListResultReceived(listName, resultText);
+            const PendingListQuery pending = m_pendingListQueries.take(token);
+            emit rawListResultReceived(pending.listName,
+                                       resultText,
+                                       pending.isRegisterValues ? m_registerNames : QStringList());
             return;
         }
 
@@ -132,7 +169,6 @@ void GdbControl::processLine(const QString &line)
             const QString value = extractMiValueField(resultText);
             if (!value.isNull())
                 emit sourceQueryCompleted(pending.boxId, pending.sourceName, value);
-            // else: no "value=" field (e.g. process not running), keep showing last value
             return;
         }
 
@@ -196,6 +232,8 @@ void GdbControl::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
     m_sessionActive = false;
     m_pendingCommandText.clear();
     m_pendingSourceQueries.clear();
+    m_pendingListQueries.clear();
+    resetRegisterNameState();
     m_lineBuffer.clear();
 
     const QString reason = exitStatus == QProcess::CrashExit

@@ -78,8 +78,11 @@ Control::Control(IModelAccessRead &modelAccess,
     connect(&m_gdbControl,
             &GdbControl::rawListResultReceived,
             this,
-            [this](const QString &listName, const QString &resultText) {
-                const std::vector<QString> rows = MiResultParser::parseRows(resultText);
+            [this](const QString &listName,
+                   const QString &resultText,
+                   const QStringList &registerNames) {
+                const std::vector<QString> rows = MiResultParser::parseRows(resultText,
+                                                                            registerNames);
                 QVector<QString> rowsAsQVector;
                 rowsAsQVector.reserve(static_cast<int>(rows.size()));
                 for (const QString &row : rows)
