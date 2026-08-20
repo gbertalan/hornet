@@ -7,48 +7,43 @@
 void CanvasPainter::drawGrid(
     QPainter &painter, double gridGap, QPoint offset, QSize size, bool isDraggingGrid)
 {
-    constexpr double minVisibleGap
-        = 7.18; // precomputed from the formula baseGap * pow(zoomFactor, zoomLevel - defaultZoom).
+    constexpr double minVisibleGap = 7.18;
     constexpr double maxGap = 48.31;
-
     if (gridGap <= minVisibleGap)
         return;
 
     const int alpha = static_cast<int>(
         std::clamp((gridGap - minVisibleGap) / (maxGap - minVisibleGap), 0.0, 1.0) * 255);
+
     painter.setRenderHint(QPainter::Antialiasing, false);
     QColor gridColor = Theme::darkerAmber();
     gridColor.setAlpha(alpha);
     painter.setPen(QPen(gridColor, 1));
 
-    double startX = std::fmod(offset.x(), gridGap);
-    if (startX < 0.0)
-        startX += gridGap;
-
-    double startY = std::fmod(offset.y(), gridGap);
-    if (startY < 0.0)
-        startY += gridGap;
-
-    const int firstCellX = static_cast<int>(std::floor((startX - offset.x()) / gridGap));
+    const int firstCellX = static_cast<int>(std::floor(-offset.x() / gridGap));
+    const double startX = offset.x() + firstCellX * gridGap;
     const int noOfVerticalLines = static_cast<int>(std::ceil((size.width() - startX) / gridGap))
                                   + 1;
+
     for (int i = 0; i < noOfVerticalLines; ++i) {
         const int absoluteCellX = firstCellX + i;
         if (isDraggingGrid && (std::abs(absoluteCellX) % 10 != 0))
             continue;
-        const double x = startX + i * gridGap;
+        const double x = offset.x() + absoluteCellX * gridGap;
         painter.drawLine(QPointF(x, 0), QPointF(x, size.height()));
     }
 
-    const int firstCellY = static_cast<int>(std::floor((startY - offset.y()) / gridGap));
+    const int firstCellY = static_cast<int>(std::floor(-offset.y() / gridGap));
+    const double startY = offset.y() + firstCellY * gridGap;
     const int noOfHorizontalLines = static_cast<int>(std::ceil((size.height() - startY) / gridGap))
                                     + 1;
+
     for (int i = 0; i < noOfHorizontalLines; ++i) {
         const int absoluteCellY = firstCellY + i;
         if (isDraggingGrid && (std::abs(absoluteCellY) % 10 != 0))
             continue;
-        const double y = startY + i * gridGap;
-        painter.drawLine(QPointF(0, y), QPointF(0 + size.width(), y));
+        const double y = offset.y() + absoluteCellY * gridGap;
+        painter.drawLine(QPointF(0, y), QPointF(size.width(), y));
     }
 }
 
