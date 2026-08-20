@@ -281,6 +281,38 @@ std::vector<ToolSourceDTO> GridService::retrieveToolSources(int boxId) const
     return ToolScriptParser::parseSources(box.getBodyLines());
 }
 
+BoxContentType GridService::retrieveBoxContentType(int boxId) const
+{
+    return m_modelAccess.getGridModel().getBox(boxId).getContentType();
+}
+
+std::vector<ToolListSourceDTO> GridService::retrieveToolListSources(int boxId) const
+{
+    const BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    return ToolScriptParser::parseListSources(box.getBodyLines());
+}
+
+int GridService::upsertListBox(const QString &name, const QVector<QString> &rows)
+{
+    static const QString suffix = ".list";
+    const QString headerText = name + suffix;
+    GridModel &gridModel = m_modelAccess.getGridModel();
+
+    int listBoxId = -1;
+    for (const BoxModel &box : gridModel.getBoxes()) {
+        if (box.getHeaderText() == headerText) {
+            listBoxId = box.getId();
+            break;
+        }
+    }
+    if (listBoxId == -1)
+        listBoxId = gridModel.addBox(0, 0, 30, 15, headerText, rows, false, QString());
+    else
+        gridModel.getBox(listBoxId).setBodyLines(rows);
+
+    return listBoxId;
+}
+
 // ================================================================
 // SLICE: render
 // ================================================================

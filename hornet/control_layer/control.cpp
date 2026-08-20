@@ -30,6 +30,7 @@
 #include "shared/dto_view_to_model/toolbuttonactivateddto.h"
 
 #include "service_layer/toolscriptparser.h"
+#include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include "shared/dto_model_to_view/tooltrustpromptdto.h"
 #include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
@@ -73,6 +74,13 @@ Control::Control(IModelAccessRead &modelAccess,
         appendToLogBox("gdb (session)", reason);
         m_gridControl.sendViewStateToGrid();
     });
+    connect(&m_gdbControl,
+            &GdbControl::rawListResultReceived,
+            this,
+            [this](const QString &listName, const QString &resultText) {
+                m_gridService.upsertListBox(listName, QVector<QString>{resultText});
+                m_gridControl.sendViewStateToGrid();
+            });
 }
 
 void Control::init()
@@ -272,6 +280,9 @@ void Control::onBoxResized(const BoxResizeDTO &dto)
 
 void Control::flushEditorContentToBox(int boxId)
 {
+    if (m_gridService.retrieveBoxContentType(boxId) == BoxContentType::List)
+        return;
+
     const std::vector<std::u32string> &currentLines = m_modelAccess.getEditorModel().getTextLines();
     QVector<QString> linesAsQString;
     linesAsQString.reserve(static_cast<int>(currentLines.size()));
@@ -612,6 +623,13 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             return m_gdbControl.dispatchRawDebugPrint(
                 command.argument.mid(action.length()).trimmed());
         }
+        if (action == "list") {
+            if (parts.size() < 3)
+                return "usage: hornet gdb list <name> <mi-command>";
+            const QString listName = parts.at(1);
+            const QString miCommand = QStringList(parts.mid(2)).join(' ');
+            return m_gdbControl.dispatchRawToList(listName, miCommand);
+        }
         return "unknown gdb action: " + action;
     }
 
@@ -878,6 +896,12 @@ void Control::onToolButtonActivated(const ToolButtonActivatedDTO &dto)
             if (!m_toolControl.isCommandTrusted(source.command))
                 untrustedSources.push_back(source.command);
 
+        const std::vector<ToolListSourceDTO> declaredListSources
+            = m_gridService.retrieveToolListSources(dto.boxId);
+        for (const ToolListSourceDTO &listSource : declaredListSources)
+            if (!m_toolControl.isCommandTrusted(listSource.command))
+                untrustedSources.push_back(listSource.command);
+
         m_windowControl.sendToolTrustPromptToWindow(
             ToolTrustPromptDTO(dto.boxId, untrustedButtons, untrustedSources));
         return;
@@ -916,6 +940,12 @@ void Control::onToolTrustAllRequested(const BoxUnloadRequestedDTO &dto)
     for (const ToolSourceDTO &source : declaredSources)
         if (!m_toolControl.isCommandTrusted(source.command))
             toTrust.push_back(source.command);
+
+    const std::vector<ToolListSourceDTO> declaredListSources = m_gridService.retrieveToolListSources(
+        dto.boxId);
+    for (const ToolListSourceDTO &listSource : declaredListSources)
+        if (!m_toolControl.isCommandTrusted(listSource.command))
+            toTrust.push_back(listSource.command);
 
     m_toolControl.trustCommands(toTrust);
 

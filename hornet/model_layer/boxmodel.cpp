@@ -87,6 +87,8 @@ BoxContentType BoxModel::determineContentTypeFromHeaderText(const QString &heade
         return BoxContentType::Terminal;
     if (headerText.endsWith(".tool"))
         return BoxContentType::Tool;
+    if (headerText.endsWith(".list"))
+        return BoxContentType::List;
     return BoxContentType::Unknown;
 }
 

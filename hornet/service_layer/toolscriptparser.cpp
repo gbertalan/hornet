@@ -96,6 +96,47 @@ std::vector<ToolSourceDTO> ToolScriptParser::parseSources(const QVector<QString>
     return sources;
 }
 
+std::vector<ToolListSourceDTO> ToolScriptParser::parseListSources(const QVector<QString> &bodyLines)
+{
+    std::vector<ToolListSourceDTO> listSources;
+    for (const QString &rawLine : bodyLines) {
+        const QString line = rawLine.trimmed();
+        if (!line.startsWith("list "))
+            continue;
+
+        const int colonIndex = line.indexOf(':');
+        if (colonIndex == -1)
+            continue;
+
+        const QString command = line.mid(colonIndex + 1).trimmed();
+        if (command.isEmpty())
+            continue;
+
+        const QStringList tokensBeforeColon = line.left(colonIndex).split(' ', Qt::SkipEmptyParts);
+        // tokensBeforeColon.at(0) is always "list"
+
+        if (tokensBeforeColon.size() == 2) {
+            const QString name = tokensBeforeColon.at(1);
+            if (!name.isEmpty())
+                listSources.push_back(ToolListSourceDTO(name, command, 0));
+
+        } else if (tokensBeforeColon.size() == 3) {
+            const QString intervalToken = tokensBeforeColon.at(1);
+            const QString name = tokensBeforeColon.at(2);
+            if (name.isEmpty() || !intervalToken.endsWith("ms"))
+                continue;
+            bool ok = false;
+            int intervalMs = intervalToken.left(intervalToken.length() - 2).toInt(&ok);
+            if (!ok)
+                continue;
+            constexpr int minIntervalMs = 100;
+            intervalMs = std::max(intervalMs, minIntervalMs);
+            listSources.push_back(ToolListSourceDTO(name, command, intervalMs));
+        }
+    }
+    return listSources;
+}
+
 // ================================================================
 // SLICE: button command declaration parsing (for trust gating - only
 // the literal command strings, coordinates/label are irrelevant here)

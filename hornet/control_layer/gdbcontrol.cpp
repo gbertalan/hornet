@@ -71,6 +71,17 @@ QString GdbControl::dispatchRawDebugPrint(const QString &miCommand)
     return "";
 }
 
+QString GdbControl::dispatchRawToList(const QString &listName, const QString &miCommand)
+{
+    if (!m_sessionActive)
+        return "no active gdb session - run 'hornet gdb start <binary>' first";
+
+    const int token = m_nextToken++;
+    m_pendingListQueries.insert(token, listName);
+    m_process.write(QString::number(token).toUtf8() + miCommand.toUtf8() + "\n");
+    return "";
+}
+
 static QString extractMiValueField(const QString &resultText)
 {
     static const QRegularExpression valuePattern("value=\"((?:[^\"\\\\]|\\\\.)*)\"");
@@ -107,6 +118,12 @@ void GdbControl::processLine(const QString &line)
         if (m_pendingDebugPrintCommands.contains(token)) {
             const QString commandText = m_pendingDebugPrintCommands.take(token);
             qDebug().noquote() << "[gdb]" << commandText << "->" << resultText;
+            return;
+        }
+
+        if (m_pendingListQueries.contains(token)) {
+            const QString listName = m_pendingListQueries.take(token);
+            emit rawListResultReceived(listName, resultText);
             return;
         }
 

@@ -3,6 +3,7 @@
 #include <QTimer>
 #include "control_layer/gdbcontrol.h"
 #include "service_layer/gridservice.h"
+#include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 
 ToolControl::ToolControl(GridService &gridService, GdbControl &gdbControl)
@@ -36,7 +37,8 @@ void ToolControl::attemptFetch(int boxId,
 QString ToolControl::dispatchToolCommand(int boxId, const std::filesystem::path &workingDir)
 {
     const std::vector<ToolSourceDTO> sources = m_gridService.retrieveToolSources(boxId);
-    if (sources.empty())
+    const std::vector<ToolListSourceDTO> listSources = m_gridService.retrieveToolListSources(boxId);
+    if (sources.empty() && listSources.empty())
         return "no data sources declared in this box";
 
     QStringList untrusted;
@@ -46,6 +48,13 @@ QString ToolControl::dispatchToolCommand(int boxId, const std::filesystem::path 
             continue;
         }
         attemptFetch(boxId, source, workingDir);
+    }
+    for (const ToolListSourceDTO &listSource : listSources) {
+        if (!m_trustedCommands.contains(listSource.command)) {
+            untrusted.push_back(listSource.name);
+            continue;
+        }
+        attemptListFetch(boxId, listSource, workingDir);
     }
 
     if (!untrusted.isEmpty())
@@ -66,7 +75,76 @@ QString ToolControl::dispatchTrustCommand(int boxId,
             return "trusted and fetching '" + sourceName + "'";
         }
     }
+    const std::vector<ToolListSourceDTO> listSources = m_gridService.retrieveToolListSources(boxId);
+    for (const ToolListSourceDTO &listSource : listSources) {
+        if (listSource.name == sourceName) {
+            m_trustedCommands.insert(listSource.command);
+            attemptListFetch(boxId, listSource, workingDir);
+            return "trusted and fetching '" + sourceName + "'";
+        }
+    }
     return "no data source named '" + sourceName + "' in this box";
+}
+
+void ToolControl::attemptListFetch(int boxId,
+                                   const ToolListSourceDTO &listSource,
+                                   const std::filesystem::path &workingDir)
+{
+    const QString key = makeKey(boxId, listSource.name);
+    if (listSource.intervalMs > 0 && m_listAutoRepeatTimers.contains(key))
+        return;
+    fetchListSource(boxId, listSource.name, listSource.command, workingDir, listSource.intervalMs);
+}
+
+void ToolControl::fetchListSource(int boxId,
+                                  const QString &name,
+                                  const QString &command,
+                                  const std::filesystem::path &workingDir,
+                                  int intervalMs)
+{
+    static const QString gdbPrefix = "gdb ";
+    if (command.startsWith(gdbPrefix))
+        return; // gdb-backed list sources land in a later stage - not wired yet
+
+    const QString key = makeKey(boxId, name);
+    if (m_listInFlightKeys.contains(key))
+        return;
+    m_listInFlightKeys.insert(key);
+
+    QProcess *process = new QProcess(this);
+    process->setWorkingDirectory(QString::fromStdString(workingDir.string()));
+    connect(process,
+            &QProcess::finished,
+            this,
+            [this, process, boxId, name, command, workingDir, key, intervalMs]() {
+                const QString output = QString::fromUtf8(process->readAllStandardOutput()).trimmed();
+                QVector<QString> rows;
+                for (const QString &line : output.split('\n'))
+                    rows.push_back(line);
+                m_gridService.upsertListBox(name, rows);
+                m_listInFlightKeys.remove(key);
+                process->deleteLater();
+                emit sourceValueUpdated();
+
+                if (intervalMs > 0 && !m_listAutoRepeatTimers.contains(key))
+                    startListAutoRepeat(boxId, name, command, workingDir, intervalMs);
+            });
+    process->start("/bin/sh", QStringList() << "-c" << command);
+}
+
+void ToolControl::startListAutoRepeat(int boxId,
+                                      const QString &name,
+                                      const QString &command,
+                                      const std::filesystem::path &workingDir,
+                                      int intervalMs)
+{
+    const QString key = makeKey(boxId, name);
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, [this, boxId, name, command, workingDir, intervalMs]() {
+        fetchListSource(boxId, name, command, workingDir, intervalMs);
+    });
+    timer->start(intervalMs);
+    m_listAutoRepeatTimers.insert(key, timer);
 }
 
 bool ToolControl::isCommandTrusted(const QString &command) const

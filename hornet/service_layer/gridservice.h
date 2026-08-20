@@ -2,6 +2,7 @@
 #define GRIDSERVICE_H
 #include <QHash>
 #include "shared/dto_model_to_view/boxlistentrydto.h"
+#include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include <shared/dto_model_to_view/boxcontentdto.h>
 #include <shared/dto_model_to_view/gridviewstatedto.h>
@@ -102,6 +103,7 @@ public:
     // SLICE: box content, cursor, scroll, selection
     // ================================================================
     BoxContentDTO retrieveBoxContent(int boxId) const;
+    BoxContentType retrieveBoxContentType(int boxId) const;
     QString retrieveBoxOriginFilePath(int boxId) const;
     void storeBoxContent(int boxId, const QVector<QString> &bodyLines, int cursorX, int cursorY);
     void storeSelectedBox(int boxId);
@@ -120,6 +122,12 @@ public:
     void storeToolSourceValue(int boxId, const QString &sourceName, const QString &value);
     int appendToLogBox(const QString &commandText, const QString &outputText);
     std::vector<QString> retrieveToolButtonCommands(int boxId) const;
+
+    // ================================================================
+    // SLICE: list boxes (multi-row `list` sources - one dedicated box per name)
+    // ================================================================
+    std::vector<ToolListSourceDTO> retrieveToolListSources(int boxId) const;
+    int upsertListBox(const QString &name, const QVector<QString> &rows);
 
     // ================================================================
     // SLICE: tool textfield values (persisted, unlike tool source cache above)

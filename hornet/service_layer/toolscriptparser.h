@@ -3,6 +3,7 @@
 #include <QHash>
 #include <QString>
 #include <QVector>
+#include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolscriptdto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include <vector>
@@ -13,6 +14,7 @@ public:
                                const QHash<QString, QString> &sourceValues,
                                const QHash<QString, QString> &fieldValues);
     static std::vector<ToolSourceDTO> parseSources(const QVector<QString> &bodyLines);
+    static std::vector<ToolListSourceDTO> parseListSources(const QVector<QString> &bodyLines);
     static std::vector<QString> parseButtonCommands(const QVector<QString> &bodyLines);
     static QString substituteValues(const QString &text, const QHash<QString, QString> &values);
 };

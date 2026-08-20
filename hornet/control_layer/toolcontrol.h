@@ -3,9 +3,9 @@
 #include <QObject>
 #include <QSet>
 #include <QStringList>
+#include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include <filesystem>
-
 class GridService;
 class GdbControl;
 class QTimer;
@@ -20,7 +20,6 @@ public:
                                  const std::filesystem::path &workingDir);
     bool isCommandTrusted(const QString &command) const;
     void trustCommands(const QStringList &commands);
-
 signals:
     void sourceValueUpdated();
 
@@ -44,9 +43,26 @@ private:
     void attemptFetch(int boxId,
                       const ToolSourceDTO &source,
                       const std::filesystem::path &workingDir);
+
+    void attemptListFetch(int boxId,
+                          const ToolListSourceDTO &listSource,
+                          const std::filesystem::path &workingDir);
+    void fetchListSource(int boxId,
+                         const QString &name,
+                         const QString &command,
+                         const std::filesystem::path &workingDir,
+                         int intervalMs);
+    void startListAutoRepeat(int boxId,
+                             const QString &name,
+                             const QString &command,
+                             const std::filesystem::path &workingDir,
+                             int intervalMs);
+
     GridService &m_gridService;
     GdbControl &m_gdbControl;
     QSet<QString> m_trustedCommands;
     QSet<QString> m_inFlightKeys;
     QHash<QString, QTimer *> m_autoRepeatTimers;
+    QSet<QString> m_listInFlightKeys;
+    QHash<QString, QTimer *> m_listAutoRepeatTimers;
 };
