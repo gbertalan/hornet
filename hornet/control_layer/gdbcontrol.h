@@ -15,6 +15,7 @@ public:
     QString dispatchStop();
     QString dispatchRaw(const QString &miCommand);
     void dispatchSourceQuery(int boxId, const QString &sourceName, const QString &miCommand);
+    QString dispatchRawDebugPrint(const QString &miCommand);
 
 signals:
     void commandCompleted(const QString &commandText, const QString &resultText);
@@ -48,4 +49,5 @@ private:
     int m_inferiorPtyMasterFd = -1;
     QString m_inferiorPtyPath;
     QSocketNotifier *m_inferiorPtyNotifier = nullptr;
+    QHash<int, QString> m_pendingDebugPrintCommands;
 };

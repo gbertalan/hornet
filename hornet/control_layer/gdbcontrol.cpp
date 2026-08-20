@@ -1,4 +1,5 @@
 #include "gdbcontrol.h"
+#include <QDebug>
 #include <QRegularExpression>
 #include <fcntl.h>
 #include <unistd.h>
@@ -59,6 +60,17 @@ void GdbControl::dispatchSourceQuery(int boxId, const QString &sourceName, const
     m_process.write(QString::number(token).toUtf8() + miCommand.toUtf8() + "\n");
 }
 
+QString GdbControl::dispatchRawDebugPrint(const QString &miCommand)
+{
+    if (!m_sessionActive)
+        return "no active gdb session - run 'hornet gdb start <binary>' first";
+
+    const int token = m_nextToken++;
+    m_pendingDebugPrintCommands.insert(token, miCommand);
+    m_process.write(QString::number(token).toUtf8() + miCommand.toUtf8() + "\n");
+    return "";
+}
+
 static QString extractMiValueField(const QString &resultText)
 {
     static const QRegularExpression valuePattern("value=\"((?:[^\"\\\\]|\\\\.)*)\"");
@@ -91,6 +103,12 @@ void GdbControl::processLine(const QString &line)
     if (match.hasMatch()) {
         const int token = match.captured(1).toInt();
         const QString resultText = match.captured(2) + match.captured(3);
+
+        if (m_pendingDebugPrintCommands.contains(token)) {
+            const QString commandText = m_pendingDebugPrintCommands.take(token);
+            qDebug().noquote() << "[gdb]" << commandText << "->" << resultText;
+            return;
+        }
 
         if (m_pendingSourceQueries.contains(token)) {
             const PendingSourceQuery pending = m_pendingSourceQueries.take(token);

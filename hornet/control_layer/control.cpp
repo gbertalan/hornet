@@ -94,7 +94,7 @@ void Control::init()
 
     dispatchHornetCommand(HornetCommandDTO{true, "load", "gdbtest.tool", workingDir});
     dispatchHornetCommand(HornetCommandDTO{true, "setpos", "last 3 65", workingDir});
-    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 20 19", workingDir});
+    dispatchHornetCommand(HornetCommandDTO{true, "setsize", "last 40 36", workingDir});
 
     if (!m_recentlyCreatedBoxIds.empty())
         m_gridService.storeToolFieldValue(m_recentlyCreatedBoxIds.back(),
@@ -605,6 +605,12 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
             if (parts.size() < 2)
                 return "usage: hornet gdb raw <mi-command>";
             return m_gdbControl.dispatchRaw(command.argument.mid(action.length()).trimmed());
+        }
+        if (action == "rawq") {
+            if (parts.size() < 2)
+                return "usage: hornet gdb rawq <mi-command>";
+            return m_gdbControl.dispatchRawDebugPrint(
+                command.argument.mid(action.length()).trimmed());
         }
         return "unknown gdb action: " + action;
     }
