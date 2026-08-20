@@ -12,7 +12,8 @@ enum class ToolHoverKind { None, Button, TextField, Dropdown };
 class CanvasPainter
 {
 public:
-    static void drawGrid(QPainter &painter, double gridGap, QPoint offset, QSize size);
+    static void drawGrid(
+        QPainter &painter, double gridGap, QPoint offset, QSize size, bool isDraggingGrid = false);
     static void drawBoxes(QPainter &painter,
                           double gridGap,
                           QPoint offset,

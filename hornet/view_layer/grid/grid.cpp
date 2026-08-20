@@ -105,7 +105,7 @@ void Grid::setCtrlPressed(bool isCtrlPressed)
 void Grid::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    CanvasPainter::drawGrid(painter, gridGap, offset, size());
+    CanvasPainter::drawGrid(painter, gridGap, offset, size(), m_isDraggingGrid);
     CanvasPainter::drawBoxes(painter,
                              gridGap,
                              offset,
