@@ -144,6 +144,7 @@ qt_add_executable(hornet
     shared/dto_model_to_view/tooltrustpromptdto.h
     view_layer/trustentrypanel.h view_layer/trustentrypanel.cpp
     shared/dto_model_to_view/toollistsourcedto.h
+    service_layer/miresultparser.h service_layer/miresultparser.cpp
 
 
 

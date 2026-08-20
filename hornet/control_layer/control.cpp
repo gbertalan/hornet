@@ -29,6 +29,7 @@
 #include "shared/dto_view_to_model/boxunloadrequesteddto.h"
 #include "shared/dto_view_to_model/toolbuttonactivateddto.h"
 
+#include "service_layer/miresultparser.h"
 #include "service_layer/toolscriptparser.h"
 #include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
@@ -78,7 +79,12 @@ Control::Control(IModelAccessRead &modelAccess,
             &GdbControl::rawListResultReceived,
             this,
             [this](const QString &listName, const QString &resultText) {
-                m_gridService.upsertListBox(listName, QVector<QString>{resultText});
+                const std::vector<QString> rows = MiResultParser::parseRows(resultText);
+                QVector<QString> rowsAsQVector;
+                rowsAsQVector.reserve(static_cast<int>(rows.size()));
+                for (const QString &row : rows)
+                    rowsAsQVector.push_back(row);
+                m_gridService.upsertListBox(listName, rowsAsQVector);
                 m_gridControl.sendViewStateToGrid();
             });
 }
