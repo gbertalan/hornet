@@ -1,5 +1,7 @@
 #include "gdbcontrol.h"
 #include <QRegularExpression>
+#include <fcntl.h>
+#include <unistd.h>
 
 GdbControl::GdbControl(QObject *parent)
     : QObject(parent)
@@ -19,6 +21,12 @@ QString GdbControl::dispatchStart(const QString &binaryPath, const std::filesyst
         return "could not start gdb (is it installed and on PATH?)";
 
     m_sessionActive = true;
+    if (setupInferiorPty()) {
+        const int token = m_nextToken++;
+        m_pendingCommandText.insert(token, "-inferior-tty-set");
+        m_process.write(QString::number(token).toUtf8() + "-inferior-tty-set "
+                        + m_inferiorPtyPath.toUtf8() + "\n");
+    }
     return "gdb session started for " + binaryPath;
 }
 
@@ -101,8 +109,54 @@ void GdbControl::processLine(const QString &line)
     emit asyncNotificationReceived(line);
 }
 
+#include <fcntl.h>
+#include <unistd.h>
+
+bool GdbControl::setupInferiorPty()
+{
+    const int masterFd = posix_openpt(O_RDWR | O_NOCTTY);
+    if (masterFd == -1)
+        return false;
+    if (grantpt(masterFd) != 0 || unlockpt(masterFd) != 0) {
+        ::close(masterFd);
+        return false;
+    }
+    const char *slaveName = ptsname(masterFd);
+    if (!slaveName) {
+        ::close(masterFd);
+        return false;
+    }
+
+    m_inferiorPtyMasterFd = masterFd;
+    m_inferiorPtyPath = QString::fromLocal8Bit(slaveName);
+    m_inferiorPtyNotifier = new QSocketNotifier(masterFd, QSocketNotifier::Read, this);
+    connect(m_inferiorPtyNotifier,
+            &QSocketNotifier::activated,
+            this,
+            &GdbControl::onInferiorPtyReadyRead);
+    return true;
+}
+
+void GdbControl::onInferiorPtyReadyRead()
+{
+    char buffer[4096];
+    const ssize_t bytesRead = ::read(m_inferiorPtyMasterFd, buffer, sizeof(buffer));
+    if (bytesRead > 0)
+        emit targetOutputReceived(QString::fromUtf8(buffer, static_cast<int>(bytesRead)));
+}
+
 void GdbControl::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    if (m_inferiorPtyNotifier) {
+        m_inferiorPtyNotifier->setEnabled(false);
+        m_inferiorPtyNotifier->deleteLater();
+        m_inferiorPtyNotifier = nullptr;
+    }
+    if (m_inferiorPtyMasterFd != -1) {
+        ::close(m_inferiorPtyMasterFd);
+        m_inferiorPtyMasterFd = -1;
+    }
+
     const bool wasIntentional = m_sessionActive;
     m_sessionActive = false;
     m_pendingCommandText.clear();

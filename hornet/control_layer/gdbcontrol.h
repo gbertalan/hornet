@@ -2,6 +2,7 @@
 #include <QHash>
 #include <QObject>
 #include <QProcess>
+#include <QSocketNotifier>
 #include <filesystem>
 
 class GdbControl : public QObject
@@ -20,13 +21,16 @@ signals:
     void asyncNotificationReceived(const QString &line);
     void sessionEnded(const QString &reason);
     void sourceQueryCompleted(int boxId, const QString &sourceName, const QString &value);
+    void targetOutputReceived(const QString &text);
 
 private slots:
     void onReadyRead();
     void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onInferiorPtyReadyRead();
 
 private:
     void processLine(const QString &line);
+    bool setupInferiorPty();
 
     struct PendingSourceQuery
     {
@@ -40,4 +44,8 @@ private:
     QHash<int, QString> m_pendingCommandText;
     QHash<int, PendingSourceQuery> m_pendingSourceQueries;
     QByteArray m_lineBuffer;
+
+    int m_inferiorPtyMasterFd = -1;
+    QString m_inferiorPtyPath;
+    QSocketNotifier *m_inferiorPtyNotifier = nullptr;
 };
