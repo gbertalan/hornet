@@ -840,7 +840,8 @@ void CanvasPainter::drawBoxes(QPainter &painter,
                                      hoveredToolKind);
         } else if (box.contentType == BoxContentType::PlainText
                    || box.contentType == BoxContentType::List
-                   || box.contentType == BoxContentType::Terminal) {
+                   || box.contentType == BoxContentType::Terminal
+                   || box.contentType == BoxContentType::Unknown) {
             drawBoxTextContent(painter,
                                box,
                                geom,
