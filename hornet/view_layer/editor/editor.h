@@ -62,6 +62,7 @@ protected:
     // ================================================================
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void focusOutEvent(QFocusEvent *event) override;
@@ -87,6 +88,7 @@ private:
     void drawTerminalPrompt(QPainter &painter, int index, float x, float y);
     void drawLineText(QPainter &painter, int index, float textX, float y);
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
+    void drawSelection(QPainter &painter, int index, float textX, float lineTop);
 
     // ================================================================
     // SLICE: geometry-measurement helpers
@@ -94,6 +96,7 @@ private:
     QRect cursorRect(int cursorX, int cursorY) const;
     float leftColumnWidth() const;
     float lineNumberSectionWidth() const;
+    std::pair<int, int> getCursorPosFromMouse(QPoint mousePos);
 
     FontAtlas &m_fontAtlas;
     FontRenderer &m_fontRenderer;
@@ -116,4 +119,11 @@ private:
     bool m_isTerminal = false;
     QColor m_textUniColor;
     QVector<QString> m_terminalPrompts;
+
+    bool m_isSelecting = false;
+    bool m_hasSelection = false;
+    int m_selectionAnchorX = 0;
+    int m_selectionAnchorY = 0;
+    int m_selectionExtentX = 0;
+    int m_selectionExtentY = 0;
 };

@@ -191,18 +191,16 @@ void Editor::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     float leftMargin = 5.f;
     float textX = leftMargin + leftColumnWidth();
-
     const float textVisualHeight = static_cast<float>(m_fontAtlas.getAscenderPx()
                                                       + m_fontAtlas.getDescenderPx())
                                    * m_fontScale;
-
     int digits = QString::number(m_noOfAllLines).length();
     for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
         float lineTop = (m_topLineIndex + i) * m_lineHeight;
         float y = lineTop + m_lineHeight / 2.f - textVisualHeight / 2.f;
-
         drawLineNumber(painter, i, digits, leftMargin, y);
         drawTerminalPrompt(painter, i, leftMargin + lineNumberSectionWidth(), y);
+        drawSelection(painter, i, textX, lineTop);
         drawLineText(painter, i, textX, y);
         drawCursor(painter, i, textX, y, lineTop);
     }
@@ -287,34 +285,111 @@ void Editor::drawCursor(QPainter &painter, int index, float textX, float y, floa
     }
 }
 
+void Editor::drawSelection(QPainter &painter, int index, float textX, float lineTop)
+{
+    if (!m_hasSelection)
+        return;
+
+    int lineIndex = m_topLineIndex + index;
+    int startRow = std::min(m_selectionAnchorY, m_selectionExtentY);
+    int endRow = std::max(m_selectionAnchorY, m_selectionExtentY);
+
+    if (lineIndex < startRow || lineIndex > endRow)
+        return;
+
+    int startCol, endCol;
+
+    if (startRow == endRow) {
+        startCol = std::min(m_selectionAnchorX, m_selectionExtentX);
+        endCol = std::max(m_selectionAnchorX, m_selectionExtentX);
+    } else if (lineIndex == startRow) {
+        startCol = (m_selectionAnchorY == startRow) ? m_selectionAnchorX : m_selectionExtentX;
+        endCol = m_textLinesToDisplay[index].length();
+    } else if (lineIndex == endRow) {
+        startCol = 0;
+        endCol = (m_selectionAnchorY == endRow) ? m_selectionAnchorX : m_selectionExtentX;
+    } else {
+        startCol = 0;
+        endCol = m_textLinesToDisplay[index].length();
+    }
+
+    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
+    float startX = textX + startCol * charWidth;
+    float endX = textX + endCol * charWidth;
+    float width = endX - startX;
+
+    if (width > 0) {
+        painter.fillRect(QRectF(startX, lineTop, width, m_lineHeight), QColor(100, 149, 237, 100));
+    }
+}
+
 // ================================================================
 // SLICE: input handling (mouse + keyboard)
 // ================================================================
 
 void Editor::mouseReleaseEvent(QMouseEvent *event)
 {
-    float textX = 5.f + leftColumnWidth();
-    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
-    int cursorX = static_cast<int>((event->pos().x() - textX) / charWidth);
-    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
-    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
-    float topMargin = verticalPadding / 2.f;
-    int cursorY = static_cast<int>((event->pos().y() - verticalPadding - topMargin)
-                                   / (m_lineHeight));
-    cursorX = std::max(0, cursorX);
-    cursorY = std::max(0, cursorY);
-    EditorCursorPosDTO dto{cursorX, cursorY};
-    emit editorCursorPosChanged(dto);
+    if (event->button() == Qt::LeftButton) {
+        m_isSelecting = false;
+
+        auto [cursorX, cursorY] = getCursorPosFromMouse(event->pos());
+
+        m_selectionExtentX = cursorX;
+        m_selectionExtentY = cursorY;
+        m_hasSelection = (m_selectionAnchorX != m_selectionExtentX
+                          || m_selectionAnchorY != m_selectionExtentY);
+
+        EditorCursorPosDTO dto{cursorX, cursorY};
+        emit editorCursorPosChanged(dto);
+
+        update();
+    }
 }
 
 void Editor::mouseMoveEvent(QMouseEvent *event)
 {
     float textX = 5.f + leftColumnWidth();
-    bool overText = event->pos().x() >= textX;
-    if (overText == m_isTextCursor)
-        return;
-    m_isTextCursor = overText;
-    setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
+
+    if (m_isSelecting && (event->buttons() & Qt::LeftButton)) {
+        auto [cursorX, cursorY] = getCursorPosFromMouse(event->pos());
+
+        m_selectionExtentX = cursorX;
+        m_selectionExtentY = cursorY;
+        m_hasSelection = (m_selectionAnchorX != m_selectionExtentX
+                          || m_selectionAnchorY != m_selectionExtentY);
+
+        EditorCursorPosDTO dto{cursorX, cursorY};
+        emit editorCursorPosChanged(dto);
+
+        update();
+    } else {
+        bool overText = event->pos().x() >= textX;
+        if (overText == m_isTextCursor)
+            return;
+        m_isTextCursor = overText;
+        setCursor(overText ? Qt::IBeamCursor : Qt::ArrowCursor);
+    }
+}
+
+void Editor::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        auto [cursorX, cursorY] = getCursorPosFromMouse(event->pos());
+
+        m_selectionAnchorX = cursorX;
+        m_selectionAnchorY = cursorY;
+        m_selectionExtentX = cursorX;
+        m_selectionExtentY = cursorY;
+        m_isSelecting = true;
+        m_hasSelection = false;
+
+        EditorCursorPosDTO dto{cursorX, cursorY};
+        emit editorCursorPosChanged(dto);
+
+        update();
+
+        event->accept();
+    }
 }
 
 void Editor::keyPressEvent(QKeyEvent *event)
@@ -415,6 +490,31 @@ float Editor::lineNumberSectionWidth() const
 {
     int digits = QString::number(m_noOfAllLines).length();
     return m_fontAtlas.textWidth(digits + 2, m_fontScale);
+}
+
+std::pair<int, int> Editor::getCursorPosFromMouse(QPoint mousePos)
+{
+    float textX = 5.f + leftColumnWidth();
+    float charWidth = m_fontAtlas.textWidth(1, m_fontScale);
+    int cursorX = static_cast<int>((mousePos.x() - textX) / charWidth);
+    float fontHeight = m_fontAtlas.textHeight(m_fontScale);
+    float verticalPadding = (m_lineHeight - fontHeight) / 2.f;
+    float topMargin = verticalPadding / 2.f;
+    int cursorY = static_cast<int>((mousePos.y() - verticalPadding - topMargin) / m_lineHeight);
+
+    cursorX = std::max(0, cursorX);
+    cursorY = std::max(0, cursorY);
+    cursorY = std::min(cursorY, m_noOfAllLines - 1);
+
+    // m_textLinesToDisplay only holds the currently visible window of lines,
+    // indexed relative to m_topLineIndex - not by absolute document line number.
+    int relativeIndex = cursorY - m_topLineIndex;
+    if (relativeIndex >= 0 && relativeIndex < m_textLinesToDisplay.size()) {
+        int lineLen = m_textLinesToDisplay[relativeIndex].length();
+        cursorX = std::min(cursorX, lineLen);
+    }
+
+    return {cursorX, cursorY};
 }
 
 float Editor::leftColumnWidth() const
