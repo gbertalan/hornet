@@ -199,6 +199,7 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::CtrlA) {
         m_editorControl.selectAll();
         if (m_currentlySelectedBoxId != -1) {
+            flushEditorContentToBox(m_currentlySelectedBoxId);
             if (!m_isRestoringBoxState) {
                 m_gridService
                     .storeBoxSelection(m_currentlySelectedBoxId,
@@ -210,6 +211,30 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
             }
             m_gridControl.sendViewStateToGrid();
         }
+        m_editorControl.sendCursorPosToEditor();
+        m_editorControl.sendSelectionToEditor();
+        return;
+    }
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::CtrlC) {
+        m_editorControl.copySelection();
+        return;
+    }
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::CtrlV) {
+        int lineCountBefore = m_modelAccess.getEditorModel().getNoOfLines();
+        int cursorYBefore = m_modelAccess.getEditorModel().getCursorY();
+        m_editorControl.pasteFromClipboard();
+        if (m_modelAccess.getEditorModel().isTerminal())
+            m_terminalControl.removePromptForDeletedLine(lineCountBefore, cursorYBefore);
+        if (m_currentlySelectedBoxId != -1) {
+            flushEditorContentToBox(m_currentlySelectedBoxId);
+            if (!m_isRestoringBoxState) {
+                m_gridService.storeBoxSelection(m_currentlySelectedBoxId, 0, 0, 0, 0, false);
+            }
+            m_gridControl.sendViewStateToGrid();
+        }
+        m_editorControl.sendStateToEditor(m_modelAccess.getEditorModel().isTerminal()
+                                              ? buildTerminalPrompts()
+                                              : QVector<QString>{});
         m_editorControl.sendCursorPosToEditor();
         m_editorControl.sendSelectionToEditor();
         return;

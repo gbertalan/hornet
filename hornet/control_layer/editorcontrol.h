@@ -34,6 +34,8 @@ public:
 
     void dispatchEditorKeyPress(const EditorKeyPressDTO &dto);
     void selectAll();
+    void copySelection();
+    void pasteFromClipboard();
 
 private:
     IModelAccessRead &m_modelAccess;

@@ -103,8 +103,17 @@ void EditorControl::dispatchEditorKeyPress(const EditorKeyPressDTO &dto)
         m_editorService.moveCursor(dto);
 }
 
-// EditorControl — new pass-through method
 void EditorControl::selectAll()
 {
     m_editorService.selectAll();
+}
+
+void EditorControl::copySelection()
+{
+    m_editorService.copySelection();
+}
+
+void EditorControl::pasteFromClipboard()
+{
+    m_editorService.pasteFromClipboard();
 }

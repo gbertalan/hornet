@@ -1,4 +1,7 @@
 #include "editorservice.h"
+#include <QClipboard>
+#include <QGuiApplication>
+#include <QString>
 #include "model_layer/editormodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
@@ -329,4 +332,114 @@ void EditorService::selectAll()
 
     m_modelAccess.getEditorModel().setSelection(0, 0, lastCol, lastLine, true);
     m_modelAccess.getEditorModel().setCursor(lastCol, lastLine);
+}
+
+// EditorService — selected text as QString
+QString EditorService::getSelectedText() const
+{
+    if (!m_modelAccess.getEditorModel().hasSelection())
+        return QString();
+
+    int startX = m_modelAccess.getEditorModel().getSelectionAnchorX();
+    int startY = m_modelAccess.getEditorModel().getSelectionAnchorY();
+    int endX = m_modelAccess.getEditorModel().getSelectionExtentX();
+    int endY = m_modelAccess.getEditorModel().getSelectionExtentY();
+    if (startY > endY || (startY == endY && startX > endX)) {
+        std::swap(startX, endX);
+        std::swap(startY, endY);
+    }
+
+    const std::vector<std::u32string> &lines = m_modelAccess.getEditorModel().getTextLines();
+    std::u32string result;
+    if (startY == endY) {
+        result = lines.at(startY).substr(startX, endX - startX);
+    } else {
+        result += lines.at(startY).substr(startX);
+        result += U'\n';
+        for (int row = startY + 1; row < endY; ++row) {
+            result += lines.at(row);
+            result += U'\n';
+        }
+        result += lines.at(endY).substr(0, endX);
+    }
+    return QString::fromUcs4(reinterpret_cast<const char32_t *>(result.data()),
+                             static_cast<int>(result.size()));
+}
+
+void EditorService::copySelection()
+{
+    QString text = getSelectedText();
+    if (!text.isEmpty())
+        QGuiApplication::clipboard()->setText(text);
+}
+
+void EditorService::deleteSelectionInternal()
+{
+    int startX = m_modelAccess.getEditorModel().getSelectionAnchorX();
+    int startY = m_modelAccess.getEditorModel().getSelectionAnchorY();
+    int endX = m_modelAccess.getEditorModel().getSelectionExtentX();
+    int endY = m_modelAccess.getEditorModel().getSelectionExtentY();
+    if (startY > endY || (startY == endY && startX > endX)) {
+        std::swap(startX, endX);
+        std::swap(startY, endY);
+    }
+
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    std::u32string merged = lines.at(startY).substr(0, startX) + lines.at(endY).substr(endX);
+    lines.erase(lines.begin() + startY, lines.begin() + endY + 1);
+    lines.insert(lines.begin() + startY, merged);
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+
+    m_modelAccess.getEditorModel().setCursor(startX, startY);
+    m_modelAccess.getEditorModel().setSelection(0, 0, 0, 0, false);
+}
+
+void EditorService::pasteFromClipboard()
+{
+    QString clipboardText = QGuiApplication::clipboard()->text();
+    if (clipboardText.isEmpty())
+        return;
+
+    if (m_modelAccess.getEditorModel().hasSelection())
+        deleteSelectionInternal();
+
+    QVector<uint> ucs4 = clipboardText.toUcs4();
+    std::vector<std::u32string> pastedLines;
+    std::u32string current;
+    for (uint ch : ucs4) {
+        if (ch == U'\n') {
+            pastedLines.push_back(current);
+            current.clear();
+        } else if (ch != U'\r') {
+            current += static_cast<char32_t>(ch);
+        }
+    }
+    pastedLines.push_back(current);
+
+    int cursorX = m_modelAccess.getEditorModel().getCursorX();
+    int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+
+    std::u32string tail = lines.at(cursorY).substr(cursorX);
+    std::u32string head = lines.at(cursorY).substr(0, cursorX);
+
+    if (pastedLines.size() == 1) {
+        lines.at(cursorY) = head + pastedLines[0] + tail;
+        cursorX = static_cast<int>((head + pastedLines[0]).size());
+    } else {
+        std::vector<std::u32string> newLines;
+        newLines.push_back(head + pastedLines.front());
+        for (size_t i = 1; i < pastedLines.size() - 1; ++i)
+            newLines.push_back(pastedLines[i]);
+        newLines.push_back(pastedLines.back() + tail);
+
+        lines.erase(lines.begin() + cursorY);
+        lines.insert(lines.begin() + cursorY, newLines.begin(), newLines.end());
+
+        cursorY += static_cast<int>(pastedLines.size()) - 1;
+        cursorX = static_cast<int>(pastedLines.back().size());
+    }
+
+    m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }

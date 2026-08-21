@@ -1,3 +1,4 @@
+#include <QString>
 #include <string>
 #include <vector>
 
@@ -27,6 +28,10 @@ public:
     bool isTerminal() const;
     void setIsTerminal(bool isTerminal);
     void selectAll();
+    QString getSelectedText() const;
+    void copySelection();
+    void deleteSelectionInternal();
+    void pasteFromClipboard();
 
 private:
     IModelAccessReadWrite &m_modelAccess;

@@ -17,7 +17,9 @@ struct EditorKeyPressDTO
         PageDown,
         Tab,
         CtrlD, // debug
-        CtrlA  // select all
+        CtrlA, // select all
+        CtrlC, // copy
+        CtrlV  // paste
     };
     char32_t key;
     SpecialKey specialKey;
