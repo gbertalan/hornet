@@ -47,6 +47,14 @@ static std::vector<QString> extractTopLevelTuples(const QString &text)
 // register-name substitution for the "number" key when available
 // ================================================================
 
+static QString truncateVectorValue(const QString &value)
+{
+    constexpr int maxLength = 40;
+    if (value.length() <= maxLength)
+        return value;
+    return value.left(maxLength) + "...";
+}
+
 static QString formatTupleAsRow(const QString &tuple, const QStringList &registerNames)
 {
     static const QRegularExpression pairPattern(
@@ -69,9 +77,13 @@ static QString formatTupleAsRow(const QString &tuple, const QStringList &registe
                 continue;
             }
         }
+
+        if (key == "value" && value.startsWith('{'))
+            value = truncateVectorValue(value);
+
         parts.push_back(key + "=" + value);
     }
-    return parts.join("  ");
+    return parts.isEmpty() ? tuple : parts.join("  ");
 }
 
 std::vector<QString> MiResultParser::parseRows(const QString &resultText,
