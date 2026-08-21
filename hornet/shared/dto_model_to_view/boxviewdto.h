@@ -2,10 +2,9 @@
 #define BOXVIEWDTO_H
 #include <QString>
 #include <QVector>
-
 #include "model_layer/boxcontenttype.h"
+#include "model_layer/markrange.h"
 #include "shared/dto_model_to_view/toolscriptdto.h"
-
 struct BoxViewDTO
 {
     int id;
@@ -24,6 +23,7 @@ struct BoxViewDTO
     int selectionExtentX;
     int selectionExtentY;
     bool hasSelection;
+    QVector<MarkRange> marks;
     BoxContentType contentType;
     ToolScriptDTO toolScript;
     BoxViewDTO(int id,
@@ -42,6 +42,7 @@ struct BoxViewDTO
                int selectionExtentX,
                int selectionExtentY,
                bool hasSelection,
+               const QVector<MarkRange> &marks,
                BoxContentType contentType,
                const ToolScriptDTO &toolScript)
         : id(id)
@@ -60,6 +61,7 @@ struct BoxViewDTO
         , selectionExtentX(selectionExtentX)
         , selectionExtentY(selectionExtentY)
         , hasSelection(hasSelection)
+        , marks(marks)
         , contentType(contentType)
         , toolScript(toolScript)
     {}

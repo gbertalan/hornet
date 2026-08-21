@@ -642,6 +642,7 @@ void CanvasPainter::drawBoxTextContent(QPainter &painter,
 
     const QVector<QString> &bodyLines = box.bodyLines;
 
+    drawBoxMarks(painter, box, geom, gridGap);
     drawBoxSelection(painter, box, geom, fontAtlas, gridGap, textScale, bodyTextX, textPadding);
 
     if (bodyLines.isEmpty()) { // if empty, still draw caret
@@ -762,6 +763,33 @@ void CanvasPainter::drawBoxSelection(QPainter &painter,
         if (width > 0)
             painter.fillRect(QRectF(startX, rowTop, width, static_cast<float>(gridGap)),
                              QColor(100, 149, 237, 100));
+    }
+}
+
+void CanvasPainter::drawBoxMarks(QPainter &painter,
+                                 const BoxViewDTO &box,
+                                 const BoxScreenGeometry &geom,
+                                 double gridGap)
+{
+    if (box.marks.isEmpty())
+        return;
+
+    for (int i = 0; i < box.bodyLines.size(); ++i) {
+        const int lineIndex = box.bodyScrollOffset + i;
+        bool isMarked = false;
+        for (const MarkRange &mark : box.marks) {
+            if (lineIndex >= mark.startLine && lineIndex <= mark.endLine) {
+                isMarked = true;
+                break;
+            }
+        }
+        if (!isMarked)
+            continue;
+
+        const float rowTop = static_cast<float>(geom.screenY + geom.headerH)
+                             + i * static_cast<float>(gridGap);
+        painter.fillRect(QRectF(geom.screenX, rowTop, geom.screenW, static_cast<float>(gridGap)),
+                         QColor(178, 34, 34, 70));
     }
 }
 

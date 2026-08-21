@@ -146,6 +146,8 @@ qt_add_executable(hornet
     shared/dto_model_to_view/toollistsourcedto.h
     service_layer/miresultparser.h service_layer/miresultparser.cpp
     shared/dto_view_to_model/editorselectiondto.h
+    model_layer/markrange.h
+    shared/dto_model_to_view/editormarksdto.h
 
 
 

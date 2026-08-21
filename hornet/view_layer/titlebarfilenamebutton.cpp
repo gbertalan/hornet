@@ -31,8 +31,8 @@ void TitlebarFileNameButton::paintEvent(QPaintEvent *event)
         painter.fillRect(rect(), Theme::almostBlack());
 
     painter.setPen(Theme::darkerGray());
-    painter.drawLine(0, 0, 0, height() - 2);
-    painter.drawLine(width() - 1, 0, width() - 1, height() - 2);
+    painter.drawLine(0, 3, 0, height() - 2);
+    painter.drawLine(width() - 1, 3, width() - 1, height() - 2);
 
     const float scale = 0.7f;
     const float textPadding = 10.f;

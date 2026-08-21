@@ -2,7 +2,9 @@
 #include <QEvent>
 #include <QPainter>
 #include <QScrollArea>
+#include "model_layer/markrange.h"
 #include "shared/dto_bidirectional/editorsettingsdto.h"
+#include "shared/dto_model_to_view/editormarksdto.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "shared/dto_view_to_model/editorselectiondto.h"
@@ -164,6 +166,12 @@ void Editor::updateEditorSelection(const EditorSelectionDTO &dto)
     update();
 }
 
+void Editor::updateEditorMarks(const EditorMarksDTO &dto)
+{
+    m_marks = dto.marks;
+    update();
+}
+
 // ================================================================
 // SLICE: Qt lifecycle / sizing plumbing
 // ================================================================
@@ -209,6 +217,7 @@ void Editor::paintEvent(QPaintEvent *event)
     for (int i = 0; i < m_textLinesToDisplay.size(); ++i) {
         float lineTop = (m_topLineIndex + i) * m_lineHeight;
         float y = lineTop + m_lineHeight / 2.f - textVisualHeight / 2.f;
+        drawMarks(painter, i, lineTop);
         drawLineNumber(painter, i, digits, leftMargin, y);
         drawTerminalPrompt(painter, i, leftMargin + lineNumberSectionWidth(), y);
         drawSelection(painter, i, textX, lineTop);
@@ -331,6 +340,17 @@ void Editor::drawSelection(QPainter &painter, int index, float textX, float line
 
     if (width > 0) {
         painter.fillRect(QRectF(startX, lineTop, width, m_lineHeight), QColor(100, 149, 237, 100));
+    }
+}
+
+void Editor::drawMarks(QPainter &painter, int index, float lineTop)
+{
+    int lineIndex = m_topLineIndex + index;
+    for (const MarkRange &mark : m_marks) {
+        if (lineIndex >= mark.startLine && lineIndex <= mark.endLine) {
+            painter.fillRect(QRectF(0, lineTop, width(), m_lineHeight), QColor(178, 34, 34, 70));
+            break;
+        }
     }
 }
 

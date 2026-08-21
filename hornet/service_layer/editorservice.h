@@ -1,4 +1,5 @@
 #include <QString>
+#include "model_layer/markrange.h"
 #include <string>
 #include <vector>
 
@@ -33,10 +34,13 @@ public:
     void deleteSelectionInternal();
     void pasteFromClipboard();
     void cutSelection();
+    void storeMarks(const std::vector<MarkRange> &marks);
 
 private:
     IModelAccessReadWrite &m_modelAccess;
 
     void moveCursorWordRight(std::vector<std::u32string> &lines, int &cursorX, int &cursorY);
     void moveCursorWordLeft(std::vector<std::u32string> &lines, int &cursorX, int &cursorY);
+    void shiftMarksForLinesInserted(int atLine, int count);
+    void shiftMarksForLineDeleted(int deletedLine);
 };

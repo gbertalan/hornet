@@ -146,3 +146,12 @@ void EditorModel::setIsTerminal(bool isTerminal)
 {
     m_isTerminal = isTerminal;
 }
+
+std::vector<MarkRange> EditorModel::getMarks() const
+{
+    return m_marks;
+}
+void EditorModel::setMarks(std::vector<MarkRange> marks)
+{
+    m_marks = std::move(marks);
+}

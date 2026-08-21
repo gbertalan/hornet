@@ -4,6 +4,7 @@
 #include <QString>
 #include <QVector>
 #include "model_layer/boxcontenttype.h"
+#include "model_layer/markrange.h"
 
 class BoxModel
 {
@@ -47,6 +48,8 @@ public:
     QString getToolFieldValue(const QString &name) const;
     void setToolFieldValue(const QString &name, const QString &value);
     QHash<QString, QString> getToolFieldValues() const;
+    QVector<MarkRange> getMarks() const;
+    void setMarks(const QVector<MarkRange> &marks);
 
 private:
     int m_id;
@@ -71,5 +74,6 @@ private:
     bool m_isFileBacked;
     QString m_originFilePath;
     QHash<QString, QString> m_toolFieldValues;
+    QVector<MarkRange> m_marks;
 };
 #endif // BOXMODEL_H

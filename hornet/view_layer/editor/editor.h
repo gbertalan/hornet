@@ -4,6 +4,8 @@
 #include <memory>
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
+
+class MarkRange;
 struct EditorKeyPressDTO;
 class FontRenderer;
 struct EditorVisibleLinesDTO;
@@ -11,6 +13,8 @@ struct EditorSettingsDTO;
 struct EditorViewStateDTO;
 struct EditorCursorPosDTO;
 struct EditorSelectionDTO;
+struct EditorMarksDTO;
+
 class Editor : public QWidget
 {
     Q_OBJECT
@@ -33,6 +37,8 @@ public:
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateCursorPosition(const EditorCursorPosDTO &dto);
     void updateEditorSelection(const EditorSelectionDTO &dto);
+    void updateEditorMarks(const EditorMarksDTO &dto);
+
 signals:
     // ================================================================
     // SLICE: View -> Control (Editor's own state/input reported upward)
@@ -92,6 +98,7 @@ private:
     void drawLineText(QPainter &painter, int index, float textX, float y);
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
     void drawSelection(QPainter &painter, int index, float textX, float lineTop);
+    void drawMarks(QPainter &painter, int index, float lineTop);
 
     // ================================================================
     // SLICE: geometry-measurement helpers
@@ -129,4 +136,6 @@ private:
     int m_selectionAnchorY = 0;
     int m_selectionExtentX = 0;
     int m_selectionExtentY = 0;
+
+    QVector<MarkRange> m_marks;
 };

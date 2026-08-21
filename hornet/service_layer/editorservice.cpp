@@ -159,7 +159,6 @@ void EditorService::deleteCharacter(const EditorKeyPressDTO &dto)
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
     int noOfLines = static_cast<int>(lines.size());
-
     if (dto.specialKey == EditorKeyPressDTO::SpecialKey::Backspace) {
         if (cursorX > 0) {
             lines.at(cursorY).erase(cursorX - 1, 1);
@@ -168,6 +167,7 @@ void EditorService::deleteCharacter(const EditorKeyPressDTO &dto)
             int prevLineLength = static_cast<int>(lines.at(cursorY - 1).length());
             lines.at(cursorY - 1) += lines.at(cursorY);
             lines.erase(lines.begin() + cursorY);
+            shiftMarksForLineDeleted(cursorY);
             cursorY--;
             cursorX = prevLineLength;
         }
@@ -177,9 +177,9 @@ void EditorService::deleteCharacter(const EditorKeyPressDTO &dto)
         } else if (cursorY < noOfLines - 1) {
             lines.at(cursorY) += lines.at(cursorY + 1);
             lines.erase(lines.begin() + cursorY + 1);
+            shiftMarksForLineDeleted(cursorY + 1);
         }
     }
-
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }
@@ -189,13 +189,12 @@ void EditorService::insertNewLine()
     int cursorX = m_modelAccess.getEditorModel().getCursorX();
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
     std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
-
     std::u32string &currentLine = lines.at(cursorY);
     std::u32string newLine = currentLine.substr(cursorX);
     currentLine = currentLine.substr(0, cursorX);
     lines.insert(lines.begin() + cursorY + 1, newLine);
-
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
+    shiftMarksForLinesInserted(cursorY + 1, 1);
     m_modelAccess.getEditorModel().setCursor(0, cursorY + 1);
 }
 
@@ -384,6 +383,9 @@ void EditorService::deleteSelectionInternal()
         std::swap(startY, endY);
     }
 
+    for (int i = 0; i < endY - startY; ++i)
+        shiftMarksForLineDeleted(startY + 1);
+
     std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
     std::u32string merged = lines.at(startY).substr(0, startX) + lines.at(endY).substr(endX);
     lines.erase(lines.begin() + startY, lines.begin() + endY + 1);
@@ -436,6 +438,8 @@ void EditorService::pasteFromClipboard()
         lines.erase(lines.begin() + cursorY);
         lines.insert(lines.begin() + cursorY, newLines.begin(), newLines.end());
 
+        shiftMarksForLinesInserted(cursorY + 1, static_cast<int>(newLines.size()) - 1);
+
         cursorY += static_cast<int>(pastedLines.size()) - 1;
         cursorX = static_cast<int>(pastedLines.back().size());
     }
@@ -450,4 +454,47 @@ void EditorService::cutSelection()
         return;
     copySelection();
     deleteSelectionInternal();
+}
+
+void EditorService::storeMarks(const std::vector<MarkRange> &marks)
+{
+    m_modelAccess.getEditorModel().setMarks(marks);
+}
+
+void EditorService::shiftMarksForLinesInserted(int atLine, int count)
+{
+    if (count <= 0)
+        return;
+    std::vector<MarkRange> marks = m_modelAccess.getEditorModel().getMarks();
+    for (MarkRange &mark : marks) {
+        if (atLine <= mark.startLine) {
+            mark.startLine += count;
+            mark.endLine += count;
+        } else if (atLine <= mark.endLine) {
+            mark.endLine += count;
+        }
+    }
+    m_modelAccess.getEditorModel().setMarks(marks);
+}
+
+void EditorService::shiftMarksForLineDeleted(int deletedLine)
+{
+    std::vector<MarkRange> marks = m_modelAccess.getEditorModel().getMarks();
+    std::vector<MarkRange> result;
+    for (const MarkRange &mark : marks) {
+        if (deletedLine < mark.startLine) {
+            result.push_back(MarkRange(mark.startLine - 1, mark.endLine - 1));
+        } else if (deletedLine > mark.endLine) {
+            result.push_back(mark);
+        } else if (mark.startLine == mark.endLine) {
+            continue; // the mark's only line was deleted
+        } else if (deletedLine > mark.startLine && deletedLine < mark.endLine) {
+            result.push_back(MarkRange(mark.startLine, deletedLine - 1));
+            result.push_back(MarkRange(deletedLine, mark.endLine - 1));
+        } else {
+            // deletedLine == mark.startLine or mark.endLine
+            result.push_back(MarkRange(mark.startLine, mark.endLine - 1));
+        }
+    }
+    m_modelAccess.getEditorModel().setMarks(result);
 }

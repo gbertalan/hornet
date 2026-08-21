@@ -3,6 +3,7 @@
 #include <view_layer/font_renderer/FontAtlas.h>
 #include <view_layer/font_renderer/FontRenderer.h>
 
+class EditorMarksDTO;
 class EditorSelectionDTO;
 struct BoxResizeDTO;
 struct BoxSelectedDTO;
@@ -49,6 +50,7 @@ public:
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateEditorSelection(const EditorSelectionDTO &dto);
+    void updateEditorMarks(const EditorMarksDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
     void updateBoxListPage(const BoxListPageDTO &dto);

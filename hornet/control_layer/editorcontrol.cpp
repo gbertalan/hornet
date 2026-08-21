@@ -7,6 +7,7 @@
 #include "shared/dto_view_to_model/editorkeypressdto.h"
 #include "view_layer/view.h"
 
+#include "shared/dto_model_to_view/editormarksdto.h"
 #include "shared/dto_view_to_model/editorselectiondto.h"
 #include <qdebug.h>
 #include <shared/dto_bidirectional/editorsettingsdto.h>
@@ -63,6 +64,13 @@ void EditorControl::sendSelectionToEditor()
                            m_modelAccess.getEditorModel().getSelectionExtentY(),
                            m_modelAccess.getEditorModel().hasSelection()};
     m_view.updateEditorSelection(dto);
+}
+
+void EditorControl::sendMarksToEditor()
+{
+    const std::vector<MarkRange> &marks = m_modelAccess.getEditorModel().getMarks();
+    QVector<MarkRange> marksAsQVector(marks.begin(), marks.end());
+    m_view.updateEditorMarks(EditorMarksDTO(marksAsQVector));
 }
 
 void EditorControl::sendSettingsToEditor()

@@ -3,6 +3,7 @@
 #include <QString>
 #include <QVector>
 #include "model_layer/boxcontenttype.h"
+#include "model_layer/markrange.h"
 struct BoxContentDTO
 {
     QString headerText;
@@ -15,5 +16,6 @@ struct BoxContentDTO
     int selectionExtentX;
     int selectionExtentY;
     bool hasSelection;
+    QVector<MarkRange> marks;
 };
 #endif // BOXCONTENTDTO_H

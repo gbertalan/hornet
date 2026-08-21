@@ -8,6 +8,7 @@
 
 #include <view_layer/grid/grid.h>
 
+class EditorMarksDTO;
 class EditorSelectionDTO;
 struct EditorKeyPressDTO;
 struct EditorCursorPosDTO;
@@ -55,6 +56,7 @@ public:
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
     void updateEditorSettings(const EditorSettingsDTO &dto);
     void updateEditorSelection(const EditorSelectionDTO &dto);
+    void updateEditorMarks(const EditorMarksDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
     int leftPaneWidth() const;
     void focusEditor();

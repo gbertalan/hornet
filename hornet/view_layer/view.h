@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+class EditorMarksDTO;
 class EditorSelectionDTO;
 struct BoxResizeDTO;
 struct BoxSelectedDTO;
@@ -47,6 +48,7 @@ public:
     void updateProjectSaverSaveResult(const QString &message);
     void updateCurrentBoxId(int boxId);
     void updateToolTrustPrompt(const ToolTrustPromptDTO &dto);
+    void updateEditorMarks(const EditorMarksDTO &dto);
 
 signals:
     void buttonClicked();

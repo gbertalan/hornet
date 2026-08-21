@@ -92,3 +92,8 @@ void View::updateToolTrustPrompt(const ToolTrustPromptDTO &dto)
 {
     m_window->updateToolTrustPrompt(dto);
 }
+
+void View::updateEditorMarks(const EditorMarksDTO &dto)
+{
+    m_window->updateEditorMarks(dto);
+}

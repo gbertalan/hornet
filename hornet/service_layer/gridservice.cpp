@@ -1,11 +1,10 @@
 #include "gridservice.h"
 #include "model_layer/gridmodel.h"
 #include "model_layer/imodelaccess_readwrite.h"
+#include "model_layer/markrange.h"
 #include "shared/dto_view_to_model/boxdragdto.h"
 #include "shared/dto_view_to_model/boxresizedto.h"
 #include "shared/dto_view_to_model/griddragdto.h"
-#include "toolscriptparser.h"
-
 #include "toolscriptparser.h"
 
 GridService::GridService(IModelAccessReadWrite &modelAccess)
@@ -73,6 +72,7 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                                          box.getSelectionExtentX(),
                                          box.getSelectionExtentY(),
                                          box.hasSelection(),
+                                         box.getMarks(),
                                          box.getContentType(),
                                          renderScript});
     }
@@ -226,7 +226,8 @@ BoxContentDTO GridService::retrieveBoxContent(int boxId) const
                          box.getSelectionAnchorY(),
                          box.getSelectionExtentX(),
                          box.getSelectionExtentY(),
-                         box.hasSelection()};
+                         box.hasSelection(),
+                         box.getMarks()};
 }
 
 QString GridService::retrieveBoxOriginFilePath(int boxId) const
@@ -266,6 +267,12 @@ void GridService::storeBoxSelection(
 {
     BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
     box.setSelection(anchorX, anchorY, extentX, extentY, hasSelection);
+}
+
+void GridService::storeBoxMarks(int boxId, const QVector<MarkRange> &marks)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setMarks(marks);
 }
 
 // ================================================================

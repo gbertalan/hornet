@@ -392,6 +392,11 @@ void Window::updateEditorSelection(const EditorSelectionDTO &dto)
     m_splitPane->updateEditorSelection(dto);
 }
 
+void Window::updateEditorMarks(const EditorMarksDTO &dto)
+{
+    m_splitPane->updateEditorMarks(dto);
+}
+
 void Window::updateGridViewState(const GridViewStateDTO &dto)
 {
     m_splitPane->updateGridViewState(dto);

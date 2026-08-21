@@ -169,3 +169,12 @@ QHash<QString, QString> BoxModel::getToolFieldValues() const
 {
     return m_toolFieldValues;
 }
+
+QVector<MarkRange> BoxModel::getMarks() const
+{
+    return m_marks;
+}
+void BoxModel::setMarks(const QVector<MarkRange> &marks)
+{
+    m_marks = marks;
+}

@@ -24,7 +24,9 @@ public:
      * packages them in a DTO and calls View's API with this DTO.
      */
     void sendCursorPosToEditor();
+
     void sendSelectionToEditor();
+    void sendMarksToEditor();
     /**
      * @brief sendSettingsToEditor Retrieves editor setting (line height, font scale, isTerminal) from Model,
      * packages them in a DTO and calls View's API with this DTO.

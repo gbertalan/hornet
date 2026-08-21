@@ -377,16 +377,18 @@ void Control::flushEditorContentToBox(int boxId)
 {
     if (m_gridService.retrieveBoxContentType(boxId) == BoxContentType::List)
         return;
-
     const std::vector<std::u32string> &currentLines = m_modelAccess.getEditorModel().getTextLines();
     QVector<QString> linesAsQString;
     linesAsQString.reserve(static_cast<int>(currentLines.size()));
     for (const std::u32string &line : currentLines)
         linesAsQString.push_back(convertU32StringToQString(line));
-
     const int cursorX = m_modelAccess.getEditorModel().getCursorX();
     const int cursorY = m_modelAccess.getEditorModel().getCursorY();
     m_gridService.storeBoxContent(boxId, linesAsQString, cursorX, cursorY);
+
+    const std::vector<MarkRange> &marks = m_modelAccess.getEditorModel().getMarks();
+    QVector<MarkRange> marksAsQVector(marks.begin(), marks.end());
+    m_gridService.storeBoxMarks(boxId, marksAsQVector);
 }
 
 // ================================================================
@@ -743,6 +745,37 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return "";
     }
 
+    if (command.subcommand == "mark") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 3)
+            return "usage: hornet mark <boxId|last> <startLine> <endLine>";
+        int boxId = -1;
+        bool startOk = false, endOk = false;
+        const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
+        const int startLine = parts.at(1).toInt(&startOk);
+        const int endLine = parts.at(2).toInt(&endOk);
+        if (!boxIdOk || !startOk || !endOk || startLine > endLine)
+            return "usage: hornet mark <boxId|last> <startLine> <endLine>";
+
+        try {
+            QVector<MarkRange> marks = m_gridService.retrieveBoxContent(boxId).marks;
+            marks.push_back(MarkRange(startLine, endLine));
+            m_gridService.storeBoxMarks(boxId, marks);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+
+        if (boxId == m_currentlySelectedBoxId) {
+            const QVector<MarkRange> updatedMarks = m_gridService.retrieveBoxContent(boxId).marks;
+            std::vector<MarkRange> marksAsStdVector(updatedMarks.begin(), updatedMarks.end());
+            m_editorService.storeMarks(marksAsStdVector);
+            m_editorControl.sendMarksToEditor();
+        }
+
+        m_gridControl.sendViewStateToGrid();
+        return "";
+    }
+
     if (command.subcommand == "noop") {
         return "";
     }
@@ -897,12 +930,19 @@ void Control::selectBox(int boxId)
     }
     m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
     m_editorControl.sendCursorPosToEditor();
+
     m_editorService.storeSelection(EditorSelectionDTO{boxContent.selectionAnchorX,
                                                       boxContent.selectionAnchorY,
                                                       boxContent.selectionExtentX,
                                                       boxContent.selectionExtentY,
                                                       boxContent.hasSelection});
     m_editorControl.sendSelectionToEditor();
+
+    const QVector<MarkRange> &boxMarks = boxContent.marks;
+    std::vector<MarkRange> marksAsStdVector(boxMarks.begin(), boxMarks.end());
+    m_editorService.storeMarks(marksAsStdVector);
+    m_editorControl.sendMarksToEditor();
+
     m_editorControl.sendSettingsToEditor();
     m_windowControl.sendFileNameToTitlebar(boxContent.headerText);
     m_windowControl.sendCurrentBoxIdToTitlebar(boxId);

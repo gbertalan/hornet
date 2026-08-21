@@ -1,6 +1,8 @@
 #pragma once
+#include "model_layer/markrange.h"
 #include <string>
 #include <vector>
+
 class EditorModel
 {
 public:
@@ -30,6 +32,8 @@ public:
     void setFontScale(float fontScale);
     bool isTerminal() const;
     void setIsTerminal(bool isTerminal);
+    std::vector<MarkRange> getMarks() const;
+    void setMarks(std::vector<MarkRange> marks);
 
 private:
     void setNoOfCharsOfLongestLine();
@@ -49,4 +53,5 @@ private:
     int m_lineHeight = 20;
     float m_fontScale = 0.5f;
     bool m_isTerminal = true;
+    std::vector<MarkRange> m_marks;
 };

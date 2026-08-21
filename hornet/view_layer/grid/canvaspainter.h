@@ -164,6 +164,10 @@ private:
                                  float textScale,
                                  float bodyTextX,
                                  float textPadding);
+    static void drawBoxMarks(QPainter &painter,
+                             const BoxViewDTO &box,
+                             const BoxScreenGeometry &geom,
+                             double gridGap);
     static void drawBoxCloseButton(QPainter &painter,
                                    const BoxViewDTO &box,
                                    const BoxScreenGeometry &geom,

@@ -1,6 +1,7 @@
 #ifndef GRIDSERVICE_H
 #define GRIDSERVICE_H
 #include <QHash>
+#include "model_layer/markrange.h"
 #include "shared/dto_model_to_view/boxlistentrydto.h"
 #include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
@@ -111,6 +112,7 @@ public:
     void storeCursorPosition(int boxId, int cursorX, int cursorY);
     void storeBoxSelection(
         int boxId, int anchorX, int anchorY, int extentX, int extentY, bool hasSelection);
+    void storeBoxMarks(int boxId, const QVector<MarkRange> &marks);
 
     // ================================================================
     // SLICE: hornet save
