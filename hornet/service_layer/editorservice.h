@@ -32,6 +32,7 @@ public:
     void copySelection();
     void deleteSelectionInternal();
     void pasteFromClipboard();
+    void cutSelection();
 
 private:
     IModelAccessReadWrite &m_modelAccess;

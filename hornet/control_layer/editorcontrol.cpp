@@ -117,3 +117,8 @@ void EditorControl::pasteFromClipboard()
 {
     m_editorService.pasteFromClipboard();
 }
+
+void EditorControl::cutSelection()
+{
+    m_editorService.cutSelection();
+}

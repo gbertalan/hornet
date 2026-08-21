@@ -19,7 +19,8 @@ struct EditorKeyPressDTO
         CtrlD, // debug
         CtrlA, // select all
         CtrlC, // copy
-        CtrlV  // paste
+        CtrlV, // paste
+        CtrlX  // cut
     };
     char32_t key;
     SpecialKey specialKey;

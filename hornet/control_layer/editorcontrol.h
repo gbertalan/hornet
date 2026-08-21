@@ -36,6 +36,7 @@ public:
     void selectAll();
     void copySelection();
     void pasteFromClipboard();
+    void cutSelection();
 
 private:
     IModelAccessRead &m_modelAccess;

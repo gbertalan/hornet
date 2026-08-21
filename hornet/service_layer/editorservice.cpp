@@ -443,3 +443,11 @@ void EditorService::pasteFromClipboard()
     m_modelAccess.getEditorModel().setTextLines(std::move(lines));
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
 }
+
+void EditorService::cutSelection()
+{
+    if (!m_modelAccess.getEditorModel().hasSelection())
+        return;
+    copySelection();
+    deleteSelectionInternal();
+}

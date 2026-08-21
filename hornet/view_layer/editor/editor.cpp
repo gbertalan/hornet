@@ -455,6 +455,11 @@ void Editor::keyPressEvent(QKeyEvent *event)
             EditorKeyPressDTO(0, EditorKeyPressDTO::SpecialKey::CtrlV, ctrl, shift, alt));
         return;
     }
+    if (ctrl && event->key() == Qt::Key_X) {
+        emit editorKeyPressed(
+            EditorKeyPressDTO(0, EditorKeyPressDTO::SpecialKey::CtrlX, ctrl, shift, alt));
+        return;
+    }
 
     switch (event->key()) {
     case Qt::Key_Left:
