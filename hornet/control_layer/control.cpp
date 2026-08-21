@@ -196,6 +196,24 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         onDebugRequested();
         return;
     }
+    if (dto.specialKey == EditorKeyPressDTO::SpecialKey::CtrlA) {
+        m_editorControl.selectAll();
+        if (m_currentlySelectedBoxId != -1) {
+            if (!m_isRestoringBoxState) {
+                m_gridService
+                    .storeBoxSelection(m_currentlySelectedBoxId,
+                                       m_modelAccess.getEditorModel().getSelectionAnchorX(),
+                                       m_modelAccess.getEditorModel().getSelectionAnchorY(),
+                                       m_modelAccess.getEditorModel().getSelectionExtentX(),
+                                       m_modelAccess.getEditorModel().getSelectionExtentY(),
+                                       m_modelAccess.getEditorModel().hasSelection());
+            }
+            m_gridControl.sendViewStateToGrid();
+        }
+        m_editorControl.sendCursorPosToEditor();
+        m_editorControl.sendSelectionToEditor();
+        return;
+    }
     if (m_modelAccess.getEditorModel().isTerminal()) {
         const TerminalKeyPressResultDTO result = m_terminalControl.dispatchTerminalKeyPress(dto);
         if (result.wasHandled) {

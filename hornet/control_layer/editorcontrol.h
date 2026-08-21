@@ -33,6 +33,7 @@ public:
     // -- Sending data to the editor - end ---------------
 
     void dispatchEditorKeyPress(const EditorKeyPressDTO &dto);
+    void selectAll();
 
 private:
     IModelAccessRead &m_modelAccess;

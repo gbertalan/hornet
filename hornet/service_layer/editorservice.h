@@ -26,6 +26,7 @@ public:
     void deleteWordRight();
     bool isTerminal() const;
     void setIsTerminal(bool isTerminal);
+    void selectAll();
 
 private:
     IModelAccessReadWrite &m_modelAccess;

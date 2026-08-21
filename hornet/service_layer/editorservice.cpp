@@ -319,3 +319,14 @@ void EditorService::setIsTerminal(bool isTerminal)
 {
     m_modelAccess.getEditorModel().setIsTerminal(isTerminal);
 }
+
+void EditorService::selectAll()
+{
+    std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
+    int noOfLines = static_cast<int>(lines.size());
+    int lastLine = std::max(0, noOfLines - 1);
+    int lastCol = static_cast<int>(lines.at(lastLine).length());
+
+    m_modelAccess.getEditorModel().setSelection(0, 0, lastCol, lastLine, true);
+    m_modelAccess.getEditorModel().setCursor(lastCol, lastLine);
+}
