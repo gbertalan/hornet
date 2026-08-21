@@ -776,6 +776,38 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         return "";
     }
 
+    if (command.subcommand == "unmark") {
+        const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
+        if (parts.size() < 3)
+            return "usage: hornet unmark <boxId|last> <startLine> <endLine>";
+        int boxId = -1;
+        bool startOk = false, endOk = false;
+        const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
+        const int startLine = parts.at(1).toInt(&startOk) - 1;
+        const int endLine = parts.at(2).toInt(&endOk) - 1;
+        if (!boxIdOk || !startOk || !endOk || startLine > endLine || startLine < 0)
+            return "usage: hornet unmark <boxId|last> <startLine> <endLine> (1-indexed)";
+
+        try {
+            const QVector<MarkRange> marks = m_gridService.retrieveBoxContent(boxId).marks;
+            const QVector<MarkRange> updated = subtractMarkRange(marks,
+                                                                 MarkRange(startLine, endLine));
+            m_gridService.storeBoxMarks(boxId, updated);
+        } catch (const std::runtime_error &) {
+            return "no box with id " + QString::number(boxId);
+        }
+
+        if (boxId == m_currentlySelectedBoxId) {
+            const QVector<MarkRange> updatedMarks = m_gridService.retrieveBoxContent(boxId).marks;
+            std::vector<MarkRange> marksAsStdVector(updatedMarks.begin(), updatedMarks.end());
+            m_editorService.storeMarks(marksAsStdVector);
+            m_editorControl.sendMarksToEditor();
+        }
+
+        m_gridControl.sendViewStateToGrid();
+        return "";
+    }
+
     if (command.subcommand == "noop") {
         return "";
     }
