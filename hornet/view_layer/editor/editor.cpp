@@ -131,7 +131,6 @@ void Editor::updateEditorState(const EditorViewStateDTO &dto)
     m_noOfCharsOfLongestLine = dto.noOfCharsOfLongestLine;
     m_fileType = dto.fileType;
     m_terminalPrompts = dto.terminalPrompts;
-    m_hasSelection = false;
     updateHeight(m_noOfAllLines * m_lineHeight + (m_lineHeight / 2.f));
     updateWidth(5.f + leftColumnWidth()
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
@@ -380,6 +379,13 @@ void Editor::mouseMoveEvent(QMouseEvent *event)
         EditorCursorPosDTO dto{cursorX, cursorY};
         emit editorCursorPosChanged(dto);
 
+        EditorSelectionDTO selectionDto{m_selectionAnchorX,
+                                        m_selectionAnchorY,
+                                        m_selectionExtentX,
+                                        m_selectionExtentY,
+                                        m_hasSelection};
+        emit editorSelectionChanged(selectionDto);
+
         update();
     } else {
         bool overText = event->pos().x() >= textX;
@@ -404,6 +410,13 @@ void Editor::mousePressEvent(QMouseEvent *event)
 
         EditorCursorPosDTO dto{cursorX, cursorY};
         emit editorCursorPosChanged(dto);
+
+        EditorSelectionDTO selectionDto{m_selectionAnchorX,
+                                        m_selectionAnchorY,
+                                        m_selectionExtentX,
+                                        m_selectionExtentY,
+                                        m_hasSelection};
+        emit editorSelectionChanged(selectionDto);
 
         update();
 
