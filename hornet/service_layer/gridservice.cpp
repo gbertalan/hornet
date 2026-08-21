@@ -275,6 +275,23 @@ void GridService::storeBoxMarks(int boxId, const QVector<MarkRange> &marks)
     box.setMarks(marks);
 }
 
+QVector<MarkRange> GridService::computeMarksAfterSubtract(const QVector<MarkRange> &marks,
+                                                          MarkRange toRemove) const
+{
+    QVector<MarkRange> result;
+    for (const MarkRange &mark : marks) {
+        if (toRemove.endLine < mark.startLine || toRemove.startLine > mark.endLine) {
+            result.push_back(mark);
+            continue;
+        }
+        if (toRemove.startLine > mark.startLine)
+            result.push_back(MarkRange(mark.startLine, toRemove.startLine - 1));
+        if (toRemove.endLine < mark.endLine)
+            result.push_back(MarkRange(toRemove.endLine + 1, mark.endLine));
+    }
+    return result;
+}
+
 // ================================================================
 // SLICE: hornet save
 // ================================================================

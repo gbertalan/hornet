@@ -790,8 +790,8 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
 
         try {
             const QVector<MarkRange> marks = m_gridService.retrieveBoxContent(boxId).marks;
-            const QVector<MarkRange> updated = subtractMarkRange(marks,
-                                                                 MarkRange(startLine, endLine));
+            const QVector<MarkRange> updated
+                = m_gridService.computeMarksAfterSubtract(marks, MarkRange(startLine, endLine));
             m_gridService.storeBoxMarks(boxId, updated);
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);

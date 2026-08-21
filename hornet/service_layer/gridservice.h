@@ -113,6 +113,8 @@ public:
     void storeBoxSelection(
         int boxId, int anchorX, int anchorY, int extentX, int extentY, bool hasSelection);
     void storeBoxMarks(int boxId, const QVector<MarkRange> &marks);
+    QVector<MarkRange> computeMarksAfterSubtract(const QVector<MarkRange> &marks,
+                                                 MarkRange toRemove) const;
 
     // ================================================================
     // SLICE: hornet save
