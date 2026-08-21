@@ -489,11 +489,10 @@ void EditorService::shiftMarksForLineDeleted(int deletedLine)
         } else if (mark.startLine == mark.endLine) {
             continue; // the mark's only line was deleted
         } else if (deletedLine > mark.startLine && deletedLine < mark.endLine) {
-            result.push_back(MarkRange(mark.startLine, deletedLine - 1));
-            result.push_back(MarkRange(deletedLine, mark.endLine - 1));
+            result.push_back(MarkRange(mark.startLine, deletedLine - 1, mark.colorToken));
+            result.push_back(MarkRange(deletedLine, mark.endLine - 1, mark.colorToken));
         } else {
-            // deletedLine == mark.startLine or mark.endLine
-            result.push_back(MarkRange(mark.startLine, mark.endLine - 1));
+            result.push_back(MarkRange(mark.startLine, mark.endLine - 1, mark.colorToken));
         }
     }
     m_modelAccess.getEditorModel().setMarks(result);

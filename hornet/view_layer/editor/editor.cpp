@@ -348,10 +348,53 @@ void Editor::drawMarks(QPainter &painter, int index, float lineTop)
     int lineIndex = m_topLineIndex + index;
     for (const MarkRange &mark : m_marks) {
         if (lineIndex >= mark.startLine && lineIndex <= mark.endLine) {
-            painter.fillRect(QRectF(0, lineTop, width(), m_lineHeight), QColor(178, 34, 34, 70));
+            QColor markColor = resolveMarkColor(mark.colorToken);
+            painter.fillRect(QRectF(0, lineTop, width(), m_lineHeight), markColor);
             break;
         }
     }
+}
+
+QColor Editor::resolveMarkColor(const QString &colorToken) const
+{
+    static const QColor defaultColor(178, 34, 34, 70);
+    if (colorToken.isEmpty())
+        return defaultColor;
+    QColor resolved = defaultColor;
+    if (colorToken.startsWith('#')) {
+        const QColor parsed(colorToken);
+        if (parsed.isValid())
+            resolved = parsed;
+    } else {
+        bool ok = false;
+        const int index = colorToken.toInt(&ok);
+        if (ok) {
+            switch (index) {
+            case 0:
+                resolved = Theme::brightAmber();
+                break;
+            case 1:
+                resolved = Theme::darkAmber();
+                break;
+            case 2:
+                resolved = Theme::desaturatedTeal();
+                break;
+            case 3:
+                resolved = Theme::almostWhite();
+                break;
+            case 4:
+                resolved = Theme::darkGray();
+                break;
+            case 5:
+                resolved = Theme::almostBlack();
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    resolved.setAlpha(70);
+    return resolved;
 }
 
 // ================================================================

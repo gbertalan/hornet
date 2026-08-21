@@ -748,18 +748,19 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
     if (command.subcommand == "mark") {
         const QStringList parts = command.argument.split(' ', Qt::SkipEmptyParts);
         if (parts.size() < 3)
-            return "usage: hornet mark <boxId|last> <startLine> <endLine>";
+            return "usage: hornet mark <boxId|last> <startLine> <endLine> [color]";
         int boxId = -1;
         bool startOk = false, endOk = false;
         const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
         const int startLine = parts.at(1).toInt(&startOk) - 1;
         const int endLine = parts.at(2).toInt(&endOk) - 1;
+        const QString color = parts.size() >= 4 ? parts.at(3) : QString();
         if (!boxIdOk || !startOk || !endOk || startLine > endLine || startLine < 0)
-            return "usage: hornet mark <boxId|last> <startLine> <endLine> (1-indexed)";
+            return "usage: hornet mark <boxId|last> <startLine> <endLine> [color] (1-indexed)";
 
         try {
             QVector<MarkRange> marks = m_gridService.retrieveBoxContent(boxId).marks;
-            marks.push_back(MarkRange(startLine, endLine));
+            marks.push_back(MarkRange(startLine, endLine, color));
             m_gridService.storeBoxMarks(boxId, marks);
         } catch (const std::runtime_error &) {
             return "no box with id " + QString::number(boxId);

@@ -285,9 +285,9 @@ QVector<MarkRange> GridService::computeMarksAfterSubtract(const QVector<MarkRang
             continue;
         }
         if (toRemove.startLine > mark.startLine)
-            result.push_back(MarkRange(mark.startLine, toRemove.startLine - 1));
+            result.push_back(MarkRange(mark.startLine, toRemove.startLine - 1, mark.colorToken));
         if (toRemove.endLine < mark.endLine)
-            result.push_back(MarkRange(toRemove.endLine + 1, mark.endLine));
+            result.push_back(MarkRange(toRemove.endLine + 1, mark.endLine, mark.colorToken));
     }
     return result;
 }

@@ -774,22 +774,29 @@ void CanvasPainter::drawBoxMarks(QPainter &painter,
     if (box.marks.isEmpty())
         return;
 
+    static const QColor defaultMarkColor(178, 34, 34, 70);
+
     for (int i = 0; i < box.bodyLines.size(); ++i) {
         const int lineIndex = box.bodyScrollOffset + i;
-        bool isMarked = false;
+        const MarkRange *matchedMark = nullptr;
         for (const MarkRange &mark : box.marks) {
             if (lineIndex >= mark.startLine && lineIndex <= mark.endLine) {
-                isMarked = true;
+                matchedMark = &mark;
                 break;
             }
         }
-        if (!isMarked)
+        if (!matchedMark)
             continue;
+
+        QColor markColor = matchedMark->colorToken.isEmpty()
+                               ? defaultMarkColor
+                               : resolveToolColor(matchedMark->colorToken, defaultMarkColor);
+        markColor.setAlpha(70);
 
         const float rowTop = static_cast<float>(geom.screenY + geom.headerH)
                              + i * static_cast<float>(gridGap);
         painter.fillRect(QRectF(geom.screenX, rowTop, geom.screenW, static_cast<float>(gridGap)),
-                         QColor(178, 34, 34, 70));
+                         markColor);
     }
 }
 

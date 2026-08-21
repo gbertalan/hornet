@@ -99,6 +99,7 @@ private:
     void drawCursor(QPainter &painter, int index, float textX, float y, float verticalPadding);
     void drawSelection(QPainter &painter, int index, float textX, float lineTop);
     void drawMarks(QPainter &painter, int index, float lineTop);
+    QColor resolveMarkColor(const QString &colorToken) const;
 
     // ================================================================
     // SLICE: geometry-measurement helpers
