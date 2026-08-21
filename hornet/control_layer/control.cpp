@@ -229,11 +229,20 @@ void Control::onEditorKeyPressed(const EditorKeyPressDTO &dto)
         m_terminalControl.removePromptForDeletedLine(lineCountBefore, cursorYBefore);
     if (m_currentlySelectedBoxId != -1) {
         flushEditorContentToBox(m_currentlySelectedBoxId);
+        if (!m_isRestoringBoxState) {
+            m_gridService.storeBoxSelection(m_currentlySelectedBoxId,
+                                            m_modelAccess.getEditorModel().getSelectionAnchorX(),
+                                            m_modelAccess.getEditorModel().getSelectionAnchorY(),
+                                            m_modelAccess.getEditorModel().getSelectionExtentX(),
+                                            m_modelAccess.getEditorModel().getSelectionExtentY(),
+                                            m_modelAccess.getEditorModel().hasSelection());
+        }
         m_gridControl.sendViewStateToGrid();
     }
     m_editorControl.sendStateToEditor(
         m_modelAccess.getEditorModel().isTerminal() ? buildTerminalPrompts() : QVector<QString>{});
     m_editorControl.sendCursorPosToEditor();
+    m_editorControl.sendSelectionToEditor();
 }
 
 // ================================================================

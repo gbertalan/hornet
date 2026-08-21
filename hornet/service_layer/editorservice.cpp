@@ -77,9 +77,10 @@ void EditorService::moveCursor(const EditorKeyPressDTO &dto)
 {
     int cursorX = m_modelAccess.getEditorModel().getCursorX();
     int cursorY = m_modelAccess.getEditorModel().getCursorY();
+    int oldCursorX = cursorX;
+    int oldCursorY = cursorY;
     std::vector<std::u32string> lines = m_modelAccess.getEditorModel().getTextLines();
     int noOfLines = static_cast<int>(lines.size());
-
     switch (dto.specialKey) {
     case EditorKeyPressDTO::SpecialKey::Right:
         if (dto.ctrl)
@@ -131,6 +132,19 @@ void EditorService::moveCursor(const EditorKeyPressDTO &dto)
         break;
     default:
         break;
+    }
+
+    if (dto.shift) {
+        int anchorX = m_modelAccess.getEditorModel().hasSelection()
+                          ? m_modelAccess.getEditorModel().getSelectionAnchorX()
+                          : oldCursorX;
+        int anchorY = m_modelAccess.getEditorModel().hasSelection()
+                          ? m_modelAccess.getEditorModel().getSelectionAnchorY()
+                          : oldCursorY;
+        bool hasSel = (anchorX != cursorX || anchorY != cursorY);
+        m_modelAccess.getEditorModel().setSelection(anchorX, anchorY, cursorX, cursorY, hasSel);
+    } else {
+        m_modelAccess.getEditorModel().setSelection(0, 0, 0, 0, false);
     }
 
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
