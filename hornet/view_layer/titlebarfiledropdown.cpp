@@ -67,7 +67,7 @@ void TitlebarFileDropdown::paintEvent(QPaintEvent *event)
     const float y = (static_cast<float>(m_topRowHeight) - textVisualHeight) / 2.0f;
     m_fontRenderer.drawText(painter, 10.f, y, m_currentFileName, Theme::darkAmber(), scale);
 
-    painter.setPen(QPen(Theme::darkAmber(), 1));
+    painter.setPen(QPen(Theme::darkGray(), 1));
     painter.setBrush(Qt::NoBrush);
     painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
 }

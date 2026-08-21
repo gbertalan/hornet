@@ -27,6 +27,12 @@ void TitlebarFileNameButton::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     if (m_hovered)
         painter.fillRect(rect(), m_pressed ? Theme::darkGray() : Theme::warmGray());
+    else
+        painter.fillRect(rect(), Theme::almostBlack());
+
+    painter.setPen(Theme::darkerGray());
+    painter.drawLine(0, 0, 0, height() - 2);
+    painter.drawLine(width() - 1, 0, width() - 1, height() - 2);
 
     const float scale = 0.7f;
     const float textPadding = 10.f;
