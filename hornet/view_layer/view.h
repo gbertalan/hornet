@@ -2,6 +2,7 @@
 
 #include <QObject>
 
+class EditorSelectionDTO;
 struct BoxResizeDTO;
 struct BoxSelectedDTO;
 struct BoxDragDTO;
@@ -38,6 +39,7 @@ public:
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateEditorCursorPos(const EditorCursorPosDTO &dto);
     void updateEditorSettings(const EditorSettingsDTO &dto);
+    void updateEditorSelection(const EditorSelectionDTO &dto);
     void updateGridViewState(const GridViewStateDTO &dto);
     void updateFileName(const QString &fileName);
     void updateBoxListPage(const BoxListPageDTO &dto);
@@ -53,6 +55,7 @@ signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+    void editorSelectionChanged(const EditorSelectionDTO &dto);
     void gridZoomChanged(const GridZoomDTO &dto);
     void gridDragged(const GridDragDTO &dto);
     void boxDragged(const BoxDragDTO &dto);

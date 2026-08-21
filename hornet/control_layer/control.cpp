@@ -34,6 +34,7 @@
 #include "shared/dto_model_to_view/toollistsourcedto.h"
 #include "shared/dto_model_to_view/toolsourcedto.h"
 #include "shared/dto_model_to_view/tooltrustpromptdto.h"
+#include "shared/dto_view_to_model/editorselectiondto.h"
 #include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
 
 // ================================================================
@@ -172,6 +173,19 @@ void Control::onEditorCursorPosChanged(const EditorCursorPosDTO &dto)
     }
 }
 
+void Control::onEditorSelectionChanged(const EditorSelectionDTO &dto)
+{
+    m_editorService.storeSelection(dto);
+    if (m_currentlySelectedBoxId != -1 && !m_isRestoringBoxState) {
+        m_gridService.storeBoxSelection(m_currentlySelectedBoxId,
+                                        dto.anchorX,
+                                        dto.anchorY,
+                                        dto.extentX,
+                                        dto.extentY,
+                                        dto.hasSelection);
+        m_gridControl.sendViewStateToGrid();
+    }
+}
 // ================================================================
 // SLICE: editor key dispatch (typing, plus terminal/hornet routing)
 // ================================================================
@@ -811,6 +825,12 @@ void Control::selectBox(int boxId)
     }
     m_editorService.storeCursorPos(EditorCursorPosDTO(boxContent.cursorX, boxContent.cursorY));
     m_editorControl.sendCursorPosToEditor();
+    m_editorService.storeSelection(EditorSelectionDTO{boxContent.selectionAnchorX,
+                                                      boxContent.selectionAnchorY,
+                                                      boxContent.selectionExtentX,
+                                                      boxContent.selectionExtentY,
+                                                      boxContent.hasSelection});
+    m_editorControl.sendSelectionToEditor();
     m_editorControl.sendSettingsToEditor();
     m_windowControl.sendFileNameToTitlebar(boxContent.headerText);
     m_windowControl.sendCurrentBoxIdToTitlebar(boxId);

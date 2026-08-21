@@ -81,6 +81,40 @@ int EditorModel::getCursorY() const
     return m_cursorY;
 }
 
+void EditorModel::setSelection(int anchorX, int anchorY, int extentX, int extentY, bool hasSelection)
+{
+    m_selectionAnchorX = anchorX;
+    m_selectionAnchorY = anchorY;
+    m_selectionExtentX = extentX;
+    m_selectionExtentY = extentY;
+    m_hasSelection = hasSelection;
+}
+
+int EditorModel::getSelectionAnchorX() const
+{
+    return m_selectionAnchorX;
+}
+
+int EditorModel::getSelectionAnchorY() const
+{
+    return m_selectionAnchorY;
+}
+
+int EditorModel::getSelectionExtentX() const
+{
+    return m_selectionExtentX;
+}
+
+int EditorModel::getSelectionExtentY() const
+{
+    return m_selectionExtentY;
+}
+
+bool EditorModel::hasSelection() const
+{
+    return m_hasSelection;
+}
+
 void EditorModel::setCursor(int cursorX, int cursorY)
 {
     m_cursorX = cursorX;

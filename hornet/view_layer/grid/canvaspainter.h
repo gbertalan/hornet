@@ -156,6 +156,14 @@ private:
                                    float textPadding,
                                    bool isSelected,
                                    bool selectedBoxCursorVisible);
+    static void drawBoxSelection(QPainter &painter,
+                                 const BoxViewDTO &box,
+                                 const BoxScreenGeometry &geom,
+                                 FontAtlas &fontAtlas,
+                                 double gridGap,
+                                 float textScale,
+                                 float bodyTextX,
+                                 float textPadding);
     static void drawBoxCloseButton(QPainter &painter,
                                    const BoxViewDTO &box,
                                    const BoxScreenGeometry &geom,

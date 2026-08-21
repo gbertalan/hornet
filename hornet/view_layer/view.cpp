@@ -1,5 +1,6 @@
 #include "view_layer/view.h"
 #include "shared/dto_model_to_view/tooltrustpromptdto.h"
+#include "shared/dto_view_to_model/editorselectiondto.h"
 #include "view_layer/window.h"
 
 #include <QMessageBox>
@@ -12,6 +13,7 @@ View::View(const WindowDTO& initialState, QObject* parent) : QObject(parent) {
     connect(m_window, &Window::editorStateChanged, this, &View::editorStateChanged);
     connect(m_window, &Window::editorCursorPosChanged, this, &View::editorCursorPosChanged);
     connect(m_window, &Window::editorKeyPressed, this, &View::editorKeyPressed);
+    connect(m_window, &Window::editorSelectionChanged, this, &View::editorSelectionChanged);
     connect(m_window, &Window::gridZoomChanged, this, &View::gridZoomChanged);
     connect(m_window, &Window::gridDragged, this, &View::gridDragged);
     connect(m_window, &Window::boxDragged, this, &View::boxDragged);
@@ -49,6 +51,11 @@ void View::updateEditorCursorPos(const EditorCursorPosDTO &dto)
 void View::updateEditorSettings(const EditorSettingsDTO &dto)
 {
     m_window->updateEditorSettings(dto);
+}
+
+void View::updateEditorSelection(const EditorSelectionDTO &dto)
+{
+    m_window->updateEditorSelection(dto);
 }
 
 void View::updateGridViewState(const GridViewStateDTO &dto)

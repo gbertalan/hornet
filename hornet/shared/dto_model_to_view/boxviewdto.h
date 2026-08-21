@@ -19,6 +19,11 @@ struct BoxViewDTO
     int bodyScrollOffset;
     int cursorX;
     int cursorY;
+    int selectionAnchorX;
+    int selectionAnchorY;
+    int selectionExtentX;
+    int selectionExtentY;
+    bool hasSelection;
     BoxContentType contentType;
     ToolScriptDTO toolScript;
     BoxViewDTO(int id,
@@ -32,6 +37,11 @@ struct BoxViewDTO
                int bodyScrollOffset,
                int cursorX,
                int cursorY,
+               int selectionAnchorX,
+               int selectionAnchorY,
+               int selectionExtentX,
+               int selectionExtentY,
+               bool hasSelection,
                BoxContentType contentType,
                const ToolScriptDTO &toolScript)
         : id(id)
@@ -45,6 +55,11 @@ struct BoxViewDTO
         , bodyScrollOffset(bodyScrollOffset)
         , cursorX(cursorX)
         , cursorY(cursorY)
+        , selectionAnchorX(selectionAnchorX)
+        , selectionAnchorY(selectionAnchorY)
+        , selectionExtentX(selectionExtentX)
+        , selectionExtentY(selectionExtentY)
+        , hasSelection(hasSelection)
         , contentType(contentType)
         , toolScript(toolScript)
     {}

@@ -3,6 +3,7 @@
 #include "model_layer/imodelaccess_readwrite.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
+#include "shared/dto_view_to_model/editorselectiondto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 
 #include <qdebug.h>
@@ -51,6 +52,15 @@ void EditorService::storeCursorPos(const EditorCursorPosDTO &dto)
     int lineLength = static_cast<int>(allLines.at(cursorY).length());
     int cursorX = std::min(dto.cursorX, lineLength);
     m_modelAccess.getEditorModel().setCursor(cursorX, cursorY);
+}
+
+void EditorService::storeSelection(const EditorSelectionDTO &dto)
+{
+    m_modelAccess.getEditorModel().setSelection(dto.anchorX,
+                                                dto.anchorY,
+                                                dto.extentX,
+                                                dto.extentY,
+                                                dto.hasSelection);
 }
 
 void EditorService::insertCharacter(char32_t character)

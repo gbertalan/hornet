@@ -92,6 +92,10 @@ int main(int argc, char* argv[]) {
                      &control,
                      &Control::onProjectSaverSaveRequested);
     QObject::connect(&control, &Control::exitRequested, &app, &QApplication::quit);
+    QObject::connect(&view,
+                     &View::editorSelectionChanged,
+                     &control,
+                     &Control::onEditorSelectionChanged);
 
     control.init();
 

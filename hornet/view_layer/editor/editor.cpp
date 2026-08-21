@@ -5,6 +5,7 @@
 #include "shared/dto_bidirectional/editorsettingsdto.h"
 #include "shared/dto_view_to_model/editorcursorposdto.h"
 #include "shared/dto_view_to_model/editorkeypressdto.h"
+#include "shared/dto_view_to_model/editorselectiondto.h"
 #include "shared/dto_view_to_model/editorvisiblelinesdto.h"
 #include "view_layer/theme.h"
 #include <qevent.h>
@@ -26,7 +27,7 @@ Editor::Editor(const EditorSettingsDTO &settings,
     setSettings(settings);
     connect(&m_cursorTimer, &QTimer::timeout, this, [this]() {
         m_cursorVisible = !m_cursorVisible;
-        update(cursorRect(m_cursorX, m_cursorY));
+        update(cursorRect());
         emit cursorBlinkToggled(m_cursorVisible);
     });
     m_cursorTimer.start(200);
@@ -111,7 +112,7 @@ void Editor::scrollToCursor()
     QScrollArea *scrollArea = qobject_cast<QScrollArea *>(parentWidget()->parentWidget());
     if (!scrollArea)
         return;
-    QRect rect = cursorRect(m_cursorX, m_cursorY);
+    QRect rect = cursorRect();
     int noOfCharsAsMargin = 5;
     float horizontalScrollMargin = m_fontAtlas.textWidth(noOfCharsAsMargin, m_fontScale);
     int noOfRowsAsMargin = 3;
@@ -130,6 +131,7 @@ void Editor::updateEditorState(const EditorViewStateDTO &dto)
     m_noOfCharsOfLongestLine = dto.noOfCharsOfLongestLine;
     m_fileType = dto.fileType;
     m_terminalPrompts = dto.terminalPrompts;
+    m_hasSelection = false;
     updateHeight(m_noOfAllLines * m_lineHeight + (m_lineHeight / 2.f));
     updateWidth(5.f + leftColumnWidth()
                 + m_fontAtlas.textWidth(m_noOfCharsOfLongestLine + 2, m_fontScale));
@@ -151,6 +153,16 @@ void Editor::updateCursorPosition(const EditorCursorPosDTO &dto)
     float newLineTop = m_cursorY * m_lineHeight + verticalPadding + 1;
     update(QRectF(0, newLineTop, width(), m_lineHeight).toRect());
     scrollToCursor();
+}
+
+void Editor::updateEditorSelection(const EditorSelectionDTO &dto)
+{
+    m_selectionAnchorX = dto.anchorX;
+    m_selectionAnchorY = dto.anchorY;
+    m_selectionExtentX = dto.extentX;
+    m_selectionExtentY = dto.extentY;
+    m_hasSelection = dto.hasSelection;
+    update();
 }
 
 // ================================================================
@@ -342,6 +354,13 @@ void Editor::mouseReleaseEvent(QMouseEvent *event)
         EditorCursorPosDTO dto{cursorX, cursorY};
         emit editorCursorPosChanged(dto);
 
+        EditorSelectionDTO selectionDto{m_selectionAnchorX,
+                                        m_selectionAnchorY,
+                                        m_selectionExtentX,
+                                        m_selectionExtentY,
+                                        m_hasSelection};
+        emit editorSelectionChanged(selectionDto);
+
         update();
     }
 }
@@ -478,7 +497,7 @@ void Editor::focusOutEvent(QFocusEvent *event)
 // SLICE: geometry-measurement helpers
 // ================================================================
 
-QRect Editor::cursorRect(int cursorX, int cursorY) const
+QRect Editor::cursorRect() const
 {
     float cursorPixelX = 5.f + leftColumnWidth() + m_fontAtlas.textWidth(m_cursorX, m_fontScale);
     float lineTop = m_cursorY * m_lineHeight;

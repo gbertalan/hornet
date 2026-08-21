@@ -8,6 +8,7 @@
 #include "control_layer/terminalcontrol.h"
 #include "control_layer/toolcontrol.h"
 #include "control_layer/windowcontrol.h"
+
 #include <filesystem>
 
 class IModelAccessRead;
@@ -19,6 +20,7 @@ class View;
 struct EditorKeyPressDTO;
 struct EditorVisibleLinesDTO;
 struct EditorCursorPosDTO;
+struct EditorSelectionDTO;
 struct GridZoomDTO;
 struct GridDragDTO;
 struct BoxDragDTO;
@@ -53,6 +55,7 @@ public slots:
     // ================================================================
     void onEditorStateChanged(const EditorVisibleLinesDTO &dto);
     void onEditorCursorPosChanged(const EditorCursorPosDTO &dto);
+    void onEditorSelectionChanged(const EditorSelectionDTO &dto);
 
     // ================================================================
     // SLICE: editor key dispatch (typing, plus terminal/hornet routing)

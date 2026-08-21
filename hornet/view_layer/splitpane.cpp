@@ -157,6 +157,7 @@ SplitPane::SplitPane(int leftWidth,
     connect(m_editor, &Editor::editorStateChanged, this, &SplitPane::editorStateChanged);
     connect(m_editor, &Editor::editorCursorPosChanged, this, &SplitPane::editorCursorPosChanged);
     connect(m_editor, &Editor::editorKeyPressed, this, &SplitPane::editorKeyPressed);
+    connect(m_editor, &Editor::editorSelectionChanged, this, &SplitPane::editorSelectionChanged);
     connect(m_editor, &Editor::cursorBlinkToggled, m_grid, &Grid::setCursorBlinkVisible);
     connect(m_editor, &Editor::ctrlStateChanged, m_grid, &Grid::setCtrlPressed);
     connect(m_grid, &Grid::gridZoomChanged, this, &SplitPane::gridZoomChanged);
@@ -198,6 +199,11 @@ void SplitPane::updateEditorCursorPos(const EditorCursorPosDTO &dto)
 void SplitPane::updateEditorSettings(const EditorSettingsDTO &dto)
 {
     m_editor->setSettings(dto);
+}
+
+void SplitPane::updateEditorSelection(const EditorSelectionDTO &dto)
+{
+    m_editor->updateEditorSelection(dto);
 }
 
 void SplitPane::updateGridViewState(const GridViewStateDTO &dto)

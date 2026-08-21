@@ -642,6 +642,8 @@ void CanvasPainter::drawBoxTextContent(QPainter &painter,
 
     const QVector<QString> &bodyLines = box.bodyLines;
 
+    drawBoxSelection(painter, box, geom, fontAtlas, gridGap, textScale, bodyTextX, textPadding);
+
     if (bodyLines.isEmpty()) { // if empty, still draw caret
         const float rowTop = static_cast<float>(geom.screenY + geom.headerH);
         const float lineY = rowTop + static_cast<float>(gridGap) / 2.0f - textVisualHeight / 2.0f;
@@ -712,6 +714,55 @@ void CanvasPainter::drawBoxTextContent(QPainter &painter,
         painter.drawLine(QPointF(bodyTextX, lineTop + 1), QPointF(bodyTextX, lineTop + gridGap + 1));
     }
     painter.restore();
+}
+
+void CanvasPainter::drawBoxSelection(QPainter &painter,
+                                     const BoxViewDTO &box,
+                                     const BoxScreenGeometry &geom,
+                                     FontAtlas &fontAtlas,
+                                     double gridGap,
+                                     float textScale,
+                                     float bodyTextX,
+                                     float textPadding)
+{
+    if (!box.hasSelection)
+        return;
+
+    const int startRow = std::min(box.selectionAnchorY, box.selectionExtentY);
+    const int endRow = std::max(box.selectionAnchorY, box.selectionExtentY);
+    const float charWidth = fontAtlas.textWidth(1, textScale);
+    const float textX = bodyTextX + (textPadding * 2);
+
+    for (int i = 0; i < box.bodyLines.size(); ++i) {
+        const int lineIndex = box.bodyScrollOffset + i;
+        if (lineIndex < startRow || lineIndex > endRow)
+            continue;
+
+        int startCol, endCol;
+        if (startRow == endRow) {
+            startCol = std::min(box.selectionAnchorX, box.selectionExtentX);
+            endCol = std::max(box.selectionAnchorX, box.selectionExtentX);
+        } else if (lineIndex == startRow) {
+            startCol = (box.selectionAnchorY == startRow) ? box.selectionAnchorX
+                                                          : box.selectionExtentX;
+            endCol = box.bodyLines[i].length();
+        } else if (lineIndex == endRow) {
+            startCol = 0;
+            endCol = (box.selectionAnchorY == endRow) ? box.selectionAnchorX : box.selectionExtentX;
+        } else {
+            startCol = 0;
+            endCol = box.bodyLines[i].length();
+        }
+
+        const float rowTop = static_cast<float>(geom.screenY + geom.headerH)
+                             + i * static_cast<float>(gridGap);
+        const float startX = textX + startCol * charWidth;
+        const float endX = textX + endCol * charWidth;
+        const float width = endX - startX;
+        if (width > 0)
+            painter.fillRect(QRectF(startX, rowTop, width, static_cast<float>(gridGap)),
+                             QColor(100, 149, 237, 100));
+    }
 }
 
 void CanvasPainter::drawBoxCloseButton(QPainter &painter,

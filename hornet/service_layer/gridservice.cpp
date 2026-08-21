@@ -68,6 +68,11 @@ GridViewStateDTO GridService::retrieveGridViewState() const
                                          scrollStart,
                                          box.getCursorX(),
                                          box.getCursorY(),
+                                         box.getSelectionAnchorX(),
+                                         box.getSelectionAnchorY(),
+                                         box.getSelectionExtentX(),
+                                         box.getSelectionExtentY(),
+                                         box.hasSelection(),
                                          box.getContentType(),
                                          renderScript});
     }
@@ -216,7 +221,12 @@ BoxContentDTO GridService::retrieveBoxContent(int boxId) const
                          box.getBodyLines(),
                          box.getContentType(),
                          box.getCursorX(),
-                         box.getCursorY()};
+                         box.getCursorY(),
+                         box.getSelectionAnchorX(),
+                         box.getSelectionAnchorY(),
+                         box.getSelectionExtentX(),
+                         box.getSelectionExtentY(),
+                         box.hasSelection()};
 }
 
 QString GridService::retrieveBoxOriginFilePath(int boxId) const
@@ -249,6 +259,13 @@ void GridService::storeCursorPosition(int boxId, int cursorX, int cursorY)
 {
     BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
     box.setCursorPos(cursorX, cursorY);
+}
+
+void GridService::storeBoxSelection(
+    int boxId, int anchorX, int anchorY, int extentX, int extentY, bool hasSelection)
+{
+    BoxModel &box = m_modelAccess.getGridModel().getBox(boxId);
+    box.setSelection(anchorX, anchorY, extentX, extentY, hasSelection);
 }
 
 // ================================================================

@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 #include "shared/dto_model_to_view/tooltrustpromptdto.h"
+#include "shared/dto_view_to_model/editorselectiondto.h"
 #include "shared/dto_view_to_model/tooldropdownactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldactivateddto.h"
 #include "shared/dto_view_to_model/tooltextfieldcommitdto.h"
@@ -192,6 +193,7 @@ Window::Window(const WindowDTO& initialState, QWidget* parent) : QWidget(parent)
     connect(m_splitPane, &SplitPane::editorStateChanged, this, &Window::editorStateChanged);
     connect(m_splitPane, &SplitPane::editorCursorPosChanged, this, &Window::editorCursorPosChanged);
     connect(m_splitPane, &SplitPane::editorKeyPressed, this, &Window::editorKeyPressed);
+    connect(m_splitPane, &SplitPane::editorSelectionChanged, this, &Window::editorSelectionChanged);
     connect(m_splitPane, &SplitPane::gridZoomChanged, this, &Window::gridZoomChanged);
     connect(m_splitPane, &SplitPane::gridDragged, this, &Window::gridDragged);
     connect(m_splitPane, &SplitPane::boxDragged, this, &Window::boxDragged);
@@ -383,6 +385,11 @@ void Window::updateEditorCursorPos(const EditorCursorPosDTO &dto)
 void Window::updateEditorSettings(const EditorSettingsDTO &dto)
 {
     m_splitPane->updateEditorSettings(dto);
+}
+
+void Window::updateEditorSelection(const EditorSelectionDTO &dto)
+{
+    m_splitPane->updateEditorSelection(dto);
 }
 
 void Window::updateGridViewState(const GridViewStateDTO &dto)

@@ -18,6 +18,12 @@ public:
     void setCursor(int cursorX, int cursorY);
     int getCursorX() const;
     int getCursorY() const;
+    void setSelection(int anchorX, int anchorY, int extentX, int extentY, bool hasSelection);
+    int getSelectionAnchorX() const;
+    int getSelectionAnchorY() const;
+    int getSelectionExtentX() const;
+    int getSelectionExtentY() const;
+    bool hasSelection() const;
     int getLineHeight() const;
     void setLineHeight(int lineHeight);
     float getFontScale() const;
@@ -33,8 +39,13 @@ private:
     // Recompute this whenever m_textLines or any individual line is mutated.
     int m_noOfCharsOfLongestLine;
     std::string m_fileType; // ASCII (e.g. "cpp", "asm")
-    int m_cursorX; // column
-    int m_cursorY; // row
+    int m_cursorX;          // column
+    int m_cursorY;          // row
+    int m_selectionAnchorX = 0;
+    int m_selectionAnchorY = 0;
+    int m_selectionExtentX = 0;
+    int m_selectionExtentY = 0;
+    bool m_hasSelection = false;
     int m_lineHeight = 20;
     float m_fontScale = 0.5f;
     bool m_isTerminal = true;

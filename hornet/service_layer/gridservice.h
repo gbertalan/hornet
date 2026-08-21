@@ -109,6 +109,8 @@ public:
     void storeSelectedBox(int boxId);
     void storeBoxScrollOffset(int boxId, int scrollOffset);
     void storeCursorPosition(int boxId, int cursorX, int cursorY);
+    void storeBoxSelection(
+        int boxId, int anchorX, int anchorY, int extentX, int extentY, bool hasSelection);
 
     // ================================================================
     // SLICE: hornet save

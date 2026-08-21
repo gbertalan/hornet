@@ -10,6 +10,7 @@ struct EditorVisibleLinesDTO;
 struct EditorSettingsDTO;
 struct EditorViewStateDTO;
 struct EditorCursorPosDTO;
+struct EditorSelectionDTO;
 class Editor : public QWidget
 {
     Q_OBJECT
@@ -31,6 +32,7 @@ public:
     // ================================================================
     void updateEditorState(const EditorViewStateDTO &dto);
     void updateCursorPosition(const EditorCursorPosDTO &dto);
+    void updateEditorSelection(const EditorSelectionDTO &dto);
 signals:
     // ================================================================
     // SLICE: View -> Control (Editor's own state/input reported upward)
@@ -38,6 +40,7 @@ signals:
     void editorStateChanged(const EditorVisibleLinesDTO &dto);
     void editorCursorPosChanged(const EditorCursorPosDTO &dto);
     void editorKeyPressed(const EditorKeyPressDTO &dto);
+    void editorSelectionChanged(const EditorSelectionDTO &dto);
 
     // ================================================================
     // SLICE: direct sibling wiring (Editor -> Grid, bypasses Control)
@@ -93,7 +96,7 @@ private:
     // ================================================================
     // SLICE: geometry-measurement helpers
     // ================================================================
-    QRect cursorRect(int cursorX, int cursorY) const;
+    QRect cursorRect() const;
     float leftColumnWidth() const;
     float lineNumberSectionWidth() const;
     std::pair<int, int> getCursorPosFromMouse(QPoint mousePos);

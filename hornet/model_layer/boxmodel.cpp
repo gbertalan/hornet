@@ -115,6 +115,40 @@ void BoxModel::setBodyScrollOffset(int offset)
     m_bodyScrollOffset = std::max(0, offset);
 }
 
+int BoxModel::getSelectionAnchorX() const
+{
+    return m_selectionAnchorX;
+}
+
+int BoxModel::getSelectionAnchorY() const
+{
+    return m_selectionAnchorY;
+}
+
+int BoxModel::getSelectionExtentX() const
+{
+    return m_selectionExtentX;
+}
+
+int BoxModel::getSelectionExtentY() const
+{
+    return m_selectionExtentY;
+}
+
+bool BoxModel::hasSelection() const
+{
+    return m_hasSelection;
+}
+
+void BoxModel::setSelection(int anchorX, int anchorY, int extentX, int extentY, bool hasSelection)
+{
+    m_selectionAnchorX = anchorX;
+    m_selectionAnchorY = anchorY;
+    m_selectionExtentX = extentX;
+    m_selectionExtentY = extentY;
+    m_hasSelection = hasSelection;
+}
+
 bool BoxModel::isFileBacked() const
 {
     return m_isFileBacked;

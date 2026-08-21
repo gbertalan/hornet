@@ -36,6 +36,12 @@ public:
     void setCursorPos(int cursorX, int cursorY);
     int getBodyScrollOffset() const;
     void setBodyScrollOffset(int offset);
+    int getSelectionAnchorX() const;
+    int getSelectionAnchorY() const;
+    int getSelectionExtentX() const;
+    int getSelectionExtentY() const;
+    bool hasSelection() const;
+    void setSelection(int anchorX, int anchorY, int extentX, int extentY, bool hasSelection);
     bool isFileBacked() const;
     QString getOriginFilePath() const;
     QString getToolFieldValue(const QString &name) const;
@@ -57,6 +63,11 @@ private:
     int m_cursorX = 0;
     int m_cursorY = 0;
     int m_bodyScrollOffset = 0;
+    int m_selectionAnchorX = 0;
+    int m_selectionAnchorY = 0;
+    int m_selectionExtentX = 0;
+    int m_selectionExtentY = 0;
+    bool m_hasSelection = false;
     bool m_isFileBacked;
     QString m_originFilePath;
     QHash<QString, QString> m_toolFieldValues;
