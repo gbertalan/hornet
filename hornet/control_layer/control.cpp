@@ -752,10 +752,10 @@ QString Control::dispatchHornetCommand(const HornetCommandDTO &command)
         int boxId = -1;
         bool startOk = false, endOk = false;
         const bool boxIdOk = resolveBoxIdToken(parts.at(0), boxId);
-        const int startLine = parts.at(1).toInt(&startOk);
-        const int endLine = parts.at(2).toInt(&endOk);
-        if (!boxIdOk || !startOk || !endOk || startLine > endLine)
-            return "usage: hornet mark <boxId|last> <startLine> <endLine>";
+        const int startLine = parts.at(1).toInt(&startOk) - 1;
+        const int endLine = parts.at(2).toInt(&endOk) - 1;
+        if (!boxIdOk || !startOk || !endOk || startLine > endLine || startLine < 0)
+            return "usage: hornet mark <boxId|last> <startLine> <endLine> (1-indexed)";
 
         try {
             QVector<MarkRange> marks = m_gridService.retrieveBoxContent(boxId).marks;
